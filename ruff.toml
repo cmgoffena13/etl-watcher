@@ -1,0 +1,7 @@
+[lint]
+select = ["I"]
+
+[format]
+exclude = [
+    "migrations/",
+]
