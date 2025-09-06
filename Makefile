@@ -1,6 +1,27 @@
 install:
 	uv sync --frozen --compile-bytecode
 
+build:
+	docker build -t watcher . && docker images -f "dangling=true" -q | xargs docker rmi
+
+docker-run:
+	docker run --rm -p 8000:8000 \
+		--name watcher_dev \
+		-v $(shell pwd):/watcher \
+		-v /watcher/.venv watcher \
+		sh -c "uv run -- uvicorn src.app:app --reload" && \
+	docker logs watcher_dev --follow
+
+docker-stop:
+	docker stop watcher_dev || true
+	docker rm watcher_dev || true
+
+docker-clean:
+	docker container prune -f
+	docker images -f "dangling=true" -q | xargs -r docker rmi
+	docker volume prune -f
+	docker network prune -f
+
 start:
 	uv run uvicorn src.app:app --reload
 
