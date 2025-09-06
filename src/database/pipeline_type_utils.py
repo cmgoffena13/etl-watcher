@@ -20,7 +20,6 @@ async def db_get_or_create_pipeline_type(
 ) -> PipelineTypePostOutput:
     """Get existing pipeline id or create new one and return id"""
     created = False
-    pipeline_type = PipelineType(**pipeline_type.model_dump())
 
     pipeline_type_id = (
         await session.exec(

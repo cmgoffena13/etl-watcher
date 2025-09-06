@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import Column, Index, text
+from sqlalchemy import Boolean, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
@@ -20,16 +20,22 @@ class Pipeline(SQLModel, table=True):
     source_address_id: Optional[int]
     target_address_id: Optional[int]
 
-    target_last_insert: Optional[DateTime]
-    target_last_update: Optional[DateTime]
-    target_last_delete: Optional[DateTime]
+    last_target_insert: Optional[DateTime]
+    last_target_update: Optional[DateTime]
+    last_target_delete: Optional[DateTime]
 
     timely_number: Optional[int]
     timely_datepart: Optional[DatePartEnum]
-    mute_timely_check: bool = Field(default=False)
+    mute_timely_check: bool = Field(
+        sa_column=Column(Boolean, nullable=False, server_default=text("FALSE"))
+    )
 
-    load_lineage: bool = Field(default=False)
-    active: bool = Field(default=True)
+    load_lineage: bool = Field(
+        sa_column=Column(Boolean, nullable=False, server_default=text("FALSE"))
+    )
+    active: bool = Field(
+        sa_column=Column(Boolean, nullable=False, server_default=text("TRUE"))
+    )
 
     created_at: DateTime = Field(
         sa_column=Column(

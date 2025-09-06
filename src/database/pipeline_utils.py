@@ -25,9 +25,7 @@ async def db_get_or_create_pipeline(
     new_pipeline = Pipeline(**pipeline.model_dump())
 
     pipeline_id = (
-        await session.exec(
-            select(Pipeline.id).where(Pipeline.name == new_pipeline.name)
-        )
+        await session.exec(select(Pipeline.id).where(Pipeline.name == pipeline.name))
     ).scalar_one_or_none()
 
     if pipeline_id is None:
