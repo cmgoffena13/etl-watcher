@@ -6,6 +6,7 @@ from sqlalchemy import select
 from sqlmodel import Session
 
 from src.database.models.pipeline import Pipeline
+from src.database.pipeline_type_utils import db_get_or_create_pipeline_type
 from src.models.pipeline import (
     PipelinePatchInput,
     PipelinePostInput,

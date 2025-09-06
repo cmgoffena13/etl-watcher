@@ -8,12 +8,18 @@ from src.tests.fixtures.pipeline_type import (
 
 
 @pytest.mark.anyio
-async def test_create_pipeline_type(async_client: AsyncClient):
+async def test_get_or_create_pipeline_type(async_client: AsyncClient):
     response = await async_client.post(
         "/pipeline_type", json=TEST_PIPELINE_TYPE_POST_DATA
     )
-    assert response.status_code == 201
-    assert response.json() == {"id": 1}
+    assert response.status_code == 201  # Created
+    assert response.json() == {"id": 2}  # Pipeline tests already create pipeline type
+
+    response = await async_client.post(
+        "/pipeline_type", json=TEST_PIPELINE_TYPE_POST_DATA
+    )
+    assert response.status_code == 200
+    assert response.json() == {"id": 2}
 
 
 @pytest.mark.anyio
