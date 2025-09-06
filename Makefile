@@ -9,7 +9,7 @@ docker-run:
 		--name watcher_dev \
 		-v $(shell pwd):/watcher \
 		-v /watcher/.venv watcher \
-		sh -c "uv run -- uvicorn src.app:app --reload" && \
+		sh -c "uv run -- uvicorn src.app:app --reload --host 0.0.0.0 --port 8000" && \
 	docker logs watcher_dev --follow
 
 docker-stop:
