@@ -20,8 +20,10 @@ class PipelineExecution(SQLModel, table=True):
             nullable=False,
         ),
     )
-    end_date: Optional[DateTime] = Field(sa_column=Column(DateTimeTZ(timezone=True)))
+    end_date: Optional[DateTime] = Field(
+        None, sa_column=Column(DateTimeTZ(timezone=True))
+    )
     completed_successfully: bool = Field(default=False, nullable=False)
-    inserts: Optional[int]
-    updates: Optional[int]
-    soft_deletes: Optional[int]
+    inserts: Optional[int] = None
+    updates: Optional[int] = None
+    soft_deletes: Optional[int] = None

@@ -9,6 +9,11 @@ from src.database.session import engine
 logger = logging.getLogger(__name__)
 
 
+async def create_test_db():
+    async with engine.begin() as conn:
+        await conn.execute(text("CREATE DATABASE test"))
+
+
 async def reset_database():
     logger.info("Dropping All Tables")
     async with engine.begin() as conn:
