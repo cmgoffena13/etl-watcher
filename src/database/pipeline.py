@@ -3,13 +3,18 @@ from typing import Optional
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from pydantic import BaseModel
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import Column, select, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, Session, SQLModel
 
-from src.models.pipeline import PipelinePatchInput
+from src.database.pipeline_type import db_get_or_create_pipeline_type
+from src.models.pipeline import (
+    PipelinePatchInput,
+    PipelinePostInput,
+    PipelinePostOutput,
+)
+from src.models.pipeline_type import PipelineTypePostInput, PipelineTypePostOutput
 
 logger = logging.getLogger(__name__)
 
@@ -32,29 +37,43 @@ class Pipeline(SQLModel, table=True):
         ),
     )
     updated_at: Optional[DateTime] = Field(
-        default=None, sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
 
 
-async def get_or_create_pipeline(
-    session: Session, pipeline: BaseModel, response: Response
-) -> dict:
+async def db_get_or_create_pipeline(
+    session: Session, pipeline: PipelinePostInput, response: Response
+) -> PipelinePostOutput:
     """Get existing pipeline id or create new one and return id"""
     created = False
-    pipeline = Pipeline(**pipeline.model_dump())
+    new_pipeline = Pipeline(**pipeline.model_dump())
 
     pipeline_id = (
-        await session.exec(select(Pipeline.id).where(Pipeline.name == pipeline.name))
+        await session.exec(
+            select(Pipeline.id).where(Pipeline.name == new_pipeline.name)
+        )
     ).scalar_one_or_none()
 
     if pipeline_id is None:
-        logger.info(f"Pipeline '{pipeline.name}' Not Found. Creating...")
-        stmt = (
+        logger.info(f"Pipeline '{new_pipeline.name}' Not Found. Creating...")
+
+        # Resolve Pipeline Type Info
+        pipeline_type_input = PipelineTypePostInput(name=pipeline.pipeline_type_name)
+        pipeline_type = PipelineTypePostOutput(
+            **await db_get_or_create_pipeline_type(
+                session=session, pipeline_type=pipeline_type_input, response=response
+            )
+        )
+
+        pipeline_stmt = (
             Pipeline.__table__.insert()
             .returning(Pipeline.__table__.c.id)
-            .values(**pipeline.model_dump(exclude={"id"}))
+            .values(
+                **new_pipeline.model_dump(exclude={"id"}),
+                pipeline_type_id=pipeline_type.id,
+            )
         )
-        pipeline_id = (await session.exec(stmt)).scalar_one()
+        pipeline_id = (await session.exec(pipeline_stmt)).scalar_one()
         await session.commit()
         created = True
         logger.info(f"Pipeline '{pipeline.name}' Successfully Created")
@@ -78,6 +97,8 @@ async def update_pipeline(session: Session, patch: PipelinePatchInput) -> Pipeli
 
     pipeline.updated_at = pendulum.now("UTC")
     for field, value in patch.model_dump(exclude_unset=True).items():
+        if field == "id":
+            continue
         setattr(pipeline, field, value)
 
     session.add(pipeline)

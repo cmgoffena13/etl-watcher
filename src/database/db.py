@@ -1,9 +1,9 @@
 import logging
 
-from sqlalchemy import insert, text
+from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.database.pipeline_type import DatePartEnum, PipelineType
+from src.database.pipeline_type import PipelineType
 from src.database.session import engine
 
 logger = logging.getLogger(__name__)
@@ -24,19 +24,19 @@ async def create_initial_records():
         PipelineType(
             name="extraction",
             timely_number=12,
-            timely_datepart="HOUR",
+            timely_datepart="hour",
             mute_timely_check=False,
         ),
         PipelineType(
             name="audit",
             timely_number=12,
-            timely_datepart="HOUR",
+            timely_datepart="hour",
             mute_timely_check=False,
         ),
         PipelineType(
             name="publish",
             timely_number=12,
-            timely_datepart="HOUR",
+            timely_datepart="hour",
             mute_timely_check=False,
         ),
     ]

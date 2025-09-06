@@ -1,26 +1,20 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
+
+from src.types import LowercaseModel
 
 
-class PipelinePostInput(BaseModel):
+class PipelinePatchInput(LowercaseModel):
+    id: int
+    name: Optional[str] = Field(None, max_length=150, min_length=1)
+    pipeline_type_id: Optional[int] = None
+
+
+class PipelinePostOutput(LowercaseModel):
+    id: int
+
+
+class PipelinePostInput(LowercaseModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
-
-
-class PipelinePatchInput(BaseModel):
-    id: int
-    name: Optional[str] = Field(max_length=150, min_length=1)
-
-
-class PipelinePostOutput(BaseModel):
-    id: int
-
-
-class PipelineIDGetInput(BaseModel):
-    name: str = Field(max_length=150, min_length=1)
-    pipeline_type_name: str = Field(max_length=150, min_length=1)
-
-
-class PipelineIDGetOutput(BaseModel):
-    id: int

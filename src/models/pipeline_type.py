@@ -1,24 +1,24 @@
 from typing import Optional
 
-from pydantic import BaseModel, Field
+from pydantic import Field
 
-from src.database.pipeline_type import DatePartEnum, PipelineType
+from src.types import DatePartEnum, LowercaseModel
 
 
-class PipelineTypePostInput(BaseModel):
+class PipelineTypePostInput(LowercaseModel):
     name: str = Field(max_length=150, min_length=1)
-    timely_number: Optional[int]
+    timely_number: Optional[int] = None
     timely_datepart: Optional[DatePartEnum] = None
     mute_timely_check: Optional[bool] = Field(default=False)
 
 
-class PipelineTypePostOutput(BaseModel):
+class PipelineTypePostOutput(LowercaseModel):
     id: int
 
 
-class PipelineTypePatchInput(BaseModel):
+class PipelineTypePatchInput(LowercaseModel):
     id: int
-    name: Optional[str] = Field(max_length=150, min_length=1)
-    timely_number: Optional[int]
-    timely_datepart: Optional[DatePartEnum]
-    mute_timely_check: Optional[bool]
+    name: Optional[str] = Field(None, max_length=150, min_length=1)
+    timely_number: Optional[int] = None
+    timely_datepart: Optional[DatePartEnum] = None
+    mute_timely_check: Optional[bool] = None

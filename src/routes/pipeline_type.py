@@ -3,7 +3,7 @@ from sqlalchemy import select
 
 from src.database.pipeline_type import (
     PipelineType,
-    get_or_create_pipeline_type,
+    db_get_or_create_pipeline_type,
     update_pipeline_type,
 )
 from src.database.session import SessionDep
@@ -17,10 +17,10 @@ router = APIRouter()
 
 
 @router.post("/pipeline_type", response_model=PipelineTypePostOutput)
-async def create_pipeline_type(
+async def get_or_create_pipeline_type(
     pipeline_type: PipelineTypePostInput, response: Response, session: SessionDep
 ):
-    return await get_or_create_pipeline_type(
+    return await db_get_or_create_pipeline_type(
         session=session, pipeline_type=pipeline_type, response=response
     )
 

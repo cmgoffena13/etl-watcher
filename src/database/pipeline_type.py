@@ -1,5 +1,4 @@
 import logging
-from enum import Enum
 from typing import Optional
 
 import pendulum
@@ -10,18 +9,14 @@ from sqlalchemy import Column, select, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, Session, SQLModel
 
-from src.models.pipeline_type import PipelineTypePatchInput
+from src.models.pipeline_type import (
+    PipelineTypePatchInput,
+    PipelineTypePostInput,
+    PipelineTypePostOutput,
+)
+from src.types import DatePartEnum
 
 logger = logging.getLogger(__name__)
-
-
-class DatePartEnum(str, Enum):
-    MINUTE = "MINUTE"
-    HOUR = "HOUR"
-    DAY = "DAY"
-    WEEK = "WEEK"
-    MONTH = "MONTH"
-    YEAR = "YEAR"
 
 
 class PipelineType(SQLModel, table=True):
@@ -49,9 +44,9 @@ class PipelineType(SQLModel, table=True):
     )
 
 
-async def get_or_create_pipeline_type(
-    session: Session, pipeline_type: BaseModel, response: Response
-) -> dict:
+async def db_get_or_create_pipeline_type(
+    session: Session, pipeline_type: PipelineTypePostInput, response: Response
+) -> PipelineTypePostOutput:
     """Get existing pipeline id or create new one and return id"""
     created = False
     pipeline_type = PipelineType(**pipeline_type.model_dump())
@@ -95,6 +90,8 @@ async def update_pipeline_type(
 
     pipeline_type.updated_at = pendulum.now("UTC")
     for field, value in patch.model_dump(exclude_unset=True).items():
+        if field == "id":
+            continue
         setattr(pipeline_type, field, value)
 
     session.add(pipeline_type)

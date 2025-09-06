@@ -2,7 +2,7 @@ install:
 	uv sync --frozen --compile-bytecode
 
 start:
-	uv run uvicorn src.main:app --reload
+	uv run uvicorn src.app:app --reload
 
 format: lint
 	uv run -- ruff format
