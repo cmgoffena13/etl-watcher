@@ -12,7 +12,6 @@ class BaseConfig(BaseSettings):
 
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
-    DB_FORCE_ROLL_BACK: bool = False
 
 
 class DevConfig(GlobalConfig):
@@ -20,8 +19,6 @@ class DevConfig(GlobalConfig):
 
 
 class TestConfig(GlobalConfig):
-    DB_FORCE_ROLL_BACK: bool = True
-
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
 

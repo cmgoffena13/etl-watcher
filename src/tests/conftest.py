@@ -39,36 +39,54 @@ def client() -> Generator:
     yield TestClient(app=app)
 
 
-@pytest.fixture(scope="session", autouse=True)
-def override_get_session():
+@pytest.fixture
+async def db_session() -> AsyncGenerator[AsyncSession, None]:
     """
-    Override the get_session function that is required for all routes.
-    Ensures sessions in routes are pointed at Test database instead of Dev/Prod.
+    Provide a fresh transactional session for each test.
+    Rolls back after test completes.
+    """
+    async with AsyncSessionLocal() as session:
+        async with session.begin_nested():  # Begin a nested transaction
+            yield session
+            await session.rollback()  # Roll back everything after test
+
+
+@pytest.fixture
+def override_get_session(db_session):
+    """
+    Override get_session dependency so endpoints use the transactional test session.
     """
 
     async def _override() -> AsyncGenerator[AsyncSession, None]:
-        async with AsyncSessionLocal() as session:
-            yield session
+        yield db_session
 
     app.dependency_overrides[get_session] = _override
     yield
     app.dependency_overrides.clear()
 
 
+@pytest.fixture(autouse=True)
+async def truncate_tables():
+    """
+    Need to truncate and reset identities after every test due to nested transactions
+    """
+    async with test_engine.begin() as conn:
+        yield
+        await conn.execute(
+            text(
+                """
+                TRUNCATE TABLE pipeline, pipeline_type, pipeline_execution
+                RESTART IDENTITY CASCADE
+                """
+            )
+        )
+
+
 @pytest.fixture(scope="session", autouse=True)
 async def setup_teardown():
     try:
         async with test_engine.begin() as conn:
-            print(SQLModel.metadata.tables.keys())
-            for tname, table in SQLModel.metadata.tables.items():
-                for col in table.columns:
-                    if hasattr(col.type, "enums"):  # Enum columns
-                        print(col.name, col.type.enums)
-            # await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
-            # await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
-            # await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
-            # await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
-            await conn.execute(text("DROP TYPE IF EXISTS datepartenum CASCADE"))
+            await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
             await conn.run_sync(SQLModel.metadata.create_all)
 
         yield
