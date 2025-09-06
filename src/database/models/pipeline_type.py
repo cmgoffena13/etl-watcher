@@ -12,11 +12,9 @@ class PipelineType(SQLModel, table=True):
     __tablename__ = "pipeline_type"
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
-    name: str = Field(
-        index=True, unique=True, nullable=False, max_length=150, min_length=1
-    )
+    name: str = Field(index=True, unique=True, max_length=150, min_length=1)
     timely_number: Optional[int]
-    timely_datepart: Optional[DatePartEnum] = None
+    timely_datepart: Optional[DatePartEnum]
     mute_timely_check: bool = Field(default=False)
 
     created_at: DateTime = Field(

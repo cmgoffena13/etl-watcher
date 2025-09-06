@@ -12,7 +12,7 @@ class PipelineExecution(SQLModel, table=True):
     id: int | None = Field(
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
-    pipeline_id: int = Field(foreign_key="pipeline.id", nullable=False)
+    pipeline_id: int = Field(foreign_key="pipeline.id")
     start_date: DateTime = Field(
         sa_column=Column(
             DateTimeTZ(timezone=True),
@@ -20,9 +20,9 @@ class PipelineExecution(SQLModel, table=True):
         ),
     )
     end_date: Optional[DateTime] = Field(
-        None, sa_column=Column(DateTimeTZ(timezone=True))
+        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
-    completed_successfully: bool = Field(default=False, nullable=False)
-    inserts: Optional[int] = None
-    updates: Optional[int] = None
-    soft_deletes: Optional[int] = None
+    completed_successfully: bool = Field(default=False)
+    inserts: Optional[int]
+    updates: Optional[int]
+    soft_deletes: Optional[int]
