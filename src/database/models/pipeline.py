@@ -20,9 +20,15 @@ class Pipeline(SQLModel, table=True):
     source_address_id: Optional[int]
     target_address_id: Optional[int]
 
-    last_target_insert: Optional[DateTime]
-    last_target_update: Optional[DateTime]
-    last_target_delete: Optional[DateTime]
+    last_target_insert: Optional[DateTime] = Field(
+        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+    )
+    last_target_update: Optional[DateTime] = Field(
+        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+    )
+    last_target_delete: Optional[DateTime] = Field(
+        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+    )
 
     timely_number: Optional[int]
     timely_datepart: Optional[DatePartEnum]

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, status
 
 from src.database.pipeline_execution_utils import (
     db_end_pipeline_execution,
@@ -14,7 +14,11 @@ from src.models.pipeline_execution import (
 router = APIRouter()
 
 
-@router.post("/start_pipeline_execution", response_model=PipelineExecutionStartOutput)
+@router.post(
+    "/start_pipeline_execution",
+    response_model=PipelineExecutionStartOutput,
+    status_code=status.HTTP_201_CREATED,
+)
 async def start_pipeline_execution(
     pipeline_execution: PipelineExecutionStartInput,
     session: SessionDep,
@@ -24,7 +28,7 @@ async def start_pipeline_execution(
     )
 
 
-@router.post("/end_pipeline_execution")
+@router.post("/end_pipeline_execution", status_code=status.HTTP_204_NO_CONTENT)
 async def end_pipeline_execution(
     pipeline_execution: PipelineExecutionEndInput,
     session: SessionDep,

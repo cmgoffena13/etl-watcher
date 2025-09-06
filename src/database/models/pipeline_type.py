@@ -16,18 +16,15 @@ class PipelineType(SQLModel, table=True):
     timely_number: Optional[int]
     timely_datepart: Optional[DatePartEnum]
     mute_timely_check: bool = Field(
-        sa_column=Column(Boolean, nullable=False, server_default=text("FALSE"))
+        sa_column=Column(Boolean, server_default=text("FALSE"))
     )
 
     created_at: DateTime = Field(
         sa_column=Column(
             DateTimeTZ(timezone=True),
-            nullable=False,
             server_default=text(
                 "CURRENT_TIMESTAMP"
             ),  # Have Postgres generate the timestamp
         ),
     )
-    updated_at: Optional[DateTime] = Field(
-        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
-    )
+    updated_at: Optional[DateTime] = Field(sa_column=Column(DateTimeTZ(timezone=True)))

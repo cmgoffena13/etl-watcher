@@ -14,18 +14,11 @@ class PipelineExecution(SQLModel, table=True):
     )
     parent_id: Optional[int]
     pipeline_id: int = Field(foreign_key="pipeline.id")
-    start_date: DateTime = Field(
-        sa_column=Column(
-            DateTimeTZ(timezone=True),
-            nullable=False,
-        ),
-    )
-    end_date: Optional[DateTime] = Field(
-        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
-    )
+    start_date: DateTime = Field(sa_column=Column(DateTimeTZ(timezone=True)))
+    end_date: Optional[DateTime] = Field(sa_column=Column(DateTimeTZ(timezone=True)))
     duration_seconds: Optional[int]
     completed_successfully: bool = Field(
-        sa_column=Column(Boolean, nullable=False, server_default=text("FALSE"))
+        sa_column=Column(Boolean, server_default=text("FALSE"))
     )
     inserts: Optional[int] = None
     updates: Optional[int] = None
