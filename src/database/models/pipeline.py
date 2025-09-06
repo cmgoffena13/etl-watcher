@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import Boolean, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 from src.types import DatePartEnum
@@ -19,6 +20,8 @@ class Pipeline(SQLModel, table=True):
 
     source_address_id: Optional[int]
     target_address_id: Optional[int]
+
+    pipeline_args: Optional[dict] = Field(sa_column=Column(JSONB))
 
     last_target_insert: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)

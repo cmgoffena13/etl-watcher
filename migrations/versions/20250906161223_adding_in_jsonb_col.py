@@ -1,8 +1,8 @@
-"""adding in executions
+"""adding in jsonb col
 
-Revision ID: 20250906142744
+Revision ID: 20250906161223
 Revises:
-Create Date: 2025-09-06 14:27:46.446888
+Create Date: 2025-09-06 16:12:25.516149
 
 """
 
@@ -11,9 +11,10 @@ from typing import Sequence, Union
 import sqlalchemy as sa
 import sqlmodel  # ADDED
 from alembic import op
+from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250906142744"
+revision: str = "20250906161223"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -38,13 +39,13 @@ def upgrade() -> None:
             "mute_timely_check",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
-            nullable=False,
+            nullable=True,
         ),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
             server_default=sa.text("CURRENT_TIMESTAMP"),
-            nullable=False,
+            nullable=True,
         ),
         sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
@@ -65,6 +66,9 @@ def upgrade() -> None:
         ),
         sa.Column("source_address_id", sa.Integer(), nullable=True),
         sa.Column("target_address_id", sa.Integer(), nullable=True),
+        sa.Column(
+            "pipeline_args", postgresql.JSONB(astext_type=sa.Text()), nullable=True
+        ),
         sa.Column("last_target_insert", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_update", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_delete", sa.DateTime(timezone=True), nullable=True),
@@ -122,14 +126,14 @@ def upgrade() -> None:
         sa.Column("id", sa.BigInteger(), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=True),
         sa.Column("pipeline_id", sa.Integer(), nullable=False),
-        sa.Column("start_date", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("start_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("end_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("duration_seconds", sa.Integer(), nullable=True),
         sa.Column(
             "completed_successfully",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
-            nullable=False,
+            nullable=True,
         ),
         sa.Column("inserts", sa.Integer(), nullable=True),
         sa.Column("updates", sa.Integer(), nullable=True),

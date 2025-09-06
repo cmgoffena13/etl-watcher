@@ -22,13 +22,20 @@ async def db_get_or_create_pipeline(
 ) -> PipelinePostOutput:
     """Get existing pipeline id or create new one and return id"""
     created = False
+    pipeline_id = None
+    active = None
+    load_lineage = None
     new_pipeline = Pipeline(**pipeline.model_dump())
 
-    pipeline_id = (
-        await session.exec(select(Pipeline.id).where(Pipeline.name == pipeline.name))
-    ).scalar_one_or_none()
+    row = (
+        await session.exec(
+            select(Pipeline.id, Pipeline.active, Pipeline.load_lineage).where(
+                Pipeline.name == pipeline.name
+            )
+        )
+    ).one_or_none()
 
-    if pipeline_id is None:
+    if row is None:
         logger.info(f"Pipeline '{new_pipeline.name}' Not Found. Creating...")
 
         # Resolve Pipeline Type Info
@@ -41,23 +48,32 @@ async def db_get_or_create_pipeline(
 
         pipeline_stmt = (
             Pipeline.__table__.insert()
-            .returning(Pipeline.__table__.c.id)
+            .returning(Pipeline.id, Pipeline.active, Pipeline.load_lineage)
             .values(
                 **new_pipeline.model_dump(exclude={"id"}),
                 pipeline_type_id=pipeline_type.id,
             )
         )
-        pipeline_id = (await session.exec(pipeline_stmt)).scalar_one()
+        new_row = (await session.exec(pipeline_stmt)).one()
         await session.commit()
+
         created = True
+        pipeline_id = new_row.id
+        active = new_row.active
+        load_lineage = new_row.load_lineage
+
         logger.info(f"Pipeline '{pipeline.name}' Successfully Created")
+    else:
+        pipeline_id = row.id
+        active = row.active
+        load_lineage = row.load_lineage
 
     if created:
         response.status_code = status.HTTP_201_CREATED
     else:
         response.status_code = status.HTTP_200_OK
 
-    return {"id": pipeline_id}
+    return {"id": pipeline_id, "active": active, "load_lineage": load_lineage}
 
 
 async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pipeline:

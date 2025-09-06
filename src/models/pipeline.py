@@ -12,6 +12,8 @@ class PipelinePostInput(LowercaseModel):
 
 class PipelinePostOutput(LowercaseModel):
     id: int
+    active: bool
+    load_lineage: bool
 
 
 class PipelinePatchInput(LowercaseModel):

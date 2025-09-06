@@ -18,11 +18,11 @@ async def test_heartbeat(async_client: AsyncClient):
 async def test_get_or_create_pipeline(async_client: AsyncClient):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201  # Created
-    assert response.json() == {"id": 1}
+    assert response.json() == {"id": 1, "active": True, "load_lineage": False}
 
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 200
-    assert response.json() == {"id": 1}
+    assert response.json() == {"id": 1, "active": True, "load_lineage": False}
 
 
 @pytest.mark.anyio
