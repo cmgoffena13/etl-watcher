@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.database.pipeline_type import PipelineType
+from src.database.models import PipelineType
 from src.database.session import engine
 
 logger = logging.getLogger(__name__)

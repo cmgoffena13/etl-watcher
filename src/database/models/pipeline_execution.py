@@ -1,6 +1,5 @@
 from typing import Optional
 
-import pendulum
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import BigInteger, Column
 from sqlalchemy import DateTime as DateTimeTZ

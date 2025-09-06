@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlmodel import SQLModel  # ADDED
 
 # Have to import each sqlmodel to ensure its part of metadata
-from src.database import *  # ADDED
+from src.database.models import *  # ADDED
 from src.settings import get_database_config  # ADDED
 
 # this is the Alembic Config object, which provides

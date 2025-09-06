@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Response
+from fastapi import APIRouter, Response, status
 from sqlalchemy import select
 
-from src.database.pipeline import Pipeline, db_get_or_create_pipeline, update_pipeline
+from src.database.models.pipeline import Pipeline
+from src.database.pipeline_utils import db_get_or_create_pipeline, db_update_pipeline
 from src.database.session import SessionDep
 from src.models.pipeline import (
     PipelinePatchInput,
@@ -21,12 +22,12 @@ async def get_or_create_pipeline(
     )
 
 
-@router.get("/pipeline", response_model=list[Pipeline])
+@router.get("/pipeline", response_model=list[Pipeline], status_code=status.HTTP_200_OK)
 async def get_pipelines(session: SessionDep):
     result = await session.exec(select(Pipeline))
     return result.scalars().all()
 
 
-@router.patch("/pipeline", response_model=Pipeline)
+@router.patch("/pipeline", response_model=Pipeline, status_code=status.HTTP_200_OK)
 async def update_pipeline(pipeline: PipelinePatchInput, session: SessionDep):
-    return await update_pipeline(session=session, patch=pipeline)
+    return await db_update_pipeline(session=session, patch=pipeline)

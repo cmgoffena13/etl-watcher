@@ -11,7 +11,7 @@ lint:
 	uv run -- ruff check --fix
 
 test:
-	uv run -- pytest -v -n auto
+	uv run -- pytest -v
 
 add-migration:
 	# Example: make add-migration msg="I am a message" 

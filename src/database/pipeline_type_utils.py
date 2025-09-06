@@ -1,47 +1,18 @@
 import logging
-from typing import Optional
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from pydantic import BaseModel
-from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import Column, select, text
-from sqlalchemy import DateTime as DateTimeTZ
-from sqlmodel import Field, Session, SQLModel
+from sqlalchemy import select
+from sqlmodel import Session
 
+from src.database.models.pipeline_type import PipelineType
 from src.models.pipeline_type import (
     PipelineTypePatchInput,
     PipelineTypePostInput,
     PipelineTypePostOutput,
 )
-from src.types import DatePartEnum
 
 logger = logging.getLogger(__name__)
-
-
-class PipelineType(SQLModel, table=True):
-    __tablename__ = "pipeline_type"
-
-    id: int | None = Field(default=None, primary_key=True, nullable=False)
-    name: str = Field(
-        index=True, unique=True, nullable=False, max_length=150, min_length=1
-    )
-    timely_number: Optional[int]
-    timely_datepart: Optional[DatePartEnum] = None
-    mute_timely_check: bool = Field(default=False)
-
-    created_at: DateTime = Field(
-        sa_column=Column(
-            DateTimeTZ(timezone=True),
-            nullable=False,
-            server_default=text(
-                "CURRENT_TIMESTAMP"
-            ),  # Have Postgres generate the timestamp
-        ),
-    )
-    updated_at: Optional[DateTime] = Field(
-        sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
-    )
 
 
 async def db_get_or_create_pipeline_type(
@@ -77,7 +48,7 @@ async def db_get_or_create_pipeline_type(
     return {"id": pipeline_type_id}
 
 
-async def update_pipeline_type(
+async def db_update_pipeline_type(
     session: Session, patch: PipelineTypePatchInput
 ) -> PipelineType:
     pipeline_type = (

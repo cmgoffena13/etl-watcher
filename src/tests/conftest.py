@@ -5,15 +5,15 @@ import pytest
 from fastapi.testclient import TestClient
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy import text
-from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
+from sqlmodel.ext.asyncio.session import AsyncSession
 
 # Needs to happen before local imports
 os.environ["ENV_STATE"] = "test"
 
 from src.app import app
-from src.database import *  # To add to SQLModel metadata
+from src.database.models import *  # To add to SQLModel metadata
 from src.database.session import create_async_engine, get_session
 from src.settings import get_database_config
 
@@ -59,11 +59,16 @@ def override_get_session():
 async def setup_teardown():
     try:
         async with test_engine.begin() as conn:
-            await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
-            await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
-            await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
-            await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
-            await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
+            print(SQLModel.metadata.tables.keys())
+            for tname, table in SQLModel.metadata.tables.items():
+                for col in table.columns:
+                    if hasattr(col.type, "enums"):  # Enum columns
+                        print(col.name, col.type.enums)
+            # await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
+            # await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
+            # await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
+            # await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
+            await conn.execute(text("DROP TYPE IF EXISTS datepartenum CASCADE"))
             await conn.run_sync(SQLModel.metadata.create_all)
 
         yield
