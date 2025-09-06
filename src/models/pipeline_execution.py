@@ -3,23 +3,23 @@ from typing import Optional
 from pydantic import Field
 from pydantic_extra_types.pendulum_dt import DateTime
 
-from src.types import LowercaseModel
+from src.types import ValidatorModel
 
 
-class PipelineExecutionStartInput(LowercaseModel):
-    parent_id: Optional[int] = None
+class PipelineExecutionStartInput(ValidatorModel):
     pipeline_id: int
     start_date: DateTime
     full_load: bool
     watermark: Optional[str] = None
     next_watermark: Optional[str] = None
+    parent_id: Optional[int] = None
 
 
-class PipelineExecutionStartOutput(LowercaseModel):
+class PipelineExecutionStartOutput(ValidatorModel):
     id: int
 
 
-class PipelineExecutionEndInput(LowercaseModel):
+class PipelineExecutionEndInput(ValidatorModel):
     id: int
     end_date: DateTime
     completed_successfully: bool = Field(default=True)

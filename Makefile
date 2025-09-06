@@ -32,7 +32,7 @@ lint:
 	uv run -- ruff check --fix
 
 test:
-	uv run -- pytest -v
+	uv run -- pytest -v --tb=short
 
 add-migration:
 	# Example: make add-migration msg="I am a message" 

@@ -2,7 +2,7 @@ import logging
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from sqlalchemy import select
+from sqlalchemy import select, update
 from sqlmodel import Session
 
 from src.database.models.pipeline import Pipeline
@@ -25,7 +25,8 @@ async def db_get_or_create_pipeline(
     pipeline_id = None
     active = None
     load_lineage = None
-    new_pipeline = Pipeline(**pipeline.model_dump())
+    watermark = None
+    new_pipeline = Pipeline(**pipeline.model_dump(exclude_unset=True))
 
     row = (
         await session.exec(
@@ -68,12 +69,29 @@ async def db_get_or_create_pipeline(
         active = row.active
         load_lineage = row.load_lineage
 
+        if pipeline.next_watermark is not None:
+            logger.info("Next WaterMark Provided. Updating and Providing WaterMark...")
+            update_stmt = (
+                update(Pipeline)
+                .where(Pipeline.id == pipeline_id)
+                .values(next_watermark=pipeline.next_watermark)
+                .returning(Pipeline.watermark)
+            )
+            watermark = (await session.exec(update_stmt)).scalar_one()
+            await session.commit()
+            logger.info("Updated with Next WaterMark")
+
     if created:
         response.status_code = status.HTTP_201_CREATED
     else:
         response.status_code = status.HTTP_200_OK
 
-    return {"id": pipeline_id, "active": active, "load_lineage": load_lineage}
+    return {
+        "id": pipeline_id,
+        "active": active,
+        "load_lineage": load_lineage,
+        "watermark": watermark,
+    }
 
 
 async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pipeline:

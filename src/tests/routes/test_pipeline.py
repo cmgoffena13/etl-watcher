@@ -6,6 +6,10 @@ from src.tests.fixtures.pipeline import (
     TEST_PIPELINE_PATCH_OUTPUT_DATA,
     TEST_PIPELINE_POST_DATA,
 )
+from src.tests.fixtures.pipeline_execution import (
+    TEST_PIPELINE_EXECUTION_END_DATA,
+    TEST_PIPELINE_EXECUTION_START_DATA,
+)
 
 
 @pytest.mark.anyio
@@ -18,11 +22,21 @@ async def test_heartbeat(async_client: AsyncClient):
 async def test_get_or_create_pipeline(async_client: AsyncClient):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201  # Created
-    assert response.json() == {"id": 1, "active": True, "load_lineage": False}
+    assert response.json() == {
+        "id": 1,
+        "active": True,
+        "load_lineage": False,
+        "watermark": None,
+    }
 
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 200
-    assert response.json() == {"id": 1, "active": True, "load_lineage": False}
+    assert response.json() == {
+        "id": 1,
+        "active": True,
+        "load_lineage": False,
+        "watermark": None,
+    }
 
 
 @pytest.mark.anyio
@@ -36,3 +50,26 @@ async def test_patch_pipeline(async_client: AsyncClient):
         assert data[k] == v
     assert "created_at" in data
     assert "updated_at" in data
+
+
+@pytest.mark.anyio
+async def test_watermark_increment_pipeline(async_client: AsyncClient):
+    response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    data = response.json()
+    assert data == {"id": 1, "active": True, "load_lineage": False, "watermark": None}
+
+    response = await async_client.post(
+        "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
+    )
+    assert response.status_code == 201
+
+    response = await async_client.post(
+        "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
+    )
+    assert response.status_code == 204
+
+    response = await async_client.get("/pipeline")
+    data = response.json()[0]
+
+    assert data.get("watermark") == str(10)
+    assert data.get("next_watermark") == str(10)
