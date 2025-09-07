@@ -13,6 +13,7 @@ class BaseConfig(BaseSettings):
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
     LOGFIRE_TOKEN: Optional[str] = None
+    LOGFIRE_CONSOLE: Optional[bool] = None
 
 
 class DevConfig(GlobalConfig):

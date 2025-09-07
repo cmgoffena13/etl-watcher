@@ -7,7 +7,7 @@ from rich import panel, print
 from scalar_fastapi import get_scalar_api_reference
 
 from src.database.db import create_initial_records, create_test_db, reset_database
-from src.database.session import test_connection
+from src.database.session import engine, test_connection
 from src.logging_conf import configure_logging
 from src.responses import ORJSONResponse
 from src.routes import (
@@ -37,6 +37,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
 logfire.instrument_fastapi(app=app, capture_headers=True)
+logfire.instrument_sqlalchemy(angine=engine, enable_commenter=True)
 
 app.include_router(pipeline_router)
 app.include_router(pipeline_type_router)
