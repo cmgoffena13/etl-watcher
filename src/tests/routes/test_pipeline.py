@@ -55,13 +55,53 @@ async def test_patch_pipeline(async_client: AsyncClient):
 @pytest.mark.anyio
 async def test_watermark_increment_pipeline(async_client: AsyncClient):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
-    data = response.json()
-    assert data == {"id": 1, "active": True, "load_lineage": False, "watermark": None}
+    assert response.json() == {
+        "id": 1,
+        "active": True,
+        "load_lineage": False,
+        "watermark": None,
+    }
 
     response = await async_client.post(
         "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
     )
     assert response.status_code == 201
+
+    response = await async_client.get("/pipeline")
+    data = response.json()[0]
+
+    assert data.get("watermark") == None
+    assert data.get("next_watermark") == str(10)
+
+    response = await async_client.post(
+        "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
+    )
+    assert response.status_code == 204
+
+    response = await async_client.get("/pipeline")
+    data = response.json()[0]
+    assert data.get("watermark") == str(10)
+    assert data.get("next_watermark") == str(10)
+
+    TEST_PIPELINE_POST_DATA["next_watermark"] = str(12)
+    new_data = TEST_PIPELINE_POST_DATA
+    response = await async_client.post("/pipeline", json=new_data)
+    assert response.json() == {
+        "id": 1,
+        "active": True,
+        "load_lineage": False,
+        "watermark": "10",
+    }
+
+    response = await async_client.post(
+        "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
+    )
+    assert response.status_code == 201
+
+    response = await async_client.get("/pipeline")
+    data = response.json()[0]
+    assert data.get("watermark") == str(10)
+    assert data.get("next_watermark") == str(12)
 
     response = await async_client.post(
         "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
@@ -71,5 +111,5 @@ async def test_watermark_increment_pipeline(async_client: AsyncClient):
     response = await async_client.get("/pipeline")
     data = response.json()[0]
 
-    assert data.get("watermark") == str(10)
-    assert data.get("next_watermark") == str(10)
+    assert data.get("watermark") == str(12)
+    assert data.get("next_watermark") == str(12)

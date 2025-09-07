@@ -15,8 +15,8 @@ async def test_start_and_end_pipeline_execution(async_client: AsyncClient):
         "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
     )
     assert response.status_code == 201
-    data = response.json()
-    assert {"id": 1} == data
+    assert response.json() == {"id": 1}
+
     response = await async_client.post(
         "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
     )
