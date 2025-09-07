@@ -68,9 +68,9 @@ async def db_end_pipeline_execution(
                     (pipeline_execution_updates > 0, pipeline_execution.end_date),
                     else_=Pipeline.last_target_update,
                 ),
-                last_target_delete=case(
+                last_target_soft_delete=case(
                     (pipeline_execution_soft_deletes > 0, pipeline_execution.end_date),
-                    else_=Pipeline.last_target_delete,
+                    else_=Pipeline.last_target_soft_delete,
                 ),
                 load_lineage=False,
             )

@@ -1,8 +1,8 @@
-"""adding in jsonb col
+"""
 
-Revision ID: 20250906161223
+Revision ID: 20250906183554
 Revises:
-Create Date: 2025-09-06 16:12:25.516149
+Create Date: 2025-09-06 18:35:56.187249
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250906161223"
+revision: str = "20250906183554"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -71,7 +71,7 @@ def upgrade() -> None:
         ),
         sa.Column("last_target_insert", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_update", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("last_target_delete", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("last_target_soft_delete", sa.DateTime(timezone=True), nullable=True),
         sa.Column("timely_number", sa.Integer(), nullable=True),
         sa.Column(
             "timely_datepart",

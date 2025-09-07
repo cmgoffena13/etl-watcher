@@ -29,7 +29,7 @@ class Pipeline(SQLModel, table=True):
     last_target_update: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
-    last_target_delete: Optional[DateTime] = Field(
+    last_target_soft_delete: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
 
