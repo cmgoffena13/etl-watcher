@@ -32,12 +32,10 @@ def configure_logging() -> None:
                 "logfire_src": {
                     "class": LogfireLoggingHandler,
                     "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
-                    "fallback": {"class": "logging.NullHandler"},
                 },
                 "logfire_sql": {
                     "class": LogfireLoggingHandler,
                     "level": "INFO",
-                    "fallback": {"class": "logging.NullHandler"},
                 },
             },
             "loggers": {

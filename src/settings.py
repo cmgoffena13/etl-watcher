@@ -42,7 +42,7 @@ def get_database_config():
 
     config_dict = {
         "sqlalchemy.url": db_config.DATABASE_URL,
-        "sqlalchemy.echo": False,  # True if isinstance(config, DevConfig) else False,  Logfire Echos
+        "sqlalchemy.echo": True if isinstance(config, DevConfig) else False,
         "sqlalchemy.future": True,
     }
 
