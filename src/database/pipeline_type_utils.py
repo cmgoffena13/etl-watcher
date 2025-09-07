@@ -28,7 +28,7 @@ async def db_get_or_create_pipeline_type(
     ).scalar_one_or_none()
 
     if pipeline_type_id is None:
-        logger.info(f"Pipeline '{pipeline_type.name}' Not Found. Creating...")
+        logger.info(f"Pipeline Type '{pipeline_type.name}' Not Found. Creating...")
         stmt = (
             PipelineType.__table__.insert()
             .returning(PipelineType.id)

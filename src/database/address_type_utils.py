@@ -23,7 +23,7 @@ async def db_get_or_create_address_type(
 
     address_type_id = (
         await session.exec(
-            select(AddressType.id).where(AddressType.name == AddressType.name)
+            select(AddressType.id).where(AddressType.name == address_type.name)
         )
     ).scalar_one_or_none()
 
