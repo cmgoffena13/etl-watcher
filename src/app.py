@@ -1,6 +1,7 @@
 import logging
 from contextlib import asynccontextmanager
 
+import logfire
 from fastapi import FastAPI
 from rich import panel, print
 from scalar_fastapi import get_scalar_api_reference
@@ -17,6 +18,7 @@ from src.routes import (
     pipeline_router,
     pipeline_type_router,
 )
+from src.settings import config
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +36,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
-
+logfire.instrument_fastapi(app=app, capture_headers=True)
 
 app.include_router(pipeline_router)
 app.include_router(pipeline_type_router)

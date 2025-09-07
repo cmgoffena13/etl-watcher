@@ -1,12 +1,17 @@
 import logging
 from logging.config import dictConfig
 
+import logfire
+from logfire import LogfireLoggingHandler
+
 from src.settings import DevConfig, config
 
 logger = logging.getLogger(__name__)
 
 
 def configure_logging() -> None:
+    logfire.configure(token=config.LOGFIRE_TOKEN)
+
     dictConfig(
         {
             "version": 1,
@@ -23,16 +28,31 @@ def configure_logging() -> None:
                     "class": "rich.logging.RichHandler",
                     "level": "DEBUG",
                     "formatter": "console",
-                }
+                },
+                "logfire_src": {
+                    "class": LogfireLoggingHandler,
+                    "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
+                    "fallback": {"class": "logging.NullHandler"},
+                },
+                "logfire_sql": {
+                    "class": LogfireLoggingHandler,
+                    "level": "INFO",
+                    "fallback": {"class": "logging.NullHandler"},
+                },
             },
             "loggers": {
-                # "uvicorn": {"handlers": ["default"], "level": "INFO"},
                 "src": {
-                    "handlers": ["default"],
+                    "handlers": ["default", "logfire_src"],
                     "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
+                    "propagate": False,
+                },
+                "sqlalchemy.engine": {
+                    "handlers": ["logfire_sql"],
+                    "level": "INFO",
                     "propagate": False,
                 },
             },
         }
     )
+
     logger.info("Logging Configuration Successful")
