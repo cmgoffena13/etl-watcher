@@ -1,6 +1,6 @@
 import logging
 
-from sqlmodel import Integer, Session, case, func, literal, update
+from sqlmodel import Integer, Session, case, func, update
 
 from src.database.models import Pipeline, PipelineExecution
 from src.models.pipeline_execution import (

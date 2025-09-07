@@ -100,7 +100,7 @@ async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pip
     ).scalar_one_or_none()
     if pipeline is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Not Found"
         )
 
     pipeline.updated_at = pendulum.now("UTC")

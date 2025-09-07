@@ -28,16 +28,16 @@ async def db_get_or_create_address_type(
     ).scalar_one_or_none()
 
     if address_type_id is None:
-        logger.info(f"Pipeline '{address_type.name}' Not Found. Creating...")
+        logger.info(f"Address Type '{address_type.name}' Not Found. Creating...")
         stmt = (
             AddressType.__table__.insert()
-            .returning(AddressType.__table__.c.id)
+            .returning(AddressType.id)
             .values(**address_type.model_dump(exclude={"id"}))
         )
         address_type_id = (await session.exec(stmt)).scalar_one()
         await session.commit()
         created = True
-        logger.info(f"Pipeline Type '{address_type.name}' Successfully Created")
+        logger.info(f"Address Type '{address_type.name}' Successfully Created")
 
     if created:
         response.status_code = status.HTTP_201_CREATED
@@ -55,7 +55,7 @@ async def db_update_address_type(
     ).scalar_one_or_none()
     if address_type is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Address Type not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Address Type Not Found"
         )
 
     address_type.updated_at = pendulum.now("UTC")

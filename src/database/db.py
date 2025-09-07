@@ -3,7 +3,7 @@ import logging
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from src.database.models import PipelineType
+from src.database.models import AddressType, PipelineType
 from src.database.session import engine
 
 logger = logging.getLogger(__name__)
@@ -45,6 +45,12 @@ async def create_initial_records():
             mute_timely_check=False,
         ),
     ]
+    initial_address_types = [
+        AddressType(name="database"),
+        AddressType(name="file"),
+        AddressType(name="report"),
+        AddressType(name="api"),
+    ]
 
     logger.info("Truncating Tables")
     async with engine.begin() as conn:  # Creates DB Transaction
@@ -56,5 +62,6 @@ async def create_initial_records():
     logger.info("Inserting Initial Records")
     async with AsyncSession(engine) as session:
         session.add_all(initial_pipeline_types)
+        session.add_all(initial_address_types)
         await session.commit()
     logger.info("Successfully Inserted Records")

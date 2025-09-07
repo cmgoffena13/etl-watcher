@@ -10,6 +10,8 @@ from src.database.session import test_connection
 from src.logging_conf import configure_logging
 from src.responses import ORJSONResponse
 from src.routes import (
+    address,
+    address_router,
     address_type_router,
     pipeline_execution_router,
     pipeline_router,
@@ -38,6 +40,7 @@ app.include_router(pipeline_router)
 app.include_router(pipeline_type_router)
 app.include_router(pipeline_execution_router)
 app.include_router(address_type_router)
+app.include_router(address_router)
 
 
 @app.get("/")

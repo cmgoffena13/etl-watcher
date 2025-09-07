@@ -18,7 +18,7 @@ logger = logging.getLogger(__name__)
 async def db_get_or_create_pipeline_type(
     session: Session, pipeline_type: PipelineTypePostInput, response: Response
 ) -> PipelineTypePostOutput:
-    """Get existing pipeline id or create new one and return id"""
+    """Get existing pipeline type id or create new one and return id"""
     created = False
 
     pipeline_type_id = (
@@ -31,7 +31,7 @@ async def db_get_or_create_pipeline_type(
         logger.info(f"Pipeline '{pipeline_type.name}' Not Found. Creating...")
         stmt = (
             PipelineType.__table__.insert()
-            .returning(PipelineType.__table__.c.id)
+            .returning(PipelineType.id)
             .values(**pipeline_type.model_dump(exclude={"id"}))
         )
         pipeline_type_id = (await session.exec(stmt)).scalar_one()
@@ -55,7 +55,7 @@ async def db_update_pipeline_type(
     ).scalar_one_or_none()
     if pipeline_type is None:
         raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Type not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Type Not Found"
         )
 
     pipeline_type.updated_at = pendulum.now("UTC")
