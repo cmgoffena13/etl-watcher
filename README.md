@@ -21,7 +21,7 @@ pre-commit install
 pre-commit install --hook-type pre-push
 ```
 
-## INITIAL SETUP DOCUMENTATION
+## INITIAL SETUP DOCUMENTATION (For my reference)
 1. Had to initialize uv project
 ```bash
 uv init
@@ -35,4 +35,4 @@ uv run -- alembic -t async migrations
 
 ## DEVELOPMENT
 ### Adding in a new table
-1. Make sure to add the model to `src.database.__init__.py` so its part of SQLModel's metadata.
+1. Make sure to add the model to `src.database.models.__init__.py` so its part of SQLModel's metadata.
