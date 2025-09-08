@@ -194,8 +194,7 @@ async def _rebuild_closure_table_incremental(
         # Log edge collection timing
         edge_collection_time = time.time() - start_time
         logger.info(
-            f"Edge collection completed for pipeline {pipeline_id}:"
-            f"\n{len(connected_addresses)} addresses, {len(all_edges)} edges in {edge_collection_time:.3f}s"
+            f"Edge collection completed for pipeline {pipeline_id}: {len(connected_addresses)} addresses, {len(all_edges)} edges in {edge_collection_time:.3f}s"
         )
 
         # Delete all closure paths that involve any of the connected addresses
@@ -240,8 +239,7 @@ async def _rebuild_closure_table_incremental(
         # Log closure algorithm timing
         closure_time = time.time() - closure_start_time
         logger.info(
-            f"Closure algorithm completed for {pipeline_id}:"
-            f"\n{len(closure)} paths in {closure_time:.3f}s"
+            f"Closure algorithm completed for pipeline {pipeline_id}: {len(closure)} paths in {closure_time:.3f}s"
         )
 
         closure_records = [
