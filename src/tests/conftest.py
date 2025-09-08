@@ -75,7 +75,14 @@ async def truncate_tables():
         await conn.execute(
             text(
                 """
-                TRUNCATE TABLE pipeline, pipeline_type, pipeline_execution, address, address_type
+                TRUNCATE TABLE 
+                pipeline_execution,
+                address_lineage_closure,
+                address_lineage,
+                pipeline,
+                address,
+                pipeline_type,
+                address_type
                 RESTART IDENTITY CASCADE
                 """
             )

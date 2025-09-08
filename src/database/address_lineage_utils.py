@@ -1,88 +1,127 @@
 import logging
+from typing import List, Set
 
-from fastapi import Response, status
+from fastapi import Response
 from sqlalchemy import select
 from sqlmodel import Session
 
+from src.database.address_utils import db_get_or_create_address
 from src.database.models.address_lineage import AddressLineage
 from src.models.address import AddressPostInput, AddressPostOutput
-from src.models.address_type import AddressTypePostInput, AddressTypePostOutput
+from src.models.address_lineage import (
+    AddressLineagePostInput,
+    AddressLineagePostOutput,
+    SourceAddress,
+    TargetAddress,
+)
 
 logger = logging.getLogger(__name__)
 
 
-async def _create_address_lineage_relationships(
-    session: Session,
-    pipeline_id: int,
-    source_address_ids: list[int],
-    target_address_ids: list[int],
-) -> None:
-    """Create address lineage relationships between all source and target addresses for a pipeline"""
-    lineage_relationships = []
-
-    for source_id in source_address_ids:
-        for target_id in target_address_ids:
-            # Check if relationship already exists for this pipeline
-            existing = (
-                await session.exec(
-                    select(AddressLineage).where(
-                        AddressLineage.pipeline_id == pipeline_id,
-                        AddressLineage.source_address_id == source_id,
-                        AddressLineage.target_address_id == target_id,
-                    )
-                )
-            ).one_or_none()
-
-            if existing is None:
-                lineage_relationships.append(
-                    {
-                        "pipeline_id": pipeline_id,
-                        "source_address_id": source_id,
-                        "target_address_id": target_id,
-                    }
-                )
-
-    if lineage_relationships:
-        await session.exec(
-            AddressLineage.__table__.insert().values(lineage_relationships)
-        )
-        await session.commit()
-        logger.info(
-            f"Created {len(lineage_relationships)} address lineage relationships for pipeline {pipeline_id}"
-        )
-
-
 async def _process_address_lists(
-    session: Session, source_addresses: list, target_addresses: list, response: Response
-) -> tuple[list[int], list[int]]:
-    """Process lists of source and target addresses and return their IDs"""
-    source_address_ids = []
-    target_address_ids = []
+    session: Session,
+    source_addresses: List[SourceAddress],
+    target_addresses: List[TargetAddress],
+    response: Response,
+) -> tuple[Set[int], Set[int]]:
+    source_address_ids = set()
+    target_address_ids = set()
 
     # Process source addresses
-    for source_addr in source_addresses:
+    for source_address in source_addresses:
         source_address_input = AddressPostInput(
-            name=source_addr.address_name,
-            address_type_name=source_addr.address_type_name,
+            name=source_address.address_name,
+            address_type_name=source_address.address_type_name,
         )
         source_address = AddressPostOutput(
             **await db_get_or_create_address(
                 session=session, address=source_address_input, response=response
             )
         )
-        source_address_ids.append(source_address.id)
+        source_address_ids.add(source_address.id)
 
     # Process target addresses
-    for target_addr in target_addresses:
+    for target_address in target_addresses:
         target_address_input = AddressPostInput(
-            name=target_addr.address_name,
-            address_type_name=target_addr.address_type_name,
+            name=target_address.address_name,
+            address_type_name=target_address.address_type_name,
         )
         target_address = AddressPostOutput(
             **await db_get_or_create_address(
                 session=session, address=target_address_input, response=response
             )
         )
-        target_address_ids.append(target_address.id)
+        target_address_ids.add(target_address.id)
 
     return source_address_ids, target_address_ids
+
+
+async def _create_address_lineage_relationships(
+    session: Session,
+    pipeline_id: int,
+    source_address_ids: Set[int],
+    target_address_ids: Set[int],
+) -> int:
+    # Create lineage records
+    lineage_relationships = []
+    for source_address_id in source_address_ids:
+        for target_address_id in target_address_ids:
+            lineage_relationships.append(
+                {
+                    "pipeline_id": pipeline_id,
+                    "source_address_id": source_address_id,
+                    "target_address_id": target_address_id,
+                }
+            )
+
+    # Delete + Insert to ensure lineage is always accurate
+    savepoint = await session.begin_nested()
+    try:
+        await session.exec(
+            AddressLineage.__table__.delete().where(
+                AddressLineage.pipeline_id == pipeline_id
+            )
+        )
+        await session.exec(
+            AddressLineage.__table__.insert().values(lineage_relationships)
+        )
+        await savepoint.commit()
+        await session.commit()
+    except Exception:
+        await savepoint.rollback()
+        raise
+    return len(lineage_relationships)
+
+
+async def db_create_address_lineage(
+    session: Session, lineage_input: AddressLineagePostInput, response: Response
+) -> AddressLineagePostOutput:
+    source_address_ids, target_address_ids = await _process_address_lists(
+        session,
+        lineage_input.source_addresses,
+        lineage_input.target_addresses,
+        response,
+    )
+
+    relationships_created = await _create_address_lineage_relationships(
+        session, lineage_input.pipeline_id, source_address_ids, target_address_ids
+    )
+
+    return {
+        "pipeline_id": lineage_input.pipeline_id,
+        "lineage_relationships_created": relationships_created,
+    }
+
+
+async def db_get_address_lineage_by_pipeline(
+    session: Session, pipeline_id: int
+) -> List[AddressLineage]:
+    return (
+        (
+            await session.exec(
+                select(AddressLineage).where(AddressLineage.pipeline_id == pipeline_id)
+            )
+        )
+        .scalars()
+        .all()
+    )

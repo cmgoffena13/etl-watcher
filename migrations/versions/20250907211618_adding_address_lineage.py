@@ -1,8 +1,8 @@
-"""adding addresses
+"""adding address lineage
 
-Revision ID: 20250906190139
+Revision ID: 20250907211618
 Revises:
-Create Date: 2025-09-06 19:01:40.973512
+Create Date: 2025-09-07 21:16:19.980444
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250906190139"
+revision: str = "20250907211618"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -115,8 +115,6 @@ def upgrade() -> None:
         sa.Column(
             "next_watermark", sqlmodel.sql.sqltypes.AutoString(length=50), nullable=True
         ),
-        sa.Column("source_address_id", sa.Integer(), nullable=True),
-        sa.Column("target_address_id", sa.Integer(), nullable=True),
         sa.Column(
             "pipeline_args", postgresql.JSONB(astext_type=sa.Text()), nullable=True
         ),
@@ -157,14 +155,6 @@ def upgrade() -> None:
             ["pipeline_type_id"],
             ["pipeline_type.id"],
         ),
-        sa.ForeignKeyConstraint(
-            ["source_address_id"],
-            ["address.id"],
-        ),
-        sa.ForeignKeyConstraint(
-            ["target_address_id"],
-            ["address.id"],
-        ),
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
@@ -178,6 +168,68 @@ def upgrade() -> None:
         op.f("ix_pipeline_pipeline_type_id"),
         "pipeline",
         ["pipeline_type_id"],
+        unique=False,
+    )
+    op.create_table(
+        "address_lineage",
+        sa.Column("id", sa.BigInteger(), nullable=False),
+        sa.Column("pipeline_id", sa.Integer(), nullable=False),
+        sa.Column("source_address_id", sa.Integer(), nullable=False),
+        sa.Column("target_address_id", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["pipeline_id"],
+            ["pipeline.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["source_address_id"],
+            ["address.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["target_address_id"],
+            ["address.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        "ix_address_lineage_pipeline", "address_lineage", ["pipeline_id"], unique=False
+    )
+    op.create_index(
+        "ix_address_lineage_source_target",
+        "address_lineage",
+        ["source_address_id", "target_address_id"],
+        unique=True,
+    )
+    op.create_index(
+        "ix_address_lineage_target_source",
+        "address_lineage",
+        ["target_address_id", "source_address_id"],
+        unique=True,
+    )
+    op.create_table(
+        "address_lineage_closure",
+        sa.Column("source_address_id", sa.Integer(), nullable=False),
+        sa.Column("target_address_id", sa.Integer(), nullable=False),
+        sa.Column("depth", sa.Integer(), nullable=False),
+        sa.ForeignKeyConstraint(
+            ["source_address_id"],
+            ["address.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["target_address_id"],
+            ["address.id"],
+        ),
+        sa.PrimaryKeyConstraint("source_address_id", "target_address_id"),
+    )
+    op.create_index(
+        "ix_address_lineage_closure_depth_source",
+        "address_lineage_closure",
+        ["source_address_id", "depth"],
+        unique=False,
+    )
+    op.create_index(
+        "ix_address_lineage_closure_depth_target",
+        "address_lineage_closure",
+        ["target_address_id", "depth"],
         unique=False,
     )
     op.create_table(
@@ -230,6 +282,17 @@ def downgrade() -> None:
         postgresql_where=sa.text("end_date IS NOT NULL"),
     )
     op.drop_table("pipeline_execution")
+    op.drop_index(
+        "ix_address_lineage_closure_depth_target", table_name="address_lineage_closure"
+    )
+    op.drop_index(
+        "ix_address_lineage_closure_depth_source", table_name="address_lineage_closure"
+    )
+    op.drop_table("address_lineage_closure")
+    op.drop_index("ix_address_lineage_target_source", table_name="address_lineage")
+    op.drop_index("ix_address_lineage_source_target", table_name="address_lineage")
+    op.drop_index("ix_address_lineage_pipeline", table_name="address_lineage")
+    op.drop_table("address_lineage")
     op.drop_index(op.f("ix_pipeline_pipeline_type_id"), table_name="pipeline")
     op.drop_index(
         "ix_pipeline_name_includes",

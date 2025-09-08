@@ -19,8 +19,12 @@ async def reset_database():
     async with engine.begin() as conn:
         await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
+        await conn.execute(text("DROP TABLE IF EXISTS address_lineage_closure"))
+        await conn.execute(text("DROP TABLE IF EXISTS address_lineage"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
+        await conn.execute(text("DROP TABLE IF EXISTS address"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
+        await conn.execute(text("DROP TABLE IF EXISTS address_type"))
         await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
 
 
