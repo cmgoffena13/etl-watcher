@@ -84,13 +84,17 @@ async def _create_address_lineage_relationships(
     # Delete + Insert to ensure lineage is always accurate
     savepoint = await session.begin_nested()
     try:
-        await session.exec(
+        delete_result = await session.exec(
             AddressLineage.__table__.delete().where(
                 AddressLineage.pipeline_id == pipeline_id
             )
         )
-        await session.exec(
+        insert_result = await session.exec(
             AddressLineage.__table__.insert().values(lineage_relationships)
+        )
+
+        logger.info(
+            f"Lineage operations for pipeline {pipeline_id}: deleted {delete_result.rowcount} existing records, inserted {insert_result.rowcount} new records"
         )
 
         # Closer Table Rebuild gets its own savepoint/transaction to ensure atomicity
@@ -152,7 +156,9 @@ async def db_get_address_lineage_by_pipeline(
 async def _rebuild_closure_table_incremental(
     session: Session, connected_addresses: Set[int], pipeline_id: int
 ) -> None:
-    logger.info(f"Rebuilding closure table for {len(connected_addresses)} addresses")
+    logger.info(
+        f"Rebuilding closure table for {len(connected_addresses)} addresses for pipeline {pipeline_id}"
+    )
 
     savepoint = await session.begin_nested()
     try:
@@ -207,15 +213,20 @@ async def _rebuild_closure_table_incremental(
 
         # Delete all closure paths that involve any of the connected addresses
         # Use two separate deletes to leverage indexes efficiently
-        await session.exec(
+        delete_result_1 = await session.exec(
             AddressLineageClosure.__table__.delete().where(
                 AddressLineageClosure.source_address_id.in_(connected_addresses)
             )
         )
-        await session.exec(
+        delete_result_2 = await session.exec(
             AddressLineageClosure.__table__.delete().where(
                 AddressLineageClosure.target_address_id.in_(connected_addresses)
             )
+        )
+
+        total_deleted = delete_result_1.rowcount + delete_result_2.rowcount
+        logger.info(
+            f"Deleted {total_deleted} closure records (source: {delete_result_1.rowcount}, target: {delete_result_2.rowcount}) for pipeline {pipeline_id}"
         )
 
         closure_start_time = time.time()
@@ -259,8 +270,11 @@ async def _rebuild_closure_table_incremental(
             for source_address_id, target_address_id, depth in closure
         ]
 
-        await session.exec(
+        insert_result = await session.exec(
             AddressLineageClosure.__table__.insert().values(closure_records)
+        )
+        logger.info(
+            f"Inserted {insert_result.rowcount} closure records for pipeline {pipeline_id}"
         )
 
         await savepoint.commit()
