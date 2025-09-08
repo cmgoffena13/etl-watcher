@@ -9,6 +9,7 @@ from sqlmodel import Session
 from src.database.address_utils import db_get_or_create_address
 from src.database.models.address_lineage import AddressLineage
 from src.database.models.address_lineage_closure import AddressLineageClosure
+from src.database.models.pipeline import Pipeline
 from src.models.address import AddressPostInput, AddressPostOutput
 from src.models.address_lineage import (
     AddressLineagePostInput,
@@ -110,6 +111,13 @@ async def _create_address_lineage_relationships(
 async def db_create_address_lineage(
     session: Session, lineage_input: AddressLineagePostInput, response: Response
 ) -> AddressLineagePostOutput:
+    pipeline = await session.get(Pipeline, lineage_input.pipeline_id)
+    if not pipeline or not pipeline.load_lineage:
+        response.status_code = 400
+        raise ValueError(
+            f"Pipeline {lineage_input.pipeline_id} does not have load_lineage=True"
+        )
+
     source_address_ids, target_address_ids = await _process_address_lists(
         session,
         lineage_input.source_addresses,
