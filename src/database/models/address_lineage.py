@@ -8,6 +8,7 @@ class AddressLineage(SQLModel, table=True):
     id: int | None = Field(
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
+    pipeline_id: int = Field(foreign_key="pipeline.id")
     source_address_id: int = Field(foreign_key="address.id")
     target_address_id: int = Field(foreign_key="address.id")
 
@@ -23,5 +24,9 @@ class AddressLineage(SQLModel, table=True):
             "target_address_id",
             "source_address_id",
             unique=True,
+        ),
+        Index(
+            "ix_address_lineage_pipeline",
+            "pipeline_id",
         ),
     )

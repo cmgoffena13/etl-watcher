@@ -1,16 +1,12 @@
 import logging
-from types import SimpleNamespace
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from pydantic import BaseModel
 from sqlalchemy import select, update
 from sqlmodel import Session
 
-from src.database.address_utils import db_get_or_create_address
 from src.database.models.pipeline import Pipeline
 from src.database.pipeline_type_utils import db_get_or_create_pipeline_type
-from src.models.address import AddressPostInput, AddressPostOutput
 from src.models.pipeline import (
     PipelinePatchInput,
     PipelinePostInput,
@@ -52,41 +48,6 @@ async def db_get_or_create_pipeline(
             )
         )
 
-        # Resolve Address Info
-        source_address = SimpleNamespace(id=None)  # Placeholder class
-        if pipeline.source_address_name is not None:
-            if pipeline.source_address_type_name is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Source Address Type Not Found",
-                )
-
-            source_address_input = AddressPostInput(
-                name=pipeline.source_address_name,
-                address_type_name=pipeline.source_address_type_name,
-            )
-            source_address = AddressPostOutput(
-                **await db_get_or_create_address(
-                    session=session, address=source_address_input, response=response
-                )
-            )
-        target_address = SimpleNamespace(id=None)  # Placeholder class
-        if pipeline.target_address_name is not None:
-            if pipeline.target_address_type_name is None:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Target Address Type Not Found",
-                )
-            target_address_input = AddressPostInput(
-                name=pipeline.target_address_name,
-                address_type_name=pipeline.target_address_type_name,
-            )
-            target_address = AddressPostOutput(
-                **await db_get_or_create_address(
-                    session=session, address=target_address_input, response=response
-                )
-            )
-
         # Create Pipeline Record
         pipeline_stmt = (
             Pipeline.__table__.insert()
@@ -94,8 +55,6 @@ async def db_get_or_create_pipeline(
             .values(
                 **new_pipeline.model_dump(exclude={"id"}),
                 pipeline_type_id=pipeline_type.id,
-                source_address_id=source_address.id,
-                target_address_id=target_address.id,
             )
         )
         new_row = (await session.exec(pipeline_stmt)).one()

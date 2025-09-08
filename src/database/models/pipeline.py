@@ -18,9 +18,6 @@ class Pipeline(SQLModel, table=True):
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
 
-    source_address_id: Optional[int] = Field(foreign_key="address.id")
-    target_address_id: Optional[int] = Field(foreign_key="address.id")
-
     pipeline_args: Optional[dict] = Field(sa_column=Column(JSONB))
 
     last_target_insert: Optional[DateTime] = Field(
