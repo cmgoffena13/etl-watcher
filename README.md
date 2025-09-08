@@ -15,7 +15,7 @@ uv python list
 ```bash
 uv sync
 ```
-5. Add in pre-commits
+5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
 ```bash
 pre-commit install
 pre-commit install --hook-type pre-push
