@@ -64,9 +64,16 @@ async def create_initial_records():
 
     logger.info("Truncating Tables")
     async with engine.begin() as conn:  # Creates DB Transaction
+        await conn.execute(
+            text("TRUNCATE TABLE timeliness_pipeline_execution_log CASCADE")
+        )
         await conn.execute(text("TRUNCATE TABLE pipeline_execution CASCADE"))
+        await conn.execute(text("TRUNCATE TABLE address_lineage_closure CASCADE"))
+        await conn.execute(text("TRUNCATE TABLE address_lineage CASCADE"))
         await conn.execute(text("TRUNCATE TABLE pipeline CASCADE"))
+        await conn.execute(text("TRUNCATE TABLE address CASCADE"))
         await conn.execute(text("TRUNCATE TABLE pipeline_type CASCADE"))
+        await conn.execute(text("TRUNCATE TABLE address_type CASCADE"))
     logger.info("Successfully Truncated Tables")
 
     logger.info("Inserting Initial Records")
