@@ -41,7 +41,10 @@ async def db_get_or_create_pipeline(
         logger.info(f"Pipeline '{new_pipeline.name}' Not Found. Creating...")
 
         # Resolve Pipeline Type Info
-        pipeline_type_input = PipelineTypePostInput(name=pipeline.pipeline_type_name)
+        pipeline_type_input = PipelineTypePostInput(
+            name=pipeline.pipeline_type_name,
+            group_name=pipeline.pipeline_type_group_name,
+        )
         pipeline_type = PipelineTypePostOutput(
             **await db_get_or_create_pipeline_type(
                 session=session, pipeline_type=pipeline_type_input, response=response

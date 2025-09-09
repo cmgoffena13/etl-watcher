@@ -1,6 +1,7 @@
 TEST_PIPELINE_POST_DATA = {
     "name": "Test Pipeline 1",
     "pipeline_type_name": "extraction",
+    "pipeline_type_group_name": "databricks",
     "next_watermark": 10,
 }
 TEST_PIPELINE_PATCH_DATA = {"id": 1, "name": "Pipeline_Patched"}

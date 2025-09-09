@@ -28,7 +28,9 @@ async def db_get_or_create_address(
         logger.info(f"Address '{new_address.name}' Not Found. Creating...")
 
         # Resolve Pipeline Type Info
-        address_type_input = AddressTypePostInput(name=address.address_type_name)
+        address_type_input = AddressTypePostInput(
+            name=address.address_type_name, group_name=address.address_type_group_name
+        )
         address_type = AddressTypePostOutput(
             **await db_get_or_create_address_type(
                 session=session, address_type=address_type_input, response=response

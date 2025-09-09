@@ -3,10 +3,12 @@ from httpx import AsyncClient
 
 from src.tests.fixtures.address_lineage import (
     TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA,
+    TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_AND_TARGETS_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_TARGETS_DATA,
     TEST_ADDRESS_LINEAGE_POST_DATA,
     TEST_ADDRESS_LINEAGE_POST_OUTPUT_DATA,
+    TEST_ADDRESS_LINEAGE_UPDATE_DATA,
 )
 from src.tests.fixtures.pipeline import TEST_PIPELINE_POST_DATA
 
@@ -28,8 +30,7 @@ async def test_create_address_lineage(async_client: AsyncClient):
     )
     assert response.status_code == 201
     response_data = response.json()
-    assert response_data["pipeline_id"] == 1
-    assert response_data["lineage_relationships_created"] == 1
+    assert response_data == TEST_ADDRESS_LINEAGE_POST_OUTPUT_DATA
 
 
 @pytest.mark.anyio
@@ -51,13 +52,7 @@ async def test_get_address_lineage_by_pipeline(async_client: AsyncClient):
     response_data = response.json()
 
     # The API returns a list of AddressLineage objects directly
-    assert isinstance(response_data, list)
-    assert len(response_data) == 1
-
-    lineage_rel = response_data[0]
-    assert lineage_rel["pipeline_id"] == 1
-    assert "source_address_id" in lineage_rel
-    assert "target_address_id" in lineage_rel
+    assert response_data == TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA
 
 
 @pytest.mark.anyio
@@ -108,19 +103,9 @@ async def test_create_address_lineage_multiple_sources_and_targets(
     await async_client.post("/pipeline", json=pipeline_data)
 
     # Create lineage with multiple sources and targets
-    test_data = {
-        "pipeline_id": 1,
-        "source_addresses": [
-            {"address_name": "Source Address 1", "address_type_name": "database"},
-            {"address_name": "Source Address 2", "address_type_name": "database"},
-        ],
-        "target_addresses": [
-            {"address_name": "Target Address 1", "address_type_name": "database"},
-            {"address_name": "Target Address 2", "address_type_name": "database"},
-        ],
-    }
-
-    response = await async_client.post("/address_lineage", json=test_data)
+    response = await async_client.post(
+        "/address_lineage", json=TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_AND_TARGETS_DATA
+    )
     assert response.status_code == 201
     response_data = response.json()
     assert response_data["lineage_relationships_created"] == 4  # 2 sources × 2 targets
@@ -143,17 +128,9 @@ async def test_update_address_lineage_replaces_existing(async_client: AsyncClien
     assert response.json()["lineage_relationships_created"] == 1
 
     # Update with different addresses
-    updated_data = {
-        "pipeline_id": 1,
-        "source_addresses": [
-            {"address_name": "New Source Address", "address_type_name": "database"}
-        ],
-        "target_addresses": [
-            {"address_name": "New Target Address", "address_type_name": "database"}
-        ],
-    }
-
-    response = await async_client.post("/address_lineage", json=updated_data)
+    response = await async_client.post(
+        "/address_lineage", json=TEST_ADDRESS_LINEAGE_UPDATE_DATA
+    )
     assert response.status_code == 201
     assert response.json()["lineage_relationships_created"] == 1
 

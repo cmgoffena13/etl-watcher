@@ -1,8 +1,8 @@
-"""adding address lineage
+"""restart
 
-Revision ID: 20250907211618
+Revision ID: 20250908202242
 Revises:
-Create Date: 2025-09-07 21:16:19.980444
+Create Date: 2025-09-08 20:22:43.999122
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250907211618"
+revision: str = "20250908202242"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -27,6 +27,9 @@ def upgrade() -> None:
         "address_type",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
+        sa.Column(
+            "group_name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False
+        ),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),
@@ -41,6 +44,9 @@ def upgrade() -> None:
         "pipeline_type",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
+        sa.Column(
+            "group_name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False
+        ),
         sa.Column("timely_number", sa.Integer(), nullable=True),
         sa.Column(
             "timely_datepart",

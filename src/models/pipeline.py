@@ -9,6 +9,7 @@ from src.types import DatePartEnum, ValidatorModel
 class PipelinePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
+    pipeline_type_group_name: str = Field(max_length=150, min_length=1)
     next_watermark: Optional[Union[str, int, DateTime]] = None
     pipeline_args: Optional[dict] = None
     timely_number: Optional[int] = None

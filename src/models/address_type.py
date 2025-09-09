@@ -5,6 +5,7 @@ from src.types import ValidatorModel
 
 class AddressTypePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
+    group_name: str = Field(max_length=150, min_length=1)
 
 
 class AddressTypePostOutput(ValidatorModel):

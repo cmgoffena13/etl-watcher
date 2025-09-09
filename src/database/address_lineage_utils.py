@@ -35,6 +35,7 @@ async def _process_address_lists(
         source_address_input = AddressPostInput(
             name=source_address.address_name,
             address_type_name=source_address.address_type_name,
+            address_type_group_name=source_address.address_type_group_name,
         )
         source_address = AddressPostOutput(
             **await db_get_or_create_address(
@@ -48,6 +49,7 @@ async def _process_address_lists(
         target_address_input = AddressPostInput(
             name=target_address.address_name,
             address_type_name=target_address.address_type_name,
+            address_type_group_name=target_address.address_type_group_name,
         )
         target_address = AddressPostOutput(
             **await db_get_or_create_address(
