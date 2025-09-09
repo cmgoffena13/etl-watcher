@@ -35,28 +35,31 @@ async def create_initial_records():
     initial_pipeline_types = [
         PipelineType(
             name="extraction",
+            group_name="extraction",
             timely_number=12,
             timely_datepart="hour",
             mute_timely_check=False,
         ),
         PipelineType(
             name="audit",
+            group_name="audit",
             timely_number=12,
             timely_datepart="hour",
             mute_timely_check=False,
         ),
         PipelineType(
             name="publish",
+            group_name="publish",
             timely_number=12,
             timely_datepart="hour",
             mute_timely_check=False,
         ),
     ]
     initial_address_types = [
-        AddressType(name="database"),
-        AddressType(name="file"),
-        AddressType(name="report"),
-        AddressType(name="api"),
+        AddressType(name="databricks", group_name="database"),
+        AddressType(name="GCS", group_name="file"),
+        AddressType(name="looker", group_name="report"),
+        AddressType(name="api-integration", group_name="api"),
     ]
 
     logger.info("Truncating Tables")
