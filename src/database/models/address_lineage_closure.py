@@ -11,6 +11,16 @@ class AddressLineageClosure(SQLModel, table=True):
 
     __table_args__ = (
         PrimaryKeyConstraint("source_address_id", "target_address_id"),
-        Index("ix_address_lineage_closure_depth_source", "source_address_id", "depth"),
-        Index("ix_address_lineage_closure_depth_target", "target_address_id", "depth"),
+        Index(
+            "ix_address_lineage_closure_depth_source",
+            "source_address_id",
+            "depth",
+            postgresql_include=["target_address_id"],
+        ),
+        Index(
+            "ix_address_lineage_closure_depth_target",
+            "target_address_id",
+            "depth",
+            postgresql_include=["source_address_id"],
+        ),
     )

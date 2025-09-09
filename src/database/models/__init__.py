@@ -5,6 +5,9 @@ from src.database.models.address_type import AddressType
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_execution import PipelineExecution
 from src.database.models.pipeline_type import PipelineType
+from src.database.models.timeliness_pipeline_execution_log import (
+    TimelinessPipelineExecutionLog,
+)
 
 __all__ = [
     "Pipeline",
@@ -14,4 +17,5 @@ __all__ = [
     "AddressType",
     "AddressLineage",
     "AddressLineageClosure",
+    "TimelinessPipelineExecutionLog",
 ]

@@ -18,6 +18,9 @@ async def reset_database():
     logger.info("Dropping All Tables")
     async with engine.begin() as conn:
         await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
+        await conn.execute(
+            text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log")
+        )
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage_closure"))
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage"))

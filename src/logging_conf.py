@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 
 def configure_logging() -> None:
-    logfire.configure(token=config.LOGFIRE_TOKEN)
+    logfire.configure(token=config.LOGFIRE_TOKEN, service_name="watcher")
 
     dictConfig(
         {

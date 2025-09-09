@@ -17,6 +17,7 @@ from src.routes import (
     pipeline_execution_router,
     pipeline_router,
     pipeline_type_router,
+    timeliness_router,
 )
 from src.settings import config
 
@@ -45,6 +46,7 @@ app.include_router(pipeline_execution_router)
 app.include_router(address_type_router)
 app.include_router(address_router)
 app.include_router(address_lineage_router)
+app.include_router(timeliness_router)
 
 
 @app.get("/")

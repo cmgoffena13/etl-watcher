@@ -76,6 +76,7 @@ async def truncate_tables():
             text(
                 """
                 TRUNCATE TABLE 
+                timeliness_pipeline_execution_log,
                 pipeline_execution,
                 address_lineage_closure,
                 address_lineage,
