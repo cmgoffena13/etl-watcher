@@ -158,6 +158,7 @@ import pendulum
 async def run_pipeline_workflow():
     """Complete example of creating and running a pipeline with lineage tracking"""
 
+    # Grab our upper bound next watermark
     # This would be: SELECT MAX(id) FROM your_table or whatever you're working with
     max_id_from_source = 150
 
@@ -194,9 +195,9 @@ async def run_pipeline_workflow():
                 "pipeline_id": pipeline_result['id'],
                 "source_addresses": [
                     {
-                        "address_name": "api.stockdata.com/v1/prices",
-                        "address_type_name": "api",
-                        "address_type_group_name": "external"
+                        "address_name": "source_db.stock_prices",
+                        "address_type_name": "postgresql",
+                        "address_type_group_name": "database"
                     }
                 ],
                 "target_addresses": [
@@ -230,11 +231,13 @@ async def run_pipeline_workflow():
         watermark = int(pipeline_result['watermark'])
         
         # Step 5: Incremental Data Pipeline (utilizing watermarks)
+        # ...
         SELECT
         *
         FROM Table_A
-        WHERE id > watermark
-            AND id <= next_watermark
+        WHERE id <= next_watermark
+            AND id > watermark
+        # ...
         
         # Step 6: End Pipeline Execution (with DML counts gathered from work)
         end_time = pendulum.now("UTC")
