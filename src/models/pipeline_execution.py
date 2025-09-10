@@ -13,6 +13,7 @@ class PipelineExecutionStartInput(ValidatorModel):
     watermark: Optional[str] = None
     next_watermark: Optional[str] = None
     parent_id: Optional[int] = None
+    execution_metadata: Optional[dict] = None
 
 
 class PipelineExecutionStartOutput(ValidatorModel):

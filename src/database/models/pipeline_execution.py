@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import BigInteger, Boolean, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 
@@ -31,6 +32,7 @@ class PipelineExecution(SQLModel, table=True):
     full_load: Optional[bool]
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
+    execution_metadata: Optional[dict] = Field(sa_column=Column(JSONB, nullable=True))
 
     __table_args__ = (
         Index(
