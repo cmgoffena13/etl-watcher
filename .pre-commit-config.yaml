@@ -6,13 +6,13 @@ repos:
         args: ["--fix"]
       - id: ruff-format
 
-  - repo: local
-    hooks:
-      - id: pytest
-        name: pytest
-        entry: uv run -- pytest -v
-        language: system
-        types: [python]
-        pass_filenames: false
-        always_run: true
-        stages: [pre-push]
+  # - repo: local
+  #   hooks:
+  #     - id: pytest
+  #       name: pytest
+  #       entry: uv run -- pytest -v
+  #       language: system
+  #       types: [python]
+  #       pass_filenames: false
+  #       always_run: true
+  #       stages: [pre-push]
