@@ -1,12 +1,13 @@
 import logging
 import time
-from typing import List, Set
+from typing import List, Set, Tuple
 
 from fastapi import Response
-from sqlalchemy import select
+from sqlalchemy import alias, desc, literal_column, select, union_all
 from sqlmodel import Session
 
 from src.database.address_utils import db_get_or_create_address
+from src.database.models.address import Address
 from src.database.models.address_lineage import AddressLineage
 from src.database.models.address_lineage_closure import AddressLineageClosure
 from src.database.models.pipeline import Pipeline
@@ -119,10 +120,12 @@ async def db_create_address_lineage(
 ) -> AddressLineagePostOutput:
     pipeline = await session.get(Pipeline, lineage_input.pipeline_id)
     if not pipeline or not pipeline.load_lineage:
-        response.status_code = 400
-        raise ValueError(
-            f"Pipeline {lineage_input.pipeline_id} does not have load_lineage=True"
-        )
+        response.status_code = 200
+        return {
+            "pipeline_id": lineage_input.pipeline_id,
+            "lineage_relationships_created": 0,
+            "message": f"Pipeline {lineage_input.pipeline_id} does not have load_lineage=True. No lineage relationships created.",
+        }
 
     source_address_ids, target_address_ids = await _process_address_lists(
         session,
@@ -138,21 +141,65 @@ async def db_create_address_lineage(
     return {
         "pipeline_id": lineage_input.pipeline_id,
         "lineage_relationships_created": relationships_created,
+        "message": f"Lineage relationships created for pipeline {lineage_input.pipeline_id}",
     }
 
 
-async def db_get_address_lineage_by_pipeline(
-    session: Session, pipeline_id: int
-) -> List[AddressLineage]:
-    return (
-        (
-            await session.exec(
-                select(AddressLineage).where(AddressLineage.pipeline_id == pipeline_id)
-            )
+async def db_get_address_lineage_for_address(
+    session: Session, address_id: int
+) -> List[Tuple[int, int, int, str, str]]:
+    """
+    Get lineage for a specific address using the closure table.
+    Returns all relationships where the address is either source or target.
+    """
+
+    # Create aliases for the Address table
+    SourceAddress = alias(Address)
+    TargetAddress = alias(Address)
+
+    # Query for relationships where address is the source
+    downstream_query = (
+        select(
+            AddressLineageClosure.source_address_id,
+            AddressLineageClosure.target_address_id,
+            AddressLineageClosure.depth,
+            SourceAddress.c.name.label("source_address_name"),
+            TargetAddress.c.name.label("target_address_name"),
         )
-        .scalars()
-        .all()
+        .join(
+            SourceAddress, AddressLineageClosure.source_address_id == SourceAddress.c.id
+        )
+        .join(
+            TargetAddress, AddressLineageClosure.target_address_id == TargetAddress.c.id
+        )
+        .where(AddressLineageClosure.source_address_id == address_id)
+        .where(AddressLineageClosure.depth > 0)
     )
+
+    # Query for relationships where address is the target
+    upstream_query = (
+        select(
+            AddressLineageClosure.source_address_id,
+            AddressLineageClosure.target_address_id,
+            AddressLineageClosure.depth,
+            SourceAddress.c.name.label("source_address_name"),
+            TargetAddress.c.name.label("target_address_name"),
+        )
+        .join(
+            SourceAddress, AddressLineageClosure.source_address_id == SourceAddress.c.id
+        )
+        .join(
+            TargetAddress, AddressLineageClosure.target_address_id == TargetAddress.c.id
+        )
+        .where(AddressLineageClosure.target_address_id == address_id)
+        .where(AddressLineageClosure.depth > 0)
+    )
+
+    # Union the two queries and order by depth
+    union_query = union_all(downstream_query, upstream_query).order_by(desc("depth"))
+
+    result = await session.exec(union_query)
+    return result.fetchall()
 
 
 async def _rebuild_closure_table_incremental(

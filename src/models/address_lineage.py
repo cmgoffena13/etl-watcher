@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from pydantic import Field
 
@@ -26,6 +26,7 @@ class AddressLineagePostInput(ValidatorModel):
 class AddressLineagePostOutput(ValidatorModel):
     pipeline_id: int
     lineage_relationships_created: int
+    message: Optional[str] = None
 
 
 class AddressLineageGetOutput(ValidatorModel):
@@ -33,3 +34,11 @@ class AddressLineageGetOutput(ValidatorModel):
     pipeline_id: int
     source_address_id: int
     target_address_id: int
+
+
+class AddressLineageClosureOutput(ValidatorModel):
+    source_address_id: int
+    target_address_id: int
+    depth: int
+    source_address_name: str
+    target_address_name: str

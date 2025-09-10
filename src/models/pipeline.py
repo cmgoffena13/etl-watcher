@@ -29,3 +29,9 @@ class PipelinePatchInput(ValidatorModel):
     id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_type_id: Optional[int] = None
+    next_watermark: Optional[Union[str, int, DateTime]] = None
+    pipeline_args: Optional[dict] = None
+    timely_number: Optional[int] = None
+    timely_datepart: Optional[DatePartEnum] = None
+    mute_timely_check: Optional[bool] = None
+    load_lineage: Optional[bool] = None
