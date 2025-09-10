@@ -179,7 +179,6 @@ def _generate_timeliness_error_message(fail_results):
             f"within the timeframe: {result['timely_number']} {result['timely_datepart']}; "
             f"Last DML Operation: {result['last_dml']};"
         )
-
     return "\n".join(error_parts)
 
 
