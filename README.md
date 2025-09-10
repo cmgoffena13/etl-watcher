@@ -12,7 +12,8 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 5. [Database Schema](##Database-Schema)
 6. [Development](##Development)
 7. [Technology Stack](##Technology-Stack)
-8. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+8. [Timeliness](##Timeliness)
+9. [Complete Pipeline Workflow Example](##complete-pipeline-workflow-example)
 
 ## Setup
 1. Install `uv`
@@ -38,6 +39,41 @@ pre-commit install --hook-type pre-push
 ```
 
 ## Features
+
+### 🔄 Pipeline Execution Monitoring
+- **Execution Tracking**: Start and end pipeline executions with detailed metadata to track performance
+- **Performance Metrics**: Track duration, DML counts (inserts, updates, deletes), and total rows processed
+- **Execution History**: Maintain complete audit trail of all pipeline runs
+- **Status Management**: Monitor active/inactive pipeline states
+
+### ⏰ Timeliness Checks
+- **Automated Monitoring**: Check if pipelines are running within expected timeframes
+- **Configurable Thresholds**: Set custom timeliness rules per pipeline type and individual pipelines
+- **Mute Capability**: Skip timeliness checks for specific pipelines when needed
+
+### 🔗 Data Lineage Tracking
+- **Address Management**: Track source and target data addresses with type classification
+- **Lineage Relationships**: Create and maintain data flow relationships between sources and targets
+- **Closure Table Pattern**: Efficient querying of complex lineage hierarchies with depth tracking
+- **Source Control Integration**: Store lineage definitions in version control for reproducibility
+
+### 💧 Watermark Management
+- **Incremental Processing**: Support for watermark-based incremental data pipelines
+- **Flexible Watermarking**: Use any identifier (IDs, timestamps, etc.) as watermarks
+- **Automatic Updates**: Watermarks are automatically updated after successful pipeline execution
+
+### 📊 Metadata Storage
+- **Pipeline Configuration**: Store pipeline arguments and configuration as JSONB
+- **Type Classification**: Organize pipelines by type for better management and control
+- **Address Type System**: Categorize data sources and targets by type and group
+
+### 🔧 Development & Operations
+- **RESTful API**: Complete REST API for all operations with automatic documentation
+- **Database Migrations**: Alembic-based migration system for schema evolution
+- **Testing Framework**: Comprehensive test suite with fixtures and async support
+- **Docker Support**: Containerized deployment with Docker
+- **Logging & Observability**: Structured logging with Logfire integration
+
 
 ## 📋 API Endpoints
 
@@ -79,7 +115,7 @@ The repo utilizes Scalar for interactive API documentation found at the `/scalar
 
 ### Core Tables
 - **`pipeline`** - Pipeline definitions with configuration and metadata
-- **`pipeline_type`** - Pipeline type definitions and timeliness rules
+- **`pipeline_type`** - Pipeline type definitions and broad timeliness rules
 - **`pipeline_execution`** - Individual pipeline execution records and metrics
 - **`address`** - Data address definitions (databases, files, APIs, etc.)
 - **`address_type`** - Address type categorization
@@ -149,6 +185,9 @@ make trigger-migration
 - **Uvicorn** - ASGI server for FastAPI
 - **Pendulum** - Better dates and times for Python
 
+## Timeliness
+placeholder
+
 ## Complete Pipeline Workflow Example
 ```python
 import httpx
@@ -168,7 +207,6 @@ async def run_pipeline_workflow():
         "name": "stock-price-worker",
         "pipeline_type_name": "api-integration",
         "pipeline_type_group_name": "extraction",
-        "load_lineage": True
         "next_watermark": max_id_from_source  # Converted to string
     }
     
@@ -190,6 +228,7 @@ async def run_pipeline_workflow():
         
         # Step 3: If load_lineage is true, create address lineage relationships
         # This forces lineage data to be in source control and only reloads if necessary
+        # Can set manually through API, once execution is complete defaults back to False
         if pipeline_result['load_lineage']:
             lineage_data = {
                 "pipeline_id": pipeline_result['id'],
@@ -251,6 +290,7 @@ async def run_pipeline_workflow():
         }
         
         # Ending execution automatically increments watermark to next_watermark
+        # Also automatically sets load_lineage back to False to avoid excess calls
         await client.post("http://localhost:8000/end_pipeline_execution", json=execution_end_data)
         print("Pipeline execution completed successfully")
         
