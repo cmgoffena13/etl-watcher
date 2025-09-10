@@ -23,6 +23,7 @@ class AddressPostOutput(ValidatorModel):
 class AddressPatchInput(ValidatorModel):
     id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
+    address_type_id: Optional[int] = None
     database_name: Optional[str] = Field(None, max_length=50)
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)

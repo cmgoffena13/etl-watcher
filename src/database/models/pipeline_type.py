@@ -13,7 +13,6 @@ class PipelineType(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
     name: str = Field(index=True, unique=True, max_length=150, min_length=1)
-    group_name: str = Field(max_length=150, min_length=1)
     timely_number: Optional[int]
     timely_datepart: Optional[DatePartEnum]
     mute_timely_check: bool = Field(

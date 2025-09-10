@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import Field
 
 from src.types import ValidatorModel
@@ -14,4 +16,5 @@ class AddressTypePostOutput(ValidatorModel):
 
 class AddressTypePatchInput(ValidatorModel):
     id: int
-    name: str = Field(max_length=150, min_length=1)
+    name: Optional[str] = Field(None, max_length=150, min_length=1)
+    group_name: Optional[str] = Field(None, max_length=150, min_length=1)

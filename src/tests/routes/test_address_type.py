@@ -11,13 +11,13 @@ from src.tests.fixtures.address_type import (
 @pytest.mark.anyio
 async def test_get_or_create_address_type(async_client: AsyncClient):
     response = await async_client.post(
-        "/pipeline_type", json=TEST_ADDRESS_TYPE_POST_DATA
+        "/address_type", json=TEST_ADDRESS_TYPE_POST_DATA
     )
     assert response.status_code == 201  # Created
     assert response.json() == {"id": 1}
 
     response = await async_client.post(
-        "/pipeline_type", json=TEST_ADDRESS_TYPE_POST_DATA
+        "/address_type", json=TEST_ADDRESS_TYPE_POST_DATA
     )
     assert response.status_code == 200
     assert response.json() == {"id": 1}
@@ -26,9 +26,9 @@ async def test_get_or_create_address_type(async_client: AsyncClient):
 @pytest.mark.anyio
 async def test_patch_address_type(async_client: AsyncClient):
     # First create the address_type to then be able to patch
-    await async_client.post("/pipeline_type", json=TEST_ADDRESS_TYPE_POST_DATA)
+    await async_client.post("/address_type", json=TEST_ADDRESS_TYPE_POST_DATA)
     response = await async_client.patch(
-        "/pipeline_type", json=TEST_ADDRESS_TYPE_PATCH_DATA
+        "/address_type", json=TEST_ADDRESS_TYPE_PATCH_DATA
     )
     data = response.json()
     assert response.status_code == 200
