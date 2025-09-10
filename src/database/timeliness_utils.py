@@ -194,7 +194,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
         name="Timeliness Check",
         pipeline_type_name="Audit",
         pipeline_type_group_name="Internal",
-        pipeline_args={"timeliness_seconds_threshold": 1800},
+        pipeline_args={"timeliness_execution_seconds_threshold": 1800},
     )
 
     pipeline = PipelinePostOutput(
@@ -229,7 +229,9 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     else:
         watermark = int(watermark)
 
-    seconds_threshold = pipeline_args.get("timeliness_seconds_threshold", 1800)
+    seconds_threshold = pipeline_args.get(
+        "timeliness_execution_seconds_threshold", 1800
+    )
 
     await session.exec(
         text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log_temp")
