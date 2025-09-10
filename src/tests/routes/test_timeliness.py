@@ -1,134 +1,101 @@
 import pendulum
 import pytest
-from fastapi import Response
-from sqlmodel import select
+from httpx import AsyncClient
+from sqlmodel import Session
 
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_type import PipelineType
-from src.database.timeliness_utils import db_check_pipeline_timeliness
 from src.tests.fixtures.pipeline import TEST_PIPELINE_TIMELINESS_DATA
 from src.tests.fixtures.pipeline_type import TEST_PIPELINE_TYPE_POST_DATA
-from src.types import DatePartEnum
 
 
-class TestTimelinessUtils:
-    """Test timeliness utility functions using existing fixtures."""
+@pytest.mark.anyio
+async def test_timeliness_check_success(async_client: AsyncClient):
+    """Test timeliness check when pipeline passes."""
+    # Create pipeline type
+    await async_client.post("/pipeline_type", json=TEST_PIPELINE_TYPE_POST_DATA)
 
-    @pytest.fixture
-    async def pipeline_type_fixture(self, db_session):
-        """Create pipeline type from existing fixture."""
-        pipeline_type = PipelineType(**TEST_PIPELINE_TYPE_POST_DATA)
-        db_session.add(pipeline_type)
-        await db_session.commit()
-        await db_session.refresh(pipeline_type)
-        return pipeline_type
+    # Create pipeline with timestamps within threshold
+    one_hour_ago = pendulum.now("UTC").subtract(hours=1)
+    pipeline_data = TEST_PIPELINE_TIMELINESS_DATA.copy()
+    pipeline_data.update(
+        {
+            "last_target_insert": one_hour_ago.isoformat(),
+            "last_target_update": one_hour_ago.isoformat(),
+            "last_target_soft_delete": one_hour_ago.isoformat(),
+            "timely_number": 2,
+            "timely_datepart": "hour",
+        }
+    )
 
-    @pytest.fixture
-    async def pipeline_on_time(self, db_session, pipeline_type_fixture):
-        """Create pipeline that should pass timeliness check."""
-        # Use fixture data but update timestamps to be within threshold
-        one_hour_ago = pendulum.now("UTC").subtract(hours=1)
+    await async_client.post("/pipeline", json=pipeline_data)
 
-        pipeline_data = TEST_PIPELINE_TIMELINESS_DATA.copy()
-        pipeline_data.update(
-            {
-                "pipeline_type_id": pipeline_type_fixture.id,
-                "last_target_insert": one_hour_ago,
-                "last_target_update": one_hour_ago,
-                "last_target_soft_delete": one_hour_ago,
-            }
-        )
+    # This should not raise an exception
+    response = await async_client.post("/timeliness")
+    assert response.status_code == 201
 
-        pipeline = Pipeline(**pipeline_data)
-        db_session.add(pipeline)
-        await db_session.commit()
-        await db_session.refresh(pipeline)
-        return pipeline
 
-    @pytest.fixture
-    async def pipeline_late(self, db_session, pipeline_type_fixture):
-        """Create pipeline that should fail timeliness check."""
-        # Use fixture data but update timestamps to be beyond threshold
-        three_hours_ago = pendulum.now("UTC").subtract(hours=3)
+@pytest.mark.anyio
+async def test_timeliness_check_muted_pipeline(async_client: AsyncClient):
+    """Test that muted pipelines are skipped."""
+    # Create pipeline type
+    await async_client.post("/pipeline_type", json=TEST_PIPELINE_TYPE_POST_DATA)
 
-        pipeline_data = TEST_PIPELINE_TIMELINESS_DATA.copy()
-        pipeline_data.update(
-            {
-                "pipeline_type_id": pipeline_type_fixture.id,
-                "name": "Late Pipeline",
-                "last_target_insert": three_hours_ago,
-                "last_target_update": three_hours_ago,
-                "last_target_soft_delete": three_hours_ago,
-            }
-        )
+    # Create muted pipeline with timestamps beyond threshold
+    three_hours_ago = pendulum.now("UTC").subtract(hours=3)
+    pipeline_data = TEST_PIPELINE_TIMELINESS_DATA.copy()
+    pipeline_data.update(
+        {
+            "name": "Muted Pipeline",
+            "last_target_insert": three_hours_ago.isoformat(),
+            "last_target_update": three_hours_ago.isoformat(),
+            "last_target_soft_delete": three_hours_ago.isoformat(),
+            "timely_number": 1,
+            "timely_datepart": "hour",
+            "mute_timely_check": True,
+        }
+    )
 
-        pipeline = Pipeline(**pipeline_data)
-        db_session.add(pipeline)
-        await db_session.commit()
-        await db_session.refresh(pipeline)
-        return pipeline
+    await async_client.post("/pipeline", json=pipeline_data)
 
-    @pytest.fixture
-    async def pipeline_muted(self, db_session, pipeline_type_fixture):
-        """Create pipeline that should be skipped due to muting."""
-        three_hours_ago = pendulum.now("UTC").subtract(hours=3)
+    # Should pass because muted pipeline is skipped
+    response = await async_client.post("/timeliness")
+    assert response.status_code == 201
 
-        pipeline_data = TEST_PIPELINE_TIMELINESS_DATA.copy()
-        pipeline_data.update(
-            {
-                "pipeline_type_id": pipeline_type_fixture.id,
-                "name": "Muted Pipeline",
-                "last_target_insert": three_hours_ago,
-                "last_target_update": three_hours_ago,
-                "last_target_soft_delete": three_hours_ago,
-                "mute_timely_check": True,
-            }
-        )
 
-        pipeline = Pipeline(**pipeline_data)
-        db_session.add(pipeline)
-        await db_session.commit()
-        await db_session.refresh(pipeline)
-        return pipeline
+@pytest.mark.anyio
+async def test_timeliness_check_failure(async_client: AsyncClient, db_session: Session):
+    """Test timeliness check when pipeline fails."""
+    # Create pipeline type manually
+    pipeline_type = PipelineType(
+        name="audit",
+        group_name="databricks",
+        timely_number=12,
+        timely_datepart="hour",
+        mute_timely_check=False,
+    )
+    db_session.add(pipeline_type)
+    await db_session.flush()  # Get the ID without committing
 
-    @pytest.mark.asyncio
-    async def test_timeliness_check_success(self, db_session, pipeline_on_time):
-        """Test timeliness check when pipeline passes."""
-        # This should not raise an exception
-        try:
-            await db_check_pipeline_timeliness(db_session)
-        except Exception as e:
-            pytest.fail(f"Timeliness check should not fail: {e}")
+    # Create pipeline with timestamps beyond threshold
+    twelve_hours_ago = pendulum.now("UTC").subtract(hours=12)
+    pipeline = Pipeline(
+        name="Late Pipeline",
+        pipeline_type_id=pipeline_type.id,
+        last_target_insert=twelve_hours_ago,
+        last_target_update=twelve_hours_ago,
+        last_target_soft_delete=twelve_hours_ago,
+        timely_number=1,
+        timely_datepart="hour",
+        mute_timely_check=False,
+    )
 
-    @pytest.mark.asyncio
-    async def test_timeliness_check_failure(self, db_session, pipeline_late):
-        """Test timeliness check when pipeline fails."""
-        with pytest.raises(Exception) as exc_info:
-            await db_check_pipeline_timeliness(db_session)
+    db_session.add(pipeline)
+    await db_session.commit()
 
-        # Verify the error message contains expected information
-        error_message = str(exc_info.value)
-        assert "Late Pipeline" in error_message
-        assert "failed timeliness check" in error_message
-
-    @pytest.mark.asyncio
-    async def test_timeliness_check_muted_pipeline(self, db_session, pipeline_muted):
-        """Test that muted pipelines are skipped."""
-        # Should pass because muted pipeline is skipped
-        try:
-            await db_check_pipeline_timeliness(db_session)
-        except Exception as e:
-            pytest.fail(f"Timeliness check should pass with muted pipeline: {e}")
-
-    @pytest.mark.asyncio
-    async def test_timeliness_check_mixed_scenario(
-        self, db_session, pipeline_on_time, pipeline_late, pipeline_muted
-    ):
-        """Test timeliness check with mix of passing, failing, and muted pipelines."""
-        with pytest.raises(Exception) as exc_info:
-            await db_check_pipeline_timeliness(db_session)
-
-        # Should fail due to the late pipeline, but muted pipeline should be ignored
-        error_message = str(exc_info.value)
-        assert "Late Pipeline" in error_message
-        assert "Muted Pipeline" not in error_message  # Muted should be skipped
+    # This should fail
+    response = await async_client.post("/timeliness")
+    assert response.status_code == 500
+    error_message = response.json()["detail"]
+    assert "Late Pipeline" in error_message
+    assert "has not had a DML operation within the timeframe" in error_message

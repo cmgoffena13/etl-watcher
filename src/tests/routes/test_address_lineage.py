@@ -34,8 +34,8 @@ async def test_create_address_lineage(async_client: AsyncClient):
 
 
 @pytest.mark.anyio
-async def test_get_address_lineage_by_pipeline(async_client: AsyncClient):
-    """Test getting address lineage relationships for a pipeline"""
+async def test_get_address_lineage_by_address(async_client: AsyncClient):
+    """Test getting address lineage relationships for an address"""
     # First create a pipeline with load_lineage = True
     pipeline_data = TEST_PIPELINE_POST_DATA.copy()
     pipeline_data["load_lineage"] = True
@@ -46,12 +46,12 @@ async def test_get_address_lineage_by_pipeline(async_client: AsyncClient):
     # Create address lineage relationships
     await async_client.post("/address_lineage", json=TEST_ADDRESS_LINEAGE_POST_DATA)
 
-    # Now get the lineage relationships
+    # Now get the lineage relationships for the source address (id=1)
     response = await async_client.get("/address_lineage/1")
     assert response.status_code == 200
     response_data = response.json()
 
-    # The API returns a list of AddressLineage objects directly
+    # The API returns a list of AddressLineageClosureOutput objects
     assert response_data == TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA
 
 

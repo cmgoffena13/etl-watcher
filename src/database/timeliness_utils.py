@@ -144,18 +144,24 @@ async def db_check_pipeline_timeliness(session: Session):
 
 def _calculate_timely_time(max_dml, datepart, number):
     """Calculate the expected time based on datepart and number"""
+    # Convert to pendulum if it's a regular datetime
+    if hasattr(max_dml, "add"):
+        dml_time = max_dml
+    else:
+        dml_time = pendulum.instance(max_dml)
+
     if datepart.upper() == "MINUTE":
-        return max_dml.add(minutes=number)
+        return dml_time.add(minutes=number)
     elif datepart.upper() == "HOUR":
-        return max_dml.add(hours=number)
+        return dml_time.add(hours=number)
     elif datepart.upper() == "DAY":
-        return max_dml.add(days=number)
+        return dml_time.add(days=number)
     elif datepart.upper() == "WEEK":
-        return max_dml.add(weeks=number)
+        return dml_time.add(weeks=number)
     elif datepart.upper() == "MONTH":
-        return max_dml.add(months=number)
+        return dml_time.add(months=number)
     elif datepart.upper() == "YEAR":
-        return max_dml.add(years=number)
+        return dml_time.add(years=number)
     else:
         raise ValueError(f"Unsupported datepart: {datepart}")
 
@@ -216,7 +222,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     )
     result = await session.exec(update_stmt)
     watermark, pipeline_args = result.first()
-    session.commit()
+    await session.commit()
 
     if watermark is None:
         watermark = int(0)

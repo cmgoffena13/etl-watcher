@@ -19,14 +19,16 @@ TEST_ADDRESS_LINEAGE_POST_DATA = {
 TEST_ADDRESS_LINEAGE_POST_OUTPUT_DATA = {
     "pipeline_id": 1,
     "lineage_relationships_created": 1,
+    "message": "lineage relationships created for pipeline 1",
 }
 
 TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA = [
     {
-        "id": 1,
-        "pipeline_id": 1,
         "source_address_id": 1,
         "target_address_id": 2,
+        "depth": 1,
+        "source_address_name": "source address 1",
+        "target_address_name": "target address 1",
     }
 ]
 
