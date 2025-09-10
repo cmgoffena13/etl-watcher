@@ -12,6 +12,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 5. [Database Schema](##Database-Schema)
 6. [Development](##Development)
 7. [Technology Stack](##Technology-Stack)
+8. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 
 ## Setup
 1. Install `uv`
@@ -147,3 +148,110 @@ make trigger-migration
 - **Docker** - Containerization
 - **Uvicorn** - ASGI server for FastAPI
 - **Pendulum** - Better dates and times for Python
+
+## Complete Pipeline Workflow Example
+```python
+import httpx
+import asyncio
+import pendulum
+
+async def run_pipeline_workflow():
+    """Complete example of creating and running a pipeline with lineage tracking"""
+
+    # This would be: SELECT MAX(id) FROM your_table or whatever you're working with
+    max_id_from_source = 150
+
+    # Step 1: Create Pipeline Record
+    # If Pipeline exists, an id is returned anyway
+    pipeline_data = {
+        "name": "stock-price-worker",
+        "pipeline_type_name": "api-integration",
+        "pipeline_type_group_name": "extraction",
+        "load_lineage": True
+        "next_watermark": max_id_from_source  # Converted to string
+    }
+    
+    async with httpx.AsyncClient() as client:
+        # Create the pipeline
+        pipeline_response = await client.post("http://localhost:8000/pipeline", json=pipeline_data)
+        pipeline_result = pipeline_response.json()
+        
+        print(f"Pipeline ID: {pipeline_result['id']}")
+        print(f"Active: {pipeline_result['active']}")
+        print(f"Load Lineage: {pipeline_result['load_lineage']}")
+        print(f"Watermark: {pipeline_result}['watermark']")
+        
+        # Step 2: Check if pipeline is active
+        # Programmatic way to control pipelines for flexibility
+        if not pipeline_result['active']:
+            print("Pipeline is not active. Exiting...")
+            return
+        
+        # Step 3: If load_lineage is true, create address lineage relationships
+        # This forces lineage data to be in source control and only reloads if necessary
+        if pipeline_result['load_lineage']:
+            lineage_data = {
+                "pipeline_id": pipeline_result['id'],
+                "source_addresses": [
+                    {
+                        "address_name": "api.stockdata.com/v1/prices",
+                        "address_type_name": "api",
+                        "address_type_group_name": "external"
+                    }
+                ],
+                "target_addresses": [
+                    {
+                        "address_name": "warehouse.stock_prices",
+                        "address_type_name": "postgresql",
+                        "address_type_group_name": "database"
+                    }
+                ]
+            }
+            
+            lineage_response = await client.post("http://localhost:8000/address_lineage", json=lineage_data)
+            lineage_result = lineage_response.json()
+            print(f"Lineage relationships created: {lineage_result['lineage_relationships_created']}")
+        
+        # Step 4: Start Pipeline Execution
+        start_time = pendulum.now("UTC")
+        execution_start_data = {
+            "pipeline_id": pipeline_result['id'],
+            "start_date": start_time.isoformat()
+        }
+        
+        start_response = await client.post("http://localhost:8000/start_pipeline_execution", json=execution_start_data)
+        execution_start = start_response.json()
+        execution_id = execution_start['id']
+        
+        print(f"Pipeline execution associated with ID: {execution_id}")
+
+        # Utilize watermarks
+        next_watermark = max_id_from_source
+        watermark = int(pipeline_result['watermark'])
+        
+        # Step 5: Incremental Data Pipeline (utilizing watermarks)
+        SELECT
+        *
+        FROM Table_A
+        WHERE id > watermark
+            AND id <= next_watermark
+        
+        # Step 6: End Pipeline Execution (with DML counts gathered from work)
+        end_time = pendulum.now("UTC")
+        execution_end_data = {
+            "id": execution_id,
+            "end_date": end_time.isoformat(),
+            "inserts": 150,
+            "updates": 25,
+            "soft_deletes": 5,
+            "total_rows": 180
+        }
+        
+        # Ending execution automatically increments watermark to next_watermark
+        await client.post("http://localhost:8000/end_pipeline_execution", json=execution_end_data)
+        print("Pipeline execution completed successfully")
+        
+
+if __name__ == "__main__":
+    asyncio.run(run_pipeline_workflow())
+```
