@@ -9,7 +9,7 @@ from src.types import AnomalyMetricFieldEnum, ValidatorModel
 
 class AnomalyDetectionRulePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
-    pipeline_id: Optional[int] = None
+    pipeline_id: int
     metric_field: AnomalyMetricFieldEnum
     std_deviation_threshold_multiplier: float = Field(ge=1.0, le=10.0, default=3.0)
     lookback_days: int = Field(ge=1, le=365, default=30)
