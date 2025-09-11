@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import BigInteger, Boolean, Column, Index, text
+from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
@@ -18,6 +18,7 @@ class PipelineExecution(SQLModel, table=True):
     start_date: DateTime = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=False)
     )
+    hour_recorded: int = Field(sa_column=Column(Integer, nullable=False))
     end_date: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
@@ -38,6 +39,14 @@ class PipelineExecution(SQLModel, table=True):
         Index(
             "ix_pipeline_execution_end_date_filter",
             "end_date",
+            postgresql_where=text("end_date IS NOT NULL"),
+        ),
+        Index(
+            "ix_pipeline_execution_hour_recorded",
+            "pipeline_id",
+            "hour_recorded",
+            "end_date",
+            postgresql_include=["completed_successfully"],
             postgresql_where=text("end_date IS NOT NULL"),
         ),
     )

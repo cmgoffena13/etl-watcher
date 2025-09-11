@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250909211814
+Revision ID: 20250910205445
 Revises:
-Create Date: 2025-09-09 21:18:16.639161
+Create Date: 2025-09-10 20:54:47.338800
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250909211814"
+revision: str = "20250910205445"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -238,11 +238,60 @@ def upgrade() -> None:
         postgresql_include=["source_address_id"],
     )
     op.create_table(
+        "anomaly_detection_rule",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
+        sa.Column("pipeline_id", sa.Integer(), nullable=True),
+        sa.Column(
+            "metric_field",
+            sa.Enum(
+                "DURATION_SECONDS",
+                "INSERTS",
+                "UPDATES",
+                "SOFT_DELETES",
+                "TOTAL_ROWS",
+                name="anomalymetricfieldenum",
+            ),
+            nullable=False,
+        ),
+        sa.Column("std_deviation_threshold_multiplier", sa.Float(), nullable=False),
+        sa.Column("lookback_days", sa.Integer(), nullable=False),
+        sa.Column("minimum_executions", sa.Integer(), nullable=False),
+        sa.Column(
+            "active", sa.Boolean(), server_default=sa.text("TRUE"), nullable=False
+        ),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.Column("updated_at", sa.DateTime(timezone=True), nullable=True),
+        sa.ForeignKeyConstraint(
+            ["pipeline_id"],
+            ["pipeline.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        op.f("ix_anomaly_detection_rule_name"),
+        "anomaly_detection_rule",
+        ["name"],
+        unique=True,
+    )
+    op.create_index(
+        "ix_anomaly_detection_rule_pipeline_id",
+        "anomaly_detection_rule",
+        ["pipeline_id", "active"],
+        unique=False,
+    )
+    op.create_table(
         "pipeline_execution",
         sa.Column("id", sa.BigInteger(), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=True),
         sa.Column("pipeline_id", sa.Integer(), nullable=False),
         sa.Column("start_date", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("hour_recorded", sa.Integer(), nullable=False),
         sa.Column("end_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("duration_seconds", sa.Integer(), nullable=True),
         sa.Column(
@@ -277,6 +326,46 @@ def upgrade() -> None:
         ["end_date"],
         unique=False,
         postgresql_where=sa.text("end_date IS NOT NULL"),
+    )
+    op.create_index(
+        "ix_pipeline_execution_hour_recorded",
+        "pipeline_execution",
+        ["pipeline_id", "hour_recorded", "end_date"],
+        unique=False,
+        postgresql_include=["completed_successfully"],
+        postgresql_where=sa.text("end_date IS NOT NULL"),
+    )
+    op.create_table(
+        "anomaly_detection_result",
+        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("rule_id", sa.Integer(), nullable=False),
+        sa.Column("pipeline_execution_id", sa.Integer(), nullable=False),
+        sa.Column("violation_value", sa.Float(), nullable=False),
+        sa.Column("baseline_value", sa.Float(), nullable=False),
+        sa.Column("deviation_percentage", sa.Float(), nullable=False),
+        sa.Column("confidence_score", sa.Float(), nullable=False),
+        sa.Column("context", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
+        sa.Column(
+            "detected_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(
+            ["pipeline_execution_id"],
+            ["pipeline_execution.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["rule_id"],
+            ["anomaly_detection_rule.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
+        "anomaly_detection_result",
+        ["rule_id", "pipeline_execution_id"],
+        unique=True,
     )
     op.create_table(
         "timeliness_pipeline_execution_log",
@@ -319,11 +408,29 @@ def downgrade() -> None:
     )
     op.drop_table("timeliness_pipeline_execution_log")
     op.drop_index(
+        "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
+        table_name="anomaly_detection_result",
+    )
+    op.drop_table("anomaly_detection_result")
+    op.drop_index(
+        "ix_pipeline_execution_hour_recorded",
+        table_name="pipeline_execution",
+        postgresql_include=["completed_successfully"],
+        postgresql_where=sa.text("end_date IS NOT NULL"),
+    )
+    op.drop_index(
         "ix_pipeline_execution_end_date_filter",
         table_name="pipeline_execution",
         postgresql_where=sa.text("end_date IS NOT NULL"),
     )
     op.drop_table("pipeline_execution")
+    op.drop_index(
+        "ix_anomaly_detection_rule_pipeline_id", table_name="anomaly_detection_rule"
+    )
+    op.drop_index(
+        op.f("ix_anomaly_detection_rule_name"), table_name="anomaly_detection_rule"
+    )
+    op.drop_table("anomaly_detection_rule")
     op.drop_index(
         "ix_address_lineage_closure_depth_target",
         table_name="address_lineage_closure",

@@ -76,6 +76,8 @@ async def truncate_tables():
             text(
                 """
                 TRUNCATE TABLE 
+                anomaly_detection_result,
+                anomaly_detection_rule,
                 timeliness_pipeline_execution_log,
                 pipeline_execution,
                 address_lineage_closure,

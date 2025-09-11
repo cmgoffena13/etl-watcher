@@ -2,6 +2,10 @@ from src.database.models.address import Address
 from src.database.models.address_lineage import AddressLineage
 from src.database.models.address_lineage_closure import AddressLineageClosure
 from src.database.models.address_type import AddressType
+from src.database.models.anomaly_detection import (
+    AnomalyDetectionResult,
+    AnomalyDetectionRule,
+)
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_execution import PipelineExecution
 from src.database.models.pipeline_type import PipelineType
@@ -18,4 +22,6 @@ __all__ = [
     "AddressLineage",
     "AddressLineageClosure",
     "TimelinessPipelineExecutionLog",
+    "AnomalyDetectionRule",
+    "AnomalyDetectionResult",
 ]

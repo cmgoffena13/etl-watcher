@@ -18,6 +18,9 @@ async def reset_database():
     logger.info("Dropping All Tables")
     async with engine.begin() as conn:
         await conn.execute(text("DROP TABLE IF EXISTS alembic_version"))
+        # Drop dependent tables first (tables with foreign keys)
+        await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_result"))
+        await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_rule"))
         await conn.execute(
             text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log")
         )
@@ -26,6 +29,7 @@ async def reset_database():
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
         await conn.execute(text("DROP TABLE IF EXISTS address"))
+        # Drop parent tables last (tables referenced by foreign keys)
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
         await conn.execute(text("DROP TABLE IF EXISTS address_type"))
         await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
@@ -64,6 +68,9 @@ async def create_initial_records():
 
     logger.info("Truncating Tables")
     async with engine.begin() as conn:  # Creates DB Transaction
+        # Truncate dependent tables first (tables with foreign keys)
+        await conn.execute(text("TRUNCATE TABLE anomaly_detection_result CASCADE"))
+        await conn.execute(text("TRUNCATE TABLE anomaly_detection_rule CASCADE"))
         await conn.execute(
             text("TRUNCATE TABLE timeliness_pipeline_execution_log CASCADE")
         )
@@ -72,6 +79,7 @@ async def create_initial_records():
         await conn.execute(text("TRUNCATE TABLE address_lineage CASCADE"))
         await conn.execute(text("TRUNCATE TABLE pipeline CASCADE"))
         await conn.execute(text("TRUNCATE TABLE address CASCADE"))
+        # Truncate parent tables last (tables referenced by foreign keys)
         await conn.execute(text("TRUNCATE TABLE pipeline_type CASCADE"))
         await conn.execute(text("TRUNCATE TABLE address_type CASCADE"))
     logger.info("Successfully Truncated Tables")

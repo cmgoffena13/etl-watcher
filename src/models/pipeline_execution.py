@@ -1,5 +1,6 @@
 from typing import Optional
 
+import pendulum
 from pydantic import Field
 from pydantic_extra_types.pendulum_dt import DateTime
 
@@ -22,6 +23,7 @@ class PipelineExecutionStartOutput(ValidatorModel):
 
 class PipelineExecutionEndInput(ValidatorModel):
     id: int
+    pipeline_id: int
     end_date: DateTime
     completed_successfully: bool = Field(default=True)
     inserts: Optional[int] = None

@@ -1,5 +1,6 @@
 from fastapi import APIRouter, status
 
+from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
 from src.database.pipeline_execution_utils import (
     db_end_pipeline_execution,
     db_start_pipeline_execution,
@@ -35,4 +36,9 @@ async def end_pipeline_execution(
 ):
     await db_end_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
+    )
+    await db_detect_anomalies_for_pipeline(
+        session=session,
+        pipeline_id=pipeline_execution.pipeline_id,
+        pipeline_execution_id=pipeline_execution.id,
     )

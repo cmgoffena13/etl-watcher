@@ -13,6 +13,14 @@ class DatePartEnum(str, Enum):
     YEAR = "year"
 
 
+class AnomalyMetricFieldEnum(str, Enum):
+    DURATION_SECONDS = "duration_seconds"
+    INSERTS = "inserts"
+    UPDATES = "updates"
+    SOFT_DELETES = "soft_deletes"
+    TOTAL_ROWS = "total_rows"
+
+
 class ValidatorModel(BaseModel):
     @model_validator(mode="before")
     def lowercase_strings(cls, values: dict) -> dict:

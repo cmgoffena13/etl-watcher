@@ -14,12 +14,12 @@ from src.routes import (
     address_lineage_router,
     address_router,
     address_type_router,
+    anomaly_detection_router,
     pipeline_execution_router,
     pipeline_router,
     pipeline_type_router,
     timeliness_router,
 )
-from src.settings import config
 
 logger = logging.getLogger(__name__)
 
@@ -47,6 +47,7 @@ app.include_router(address_type_router)
 app.include_router(address_router)
 app.include_router(address_lineage_router)
 app.include_router(timeliness_router)
+app.include_router(anomaly_detection_router)
 
 
 @app.get("/")

@@ -67,8 +67,7 @@ async def db_check_pipeline_timeliness(session: Session):
         FROM check_pipeline_timeliness_temp
     """)
 
-    pipelines_result = await session.exec(pipelines_query)
-    pipelines = pipelines_result.fetchall()
+    pipelines = (await session.exec(pipelines_query)).fetchall()
 
     logger.info(f"Processing {len(pipelines)} pipelines for timeliness check")
 
@@ -87,13 +86,14 @@ async def db_check_pipeline_timeliness(session: Session):
             parent_datepart,
         ) = pipeline
 
-        dml_timestamps = [
-            ts for ts in [last_insert, last_update, last_delete] if ts is not None
-        ]
-        if not dml_timestamps:
-            continue
+        max_dml = None
+        for ts in [last_insert, last_update, last_delete]:
+            if ts is not None:
+                if max_dml is None or ts > max_dml:
+                    max_dml = ts
 
-        max_dml = max(dml_timestamps)
+        if max_dml is None:
+            continue
 
         if child_datepart and child_number:
             timely_datepart = child_datepart
@@ -220,8 +220,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
         .values(next_watermark=next_watermark)
         .returning(Pipeline.watermark, Pipeline.pipeline_args)
     )
-    result = await session.exec(update_stmt)
-    watermark, pipeline_args = result.first()
+    watermark, pipeline_args = (await session.exec(update_stmt)).first()
     await session.commit()
 
     if watermark is None:

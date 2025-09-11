@@ -19,7 +19,12 @@ async def db_start_pipeline_execution(
     execution_start_stmt = (
         PipelineExecution.__table__.insert()
         .returning(PipelineExecution.id)
-        .values(**pipeline_execution.model_dump(exclude_unset=True))
+        .values(
+            **pipeline_execution.model_dump(
+                exclude_unset=True,
+            ),
+            hour_recorded=pipeline_execution.start_date.in_timezone("UTC").hour,
+        )
     )
     pipeline_execution_id = (await session.exec(execution_start_stmt)).scalar_one()
     await session.commit()
