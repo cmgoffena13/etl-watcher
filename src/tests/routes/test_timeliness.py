@@ -1,3 +1,5 @@
+from unittest.mock import Mock
+
 import pendulum
 import pytest
 from httpx import AsyncClient
@@ -64,8 +66,16 @@ async def test_timeliness_check_muted_pipeline(async_client: AsyncClient):
 
 
 @pytest.mark.anyio
-async def test_timeliness_check_failure(async_client: AsyncClient, db_session: Session):
+async def test_timeliness_check_failure(
+    async_client: AsyncClient, db_session: Session, monkeypatch
+):
     """Test timeliness check when pipeline fails."""
+    # Mock the Slack notification
+    mock_send_slack_message = Mock()
+    monkeypatch.setattr(
+        "src.database.timeliness_utils.send_slack_message", mock_send_slack_message
+    )
+
     # Create pipeline type manually
     pipeline_type = PipelineType(
         name="audit",
@@ -77,7 +87,6 @@ async def test_timeliness_check_failure(async_client: AsyncClient, db_session: S
     db_session.add(pipeline_type)
     await db_session.flush()  # Get the ID without committing
 
-    # Create pipeline with timestamps beyond threshold
     twelve_hours_ago = pendulum.now("UTC").subtract(hours=12)
     pipeline = Pipeline(
         name="Late Pipeline",
@@ -93,9 +102,12 @@ async def test_timeliness_check_failure(async_client: AsyncClient, db_session: S
     db_session.add(pipeline)
     await db_session.commit()
 
-    # This should fail
     response = await async_client.post("/timeliness")
-    assert response.status_code == 500
-    error_message = response.json()["detail"]
-    assert "Late Pipeline" in error_message
-    assert "has not had a DML operation within the timeframe" in error_message
+    assert response.status_code in [200, 201]
+    response_data = response.json()
+    assert response_data["status"] == "warning"
+
+    mock_send_slack_message.assert_called_once()
+    call_args = mock_send_slack_message.call_args
+    assert "Pipeline Timeliness Check Failed" in call_args[1]["message"]
+    assert "Late Pipeline" in call_args[1]["details"]["Failed Pipelines"]
