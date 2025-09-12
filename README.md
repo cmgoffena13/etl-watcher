@@ -9,11 +9,12 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 2. [Features](#features)
 3. [API Endpoints](#-api-endpoints)
 4. [Documentation](#-documentation)
-5. [Database Schema](#-database-schema)
+5. [Database Schema](#️-database-schema)
 6. [Development](#️-development)
 7. [Technology Stack](#️-technology-stack)
 8. [Timeliness](#-timeliness)
-9. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+9. [Anomaly Checks](#-anomaly-checks)
+10. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 
 ## Development Setup
 1. Install `uv`
@@ -286,27 +287,188 @@ pipeline_type_data = {
 
 Long-running pipeline executions are automatically logged to the `timeliness_pipeline_execution_log` table when they exceed the configured threshold (default: 30 minutes).
 
+### Slack Notifications
+
+The timeliness system sends Slack notifications for two types of issues:
+
+#### Pipeline Timeliness Failures
+When pipelines fail their timeliness checks, detailed Slack notifications are sent including:
+
+- **Pipeline Information**: Pipeline name, ID, and overdue duration
+- **DML Timestamps**: Last insert, update, and soft delete timestamps
+- **Expected Timeframe**: Configured timeliness rules and thresholds
+- **Overdue Details**: Specific duration beyond expected timeframe
+
+Example notification:
+```
+⚠️ WARNING
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Pipeline Timeliness Check Failed - 2 pipeline(s) overdue
+
+Details:
+• Failed Pipelines:
+  • stock-price-worker (ID: 1): Last DML 2025-01-09 15:30:00, Expected within 12 hours
+  • user-analytics-pipeline (ID: 2): Last DML 2025-01-09 10:15:00, Expected within 6 hours
+• Total Overdue: 2
+```
+
+#### Long-Running Executions
+When pipeline executions exceed the timeliness threshold, notifications include:
+
+- **Execution Details**: Pipeline execution ID, duration, and affected pipeline name
+- **Threshold Information**: Configured threshold and actual execution time
+- **Watermark Range**: Current watermark range being processed
+- **Pipeline Context**: Which specific pipeline had the long-running execution
+
+Example notification:
+```
+⚠️ WARNING
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Found 1 pipeline execution(s) exceeding timeliness threshold
+
+Details:
+• Threshold (seconds): 1800
+• Affected Pipelines:
+  • Pipeline Execution ID: 456 - stock-price-worker (ID: 1): 3600 seconds
+```
+
 ### API Usage
 
 ```python
 # Check timeliness for all pipelines
 response = await client.post("http://localhost:8000/timeliness")
-if response.status_code == 500:
-    print("Timeliness check failed - some pipelines are overdue")
-    print(response.json()["detail"])
-else:
+result = response.json()
+
+if result["status"] == "warning":
+    print("Timeliness check completed with warnings - some pipelines are overdue")
+    print("Check Slack notifications for detailed information")
+elif result["status"] == "success":
     print("All pipelines are running on time")
+else:
+    print(f"Unexpected status: {result['status']}")
 ```
+
+#### Response Status Codes
+
+- **200 OK**: Timeliness check completed successfully
+  - `{"status": "success"}` - All pipelines are running on time
+  - `{"status": "warning"}` - Some pipelines are overdue (Slack notifications sent)
 
 ### Error Handling
 
-When pipelines fail timeliness checks, the system returns detailed error messages including:
-- Pipeline ID and name
-- Last DML operation timestamp
-- Expected timeframe
-- Specific overdue duration
+The timeliness system provides comprehensive error handling and monitoring:
 
-This information helps quickly identify and resolve data freshness issues.
+#### Slack Notifications
+When timeliness issues are detected, detailed Slack notifications are automatically sent with:
+- **Pipeline Information**: Pipeline ID, name, and overdue duration
+- **DML Timestamps**: Last insert, update, and soft delete timestamps  
+- **Expected Timeframe**: Configured timeliness rules and thresholds
+- **Specific Details**: Exact duration beyond expected timeframe
+
+#### Graceful Degradation
+- **Non-Blocking**: Timeliness failures don't interrupt the check process
+- **Comprehensive Logging**: All issues are logged for debugging and analysis
+- **Status Reporting**: API returns warning status for programmatic handling
+- **Notification Reliability**: Failed Slack notifications are logged but don't affect timeliness detection
+
+#### Monitoring Integration
+- **Real-time Alerts**: Immediate Slack notifications for urgent issues
+- **Historical Tracking**: All timeliness issues are logged to the database
+- **Watermark Filtering**: Notifications only alert on new executions within the current watermark range
+- **Pipeline Context**: Clear identification of which specific pipeline had issues
+
+This comprehensive error handling ensures you're immediately notified of data freshness issues while maintaining system reliability and providing detailed context for quick resolution.
+
+## 🚨 Anomaly Checks
+
+The anomaly detection system provides statistical analysis to identify unusual patterns in pipeline execution metrics, helping you quickly spot performance issues and data quality problems.
+
+### How It Works
+
+Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers:
+
+1. **Baseline Calculation**: Analyzes historical execution data over a configurable lookback period
+2. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
+3. **Threshold Detection**: Flags executions that exceed configurable statistical thresholds
+4. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
+
+### Configuration
+
+#### Rule Creation
+Create anomaly detection rules per pipeline with the following parameters:
+
+- **`pipeline_id`**: Target pipeline to monitor
+- **`name`**: Descriptive name for the rule
+- **`metric_field`**: Metric to monitor (duration_seconds, total_rows, total_inserts, etc.)
+- **`lookback_days`**: Number of days of historical data to analyze (default: 7)
+- **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 5)
+- **`std_deviation_threshold_multiplier`**: How many standard deviations above mean to trigger (default: 2.0)
+- **`active`**: Whether the rule is enabled
+
+#### Supported Metrics
+
+The system can monitor various execution metrics:
+
+- **`duration_seconds`**: Pipeline execution duration
+- **`total_rows`**: Total rows processed
+- **`total_inserts`**: Number of insert operations
+- **`total_updates`**: Number of update operations
+- **`total_soft_deletes`**: Number of soft delete operations
+
+### Automatic Detection
+
+Anomaly detection runs automatically after each pipeline execution:
+
+1. **Trigger**: Executes when `end_pipeline_execution` is called
+2. **Rule Lookup**: Finds active rules for the completed pipeline
+3. **Historical Analysis**: Analyzes execution history for the same hour of day
+4. **Statistical Calculation**: Computes baseline mean and standard deviation
+5. **Anomaly Detection**: Identifies executions exceeding thresholds
+6. **Notification**: Sends Slack alerts for detected anomalies
+
+### Slack Notifications
+
+When anomalies are detected, the system sends detailed Slack notifications including:
+
+- **Rule Information**: Rule name, metric being monitored, threshold settings
+- **Anomaly Details**: Execution ID, actual value, baseline value, deviation percentage
+- **Confidence Score**: Statistical confidence in the anomaly detection
+- **Context**: Lookback period, execution count, z-score
+
+Example notification:
+```
+⚠️ WARNING
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Anomaly detected in pipeline 123 - 2 execution(s) flagged
+
+Details:
+• Rule: Duration Anomaly Detection
+• Metric: duration_seconds
+• Threshold Multiplier: 2.0
+• Lookback Days: 7
+• Anomalies:
+  • Execution ID 456: 3600 (baseline: 1200.00, deviation: 200.0%, confidence: 0.85)
+  • Execution ID 457: 4200 (baseline: 1200.00, deviation: 250.0%, confidence: 0.92)
+```
+
+### Best Practices
+
+1. **Start Conservative**: Begin with higher threshold multipliers (2.5-3.0) and adjust based on your data patterns
+2. **Monitor Multiple Metrics**: Create rules for different metrics to get comprehensive coverage
+3. **Regular Review**: Periodically review and adjust rules based on changing data patterns
+4. **Sufficient History**: Ensure you have enough historical data for accurate baseline calculations
+5. **Hour-Specific Analysis**: The system analyzes data by hour of day, so consider time-of-day patterns
+
+### Error Handling
+
+The anomaly detection system includes robust error handling:
+
+- **Insufficient Data**: Rules are skipped if not enough historical executions exist
+- **Missing Metrics**: Executions with null metric values are excluded from analysis
+- **Database Errors**: Failed detections are logged but don't interrupt pipeline execution
+- **Notification Failures**: Slack notification failures are logged but don't affect anomaly detection
+
+This comprehensive anomaly detection system helps maintain data quality and performance by automatically identifying unusual patterns in your pipeline executions.
 
 ## Complete Pipeline Workflow Example
 ```python
