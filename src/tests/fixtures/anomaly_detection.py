@@ -11,4 +11,8 @@ TEST_ANOMALY_DETECTION_RULE_PATCH_OUTPUT_DATA = {
 TEST_ANOMALY_DETECTION_RULE_POST_DATA = {
     "pipeline_id": 1,
     "metric_field": "duration_seconds",
+    "std_deviation_threshold_multiplier": 1.0,
+    "lookback_days": 10,
+    "minimum_executions": 5,
+    "active": True,
 }
