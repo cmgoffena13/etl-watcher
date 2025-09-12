@@ -30,7 +30,7 @@ async def lifespan(app: FastAPI):
     configure_logging()
     await test_connection()
     # await create_test_db()
-    # await reset_database()
+    await reset_database()
     # await create_initial_records()
     yield
     print(panel.Panel("Server is shutting down...", border_style="red"))

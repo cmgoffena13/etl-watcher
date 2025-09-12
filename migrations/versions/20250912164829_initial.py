@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250911201929
+Revision ID: 20250912164829
 Revises:
-Create Date: 2025-09-11 20:19:31.569380
+Create Date: 2025-09-12 16:48:32.052036
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250911201929"
+revision: str = "20250912164829"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -257,8 +257,7 @@ def upgrade() -> None:
     op.create_table(
         "anomaly_detection_rule",
         sa.Column("id", sa.Integer(), nullable=False),
-        sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
-        sa.Column("pipeline_id", sa.Integer(), nullable=True),
+        sa.Column("pipeline_id", sa.Integer(), nullable=False),
         sa.Column(
             "metric_field",
             sa.Enum(
@@ -291,9 +290,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_anomaly_detection_rule_name_includes",
+        "ix_anomaly_detection_rule_composite_key",
         "anomaly_detection_rule",
-        ["name"],
+        ["pipeline_id", "metric_field"],
         unique=True,
         postgresql_include=["id"],
     )
@@ -453,7 +452,7 @@ def downgrade() -> None:
         postgresql_include=["id"],
     )
     op.drop_index(
-        "ix_anomaly_detection_rule_name_includes",
+        "ix_anomaly_detection_rule_composite_key",
         table_name="anomaly_detection_rule",
         postgresql_include=["id"],
     )
