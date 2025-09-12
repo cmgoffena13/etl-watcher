@@ -1,5 +1,3 @@
-from unittest.mock import Mock
-
 import pendulum
 import pytest
 from httpx import AsyncClient
@@ -67,14 +65,9 @@ async def test_timeliness_check_muted_pipeline(async_client: AsyncClient):
 
 @pytest.mark.anyio
 async def test_timeliness_check_failure(
-    async_client: AsyncClient, db_session: Session, monkeypatch
+    async_client: AsyncClient, db_session: Session, mock_slack_notifications
 ):
     """Test timeliness check when pipeline fails."""
-    # Mock the Slack notification
-    mock_send_slack_message = Mock()
-    monkeypatch.setattr(
-        "src.database.timeliness_utils.send_slack_message", mock_send_slack_message
-    )
 
     # Create pipeline type manually
     pipeline_type = PipelineType(
@@ -107,7 +100,7 @@ async def test_timeliness_check_failure(
     response_data = response.json()
     assert response_data["status"] == "warning"
 
-    mock_send_slack_message.assert_called_once()
-    call_args = mock_send_slack_message.call_args
+    mock_slack_notifications.assert_called_once()
+    call_args = mock_slack_notifications.call_args
     assert "Pipeline Timeliness Check Failed" in call_args[1]["message"]
     assert "Late Pipeline" in call_args[1]["details"]["Failed Pipelines"]

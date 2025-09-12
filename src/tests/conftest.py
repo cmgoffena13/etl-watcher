@@ -1,5 +1,6 @@
 import os
 from typing import AsyncGenerator, Generator
+from unittest.mock import Mock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -20,7 +21,7 @@ from src.settings import get_database_config
 db_config = get_database_config()
 test_engine = create_async_engine(
     url=db_config["sqlalchemy.url"],
-    echo=db_config["sqlalchemy.echo"],
+    echo=False,  # Disable echo for tests
     future=db_config["sqlalchemy.future"],
     connect_args=db_config.get("sqlalchemy.connect_args", {}),
 )
@@ -68,10 +69,10 @@ def override_get_session(db_session):
 @pytest.fixture(autouse=True)
 async def truncate_tables():
     """
-    Need to truncate and reset identities after every test due to nested transactions
+    Truncate tables after each test for clean state
     """
+    yield
     async with test_engine.begin() as conn:
-        yield
         await conn.execute(
             text(
                 """
@@ -104,6 +105,29 @@ async def setup_teardown():
         async with test_engine.begin() as conn:
             await conn.run_sync(SQLModel.metadata.drop_all)
             await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
+
+
+@pytest.fixture(autouse=True)
+def mock_slack_notifications():
+    """Mock all Slack notifications globally to avoid setup in each test"""
+    mock_send_slack_message = Mock()
+
+    # Mock the notifier module
+    import src.notifier
+
+    src.notifier.send_slack_message = mock_send_slack_message
+
+    # Mock in timeliness utils
+    import src.database.timeliness_utils
+
+    src.database.timeliness_utils.send_slack_message = mock_send_slack_message
+
+    # Mock in anomaly detection utils
+    import src.database.anomaly_detection_utils
+
+    src.database.anomaly_detection_utils.send_slack_message = mock_send_slack_message
+
+    yield mock_send_slack_message
 
 
 @pytest.fixture()
