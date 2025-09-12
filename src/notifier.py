@@ -20,6 +20,7 @@ class AlertLevel(Enum):
 
 def create_slack_message(
     level: AlertLevel,
+    title: str,
     message: str,
     details: Optional[Dict[str, Any]],
     error: Optional[Exception] = None,
@@ -28,6 +29,7 @@ def create_slack_message(
 
     formatted_message = [
         f"{level.value} *{level.name}*",
+        f"*{title}*",
         f"*Timestamp:* {timestamp}",
         f"*Message:* {message}",
     ]
@@ -54,6 +56,7 @@ def create_slack_message(
 
 def send_slack_message(
     level: AlertLevel,
+    title: str,
     message: str,
     details: Optional[Dict[str, Any]] = None,
     error: Optional[Exception] = None,
@@ -61,7 +64,7 @@ def send_slack_message(
     MAX_RETRIES = 3
     RETRY_DELAY = 1
 
-    formatted_message = create_slack_message(level, message, details, error)
+    formatted_message = create_slack_message(level, title, message, details, error)
 
     webhook = WebhookClient(config.SLACK_WEBHOOK_URL)
 

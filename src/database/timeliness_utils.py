@@ -147,15 +147,16 @@ async def db_check_pipeline_timeliness(session: Session):
             pipeline_details = []
             for result in fail_results:
                 pipeline_details.append(
-                    f"• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
+                    f"\t• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
                     f"Last DML {result['last_dml']}, Expected within {result['timely_number']} {result['timely_datepart']}"
                 )
 
             send_slack_message(
                 level=AlertLevel.WARNING,
+                title="Timeliness Check - Pipeline DML",
                 message=f"Pipeline Timeliness Check Failed - {len(fail_results)} pipeline(s) overdue",
                 details={
-                    "Failed Pipelines": "\n".join(pipeline_details),
+                    "Failed Pipelines": "\n" + "\n".join(pipeline_details),
                     "Total Overdue": len(fail_results),
                 },
             )
@@ -353,6 +354,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
 
             send_slack_message(
                 level=AlertLevel.WARNING,
+                title="Timeliness Check - Pipeline Execution",
                 message=f"Found {rows_inserted} pipeline execution(s) exceeding timeliness threshold",
                 details={
                     "Threshold (seconds)": seconds_threshold,

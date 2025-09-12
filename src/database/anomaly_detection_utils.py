@@ -264,6 +264,7 @@ async def _detect_anomalies_for_rule(
 
             send_slack_message(
                 level=AlertLevel.WARNING,
+                title="Anomaly Detection",
                 message=f"Anomaly detected in pipeline {rule.pipeline_id} - {len(new_anomaly_results)} execution(s) flagged",
                 details={
                     "Rule": rule.name,
