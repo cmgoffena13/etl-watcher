@@ -18,6 +18,7 @@ class AnomalyDetectionRulePostInput(ValidatorModel):
 
 
 class AnomalyDetectionRulePatchInput(ValidatorModel):
+    id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_id: Optional[int] = None
     metric_field: Optional[AnomalyMetricFieldEnum] = None
@@ -31,6 +32,7 @@ class AnomalyDetectionRulePostOutput(ValidatorModel):
     id: int
 
 
+# TODO: Implement Summary Endpoint
 class AnomalyDetectionResultOutput(ValidatorModel):
     id: int
     rule_id: int
