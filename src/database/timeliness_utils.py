@@ -348,7 +348,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
                 duration_seconds,
             ) in affected_pipelines:
                 pipeline_details.append(
-                    f"• Pipeline Execution ID: {pipeline_execution_id} - {pipeline_name} (ID: {pipeline_id}): {duration_seconds} seconds"
+                    f"Pipeline Execution ID: {pipeline_execution_id} - '{pipeline_name}' (ID: {pipeline_id}): {duration_seconds} seconds"
                 )
 
             send_slack_message(
@@ -356,7 +356,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
                 message=f"Found {rows_inserted} pipeline execution(s) exceeding timeliness threshold",
                 details={
                     "Threshold (seconds)": seconds_threshold,
-                    "Affected Pipelines": "\n".join(pipeline_details),
+                    "Affected Pipelines": "\n" + "\n".join(pipeline_details),
                 },
             )
 

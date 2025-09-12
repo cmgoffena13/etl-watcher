@@ -106,25 +106,30 @@ async def db_detect_anomalies_for_pipeline(
         AnomalyDetectionRule.std_deviation_threshold_multiplier,
     ).where(AnomalyDetectionRule.id.in_(rule_ids))
 
-    rules = (await session.exec(rules_query)).scalars().all()
+    rules = (await session.exec(rules_query)).all()
     rule_ids.clear()
 
     for rule in rules:
         try:
             await _detect_anomalies_for_rule(session, rule, pipeline_execution_id)
         except Exception as e:
-            logger.error(f"Error detecting anomalies for rule {rule.name}: {e}")
+            logger.error(f"Error detecting anomalies for rule '{rule.name}': {e}")
             continue
 
 
 async def _detect_anomalies_for_rule(
     session: Session, rule: AnomalyDetectionRule, pipeline_execution_id: int
 ) -> List[AnomalyDetectionResultOutput]:
-    lookback_date = pendulum.now("UTC").subtract(days=rule.lookback_days)
+    logger.info(
+        f"Detecting anomalies for rule '{rule.name}' on pipeline {rule.pipeline_id}"
+    )
+    lookback_date = pendulum.now("UTC").subtract(days=(rule.lookback_days))
 
-    hour_recorded = session.exec(
-        select(PipelineExecution.hour_recorded).where(
-            PipelineExecution.id == pipeline_execution_id
+    hour_recorded = (
+        await session.exec(
+            select(PipelineExecution.hour_recorded).where(
+                PipelineExecution.id == pipeline_execution_id
+            )
         )
     ).scalar_one()
 
@@ -140,7 +145,7 @@ async def _detect_anomalies_for_rule(
 
     if len(execution_ids) < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule {rule.name}: {len(execution_ids)} < {rule.minimum_executions}"
+            f"Not enough executions for rule '{rule.name}': {len(execution_ids)} < {rule.minimum_executions}"
         )
         return
 
@@ -153,19 +158,19 @@ async def _detect_anomalies_for_rule(
         PipelineExecution.updates,
         PipelineExecution.soft_deletes,
     ).where(PipelineExecution.id.in_(execution_ids))
-    executions_result = await session.exec(executions_query)
-    executions = executions_result.scalars().all()
+    executions = (await session.exec(executions_query)).all()
     execution_ids.clear()
 
     metric_values = []
     for execution in executions:
-        metric_value = getattr(execution, rule.metric_field.value, None)
+        # Access the labeled column directly by name
+        metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
             metric_values.append(metric_value)
 
     if len(metric_values) < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule {rule.name}: {len(metric_values)} < {rule.minimum_executions}"
+            f"Not enough metric values for rule '{rule.name}': {len(metric_values)} < {rule.minimum_executions}"
         )
         return
 
@@ -181,7 +186,7 @@ async def _detect_anomalies_for_rule(
         return
 
     # Define anomaly threshold using standard deviations
-    threshold = baseline_mean + (rule.threshold_multiplier * baseline_std)
+    threshold = baseline_mean + (rule.std_deviation_threshold_multiplier * baseline_std)
 
     existing_anomalies_query = select(
         AnomalyDetectionResult.pipeline_execution_id
@@ -197,9 +202,13 @@ async def _detect_anomalies_for_rule(
     )
 
     new_anomaly_results = []
+    logger.info(f"Processing {len(executions)} executions for anomaly detection")
+    logger.info(
+        f"Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+    )
+
     for execution in executions:
         current_value = getattr(execution, rule.metric_field.value, None)
-
         if current_value is None:
             continue
 
@@ -214,17 +223,19 @@ async def _detect_anomalies_for_rule(
             ) * 100
 
             # Confidence score based on how many std devs beyond the threshold
-            confidence_score = min(1.0, z_score / rule.threshold_multiplier)
+            confidence_score = min(
+                1.0, z_score / rule.std_deviation_threshold_multiplier
+            )
 
             anomaly_result = AnomalyDetectionResult(
                 rule_id=rule.id,
                 pipeline_execution_id=execution.id,
-                metric_value=current_value,
+                violation_value=current_value,
                 baseline_value=baseline_mean,
                 deviation_percentage=deviation_percentage,
                 confidence_score=confidence_score,
                 context={
-                    "threshold_multiplier": rule.threshold_multiplier,
+                    "threshold_multiplier": rule.std_deviation_threshold_multiplier,
                     "baseline_std": baseline_std,
                     "lookback_days": rule.lookback_days,
                     "execution_count": len(metric_values),
@@ -246,7 +257,7 @@ async def _detect_anomalies_for_rule(
             for result in new_anomaly_results:
                 anomaly_details.append(
                     f"• Execution ID {result.pipeline_execution_id}: "
-                    f"{result.metric_value} (baseline: {result.baseline_value:.2f}, "
+                    f"{result.violation_value} (baseline: {result.baseline_value:.2f}, "
                     f"deviation: {result.deviation_percentage:.1f}%, "
                     f"confidence: {result.confidence_score:.2f})"
                 )
