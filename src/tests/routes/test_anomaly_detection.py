@@ -43,3 +43,18 @@ async def test_patch_anomaly_detection_rule(async_client: AsyncClient):
         assert data[k] == v
     assert "created_at" in data
     assert "updated_at" in data
+
+
+@pytest.mark.anyio
+async def test_anomaly_detection_result_skip(async_client: AsyncClient):
+    pass
+
+
+@pytest.mark.anyio
+async def test_anomaly_detection_result_success(async_client: AsyncClient):
+    pass
+
+
+@pytest.mark.anyio
+async def test_anomaly_detection_result_failure(async_client: AsyncClient):
+    pass

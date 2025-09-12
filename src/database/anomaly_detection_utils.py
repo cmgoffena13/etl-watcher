@@ -30,14 +30,16 @@ async def db_get_or_create_anomaly_detection_rule(
 
     rule_id = (
         await session.exec(
-            select(AnomalyDetectionRule.id).where(
-                AnomalyDetectionRule.name == rule.name
-            )
+            select(AnomalyDetectionRule.id)
+            .where(AnomalyDetectionRule.pipeline_id == rule.pipeline_id)
+            .where(AnomalyDetectionRule.metric_field == rule.metric_field)
         )
     ).scalar_one_or_none()
 
     if rule_id is None:
-        logger.info(f"Anomaly Detection Rule '{rule.name}' Not Found. Creating...")
+        logger.info(
+            f"Anomaly Detection Rule: {rule.metric_field} for pipeline {rule.pipeline_id} Not Found. Creating..."
+        )
         new_rule = AnomalyDetectionRule(**rule.model_dump(exclude_unset=True))
 
         stmt = (
@@ -48,7 +50,9 @@ async def db_get_or_create_anomaly_detection_rule(
         rule_id = (await session.exec(stmt)).scalar_one()
         await session.commit()
         created = True
-        logger.info(f"Anomaly Detection Rule '{rule.name}' Successfully Created")
+        logger.info(
+            f"Anomaly Detection Rule: {rule.metric_field} for pipeline {rule.pipeline_id} Successfully Created"
+        )
 
     if created:
         response.status_code = status.HTTP_201_CREATED
@@ -98,7 +102,6 @@ async def db_detect_anomalies_for_pipeline(
     # Second query: PK seeks for full rule data
     rules_query = select(
         AnomalyDetectionRule.id,
-        AnomalyDetectionRule.name,
         AnomalyDetectionRule.pipeline_id,
         AnomalyDetectionRule.lookback_days,
         AnomalyDetectionRule.minimum_executions,
@@ -113,7 +116,9 @@ async def db_detect_anomalies_for_pipeline(
         try:
             await _detect_anomalies_for_rule(session, rule, pipeline_execution_id)
         except Exception as e:
-            logger.error(f"Error detecting anomalies for rule '{rule.name}': {e}")
+            logger.error(
+                f"Error detecting anomalies for rule '{rule.metric_field}' for pipeline {rule.pipeline_id}: {e}"
+            )
             continue
 
 
@@ -121,7 +126,7 @@ async def _detect_anomalies_for_rule(
     session: Session, rule: AnomalyDetectionRule, pipeline_execution_id: int
 ) -> List[AnomalyDetectionResultOutput]:
     logger.info(
-        f"Detecting anomalies for rule '{rule.name}' on pipeline {rule.pipeline_id}"
+        f"Detecting anomalies for rule '{rule.metric_field}' on pipeline {rule.pipeline_id}"
     )
     lookback_date = pendulum.now("UTC").subtract(days=(rule.lookback_days))
 
@@ -145,7 +150,7 @@ async def _detect_anomalies_for_rule(
 
     if len(execution_ids) < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule '{rule.name}': {len(execution_ids)} < {rule.minimum_executions}"
+            f"Not enough executions for rule '{rule.metric_field}': {len(execution_ids)} < {rule.minimum_executions}"
         )
         return
 
@@ -170,7 +175,7 @@ async def _detect_anomalies_for_rule(
 
     if len(metric_values) < rule.minimum_executions:
         logger.warning(
-            f"Not enough metric values for rule '{rule.name}': {len(metric_values)} < {rule.minimum_executions}"
+            f"Not enough metric values for rule '{rule.metric_field}': {len(metric_values)} < {rule.minimum_executions}"
         )
         return
 
@@ -181,7 +186,7 @@ async def _detect_anomalies_for_rule(
     # Handle case where std dev is 0 (all values are identical, like 0 rows)
     if baseline_std == 0:
         logger.warning(
-            f"No variance in data for rule {rule.name}, skipping anomaly detection"
+            f"No variance in data for rule '{rule.metric_field}', skipping anomaly detection"
         )
         return
 
@@ -267,7 +272,6 @@ async def _detect_anomalies_for_rule(
                 title="Anomaly Detection",
                 message=f"Anomaly detected in pipeline {rule.pipeline_id} - {len(new_anomaly_results)} execution(s) flagged",
                 details={
-                    "Rule": rule.name,
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
                     "Lookback Days": rule.lookback_days,
