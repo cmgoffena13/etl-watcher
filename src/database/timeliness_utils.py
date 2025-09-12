@@ -217,7 +217,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     update_stmt = (
         update(Pipeline)
         .where(Pipeline.id == pipeline.id)
-        .values(next_watermark=next_watermark)
+        .values(next_watermark=str(next_watermark))
         .returning(Pipeline.watermark, Pipeline.pipeline_args)
     )
     watermark, pipeline_args = (await session.exec(update_stmt)).first()
@@ -287,7 +287,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     update_stmt = (
         update(Pipeline)
         .where(Pipeline.id == pipeline.id)
-        .values(watermark=next_watermark)
+        .values(watermark=str(next_watermark))
     )
     await session.exec(update_stmt)
     await session.commit()

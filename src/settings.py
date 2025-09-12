@@ -14,6 +14,7 @@ class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
     LOGFIRE_TOKEN: Optional[str] = None
     LOGFIRE_CONSOLE: Optional[bool] = None
+    SLACK_WEBHOOK_URL: Optional[str] = None
 
 
 class DevConfig(GlobalConfig):
