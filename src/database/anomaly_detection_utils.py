@@ -18,6 +18,7 @@ from src.models.anomaly_detection import (
     AnomalyDetectionRulePostInput,
     AnomalyDetectionRulePostOutput,
 )
+from src.notifier import AlertLevel, send_slack_message
 
 logger = logging.getLogger(__name__)
 
@@ -239,3 +240,27 @@ async def _detect_anomalies_for_rule(
     if new_anomaly_results:
         session.add_all(new_anomaly_results)
         await session.commit()
+
+        try:
+            anomaly_details = []
+            for result in new_anomaly_results:
+                anomaly_details.append(
+                    f"• Execution ID {result.pipeline_execution_id}: "
+                    f"{result.metric_value} (baseline: {result.baseline_value:.2f}, "
+                    f"deviation: {result.deviation_percentage:.1f}%, "
+                    f"confidence: {result.confidence_score:.2f})"
+                )
+
+            send_slack_message(
+                level=AlertLevel.WARNING,
+                message=f"Anomaly detected in pipeline {rule.pipeline_id} - {len(new_anomaly_results)} execution(s) flagged",
+                details={
+                    "Rule": rule.name,
+                    "Metric": rule.metric_field.value,
+                    "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
+                    "Lookback Days": rule.lookback_days,
+                    "Anomalies": "\n".join(anomaly_details),
+                },
+            )
+        except Exception as e:
+            logger.error(f"Failed to send Slack notification for anomalies: {e}")
