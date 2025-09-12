@@ -256,7 +256,7 @@ async def _detect_anomalies_for_rule(
             anomaly_details = []
             for result in new_anomaly_results:
                 anomaly_details.append(
-                    f"• Execution ID {result.pipeline_execution_id}: "
+                    f"\t• Execution ID {result.pipeline_execution_id}: "
                     f"{result.violation_value} (baseline: {result.baseline_value:.2f}, "
                     f"deviation: {result.deviation_percentage:.1f}%, "
                     f"confidence: {result.confidence_score:.2f})"
@@ -270,7 +270,7 @@ async def _detect_anomalies_for_rule(
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
                     "Lookback Days": rule.lookback_days,
-                    "Anomalies": "\n".join(anomaly_details),
+                    "Anomalies": "\n" + "\n".join(anomaly_details),
                 },
             )
         except Exception as e:

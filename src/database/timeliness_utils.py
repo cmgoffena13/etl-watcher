@@ -348,7 +348,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
                 duration_seconds,
             ) in affected_pipelines:
                 pipeline_details.append(
-                    f"Pipeline Execution ID: {pipeline_execution_id} - '{pipeline_name}' (ID: {pipeline_id}): {duration_seconds} seconds"
+                    f"\t• Pipeline Execution ID: {pipeline_execution_id} - '{pipeline_name}' (ID: {pipeline_id}): {duration_seconds} seconds"
                 )
 
             send_slack_message(
