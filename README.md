@@ -38,6 +38,7 @@ uv sync
 pre-commit install
 pre-commit install --hook-type pre-push
 ```
+6. Add in Environment Variables referencing `.env.example`
 
 ## Features
 

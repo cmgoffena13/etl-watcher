@@ -26,7 +26,8 @@ async def test_connection():
         async with engine.connect() as conn:
             await conn.execute(text("SELECT 1"))
         logger.info("Test Successful")
-    except Exception:
+    except Exception as e:
+        logger.critical(f"Database Connection Failed: {e}")
         raise
 
 

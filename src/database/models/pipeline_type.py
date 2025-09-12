@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import Boolean, Column, text
+from sqlalchemy import Boolean, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
@@ -12,7 +12,7 @@ class PipelineType(SQLModel, table=True):
     __tablename__ = "pipeline_type"
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
-    name: str = Field(index=True, unique=True, max_length=150, min_length=1)
+    name: str = Field(max_length=150, min_length=1)
     timely_number: Optional[int]
     timely_datepart: Optional[DatePartEnum]
     mute_timely_check: bool = Field(
@@ -30,4 +30,13 @@ class PipelineType(SQLModel, table=True):
     )
     updated_at: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+    )
+
+    __table_args__ = (
+        Index(
+            "ix_pipeline_type_name_includes",
+            "name",
+            unique=True,
+            postgresql_include=["id"],
+        ),
     )

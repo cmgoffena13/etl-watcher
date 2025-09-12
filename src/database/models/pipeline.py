@@ -14,7 +14,7 @@ class Pipeline(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
     name: str = Field(max_length=150, min_length=1)
-    pipeline_type_id: int = Field(index=True, foreign_key="pipeline_type.id")
+    pipeline_type_id: int = Field(foreign_key="pipeline_type.id")
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
 
@@ -61,6 +61,11 @@ class Pipeline(SQLModel, table=True):
             "ix_pipeline_name_includes",
             "name",
             unique=True,
-            postgresql_include=["load_lineage", "active"],
+            postgresql_include=["load_lineage", "active", "id"],
+        ),
+        Index(
+            "ix_pipeline_pipeline_type_id_includes",
+            "pipeline_type_id",
+            postgresql_include=["id"],
         ),
     )

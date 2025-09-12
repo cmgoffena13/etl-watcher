@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import Column, text
+from sqlalchemy import Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
@@ -10,7 +10,7 @@ class AddressType(SQLModel, table=True):
     __tablename__ = "address_type"
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
-    name: str = Field(index=True, unique=True, max_length=150, min_length=1)
+    name: str = Field(max_length=150, min_length=1)
     group_name: str = Field(max_length=150, min_length=1)
 
     created_at: DateTime = Field(
@@ -24,4 +24,13 @@ class AddressType(SQLModel, table=True):
     )
     updated_at: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
+    )
+
+    __table_args__ = (
+        Index(
+            "ix_address_type_name_includes",
+            "name",
+            unique=True,
+            postgresql_include=["id"],
+        ),
     )

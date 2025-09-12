@@ -3,7 +3,7 @@ import time
 from typing import List, Set, Tuple
 
 from fastapi import Response
-from sqlalchemy import alias, desc, literal_column, select, union_all
+from sqlalchemy import alias, desc, select, union_all
 from sqlmodel import Session
 
 from src.database.address_utils import db_get_or_create_address

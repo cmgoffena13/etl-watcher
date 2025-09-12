@@ -33,6 +33,7 @@ async def reset_database():
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
         await conn.execute(text("DROP TABLE IF EXISTS address_type"))
         await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
+        await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
 
 
 async def create_initial_records():

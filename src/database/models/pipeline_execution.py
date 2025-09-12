@@ -40,13 +40,14 @@ class PipelineExecution(SQLModel, table=True):
             "ix_pipeline_execution_end_date_filter",
             "end_date",
             postgresql_where=text("end_date IS NOT NULL"),
+            postgresql_include=["id"],
         ),
         Index(
             "ix_pipeline_execution_hour_recorded",
             "pipeline_id",
             "hour_recorded",
             "end_date",
-            postgresql_include=["completed_successfully"],
+            postgresql_include=["completed_successfully", "id"],
             postgresql_where=text("end_date IS NOT NULL"),
         ),
     )

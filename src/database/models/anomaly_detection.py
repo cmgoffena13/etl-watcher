@@ -13,7 +13,7 @@ class AnomalyDetectionRule(SQLModel, table=True):
     __tablename__ = "anomaly_detection_rule"
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
-    name: str = Field(max_length=150, min_length=1, index=True, unique=True)
+    name: str = Field(max_length=150, min_length=1)
     pipeline_id: Optional[int] = Field(foreign_key="pipeline.id")
 
     metric_field: AnomalyMetricFieldEnum = Field(max_length=50)
@@ -41,6 +41,13 @@ class AnomalyDetectionRule(SQLModel, table=True):
             "ix_anomaly_detection_rule_pipeline_id",
             "pipeline_id",
             "active",
+            postgresql_include=["id"],
+        ),
+        Index(
+            "ix_anomaly_detection_rule_name_includes",
+            "name",
+            unique=True,
+            postgresql_include=["id"],
         ),
     )
 
