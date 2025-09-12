@@ -1,22 +1,29 @@
 import logging
 
 import pendulum
-from fastapi import HTTPException, Response
+from fastapi import Response
 from sqlalchemy import func, select, text, update
 from sqlmodel import Session
 
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_execution import PipelineExecution
+from src.database.models.timeliness_pipeline_execution_log import (
+    TimelinessPipelineExecutionLog,
+)
 from src.database.pipeline_utils import db_get_or_create_pipeline
 from src.models.pipeline import PipelinePostInput, PipelinePostOutput
+from src.notifier import AlertLevel, send_slack_message
 
 logger = logging.getLogger(__name__)
 
 
 async def db_check_timeliness(session: Session, response: Response):
-    await db_check_pipeline_timeliness(session)
-    await db_check_pipeline_execution_timeliness(session, response)
-    return {"status": "success"}
+    pipeline_status = await db_check_pipeline_timeliness(session)
+    execution_status = await db_check_pipeline_execution_timeliness(session, response)
+    if pipeline_status == "warning" or execution_status == "warning":
+        return {"status": "warning"}
+    else:
+        return {"status": "success"}
 
 
 async def db_check_pipeline_timeliness(session: Session):
@@ -131,15 +138,37 @@ async def db_check_pipeline_timeliness(session: Session):
             )
 
     if fail_results:
-        error_message = _generate_timeliness_error_message(fail_results)
-        logger.error(f"Timeliness check failed: {error_message}")
-
+        logger.warning(
+            f"Pipeline Timeliness Check Failed - {len(fail_results)} pipeline(s) overdue"
+        )
         await session.exec(text("DROP TABLE IF EXISTS check_pipeline_timeliness_temp"))
 
-        raise HTTPException(status_code=500, detail=error_message)
+        try:
+            pipeline_details = []
+            for result in fail_results:
+                pipeline_details.append(
+                    f"• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
+                    f"Last DML {result['last_dml']}, Expected within {result['timely_number']} {result['timely_datepart']}"
+                )
+
+            send_slack_message(
+                level=AlertLevel.WARNING,
+                message=f"Pipeline Timeliness Check Failed - {len(fail_results)} pipeline(s) overdue",
+                details={
+                    "Failed Pipelines": "\n".join(pipeline_details),
+                    "Total Overdue": len(fail_results),
+                },
+            )
+        except Exception as e:
+            logger.error(
+                f"Failed to send Slack notification for timeliness failures: {e}"
+            )
+        return "warning"
     else:
         logger.info("All pipelines passed timeliness check")
         await session.exec(text("DROP TABLE IF EXISTS check_pipeline_timeliness_temp"))
+
+    return "success"
 
 
 def _calculate_timely_time(max_dml, datepart, number):
@@ -173,19 +202,6 @@ def _get_display_datepart(datepart, number):
         return datepart_lower
     else:
         return f"{datepart_lower}s"
-
-
-def _generate_timeliness_error_message(fail_results):
-    """Generate error message for failed timeliness checks"""
-    error_parts = ["The following Pipelines failed their timeliness checks:"]
-
-    for result in fail_results:
-        error_parts.append(
-            f"{result['pipeline_id']}: '{result['pipeline_name']}' has not had a DML operation "
-            f"within the timeframe: {result['timely_number']} {result['timely_datepart']}; "
-            f"Last DML Operation: {result['last_dml']};"
-        )
-    return "\n".join(error_parts)
 
 
 async def db_check_pipeline_execution_timeliness(session: Session, response: Response):
@@ -284,6 +300,10 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     )
     rows_inserted = result.rowcount
 
+    await session.exec(
+        text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log_temp")
+    )
+
     update_stmt = (
         update(Pipeline)
         .where(Pipeline.id == pipeline.id)
@@ -296,6 +316,53 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
         f"Inserted {rows_inserted} new timeliness pipeline execution log records"
     )
 
-    await session.exec(
-        text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log_temp")
-    )
+    if rows_inserted > 0:
+        logger.warning(
+            f"Found {rows_inserted} pipeline execution(s) exceeding timeliness threshold"
+        )
+        try:
+            affected_pipelines_query = (
+                select(
+                    TimelinessPipelineExecutionLog.pipeline_execution_id,
+                    TimelinessPipelineExecutionLog.pipeline_id,
+                    Pipeline.name,
+                    TimelinessPipelineExecutionLog.duration_seconds,
+                )
+                .join(
+                    Pipeline, Pipeline.id == TimelinessPipelineExecutionLog.pipeline_id
+                )
+                .where(
+                    TimelinessPipelineExecutionLog.pipeline_execution_id > watermark,
+                    TimelinessPipelineExecutionLog.pipeline_execution_id
+                    <= next_watermark,
+                )
+            )
+
+            affected_pipelines = (await session.exec(affected_pipelines_query)).all()
+
+            pipeline_details = []
+            for (
+                pipeline_execution_id,
+                pipeline_id,
+                pipeline_name,
+                duration_seconds,
+            ) in affected_pipelines:
+                pipeline_details.append(
+                    f"• Pipeline Execution ID: {pipeline_execution_id} - {pipeline_name} (ID: {pipeline_id}): {duration_seconds} seconds"
+                )
+
+            send_slack_message(
+                level=AlertLevel.WARNING,
+                message=f"Found {rows_inserted} pipeline execution(s) exceeding timeliness threshold",
+                details={
+                    "Threshold (seconds)": seconds_threshold,
+                    "Affected Pipelines": "\n".join(pipeline_details),
+                },
+            )
+
+            return "warning"
+        except Exception as e:
+            logger.error(
+                f"Failed to send Slack notification for timeliness executions: {e}"
+            )
+    return "success"
