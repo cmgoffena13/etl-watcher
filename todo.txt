@@ -1,8 +1,7 @@
-1. Implement slack alerting (for anomalies and timeliness checks)
-2. Implement log cleanup endpoint
-3. Create an audit log framework for auditing pipelines 
+1. Implement log cleanup endpoint
+2. Create an audit log framework for auditing pipelines 
     to provide information on Completeness and Accuracy (and then anomaly alerting on that as well)
-4. Look into Celery for background tasks like anomaly and timeliness checks to have response time to be faster
-5. Check that the anomaly and timeliness indexes are actually being used
+3. Look into Celery for background tasks like anomaly and timeliness checks to have response time to be faster
+4. Check that the anomaly and timeliness indexes are actually being used
     (Will have to get the queries from SQLAlchemy and trigger in DBeaver with EXPLAIN)
-6. Think about throughput. Endpoint to showcase?
+5. Think about throughput. Endpoint to showcase?
