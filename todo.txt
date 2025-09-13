@@ -6,3 +6,4 @@
 5. Implement timely columns into pipeline execution checks
 6. Split the timeliness endpoint out into timeliness and freshness endpoints
 7. Add lookback window for pipeline execution checks to account for long-running pipelines as well
+8. pipeline_metadata: "daily_additive_cumulation": True

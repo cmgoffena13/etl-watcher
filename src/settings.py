@@ -48,6 +48,9 @@ def get_database_config():
         "sqlalchemy.url": db_config.DATABASE_URL,
         "sqlalchemy.echo": True if isinstance(config, DevConfig) else False,
         "sqlalchemy.future": True,
+        "sqlalchemy.pool_size": 20,
+        "sqlalchemy.max_overflow": 10,
+        "sqlalchemy.pool_timeout": 30,
     }
 
     # Add SQLite-specific settings if using SQLite
