@@ -1,5 +1,5 @@
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import BigInteger, Column, Index, text
+from sqlalchemy import BigInteger, Column, ForeignKeyConstraint, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
@@ -10,9 +10,8 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
     id: int | None = Field(
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
-    pipeline_execution_id: int = Field(
-        sa_column=Column(BigInteger, foreign_key="pipeline_execution.id")
-    )
+    pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
+
     pipeline_id: int = Field(foreign_key="pipeline.id")
     duration_seconds: int
     seconds_threshold: int
@@ -27,6 +26,9 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
     )
 
     __table_args__ = (
+        ForeignKeyConstraint(
+            columns=["pipeline_execution_id"], refcolumns=["pipeline_execution.id"]
+        ),
         Index(
             "ix_timeliness_pipeline_execution_log_covering",
             "pipeline_execution_id",

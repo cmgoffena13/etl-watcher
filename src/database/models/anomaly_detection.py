@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
-from sqlalchemy import BigInteger, Boolean, Column, Index, text
+from sqlalchemy import BigInteger, Boolean, Column, ForeignKeyConstraint, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
@@ -57,9 +57,7 @@ class AnomalyDetectionResult(SQLModel, table=True):
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
     rule_id: int = Field(foreign_key="anomaly_detection_rule.id")
-    pipeline_execution_id: int = Field(
-        sa_column=Column(BigInteger, foreign_key="pipeline_execution.id")
-    )
+    pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
 
     violation_value: float = Field()
     baseline_value: float = Field()
@@ -77,6 +75,9 @@ class AnomalyDetectionResult(SQLModel, table=True):
     )
 
     __table_args__ = (
+        ForeignKeyConstraint(
+            columns=["pipeline_execution_id"], refcolumns=["pipeline_execution.id"]
+        ),
         Index(
             "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
             "rule_id",

@@ -211,7 +211,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
         name="Timeliness Check",
         pipeline_type_name="Audit",
         pipeline_type_group_name="Internal",
-        pipeline_args={"timeliness_execution_seconds_threshold": 1800},
+        pipeline_metadata={"timeliness_execution_seconds_threshold": 1800},
     )
 
     pipeline = PipelinePostOutput(
@@ -235,9 +235,9 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
         update(Pipeline)
         .where(Pipeline.id == pipeline.id)
         .values(next_watermark=str(next_watermark))
-        .returning(Pipeline.watermark, Pipeline.pipeline_args)
+        .returning(Pipeline.watermark, Pipeline.pipeline_metadata)
     )
-    watermark, pipeline_args = (await session.exec(update_stmt)).first()
+    watermark, pipeline_metadata = (await session.exec(update_stmt)).first()
     await session.commit()
 
     if watermark is None:
@@ -245,7 +245,7 @@ async def db_check_pipeline_execution_timeliness(session: Session, response: Res
     else:
         watermark = int(watermark)
 
-    seconds_threshold = pipeline_args.get(
+    seconds_threshold = pipeline_metadata.get(
         "timeliness_execution_seconds_threshold", 1800
     )
 

@@ -24,6 +24,7 @@ async def db_start_pipeline_execution(
                 exclude_unset=True,
             ),
             hour_recorded=pipeline_execution.start_date.in_timezone("UTC").hour,
+            date_recorded=pipeline_execution.start_date.in_timezone("UTC").date(),
         )
     )
     pipeline_execution_id = (await session.exec(execution_start_stmt)).scalar_one()

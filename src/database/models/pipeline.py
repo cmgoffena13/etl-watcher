@@ -18,7 +18,7 @@ class Pipeline(SQLModel, table=True):
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
 
-    pipeline_args: Optional[dict] = Field(sa_column=Column(JSONB))
+    pipeline_metadata: Optional[dict] = Field(sa_column=Column(JSONB))
 
     last_target_insert: Optional[DateTime] = Field(
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)

@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250912164829
+Revision ID: 20250912204439
 Revises:
-Create Date: 2025-09-12 16:48:32.052036
+Create Date: 2025-09-12 20:44:41.075744
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250912164829"
+revision: str = "20250912204439"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -135,7 +135,7 @@ def upgrade() -> None:
             "next_watermark", sqlmodel.sql.sqltypes.AutoString(length=50), nullable=True
         ),
         sa.Column(
-            "pipeline_args", postgresql.JSONB(astext_type=sa.Text()), nullable=True
+            "pipeline_metadata", postgresql.JSONB(astext_type=sa.Text()), nullable=True
         ),
         sa.Column("last_target_insert", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_update", sa.DateTime(timezone=True), nullable=True),
@@ -309,6 +309,7 @@ def upgrade() -> None:
         sa.Column("parent_id", sa.Integer(), nullable=True),
         sa.Column("pipeline_id", sa.Integer(), nullable=False),
         sa.Column("start_date", sa.DateTime(timezone=True), nullable=False),
+        sa.Column("date_recorded", sa.Date(), nullable=False),
         sa.Column("hour_recorded", sa.Integer(), nullable=False),
         sa.Column("end_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("duration_seconds", sa.Integer(), nullable=True),
@@ -356,9 +357,9 @@ def upgrade() -> None:
     )
     op.create_table(
         "anomaly_detection_result",
-        sa.Column("id", sa.Integer(), nullable=False),
+        sa.Column("id", sa.BigInteger(), nullable=False),
         sa.Column("rule_id", sa.Integer(), nullable=False),
-        sa.Column("pipeline_execution_id", sa.Integer(), nullable=False),
+        sa.Column("pipeline_execution_id", sa.BigInteger(), nullable=True),
         sa.Column("violation_value", sa.Float(), nullable=False),
         sa.Column("baseline_value", sa.Float(), nullable=False),
         sa.Column("deviation_percentage", sa.Float(), nullable=False),
@@ -389,7 +390,7 @@ def upgrade() -> None:
     op.create_table(
         "timeliness_pipeline_execution_log",
         sa.Column("id", sa.BigInteger(), nullable=False),
-        sa.Column("pipeline_execution_id", sa.Integer(), nullable=False),
+        sa.Column("pipeline_execution_id", sa.BigInteger(), nullable=True),
         sa.Column("pipeline_id", sa.Integer(), nullable=False),
         sa.Column("duration_seconds", sa.Integer(), nullable=False),
         sa.Column("seconds_threshold", sa.Integer(), nullable=False),

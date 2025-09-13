@@ -10,7 +10,7 @@ class PipelinePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
     next_watermark: Optional[Union[str, int, DateTime]] = None
-    pipeline_args: Optional[dict] = None
+    pipeline_metadata: Optional[dict] = None
     timely_number: Optional[int] = None
     timely_datepart: Optional[DatePartEnum] = None
     mute_timely_check: Optional[bool] = False
@@ -29,7 +29,7 @@ class PipelinePatchInput(ValidatorModel):
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_type_id: Optional[int] = None
     next_watermark: Optional[Union[str, int, DateTime]] = None
-    pipeline_args: Optional[dict] = None
+    pipeline_metadata: Optional[dict] = None
     timely_number: Optional[int] = None
     timely_datepart: Optional[DatePartEnum] = None
     mute_timely_check: Optional[bool] = None
