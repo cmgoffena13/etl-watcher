@@ -130,7 +130,7 @@ pre-commit install --hook-type pre-push
 - `POST /anomaly_detection/detect/{pipeline_id}` - Run anomaly detection for a pipeline
 
 ### Monitoring & Health
-- `POST /timeliness` - Check pipeline execution timeliness
+- `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)
 - `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
 - `GET /` - Health check endpoint
@@ -221,7 +221,7 @@ make trigger-migration
 The monitoring system provides two complementary checks to ensure your data pipelines are running optimally:
 
 ### Pipeline Execution Timeliness
-Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes.
+Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes. Uses a configurable lookback window to check both running and completed pipelines to alert on long-running pipelines as well.
 
 ### DML Freshness Monitoring  
 Checks if data manipulation operations (inserts, updates, deletes) are recent enough, ensuring data freshness for downstream consumers.
@@ -229,6 +229,12 @@ Checks if data manipulation operations (inserts, updates, deletes) are recent en
 ### How It Works
 
 The timeliness check runs on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoint as often as you like, it does broad coverage) and evaluates each pipeline against its defined rules.
+
+#### Timeliness Check Features
+- **Lookback Window**: Configurable time window to check for overdue executions (e.g., last 60 minutes)
+- **Running Pipeline Detection**: Identifies currently running pipelines that exceed their threshold
+- **Completed Pipeline Detection**: Identifies completed pipelines that took longer than expected
+- **Dynamic Thresholds**: Uses pipeline-specific or pipeline-type-specific timeliness settings
 
 ### Configuration
 
@@ -345,32 +351,37 @@ Details:
 • Total Overdue: 2
 ```
 
-#### Long-Running Executions
-When pipeline executions exceed the timeliness threshold, notifications include:
+#### Pipeline Execution Timeliness Failures
+When pipeline executions exceed their timeliness threshold, notifications include:
 
 - **Execution Details**: Pipeline execution ID, duration, and affected pipeline name
+- **Execution Status**: Whether the pipeline is currently running or completed
 - **Threshold Information**: Configured threshold and actual execution time
-- **Watermark Range**: Current watermark range being processed
-- **Pipeline Context**: Which specific pipeline had the long-running execution
+- **Configuration Source**: Whether the threshold comes from pipeline-specific or pipeline-type settings
 
 Example notification:
 ```
 ⚠️ WARNING
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Found 1 pipeline execution(s) exceeding timeliness threshold
+Message: Pipeline Execution Timeliness Check Failed - 2 execution(s) overdue
 
 Details:
-• Threshold (seconds): 1800
-• Affected Pipelines:
-  • Pipeline Execution ID: 456 - stock-price-worker (ID: 1): 3600 seconds
+• Failed Executions:
+  • Pipeline Execution ID: 456 (Pipeline ID: 1): 3600 seconds (running), Expected within 30 minutes (child config)
+  • Pipeline Execution ID: 457 (Pipeline ID: 2): 2400 seconds (completed), Expected within 15 minutes (parent config)
+• Total Overdue: 2
 ```
 
 ### API Usage
 
 #### Pipeline Execution Timeliness
 ```python
-# Check pipeline execution timeliness
-response = await client.post("http://localhost:8000/timeliness")
+# Check pipeline execution timeliness with lookback window
+timeliness_data = {
+    "lookback_minutes": 60  # Check executions from the last 60 minutes
+}
+
+response = await client.post("http://localhost:8000/timeliness", json=timeliness_data)
 result = response.json()
 
 if result["status"] == "warning":
@@ -402,6 +413,13 @@ else:
 - **200 OK**: Timeliness check completed successfully
   - `{"status": "success"}` - All pipelines are running on time
   - `{"status": "warning"}` - Some pipelines are overdue (Slack notifications sent)
+
+#### Input Parameters
+
+- **`lookback_minutes`** (required): Time window in minutes to check for overdue executions
+  - Example: `60` - Check executions from the last 60 minutes
+  - Example: `1440` - Check executions from the last 24 hours
+  - Example: `10080` - Check executions from the last week
 
 ### Error Handling
 
