@@ -3,6 +3,8 @@
 
 A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, track data lineage, ensure timeliness, detect anomalies, and manage data addresses across your data infrastructure.
 
+![linesofcode](https://aschey.tech/tokei/github/cmgoffena13/watcher?category=code)
+
 ## Table of Contents
 
 1. [Development Setup](#development-setup)
