@@ -14,7 +14,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 5. [Database Schema](#️-database-schema)
 6. [Development](#️-development)
 7. [Technology Stack](#️-technology-stack)
-8. [Timeliness](#-timeliness)
+8. [Timeliness & Freshness](#-timeliness--freshness)
 9. [Anomaly Checks](#-anomaly-checks)
 10. [Log Cleanup](#-log-cleanup--maintenance)
 11. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
@@ -51,10 +51,11 @@ pre-commit install --hook-type pre-push
 - **Execution History**: Maintain complete audit trail of all pipeline runs
 - **Status Management**: Monitor active/inactive pipeline states
 
-### ⏰ Timeliness Checks
-- **Automated Monitoring**: Check if pipelines are running within expected timeframes
-- **Configurable Thresholds**: Set custom timeliness rules per pipeline type and individual pipelines
-- **Mute Capability**: Skip timeliness checks for specific pipelines when needed
+### ⏰ Timeliness & Freshness Checks
+- **Pipeline Execution Timeliness**: Monitor if pipeline executions complete within expected timeframes
+- **DML Freshness Monitoring**: Check if data manipulation operations (inserts, updates, deletes) are recent enough
+- **Configurable Thresholds**: Set custom rules per pipeline type and individual pipelines
+- **Mute Capability**: Skip checks for specific pipelines when needed
 
 ### 🔗 Data Lineage Tracking
 - **Address Management**: Track source and target data addresses with type classification
@@ -129,7 +130,8 @@ pre-commit install --hook-type pre-push
 - `POST /anomaly_detection/detect/{pipeline_id}` - Run anomaly detection for a pipeline
 
 ### Monitoring & Health
-- `POST /timeliness` - Check pipeline timeliness
+- `POST /timeliness` - Check pipeline execution timeliness
+- `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
 - `GET /` - Health check endpoint
 - `GET /scalar` - Interactive API documentation
@@ -148,6 +150,7 @@ The repo utilizes Scalar for interactive API documentation found at the `/scalar
 - **`address_lineage`** - Source-to-target data lineage relationships
 - **`address_lineage_closure`** - Optimized closure table for efficient lineage queries
 - **`timeliness_pipeline_execution_log`** - Log of pipeline executions exceeding timeliness thresholds
+- **`freshness_pipeline_log`** - Log of pipelines failing freshness checks
 - **`anomaly_detection_rule`** - Anomaly detection rules and configuration per pipeline
 - **`anomaly_detection_result`** - Detected anomalies with statistical analysis and confidence scores
 
@@ -213,13 +216,19 @@ make trigger-migration
 - **Uvicorn** - ASGI server for FastAPI
 - **Pendulum** - Better dates and times for Python
 
-## ⏰ Timeliness
+## ⏰ Timeliness & Freshness
 
-The timeliness system provides automated monitoring to ensure your data pipelines are running within expected timeframes. This helps maintain data freshness and catch issues before they impact downstream consumers.
+The monitoring system provides two complementary checks to ensure your data pipelines are running optimally:
+
+### Pipeline Execution Timeliness
+Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes.
+
+### DML Freshness Monitoring  
+Checks if data manipulation operations (inserts, updates, deletes) are recent enough, ensuring data freshness for downstream consumers.
 
 ### How It Works
 
-The timeliness check runs on a configurable schedule (ping the endpoint as often as you like, it does broad coverage) and evaluates each pipeline against its defined timeliness rules. It examines the last DML (Data Manipulation Language) operation timestamp and compares it against the expected timeframe.
+The timeliness check runs on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoint as often as you like, it does broad coverage) and evaluates each pipeline against its defined rules.
 
 ### Configuration
 
@@ -232,9 +241,12 @@ Set broad timeliness rules that apply to all pipelines of a specific type:
 pipeline_type_data = {
     "name": "api-integration",
     "group_name": "extraction", 
-    "timely_number": 12,
-    "timely_datepart": "hour",
-    "mute_timely_check": False
+    "freshness_number": 12,
+    "freshness_datepart": "hour",
+    "mute_freshness_check": False,
+    "timeliness_number": 30,
+    "timeliness_datepart": "minute",
+    "mute_timeliness_check": False
 }
 ```
 
@@ -244,9 +256,12 @@ Override parent rules with pipeline-specific settings:
 ```python
 pipeline_data = {
     "name": "critical-data-pipeline",
-    "timely_number": 2,
-    "timely_datepart": "hour",
-    "mute_timely_check": False
+    "freshness_number": 2,
+    "freshness_datepart": "hour",
+    "mute_freshness_check": False,
+    "timeliness_number": 15,
+    "timeliness_datepart": "minute",
+    "mute_timeliness_check": False
 }
 ```
 
@@ -281,16 +296,23 @@ The timeliness check uses the **most recent** of these three timestamps as the b
 Pipelines can be temporarily excluded from timeliness checks:
 
 ```python
-# Mute a specific pipeline
+# Mute freshness checks for a specific pipeline
 pipeline_data = {
     "name": "maintenance-pipeline",
-    "mute_timely_check": True
+    "mute_freshness_check": True
 }
 
-# Mute an entire pipeline type
+# Mute timeliness checks for a specific pipeline
+pipeline_data = {
+    "name": "long-running-pipeline",
+    "mute_timeliness_check": True
+}
+
+# Mute both checks for an entire pipeline type
 pipeline_type_data = {
     "name": "batch-processing",
-    "mute_timely_check": True
+    "mute_freshness_check": True,
+    "mute_timeliness_check": True
 }
 ```
 
@@ -345,16 +367,32 @@ Details:
 
 ### API Usage
 
+#### Pipeline Execution Timeliness
 ```python
-# Check timeliness for all pipelines
+# Check pipeline execution timeliness
 response = await client.post("http://localhost:8000/timeliness")
 result = response.json()
 
 if result["status"] == "warning":
-    print("Timeliness check completed with warnings - some pipelines are overdue")
+    print("Timeliness check completed with warnings - some executions are overdue")
     print("Check Slack notifications for detailed information")
 elif result["status"] == "success":
-    print("All pipelines are running on time")
+    print("All pipeline executions are running on time")
+else:
+    print(f"Unexpected status: {result['status']}")
+```
+
+#### DML Freshness Monitoring
+```python
+# Check DML operation freshness
+response = await client.post("http://localhost:8000/freshness")
+result = response.json()
+
+if result["status"] == "warning":
+    print("Freshness check completed with warnings - some DML operations are stale")
+    print("Check Slack notifications for detailed information")
+elif result["status"] == "success":
+    print("All DML operations are fresh")
 else:
     print(f"Unexpected status: {result['status']}")
 ```
