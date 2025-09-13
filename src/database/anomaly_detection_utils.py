@@ -112,23 +112,9 @@ async def db_detect_anomalies_for_pipeline(
     rules = (await session.exec(rules_query)).all()
     rule_ids.clear()
 
-    for rule in rules:
-        try:
-            await _detect_anomalies_for_rule(session, rule, pipeline_execution_id)
-        except Exception as e:
-            logger.error(
-                f"Error detecting anomalies for rule '{rule.metric_field.value}' for pipeline {rule.pipeline_id}: {e}"
-            )
-            continue
-
-
-async def _detect_anomalies_for_rule(
-    session: Session, rule: AnomalyDetectionRule, pipeline_execution_id: int
-) -> List[AnomalyDetectionResultOutput]:
-    logger.info(
-        f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id}"
-    )
-    lookback_date = pendulum.now("UTC").subtract(days=(rule.lookback_days))
+    max_lookback_days = max(rule.lookback_days for rule in rules)
+    all_same_lookback = all(rule.lookback_days == max_lookback_days for rule in rules)
+    lookback_date = pendulum.now("UTC").subtract(days=max_lookback_days)
 
     hour_recorded = (
         await session.exec(
@@ -140,7 +126,7 @@ async def _detect_anomalies_for_rule(
 
     ids_query = (
         select(PipelineExecution.id)
-        .where(PipelineExecution.pipeline_id == rule.pipeline_id)
+        .where(PipelineExecution.pipeline_id == pipeline_id)
         .where(PipelineExecution.hour_recorded == hour_recorded)
         .where(PipelineExecution.end_date >= lookback_date)
         .where(PipelineExecution.end_date.is_not(None))
@@ -148,26 +134,68 @@ async def _detect_anomalies_for_rule(
     )
     execution_ids = (await session.exec(ids_query)).scalars().all()
 
-    if len(execution_ids) < rule.minimum_executions:
+    # Get full execution data for all rules (# PK seek for execution data)
+    if all_same_lookback:
+        executions_query = select(
+            PipelineExecution.id,
+            PipelineExecution.duration_seconds,
+            PipelineExecution.total_rows,
+            PipelineExecution.inserts,
+            PipelineExecution.updates,
+            PipelineExecution.soft_deletes,
+        ).where(PipelineExecution.id.in_(execution_ids))
+        all_executions = (await session.exec(executions_query)).all()
+    else:
+        executions_query = select(
+            PipelineExecution.id,
+            PipelineExecution.duration_seconds,
+            PipelineExecution.total_rows,
+            PipelineExecution.inserts,
+            PipelineExecution.updates,
+            PipelineExecution.soft_deletes,
+            PipelineExecution.end_date,
+        ).where(PipelineExecution.id.in_(execution_ids))
+        all_executions = (await session.exec(executions_query)).all()
+    execution_ids.clear()
+
+    for rule in rules:
+        try:
+            await _detect_anomalies_for_rule_batch(
+                session, rule, all_executions, all_same_lookback
+            )
+        except Exception as e:
+            logger.error(
+                f"Error detecting anomalies for rule '{rule.metric_field.value}' for pipeline {rule.pipeline_id}: {e}"
+            )
+            continue
+
+
+async def _detect_anomalies_for_rule_batch(
+    session: Session,
+    rule: AnomalyDetectionRule,
+    executions: list,
+    all_same_lookback: bool,
+):
+    logger.info(
+        f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id}"
+    )
+    # Filter executions by this rule's specific lookback period
+    if all_same_lookback:
+        rule_executions = executions
+    else:
+        rule_lookback_date = pendulum.now("UTC").subtract(days=rule.lookback_days)
+        rule_executions = [
+            exec for exec in executions if exec.end_date >= rule_lookback_date
+        ]
+
+    if len(rule_executions) < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule '{rule.metric_field.value}': {len(execution_ids)} < {rule.minimum_executions}"
+            f"Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions)} < {rule.minimum_executions}"
         )
         return
 
-    # PK seek for execution data
-    executions_query = select(
-        PipelineExecution.id,
-        PipelineExecution.duration_seconds,
-        PipelineExecution.total_rows,
-        PipelineExecution.inserts,
-        PipelineExecution.updates,
-        PipelineExecution.soft_deletes,
-    ).where(PipelineExecution.id.in_(execution_ids))
-    executions = (await session.exec(executions_query)).all()
-    execution_ids.clear()
-
     metric_values = []
-    for execution in executions:
+    for execution in rule_executions:
         # Access the labeled column directly by name
         metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
@@ -198,7 +226,7 @@ async def _detect_anomalies_for_rule(
     ).where(
         AnomalyDetectionResult.rule_id == rule.id,
         AnomalyDetectionResult.pipeline_execution_id.in_(
-            [execution.id for execution in executions]
+            [execution.id for execution in rule_executions]
         ),
     )
 
@@ -208,10 +236,10 @@ async def _detect_anomalies_for_rule(
 
     new_anomaly_results = []
     logger.info(
-        f"Processing {len(executions)} executions for anomaly detection: Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+        f"Processing {len(rule_executions)} executions for anomaly detection: Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
     )
 
-    for execution in executions:
+    for execution in rule_executions:
         current_value = getattr(execution, rule.metric_field.value, None)
         if current_value is None:
             continue
