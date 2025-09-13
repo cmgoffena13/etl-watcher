@@ -23,7 +23,7 @@ class DevConfig(GlobalConfig):
 
 
 class TestConfig(GlobalConfig):
-    TEST_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: False
+    WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
 
