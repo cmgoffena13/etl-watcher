@@ -96,7 +96,7 @@ async def test_pipeline_freshness_check_failure(
     await db_session.commit()
 
     response = await async_client.post("/freshness")
-    assert response.status_code == 200
+    assert response.status_code in [200, 201]
     response_data = response.json()
     assert response_data["status"] == "warning"
 

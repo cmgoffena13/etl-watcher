@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, status
 
 from src.database.freshness_utils import db_check_pipeline_freshness
 from src.database.session import SessionDep
