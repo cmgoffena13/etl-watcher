@@ -1,10 +1,10 @@
+import asyncio
 import logging
-import time
 from enum import Enum
 from typing import Any, Dict, Optional
 
+import httpx
 import pendulum
-from slack_sdk import WebhookClient
 
 from src.settings import config
 
@@ -54,7 +54,7 @@ def create_slack_message(
     return "\n".join(formatted_message)
 
 
-def send_slack_message(
+async def send_slack_message(
     level: AlertLevel,
     title: str,
     message: str,
@@ -69,23 +69,24 @@ def send_slack_message(
     if not config.SLACK_WEBHOOK_URL:
         raise ValueError("SLACK_WEBHOOK_URL is not set")
 
-    webhook = WebhookClient(config.SLACK_WEBHOOK_URL)
-
-    for retry in range(MAX_RETRIES):
-        try:
-            response = webhook.send(text=formatted_message)
-            if response.status_code == 200:
-                return
-            else:
-                raise Exception(
-                    f"Failed to send message: {response.status_code}, body={response.body}"
+    async with httpx.AsyncClient(timeout=10.0) as client:
+        for retry in range(MAX_RETRIES):
+            try:
+                response = await client.post(
+                    config.SLACK_WEBHOOK_URL, json={"text": formatted_message}
                 )
-        except Exception as e:
-            logger.error(
-                f"Failed to send Slack message (attempt {retry + 1}/{MAX_RETRIES}): {e}"
-            )
-            if retry < MAX_RETRIES - 1:
-                time.sleep(RETRY_DELAY * 2**retry)
+                if response.status_code == 200:
+                    return
+                else:
+                    raise Exception(
+                        f"Failed to send message: {response.status_code}, body={response.text}"
+                    )
+            except Exception as e:
+                logger.error(
+                    f"Failed to send Slack message (attempt {retry + 1}/{MAX_RETRIES}): {e}"
+                )
+                if retry < MAX_RETRIES - 1:
+                    await asyncio.sleep(RETRY_DELAY * 2**retry)
 
     logger.critical(
         f"Failed to send Slack message after {MAX_RETRIES} attempts: {formatted_message}"

@@ -195,9 +195,7 @@ async def db_check_pipeline_execution_timeliness(
             f"Inserted {rows_inserted} new timeliness pipeline execution log records"
         )
 
-        # Send Slack notification for failed results
         try:
-            # Build pipeline details string directly without intermediate list
             pipeline_details = "\n".join(
                 f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
                 f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
@@ -205,7 +203,7 @@ async def db_check_pipeline_execution_timeliness(
                 for result in fail_results
             )
 
-            send_slack_message(
+            await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Timeliness Check - Pipeline Execution",
                 message=f"Pipeline Execution Timeliness Check Failed - {len(fail_results)} execution(s) overdue",

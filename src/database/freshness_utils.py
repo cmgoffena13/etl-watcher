@@ -169,14 +169,13 @@ async def db_check_pipeline_freshness(session: Session):
         logger.info(f"Inserted {rows_inserted} new freshness pipeline log records")
 
         try:
-            # Build pipeline details string directly without intermediate list
             pipeline_details = "\n".join(
                 f"\t• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
                 f"Last DML {result['last_dml']}, Expected within {result['freshness_number']} {_get_display_datepart(result['freshness_datepart'], result['freshness_number'])}"
                 for result in fail_results
             )
 
-            send_slack_message(
+            await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Freshness Check - Pipeline DML",
                 message=f"Pipeline Freshness Check Failed - {len(fail_results)} pipeline(s) overdue",

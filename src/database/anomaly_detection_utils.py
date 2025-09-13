@@ -293,7 +293,7 @@ async def _detect_anomalies_for_rule_batch(
                     f"confidence: {result.confidence_score:.2f})"
                 )
 
-            send_slack_message(
+            await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Anomaly Detection",
                 message=f"Anomaly detected in pipeline {rule.pipeline_id} - {len(new_anomaly_results)} execution(s) flagged",
