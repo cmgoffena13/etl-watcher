@@ -5,6 +5,7 @@ import pendulum
 from sqlalchemy import text
 from sqlmodel import Session
 
+from src.database.db import _calculate_timely_time, _get_display_datepart
 from src.notifier import AlertLevel, send_slack_message
 
 logger = logging.getLogger(__name__)
@@ -202,36 +203,3 @@ async def db_check_pipeline_freshness(session: Session):
         await session.exec(text(f"DROP TABLE IF EXISTS {temp_table_name}"))
 
     return {"status": "success"}
-
-
-def _calculate_timely_time(max_dml, datepart, number):
-    """Calculate the expected time based on datepart and number"""
-    # Convert to pendulum if it's a regular datetime
-    if hasattr(max_dml, "add"):
-        dml_time = max_dml
-    else:
-        dml_time = pendulum.instance(max_dml)
-
-    if datepart.upper() == "MINUTE":
-        return dml_time.add(minutes=number)
-    elif datepart.upper() == "HOUR":
-        return dml_time.add(hours=number)
-    elif datepart.upper() == "DAY":
-        return dml_time.add(days=number)
-    elif datepart.upper() == "WEEK":
-        return dml_time.add(weeks=number)
-    elif datepart.upper() == "MONTH":
-        return dml_time.add(months=number)
-    elif datepart.upper() == "YEAR":
-        return dml_time.add(years=number)
-    else:
-        raise ValueError(f"Unsupported datepart: {datepart}")
-
-
-def _get_display_datepart(datepart, number):
-    """Convert datepart to display format (singular/plural)"""
-    datepart_lower = datepart.lower()
-    if number == 1:
-        return datepart_lower
-    else:
-        return f"{datepart_lower}s"

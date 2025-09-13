@@ -3,6 +3,8 @@ from sqlalchemy import BigInteger, Column, ForeignKeyConstraint, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
+from src.types import TimelinessDatePartEnum
+
 
 class TimelinessPipelineExecutionLog(SQLModel, table=True):
     __tablename__ = "timeliness_pipeline_execution_log"
@@ -11,10 +13,13 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
     pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
-
     pipeline_id: int = Field(foreign_key="pipeline.id")
     duration_seconds: int
     seconds_threshold: int
+    execution_status: str
+    timely_number: int
+    timely_datepart: TimelinessDatePartEnum
+    used_child_config: bool
     created_at: DateTime = Field(
         sa_column=Column(
             DateTimeTZ(timezone=True),
@@ -30,9 +35,8 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
             columns=["pipeline_execution_id"], refcolumns=["pipeline_execution.id"]
         ),
         Index(
-            "ix_timeliness_pipeline_execution_log_covering",
+            "ix_timeliness_pipeline_execution_log_execution_id",
             "pipeline_execution_id",
             unique=True,
-            postgresql_include=["duration_seconds", "pipeline_id"],
         ),
     )

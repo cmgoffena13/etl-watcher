@@ -103,6 +103,7 @@ async def setup_teardown():
         async with test_engine.begin() as conn:
             await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
             await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
+            await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
             await conn.run_sync(SQLModel.metadata.create_all)
 
         yield

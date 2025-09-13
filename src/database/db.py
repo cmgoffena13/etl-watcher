@@ -1,5 +1,6 @@
 import logging
 
+import pendulum
 from sqlalchemy import text
 from sqlmodel.ext.asyncio.session import AsyncSession
 
@@ -24,6 +25,7 @@ async def reset_database():
         await conn.execute(
             text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log")
         )
+        await conn.execute(text("DROP TABLE IF EXISTS freshness_pipeline_log"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage_closure"))
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage"))
@@ -92,3 +94,36 @@ async def create_initial_records():
         session.add_all(initial_address_types)
         await session.commit()
     logger.info("Successfully Inserted Records")
+
+
+def _calculate_timely_time(timestamp, datepart, number):
+    """Calculate the expected time based on datepart and number"""
+    # Convert to pendulum if it's a regular datetime
+    if hasattr(timestamp, "add"):
+        timestamp = timestamp
+    else:
+        timestamp = pendulum.instance(timestamp)
+
+    if datepart.upper() == "MINUTE":
+        return timestamp.add(minutes=number)
+    elif datepart.upper() == "HOUR":
+        return timestamp.add(hours=number)
+    elif datepart.upper() == "DAY":
+        return timestamp.add(days=number)
+    elif datepart.upper() == "WEEK":
+        return timestamp.add(weeks=number)
+    elif datepart.upper() == "MONTH":
+        return timestamp.add(months=number)
+    elif datepart.upper() == "YEAR":
+        return timestamp.add(years=number)
+    else:
+        raise ValueError(f"Unsupported datepart: {datepart}")
+
+
+def _get_display_datepart(datepart, number):
+    """Convert datepart to display format (singular/plural)"""
+    datepart_lower = datepart.lower()
+    if number == 1:
+        return datepart_lower
+    else:
+        return f"{datepart_lower}s"

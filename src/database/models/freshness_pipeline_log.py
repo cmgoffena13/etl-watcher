@@ -17,7 +17,7 @@ class FreshnessPipelineLog(SQLModel, table=True):
     evaluation_timestamp: DateTime = Field(sa_column=Column(DateTimeTZ(timezone=True)))
     freshness_number: int
     freshness_datepart: DatePartEnum
-    used_child_config: bool = Field(default=False)
+    used_child_config: bool
 
     created_at: DateTime = Field(
         sa_column=Column(
