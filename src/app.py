@@ -15,6 +15,7 @@ from src.routes import (
     address_router,
     address_type_router,
     anomaly_detection_router,
+    log_cleanup_router,
     pipeline_execution_router,
     pipeline_router,
     pipeline_type_router,
@@ -48,6 +49,7 @@ app.include_router(address_router)
 app.include_router(address_lineage_router)
 app.include_router(timeliness_router)
 app.include_router(anomaly_detection_router)
+app.include_router(log_cleanup_router)
 
 
 @app.get("/")

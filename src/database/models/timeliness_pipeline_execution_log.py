@@ -10,7 +10,9 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
     id: int | None = Field(
         sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
     )
-    pipeline_execution_id: int = Field(foreign_key="pipeline_execution.id")
+    pipeline_execution_id: int = Field(
+        sa_column=Column(BigInteger, foreign_key="pipeline_execution.id")
+    )
     pipeline_id: int = Field(foreign_key="pipeline.id")
     duration_seconds: int
     seconds_threshold: int
