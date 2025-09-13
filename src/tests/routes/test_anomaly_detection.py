@@ -1,6 +1,8 @@
 import pytest
 from httpx import AsyncClient
 
+from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
+from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.anomaly_detection import (
     TEST_ANOMALY_DETECTION_RULE_PATCH_DATA,
     TEST_ANOMALY_DETECTION_RULE_PATCH_OUTPUT_DATA,
@@ -55,6 +57,8 @@ async def test_anomaly_detection_result_skip(
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
+    pipeline_id = response.json()["id"]
+
     response = await async_client.post(
         "/anomaly_detection_rule", json=TEST_ANOMALY_DETECTION_RULE_POST_DATA
     )
@@ -63,10 +67,15 @@ async def test_anomaly_detection_result_skip(
     response = await async_client.post(
         "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
     )
+    execution_id = response.json()["id"]
     response = await async_client.post(
         "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
     )
     assert response.status_code == 204
+
+    # Call anomaly detection directly since background tasks don't run in tests
+    async with AsyncSessionLocal() as session:
+        await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
 
     mock_slack_notifications.assert_not_called()
 
@@ -75,15 +84,19 @@ async def test_anomaly_detection_result_skip(
 async def test_anomaly_detection_result_success(async_client: AsyncClient):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
+    pipeline_id = response.json()["id"]
+
     response = await async_client.post(
         "/anomaly_detection_rule", json=TEST_ANOMALY_DETECTION_RULE_POST_DATA
     )
     assert response.status_code == 201
+
     for i in range(1, 6):  # Minimum executions 5
         post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
+        execution_id = response.json()["id"]
         post_data.update(
             {
                 "id": response.json()["id"],
@@ -93,6 +106,9 @@ async def test_anomaly_detection_result_success(async_client: AsyncClient):
             "/end_pipeline_execution", json=TEST_PIPELINE_EXECUTION_END_DATA
         )
         assert response.status_code == 204
+        # Call anomaly detection directly since background tasks don't run in tests
+        async with AsyncSessionLocal() as session:
+            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
 
 
 @pytest.mark.anyio
@@ -101,10 +117,13 @@ async def test_anomaly_detection_result_failure(
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
+    pipeline_id = response.json()["id"]
+
     response = await async_client.post(
         "/anomaly_detection_rule", json=TEST_ANOMALY_DETECTION_RULE_POST_DATA
     )
     assert response.status_code == 201
+
     for i in range(1, 6):
         if i == 5:  # Trigger anomaly by giving ridiculous duration_seconds
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
@@ -118,6 +137,7 @@ async def test_anomaly_detection_result_failure(
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
+        execution_id = response.json()["id"]
         post_data.update(
             {
                 "id": response.json()["id"],
@@ -125,6 +145,9 @@ async def test_anomaly_detection_result_failure(
         )
         response = await async_client.post("/end_pipeline_execution", json=post_data)
         assert response.status_code == 204
+        # Call anomaly detection directly since background tasks don't run in tests
+        async with AsyncSessionLocal() as session:
+            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args

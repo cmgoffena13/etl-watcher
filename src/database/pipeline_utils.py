@@ -1,7 +1,7 @@
 import logging
 
 import pendulum
-from fastapi import Response, status
+from fastapi import HTTPException, Response, status
 from sqlalchemy import select, update
 from sqlmodel import Session
 

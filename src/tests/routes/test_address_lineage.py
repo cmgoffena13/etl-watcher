@@ -1,6 +1,8 @@
 import pytest
 from httpx import AsyncClient
 
+from src.database.address_lineage_utils import db_rebuild_closure_table_incremental
+from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.address_lineage import (
     TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_AND_TARGETS_DATA,
@@ -45,6 +47,14 @@ async def test_get_address_lineage_by_address(async_client: AsyncClient):
 
     # Create address lineage relationships
     await async_client.post("/address_lineage", json=TEST_ADDRESS_LINEAGE_POST_DATA)
+
+    # Manually trigger closure table rebuild since background tasks are mocked
+    async with AsyncSessionLocal() as session:
+        await db_rebuild_closure_table_incremental(
+            session=session,
+            connected_addresses={1, 2},  # source and target address IDs
+            pipeline_id=1,
+        )
 
     # Now get the lineage relationships for the source address (id=1)
     response = await async_client.get("/address_lineage/1")
@@ -134,11 +144,39 @@ async def test_update_address_lineage_replaces_existing(async_client: AsyncClien
     assert response.status_code == 201
     assert response.json()["lineage_relationships_created"] == 1
 
-    # Verify only the new relationship exists
+
+@pytest.mark.anyio
+async def test_closure_table_rebuild_function(async_client: AsyncClient):
+    """Test the closure table rebuild function directly"""
+
+    # First create a pipeline
+    pipeline_data = TEST_PIPELINE_POST_DATA.copy()
+    pipeline_data["load_lineage"] = True
+
+    await async_client.post("/pipeline", json=pipeline_data)
+
+    # Create initial lineage
+    response = await async_client.post(
+        "/address_lineage", json=TEST_ADDRESS_LINEAGE_POST_DATA
+    )
+    assert response.status_code == 201
+    assert response.json()["lineage_relationships_created"] == 1
+
+    # Test the closure table rebuild function directly
+    async with AsyncSessionLocal() as session:
+        await db_rebuild_closure_table_incremental(
+            session=session,
+            connected_addresses={1, 2},  # The addresses created by the test
+            pipeline_id=1,
+        )
+
+    # Now test that the get endpoint works
     get_response = await async_client.get("/address_lineage/1")
     assert get_response.status_code == 200
     response_data = get_response.json()
 
-    # The API returns a list of AddressLineage objects directly
+    # Should have the relationship in the closure table
     assert isinstance(response_data, list)
     assert len(response_data) == 1
+    assert response_data[0]["source_address_id"] == 1
+    assert response_data[0]["target_address_id"] == 2

@@ -196,7 +196,6 @@ async def _detect_anomalies_for_rule_batch(
 
     metric_values = []
     for execution in rule_executions:
-        # Access the labeled column directly by name
         metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
             metric_values.append(metric_value)

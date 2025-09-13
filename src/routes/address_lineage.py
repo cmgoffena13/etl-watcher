@@ -1,10 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, Response, status
+from fastapi import APIRouter, BackgroundTasks, Response, status
 
 from src.database.address_lineage_utils import (
     db_create_address_lineage,
     db_get_address_lineage_for_address,
+    db_rebuild_closure_table_incremental,
 )
 from src.database.models.address_lineage import AddressLineage
 from src.database.session import SessionDep
@@ -23,11 +24,24 @@ router = APIRouter()
     status_code=status.HTTP_201_CREATED,
 )
 async def create_address_lineage(
-    lineage_input: AddressLineagePostInput, response: Response, session: SessionDep
+    lineage_input: AddressLineagePostInput,
+    background_tasks: BackgroundTasks,
+    response: Response,
+    session: SessionDep,
 ):
-    return await db_create_address_lineage(
+    # Create lineage relationships and get affected address IDs
+    result, affected_address_ids, pipeline_id = await db_create_address_lineage(
         session=session, lineage_input=lineage_input, response=response
     )
+
+    background_tasks.add_task(
+        db_rebuild_closure_table_incremental,
+        session=session,
+        connected_addresses=affected_address_ids,
+        pipeline_id=pipeline_id,
+    )
+
+    return result
 
 
 @router.get(

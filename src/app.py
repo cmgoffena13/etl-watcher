@@ -35,6 +35,8 @@ async def lifespan(app: FastAPI):
     # await create_initial_records()
     yield
     print(panel.Panel("Server is shutting down...", border_style="red"))
+    # Close the connection pool
+    await engine.dispose()
 
 
 app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)

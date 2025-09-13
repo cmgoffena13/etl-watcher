@@ -67,7 +67,7 @@ async def _create_address_lineage_relationships(
     pipeline_id: int,
     source_address_ids: Set[int],
     target_address_ids: Set[int],
-) -> int:
+) -> tuple[int, Set[int], int]:
     logger.info(
         f"Creating {len(source_address_ids)} x {len(target_address_ids)} = {len(source_address_ids) * len(target_address_ids)} lineage relationships for pipeline {pipeline_id}"
     )
@@ -100,32 +100,32 @@ async def _create_address_lineage_relationships(
             f"Lineage operations for pipeline {pipeline_id}: deleted {delete_result.rowcount} existing records, inserted {insert_result.rowcount} new records"
         )
 
-        # Closer Table Rebuild gets its own savepoint/transaction to ensure atomicity
         await savepoint.commit()
         await session.commit()
-
-        # Rebuild closure table after lineage changes
-        affected_address_ids = source_address_ids.union(target_address_ids)
-        await _rebuild_closure_table_incremental(
-            session, affected_address_ids, pipeline_id
-        )
     except Exception:
         await savepoint.rollback()
         raise
-    return len(lineage_relationships)
+
+    # Return relationships count, affected address IDs, and pipeline ID for background processing
+    affected_address_ids = source_address_ids.union(target_address_ids)
+    return len(lineage_relationships), affected_address_ids, pipeline_id
 
 
 async def db_create_address_lineage(
     session: Session, lineage_input: AddressLineagePostInput, response: Response
-) -> AddressLineagePostOutput:
+) -> tuple[AddressLineagePostOutput, Set[int], int]:
     pipeline = await session.get(Pipeline, lineage_input.pipeline_id)
     if not pipeline or not pipeline.load_lineage:
         response.status_code = 200
-        return {
-            "pipeline_id": lineage_input.pipeline_id,
-            "lineage_relationships_created": 0,
-            "message": f"Pipeline {lineage_input.pipeline_id} does not have load_lineage=True. No lineage relationships created.",
-        }
+        return (
+            {
+                "pipeline_id": lineage_input.pipeline_id,
+                "lineage_relationships_created": 0,
+                "message": f"Pipeline {lineage_input.pipeline_id} does not have load_lineage=True. No lineage relationships created.",
+            },
+            set(),
+            lineage_input.pipeline_id,
+        )
 
     source_address_ids, target_address_ids = await _process_address_lists(
         session,
@@ -134,15 +134,23 @@ async def db_create_address_lineage(
         response,
     )
 
-    relationships_created = await _create_address_lineage_relationships(
+    (
+        relationships_created,
+        affected_address_ids,
+        pipeline_id,
+    ) = await _create_address_lineage_relationships(
         session, lineage_input.pipeline_id, source_address_ids, target_address_ids
     )
 
-    return {
-        "pipeline_id": lineage_input.pipeline_id,
-        "lineage_relationships_created": relationships_created,
-        "message": f"Lineage relationships created for pipeline {lineage_input.pipeline_id}",
-    }
+    return (
+        {
+            "pipeline_id": lineage_input.pipeline_id,
+            "lineage_relationships_created": relationships_created,
+            "message": f"Lineage relationships created for pipeline {lineage_input.pipeline_id}",
+        },
+        affected_address_ids,
+        pipeline_id,
+    )
 
 
 async def db_get_address_lineage_for_address(
@@ -202,7 +210,7 @@ async def db_get_address_lineage_for_address(
     return result.fetchall()
 
 
-async def _rebuild_closure_table_incremental(
+async def db_rebuild_closure_table_incremental(
     session: Session, connected_addresses: Set[int], pipeline_id: int
 ) -> None:
     logger.info(

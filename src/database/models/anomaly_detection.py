@@ -79,9 +79,9 @@ class AnomalyDetectionResult(SQLModel, table=True):
             columns=["pipeline_execution_id"], refcolumns=["pipeline_execution.id"]
         ),
         Index(
-            "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
-            "rule_id",
+            "ix_anomaly_detection_result_pipeline_execution_id_rule_id",
             "pipeline_execution_id",
+            "rule_id",
             unique=True,
         ),
     )
