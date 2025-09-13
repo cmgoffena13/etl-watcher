@@ -37,8 +37,9 @@ async def end_pipeline_execution(
     await db_end_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
     )
-    await db_detect_anomalies_for_pipeline(
-        session=session,
-        pipeline_id=pipeline_execution.pipeline_id,
-        pipeline_execution_id=pipeline_execution.id,
-    )
+    if pipeline_execution.completed_successfully:
+        await db_detect_anomalies_for_pipeline(
+            session=session,
+            pipeline_id=pipeline_execution.pipeline_id,
+            pipeline_execution_id=pipeline_execution.id,
+        )

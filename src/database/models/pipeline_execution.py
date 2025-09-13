@@ -25,9 +25,7 @@ class PipelineExecution(SQLModel, table=True):
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
     duration_seconds: Optional[int]
-    completed_successfully: bool = Field(
-        sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
-    )
+    completed_successfully: Optional[bool] = None
     inserts: Optional[int] = None
     updates: Optional[int] = None
     soft_deletes: Optional[int] = None
