@@ -621,15 +621,13 @@ async def run_pipeline_workflow():
             print(f"Lineage relationships created: {lineage_result['lineage_relationships_created']}")
         
         # Step 4: Start Pipeline Execution
-        start_time = pendulum.now("UTC")
         execution_start_data = {
             "pipeline_id": pipeline_result['id'],
-            "start_date": start_time.isoformat()
+            "start_date": pendulum.now("UTC").isoformat()
         }
         
         start_response = await client.post("http://localhost:8000/start_pipeline_execution", json=execution_start_data)
-        execution_start = start_response.json()
-        execution_id = execution_start['id']
+        execution_id = start_response.json()['id']
         
         print(f"Pipeline execution associated with ID: {execution_id}")
 
@@ -647,10 +645,9 @@ async def run_pipeline_workflow():
         # ...
         
         # Step 6: End Pipeline Execution (with DML counts gathered from work)
-        end_time = pendulum.now("UTC")
         execution_end_data = {
             "id": execution_id,
-            "end_date": end_time.isoformat(),
+            "end_date": pendulum.now("UTC").isoformat(),
             "inserts": 150,
             "updates": 25,
             "soft_deletes": 5,
