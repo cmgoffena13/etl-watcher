@@ -1,7 +1,7 @@
 # Watcher
 **Open Source Metadata Framework for Data Pipeline Monitoring & Lineage Tracking**
 
-A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, track data lineage, ensure timeliness, detect anomalies, and manage data addresses across your data infrastructure.
+A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, store watermarks, track data lineage, ensure timeliness, detect anomalies, and manage data addresses across your data infrastructure.
 
 ![linesofcode](https://aschey.tech/tokei/github/cmgoffena13/watcher?category=code)
 
@@ -74,7 +74,7 @@ pre-commit install --hook-type pre-push
 
 ### 🚨 Anomaly Detection
 - **Statistical Analysis**: Detect anomalies using standard deviation and z-score analysis
-- **Configurable Metrics**: Monitor duration, row counts, DML operations, and processing rates
+- **Configurable Metrics**: Monitor duration, row counts, and DML operations
 - **Pipeline-Specific Rules**: Create custom anomaly detection rules per pipeline
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
@@ -85,7 +85,6 @@ pre-commit install --hook-type pre-push
 - **Batch Processing**: Safe deletion in configurable batches to avoid database locks
 - **Cascading Cleanup**: Maintains referential integrity across related tables
 - **Configurable Retention**: Set custom retention periods for different data types
-- **Progress Tracking**: Detailed reporting of cleanup operations
 
 ### 🔧 Development & Operations
 - **RESTful API**: Complete REST API for all operations with automatic documentation
