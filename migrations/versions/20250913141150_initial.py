@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250912204439
+Revision ID: 20250913141150
 Revises:
-Create Date: 2025-09-12 20:44:41.075744
+Create Date: 2025-09-13 14:11:52.572335
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250912204439"
+revision: str = "20250913141150"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -50,16 +50,16 @@ def upgrade() -> None:
         "pipeline_type",
         sa.Column("id", sa.Integer(), nullable=False),
         sa.Column("name", sqlmodel.sql.sqltypes.AutoString(length=150), nullable=False),
-        sa.Column("timely_number", sa.Integer(), nullable=True),
+        sa.Column("freshness_number", sa.Integer(), nullable=True),
         sa.Column(
-            "timely_datepart",
+            "freshness_datepart",
             sa.Enum(
                 "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
             ),
             nullable=True,
         ),
         sa.Column(
-            "mute_timely_check",
+            "mute_freshness_check",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
@@ -140,16 +140,16 @@ def upgrade() -> None:
         sa.Column("last_target_insert", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_update", sa.DateTime(timezone=True), nullable=True),
         sa.Column("last_target_soft_delete", sa.DateTime(timezone=True), nullable=True),
-        sa.Column("timely_number", sa.Integer(), nullable=True),
+        sa.Column("freshness_number", sa.Integer(), nullable=True),
         sa.Column(
-            "timely_datepart",
+            "freshness_datepart",
             sa.Enum(
                 "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
             ),
             nullable=True,
         ),
         sa.Column(
-            "mute_timely_check",
+            "mute_freshness_check",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
@@ -313,12 +313,7 @@ def upgrade() -> None:
         sa.Column("hour_recorded", sa.Integer(), nullable=False),
         sa.Column("end_date", sa.DateTime(timezone=True), nullable=True),
         sa.Column("duration_seconds", sa.Integer(), nullable=True),
-        sa.Column(
-            "completed_successfully",
-            sa.Boolean(),
-            server_default=sa.text("FALSE"),
-            nullable=False,
-        ),
+        sa.Column("completed_successfully", sa.Boolean(), nullable=True),
         sa.Column("inserts", sa.Integer(), nullable=True),
         sa.Column("updates", sa.Integer(), nullable=True),
         sa.Column("soft_deletes", sa.Integer(), nullable=True),
@@ -382,9 +377,9 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
+        "ix_anomaly_detection_result_pipeline_execution_id_rule_id",
         "anomaly_detection_result",
-        ["rule_id", "pipeline_execution_id"],
+        ["pipeline_execution_id", "rule_id"],
         unique=True,
     )
     op.create_table(
@@ -430,7 +425,7 @@ def downgrade() -> None:
     )
     op.drop_table("timeliness_pipeline_execution_log")
     op.drop_index(
-        "ix_anomaly_detection_result_rule_id_pipeline_execution_id",
+        "ix_anomaly_detection_result_pipeline_execution_id_rule_id",
         table_name="anomaly_detection_result",
     )
     op.drop_table("anomaly_detection_result")

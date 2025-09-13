@@ -30,8 +30,8 @@ async def test_timeliness_check_success(async_client: AsyncClient):
             "last_target_insert": one_hour_ago.isoformat(),
             "last_target_update": one_hour_ago.isoformat(),
             "last_target_soft_delete": one_hour_ago.isoformat(),
-            "timely_number": 2,
-            "timely_datepart": "hour",
+            "freshness_number": 2,
+            "freshness_datepart": "hour",
         }
     )
 
@@ -57,9 +57,9 @@ async def test_timeliness_check_muted_pipeline(async_client: AsyncClient):
             "last_target_insert": three_hours_ago.isoformat(),
             "last_target_update": three_hours_ago.isoformat(),
             "last_target_soft_delete": three_hours_ago.isoformat(),
-            "timely_number": 1,
-            "timely_datepart": "hour",
-            "mute_timely_check": True,
+            "freshness_number": 1,
+            "freshness_datepart": "hour",
+            "mute_freshness_check": True,
         }
     )
 
@@ -71,18 +71,18 @@ async def test_timeliness_check_muted_pipeline(async_client: AsyncClient):
 
 
 @pytest.mark.anyio
-async def test_timeliness_pipeline_check_failure(
+async def test_timeliness_pipeline_freshness_check_failure(
     async_client: AsyncClient, db_session: Session, mock_slack_notifications
 ):
-    """Test timeliness check when pipeline fails."""
+    """Test timeliness freshness check failure"""
 
     # Create pipeline type manually
     pipeline_type = PipelineType(
         name="audit",
         group_name="databricks",
-        timely_number=12,
-        timely_datepart="hour",
-        mute_timely_check=False,
+        freshness_number=12,
+        freshness_datepart="hour",
+        mute_freshness_check=False,
     )
     db_session.add(pipeline_type)
     await db_session.flush()  # Get the ID without committing
@@ -94,9 +94,9 @@ async def test_timeliness_pipeline_check_failure(
         last_target_insert=twelve_hours_ago,
         last_target_update=twelve_hours_ago,
         last_target_soft_delete=twelve_hours_ago,
-        timely_number=1,
-        timely_datepart="hour",
-        mute_timely_check=False,
+        freshness_number=1,
+        freshness_datepart="hour",
+        mute_freshness_check=False,
     )
 
     db_session.add(pipeline)
@@ -109,7 +109,7 @@ async def test_timeliness_pipeline_check_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Pipeline Timeliness Check Failed" in call_args[1]["message"]
+    assert "Pipeline Freshness Check Failed" in call_args[1]["message"]
     assert "Late Pipeline" in call_args[1]["details"]["Failed Pipelines"]
 
 

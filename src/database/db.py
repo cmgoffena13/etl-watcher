@@ -41,23 +41,23 @@ async def create_initial_records():
         PipelineType(
             name="extraction",
             group_name="extraction",
-            timely_number=12,
-            timely_datepart="hour",
-            mute_timely_check=False,
+            freshness_number=12,
+            freshness_datepart="hour",
+            mute_freshness_check=False,
         ),
         PipelineType(
             name="audit",
             group_name="audit",
-            timely_number=12,
-            timely_datepart="hour",
-            mute_timely_check=False,
+            freshness_number=12,
+            freshness_datepart="hour",
+            mute_freshness_check=False,
         ),
         PipelineType(
             name="publish",
             group_name="publish",
-            timely_number=12,
-            timely_datepart="hour",
-            mute_timely_check=False,
+            freshness_number=12,
+            freshness_datepart="hour",
+            mute_freshness_check=False,
         ),
     ]
     initial_address_types = [

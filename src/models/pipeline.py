@@ -11,9 +11,9 @@ class PipelinePostInput(ValidatorModel):
     pipeline_type_name: str = Field(max_length=150, min_length=1)
     next_watermark: Optional[Union[str, int, DateTime]] = None
     pipeline_metadata: Optional[dict] = None
-    timely_number: Optional[int] = None
-    timely_datepart: Optional[DatePartEnum] = None
-    mute_timely_check: Optional[bool] = False
+    freshness_number: Optional[int] = None
+    freshness_datepart: Optional[DatePartEnum] = None
+    mute_freshness_check: Optional[bool] = False
     load_lineage: Optional[bool] = None
 
 
@@ -30,7 +30,7 @@ class PipelinePatchInput(ValidatorModel):
     pipeline_type_id: Optional[int] = None
     next_watermark: Optional[Union[str, int, DateTime]] = None
     pipeline_metadata: Optional[dict] = None
-    timely_number: Optional[int] = None
-    timely_datepart: Optional[DatePartEnum] = None
-    mute_timely_check: Optional[bool] = None
+    freshness_number: Optional[int] = None
+    freshness_datepart: Optional[DatePartEnum] = None
+    mute_freshness_check: Optional[bool] = None
     load_lineage: Optional[bool] = None

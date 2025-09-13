@@ -30,9 +30,9 @@ class Pipeline(SQLModel, table=True):
         sa_column=Column(DateTimeTZ(timezone=True), nullable=True)
     )
 
-    timely_number: Optional[int]
-    timely_datepart: Optional[DatePartEnum]
-    mute_timely_check: bool = Field(
+    freshness_number: Optional[int]
+    freshness_datepart: Optional[DatePartEnum]
+    mute_freshness_check: bool = Field(
         sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
     )
 

@@ -13,9 +13,9 @@ class PipelineType(SQLModel, table=True):
 
     id: int | None = Field(default=None, primary_key=True, nullable=False)
     name: str = Field(max_length=150, min_length=1)
-    timely_number: Optional[int]
-    timely_datepart: Optional[DatePartEnum]
-    mute_timely_check: bool = Field(
+    freshness_number: Optional[int]
+    freshness_datepart: Optional[DatePartEnum]
+    mute_freshness_check: bool = Field(
         sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
     )
 

@@ -13,9 +13,9 @@ TEST_PIPELINE_TIMELINESS_DATA = {
     "last_target_insert": "2024-01-01T10:00:00Z",
     "last_target_update": "2024-01-01T10:00:00Z",
     "last_target_soft_delete": "2024-01-01T10:00:00Z",
-    "timely_number": 1,
-    "timely_datepart": "hour",
-    "mute_timely_check": False,
+    "freshness_number": 1,
+    "freshness_datepart": "hour",
+    "mute_freshness_check": False,
 }
 TEST_PIPELINE_PATCH_DATA = {"id": 1, "name": "Pipeline_Patched"}
 TEST_PIPELINE_PATCH_OUTPUT_DATA = {
