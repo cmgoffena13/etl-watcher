@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250913141150
+Revision ID: 20250913153412
 Revises:
-Create Date: 2025-09-13 14:11:52.572335
+Create Date: 2025-09-13 15:34:14.987372
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250913141150"
+revision: str = "20250913153412"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -60,6 +60,18 @@ def upgrade() -> None:
         ),
         sa.Column(
             "mute_freshness_check",
+            sa.Boolean(),
+            server_default=sa.text("FALSE"),
+            nullable=False,
+        ),
+        sa.Column("timeliness_number", sa.Integer(), nullable=True),
+        sa.Column(
+            "timeliness_datepart",
+            sa.Enum("MINUTE", "HOUR", name="timelinessdatepartenum"),
+            nullable=True,
+        ),
+        sa.Column(
+            "mute_timeliness_check",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
@@ -150,6 +162,18 @@ def upgrade() -> None:
         ),
         sa.Column(
             "mute_freshness_check",
+            sa.Boolean(),
+            server_default=sa.text("FALSE"),
+            nullable=False,
+        ),
+        sa.Column("timeliness_number", sa.Integer(), nullable=True),
+        sa.Column(
+            "timeliness_datepart",
+            sa.Enum("MINUTE", "HOUR", name="timelinessdatepartenum"),
+            nullable=True,
+        ),
+        sa.Column(
+            "mute_timeliness_check",
             sa.Boolean(),
             server_default=sa.text("FALSE"),
             nullable=False,
@@ -304,6 +328,39 @@ def upgrade() -> None:
         postgresql_include=["id"],
     )
     op.create_table(
+        "freshness_pipeline_log",
+        sa.Column("id", sa.BigInteger(), nullable=False),
+        sa.Column("pipeline_id", sa.Integer(), nullable=False),
+        sa.Column("last_dml_timestamp", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("evaluation_timestamp", sa.DateTime(timezone=True), nullable=True),
+        sa.Column("freshness_number", sa.Integer(), nullable=False),
+        sa.Column(
+            "freshness_datepart",
+            sa.Enum(
+                "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
+            ),
+            nullable=False,
+        ),
+        sa.Column("used_child_config", sa.Boolean(), nullable=False),
+        sa.Column(
+            "created_at",
+            sa.DateTime(timezone=True),
+            server_default=sa.text("CURRENT_TIMESTAMP"),
+            nullable=False,
+        ),
+        sa.ForeignKeyConstraint(
+            ["pipeline_id"],
+            ["pipeline.id"],
+        ),
+        sa.PrimaryKeyConstraint("id"),
+    )
+    op.create_index(
+        "ix_freshness_pipeline_log_covering",
+        "freshness_pipeline_log",
+        ["pipeline_id", "last_dml_timestamp"],
+        unique=True,
+    )
+    op.create_table(
         "pipeline_execution",
         sa.Column("id", sa.BigInteger(), nullable=False),
         sa.Column("parent_id", sa.Integer(), nullable=True),
@@ -442,6 +499,10 @@ def downgrade() -> None:
         postgresql_include=["id"],
     )
     op.drop_table("pipeline_execution")
+    op.drop_index(
+        "ix_freshness_pipeline_log_covering", table_name="freshness_pipeline_log"
+    )
+    op.drop_table("freshness_pipeline_log")
     op.drop_index(
         "ix_anomaly_detection_rule_pipeline_id",
         table_name="anomaly_detection_rule",

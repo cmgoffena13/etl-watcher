@@ -1,4 +1,5 @@
 import logging
+import uuid
 
 import pendulum
 from sqlalchemy import text
@@ -12,9 +13,12 @@ logger = logging.getLogger(__name__)
 async def db_check_pipeline_freshness(session: Session):
     timestamp = pendulum.now("UTC")
 
-    await session.exec(text("DROP TABLE IF EXISTS check_pipeline_freshness_temp"))
+    # Use unique temp table name to prevent conflicts with concurrent requests
+    temp_table_name = f"check_pipeline_freshness_temp_{uuid.uuid4().hex[:8]}"
 
-    pipelines_query = text("""
+    await session.exec(text(f"DROP TABLE IF EXISTS {temp_table_name}"))
+
+    pipelines_query = text(f"""
         WITH CTE AS (
             SELECT
                 cte_p.id as pipeline_id,
@@ -35,7 +39,7 @@ async def db_check_pipeline_freshness(session: Session):
             p.freshness_datepart as child_freshness_datepart,
             pt.freshness_number as parent_freshness_number,
             pt.freshness_datepart as parent_freshness_datepart
-        INTO TEMP TABLE check_pipeline_freshness_temp
+        INTO TEMP TABLE {temp_table_name}
         FROM pipeline AS p
         INNER JOIN CTE AS pt
             ON pt.pipeline_id = p.id
@@ -43,7 +47,7 @@ async def db_check_pipeline_freshness(session: Session):
     """)
     await session.exec(pipelines_query)
 
-    pipelines_query = text("""
+    pipelines_query = text(f"""
         SELECT
             pipeline_id,
             pipeline_name,
@@ -54,7 +58,7 @@ async def db_check_pipeline_freshness(session: Session):
             child_freshness_datepart,
             parent_freshness_number,
             parent_freshness_datepart
-        FROM check_pipeline_freshness_temp
+        FROM {temp_table_name}
     """)
 
     pipelines = (await session.exec(pipelines_query)).fetchall()
@@ -62,7 +66,6 @@ async def db_check_pipeline_freshness(session: Session):
     logger.info(f"Processing {len(pipelines)} pipelines for freshness check")
 
     fail_results = []
-
     for pipeline in pipelines:
         (
             pipeline_id,
@@ -88,9 +91,11 @@ async def db_check_pipeline_freshness(session: Session):
         if child_datepart and child_number:
             freshness_datepart = child_datepart
             freshness_number = child_number
+            used_child_config = True
         elif parent_datepart and parent_number:
             freshness_datepart = parent_datepart
             freshness_number = parent_number
+            used_child_config = False
         else:
             logger.warning(
                 f"Pipeline {pipeline_id} ({pipeline_name}) skipped - incomplete freshness settings "
@@ -104,17 +109,14 @@ async def db_check_pipeline_freshness(session: Session):
         )
 
         if calculated_time < timestamp:
-            display_datepart = _get_display_datepart(
-                freshness_datepart, freshness_number
-            )
-
             fail_results.append(
                 {
                     "pipeline_id": pipeline_id,
                     "pipeline_name": pipeline_name,
                     "last_dml": max_dml,
                     "freshness_number": freshness_number,
-                    "freshness_datepart": display_datepart,
+                    "freshness_datepart": freshness_datepart,
+                    "used_child_config": used_child_config,
                 }
             )
 
@@ -126,16 +128,61 @@ async def db_check_pipeline_freshness(session: Session):
         logger.warning(
             f"Pipeline Freshness Check Failed - {len(fail_results)} pipeline(s) overdue"
         )
-        await session.exec(text("DROP TABLE IF EXISTS check_pipeline_freshness_temp"))
+        await session.exec(text(f"DROP TABLE IF EXISTS {temp_table_name}"))
+
+        # Check for PostgreSQL parameter limit (65,535)
+        # Each fail_result generates 6 values in the VALUES clause
+        total_values = len(fail_results) * 6
+        if total_values > 65000:
+            logger.error(
+                f"Too many values ({total_values}) - exceeds PostgreSQL parameter limit of 65,535"
+            )
+
+        values_clauses = []
+        for result in fail_results:
+            values_clauses.append(
+                f"({result['pipeline_id']}, '{result['last_dml']}'::timestamp with time zone, '{timestamp}'::timestamp with time zone, {result['freshness_number']}, '{result['freshness_datepart']}'::datepartenum, {result.get('used_child_config', False)})"
+            )
+
+        values_sql = ",\n".join(values_clauses)
+        insert_query = text(f"""
+            INSERT INTO freshness_pipeline_log (pipeline_id, last_dml_timestamp, evaluation_timestamp, freshness_number, freshness_datepart, used_child_config)
+            SELECT 
+            v.pipeline_id, 
+            v.last_dml_timestamp, 
+            v.evaluation_timestamp, 
+            v.freshness_number, 
+            v.freshness_datepart, 
+            v.used_child_config 
+            FROM (VALUES {values_sql}) AS v(pipeline_id, last_dml_timestamp, evaluation_timestamp, freshness_number, freshness_datepart, used_child_config)
+            WHERE NOT EXISTS (
+                SELECT 1 
+                FROM freshness_pipeline_log f
+                WHERE f.pipeline_id = v.pipeline_id 
+                    AND f.last_dml_timestamp = v.last_dml_timestamp
+            )
+        """)
+
+        result = await session.exec(insert_query)
+        rows_inserted = result.rowcount
+        await session.commit()
+        values_clauses.clear()
+
+        logger.info(f"Inserted {rows_inserted} new freshness pipeline log records")
 
         try:
             pipeline_details = []
             for result in fail_results:
                 pipeline_details.append(
                     f"\t• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
-                    f"Last DML {result['last_dml']}, Expected within {result['freshness_number']} {result['freshness_datepart']}"
+                    f"Last DML {result['last_dml']}, Expected within {
+                        result['freshness_number']
+                    } {
+                        _get_display_datepart(
+                            result['freshness_datepart'], result['freshness_number']
+                        )
+                    }"
                 )
-
             send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Freshness Check - Pipeline DML",
@@ -152,7 +199,7 @@ async def db_check_pipeline_freshness(session: Session):
         return {"status": "warning"}
     else:
         logger.info("All pipelines passed freshness check")
-        await session.exec(text("DROP TABLE IF EXISTS check_pipeline_freshness_temp"))
+        await session.exec(text(f"DROP TABLE IF EXISTS {temp_table_name}"))
 
     return {"status": "success"}
 

@@ -6,6 +6,7 @@ from src.database.models.anomaly_detection import (
     AnomalyDetectionResult,
     AnomalyDetectionRule,
 )
+from src.database.models.freshness_pipeline_log import FreshnessPipelineLog
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_execution import PipelineExecution
 from src.database.models.pipeline_type import PipelineType
@@ -24,4 +25,5 @@ __all__ = [
     "TimelinessPipelineExecutionLog",
     "AnomalyDetectionRule",
     "AnomalyDetectionResult",
+    "FreshnessPipelineLog",
 ]
