@@ -75,13 +75,13 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             await asyncio.sleep(0.1)
 
     return {
-        "total_pipeline_executions_deleted": table_infos[0][
-            "total_pipeline_executions_deleted"
-        ],
-        "total_timeliness_pipeline_execution_logs_deleted": table_infos[1][
+        "total_timeliness_pipeline_execution_logs_deleted": table_infos[0][
             "total_timeliness_pipeline_execution_logs_deleted"
         ],
-        "total_anomaly_detection_results_deleted": table_infos[2][
+        "total_anomaly_detection_results_deleted": table_infos[1][
             "total_anomaly_detection_results_deleted"
+        ],
+        "total_pipeline_executions_deleted": table_infos[2][
+            "total_pipeline_executions_deleted"
         ],
     }
