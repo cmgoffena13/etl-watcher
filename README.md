@@ -531,15 +531,6 @@ The system cleans up data from three main log tables:
 - **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
 - **Purpose**: Removes old anomaly detection results
 
-### Batch Processing
-
-The cleanup process uses batch processing to:
-- **Avoid Database Locks**: Prevents long-running transactions that could block other operations
-- **Memory Efficiency**: Processes large datasets without consuming excessive memory
-- **Progress Tracking**: Provides visibility into cleanup progress
-- **Graceful Termination**: Stops when no more records are found
-
-
 ### Best Practices
 
 1. **Regular Cleanup**: Schedule cleanup operations regularly (e.g., weekly or monthly)

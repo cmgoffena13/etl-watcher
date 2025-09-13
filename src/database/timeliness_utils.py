@@ -34,13 +34,13 @@ async def db_check_pipeline_timeliness(session: Session):
     pipelines_query = text("""
         WITH CTE AS (
             SELECT
-                p.id as pipeline_id,
-                pt.timely_number,
-                pt.timely_datepart
-            FROM pipeline_type AS pt
-            INNER JOIN pipeline AS p
-                ON p.pipeline_type_id = pt.id
-            WHERE pt.mute_timely_check = false
+                cte_p.id as pipeline_id,
+                cte_pt.timely_number,
+                cte_pt.timely_datepart
+            FROM pipeline_type AS cte_pt
+            INNER JOIN pipeline AS cte_p
+                ON cte_p.pipeline_type_id = cte_pt.id
+            WHERE cte_pt.mute_timely_check = false
         )
         SELECT
             p.id as pipeline_id,

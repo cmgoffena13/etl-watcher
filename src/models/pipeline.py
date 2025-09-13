@@ -13,7 +13,7 @@ class PipelinePostInput(ValidatorModel):
     pipeline_args: Optional[dict] = None
     timely_number: Optional[int] = None
     timely_datepart: Optional[DatePartEnum] = None
-    mute_timely_check: Optional[bool] = None
+    mute_timely_check: Optional[bool] = False
     load_lineage: Optional[bool] = None
 
 

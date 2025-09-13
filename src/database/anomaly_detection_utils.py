@@ -38,7 +38,7 @@ async def db_get_or_create_anomaly_detection_rule(
 
     if rule_id is None:
         logger.info(
-            f"Anomaly Detection Rule: {rule.metric_field} for pipeline {rule.pipeline_id} Not Found. Creating..."
+            f"Anomaly Detection Rule: {rule.metric_field.value} for pipeline {rule.pipeline_id} Not Found. Creating..."
         )
         new_rule = AnomalyDetectionRule(**rule.model_dump(exclude_unset=True))
 
@@ -51,7 +51,7 @@ async def db_get_or_create_anomaly_detection_rule(
         await session.commit()
         created = True
         logger.info(
-            f"Anomaly Detection Rule: {rule.metric_field} for pipeline {rule.pipeline_id} Successfully Created"
+            f"Anomaly Detection Rule: {rule.metric_field.value} for pipeline {rule.pipeline_id} Successfully Created"
         )
 
     if created:
@@ -117,7 +117,7 @@ async def db_detect_anomalies_for_pipeline(
             await _detect_anomalies_for_rule(session, rule, pipeline_execution_id)
         except Exception as e:
             logger.error(
-                f"Error detecting anomalies for rule '{rule.metric_field}' for pipeline {rule.pipeline_id}: {e}"
+                f"Error detecting anomalies for rule '{rule.metric_field.value}' for pipeline {rule.pipeline_id}: {e}"
             )
             continue
 
@@ -126,7 +126,7 @@ async def _detect_anomalies_for_rule(
     session: Session, rule: AnomalyDetectionRule, pipeline_execution_id: int
 ) -> List[AnomalyDetectionResultOutput]:
     logger.info(
-        f"Detecting anomalies for rule '{rule.metric_field}' on pipeline {rule.pipeline_id}"
+        f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id}"
     )
     lookback_date = pendulum.now("UTC").subtract(days=(rule.lookback_days))
 
@@ -150,7 +150,7 @@ async def _detect_anomalies_for_rule(
 
     if len(execution_ids) < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule '{rule.metric_field}': {len(execution_ids)} < {rule.minimum_executions}"
+            f"Not enough executions for rule '{rule.metric_field.value}': {len(execution_ids)} < {rule.minimum_executions}"
         )
         return
 
@@ -207,9 +207,8 @@ async def _detect_anomalies_for_rule(
     )
 
     new_anomaly_results = []
-    logger.info(f"Processing {len(executions)} executions for anomaly detection")
     logger.info(
-        f"Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+        f"Processing {len(executions)} executions for anomaly detection: Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
     )
 
     for execution in executions:
