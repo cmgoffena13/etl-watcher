@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250913165203
+Revision ID: 20250913174135
 Revises:
-Create Date: 2025-09-13 16:52:05.651117
+Create Date: 2025-09-13 17:41:37.516218
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250913165203"
+revision: str = "20250913174135"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -392,20 +392,19 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_pipeline_execution_end_date_filter",
-        "pipeline_execution",
-        ["end_date"],
-        unique=False,
-        postgresql_where=sa.text("end_date IS NOT NULL"),
-        postgresql_include=["id"],
-    )
-    op.create_index(
         "ix_pipeline_execution_hour_recorded",
         "pipeline_execution",
         ["pipeline_id", "hour_recorded", "end_date"],
         unique=False,
         postgresql_include=["completed_successfully", "id"],
         postgresql_where=sa.text("end_date IS NOT NULL"),
+    )
+    op.create_index(
+        "ix_pipeline_execution_start_date",
+        "pipeline_execution",
+        ["start_date"],
+        unique=False,
+        postgresql_include=["id"],
     )
     op.create_table(
         "anomaly_detection_result",
@@ -495,16 +494,15 @@ def downgrade() -> None:
     )
     op.drop_table("anomaly_detection_result")
     op.drop_index(
+        "ix_pipeline_execution_start_date",
+        table_name="pipeline_execution",
+        postgresql_include=["id"],
+    )
+    op.drop_index(
         "ix_pipeline_execution_hour_recorded",
         table_name="pipeline_execution",
         postgresql_include=["completed_successfully", "id"],
         postgresql_where=sa.text("end_date IS NOT NULL"),
-    )
-    op.drop_index(
-        "ix_pipeline_execution_end_date_filter",
-        table_name="pipeline_execution",
-        postgresql_where=sa.text("end_date IS NOT NULL"),
-        postgresql_include=["id"],
     )
     op.drop_table("pipeline_execution")
     op.drop_index(
