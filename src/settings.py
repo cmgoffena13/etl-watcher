@@ -15,6 +15,7 @@ class GlobalConfig(BaseConfig):
     LOGFIRE_TOKEN: Optional[str] = None
     LOGFIRE_CONSOLE: Optional[bool] = None
     SLACK_WEBHOOK_URL: Optional[str] = None
+    WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
 
 
 class DevConfig(GlobalConfig):

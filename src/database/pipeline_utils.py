@@ -1,10 +1,11 @@
 import logging
 
 import pendulum
-from fastapi import HTTPException, Response, status
+from fastapi import Response, status
 from sqlalchemy import select, update
 from sqlmodel import Session
 
+from src.database.models.anomaly_detection import AnomalyDetectionRule
 from src.database.models.pipeline import Pipeline
 from src.database.pipeline_type_utils import db_get_or_create_pipeline_type
 from src.models.pipeline import (
@@ -13,6 +14,8 @@ from src.models.pipeline import (
     PipelinePostOutput,
 )
 from src.models.pipeline_type import PipelineTypePostInput, PipelineTypePostOutput
+from src.settings import config
+from src.types import AnomalyMetricFieldEnum
 
 logger = logging.getLogger(__name__)
 
@@ -61,6 +64,16 @@ async def db_get_or_create_pipeline(
         )
         new_row = (await session.exec(pipeline_stmt)).one()
         await session.commit()
+
+        if config.WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES:
+            for value in AnomalyMetricFieldEnum:
+                anomaly_detection_rule = AnomalyDetectionRule(
+                    pipeline_id=new_row.id,
+                    metric_field=value,
+                    active=True,
+                )
+                session.add(anomaly_detection_rule)
+            await session.commit()
 
         created = True
         pipeline_id = new_row.id
