@@ -14,4 +14,4 @@ COPY . .
 RUN uv sync --frozen --compile-bytecode
 
 EXPOSE 8000
-CMD ["uv", "run", "--", "uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uv", "run", "--", "uvicorn", "src.app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "4"]
