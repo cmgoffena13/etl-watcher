@@ -14,7 +14,8 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 7. [Technology Stack](#️-technology-stack)
 8. [Timeliness](#-timeliness)
 9. [Anomaly Checks](#-anomaly-checks)
-10. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+10. [Log Cleanup](#-log-cleanup--maintenance)
+11. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 
 ## Development Setup
 1. Install `uv`
@@ -77,6 +78,13 @@ pre-commit install --hook-type pre-push
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
 - **Lookback Periods**: Analyze historical data over configurable time windows
 
+### 🧹 Log Cleanup
+- **Automated Maintenance**: Remove old log data to maintain database performance
+- **Batch Processing**: Safe deletion in configurable batches to avoid database locks
+- **Cascading Cleanup**: Maintains referential integrity across related tables
+- **Configurable Retention**: Set custom retention periods for different data types
+- **Progress Tracking**: Detailed reporting of cleanup operations
+
 ### 🔧 Development & Operations
 - **RESTful API**: Complete REST API for all operations with automatic documentation
 - **Database Migrations**: Alembic-based migration system for schema evolution
@@ -121,6 +129,7 @@ pre-commit install --hook-type pre-push
 
 ### Monitoring & Health
 - `POST /timeliness` - Check pipeline timeliness
+- `POST /log_cleanup` - Clean up old log data
 - `GET /` - Health check endpoint
 - `GET /scalar` - Interactive API documentation
 
@@ -470,6 +479,82 @@ The anomaly detection system includes robust error handling:
 - **Notification Failures**: Slack notification failures are logged but don't affect anomaly detection
 
 This comprehensive anomaly detection system helps maintain data quality and performance by automatically identifying unusual patterns in your pipeline executions.
+
+## 🧹 Log Cleanup & Maintenance
+
+The log cleanup system provides automated maintenance for historical data, helping you manage database growth and maintain optimal performance by removing old log records while preserving recent data for analysis and monitoring.
+
+### How It Works
+
+The log cleanup system identifies and removes old records from log tables based on a configurable retention period:
+
+1. **Retention Calculation**: Calculates a cutoff date based on current date minus retention days
+2. **Batch Processing**: Deletes records in configurable batches to avoid database locks
+3. **Cascading Cleanup**: Removes related records from dependent tables in the correct order
+4. **Progress Tracking**: Reports the number of records deleted from each table
+
+### Configuration
+
+#### Input Parameters
+
+- **`retention_days`**: Number of days to retain data (minimum: 90 days)
+- **`batch_size`**: Number of records to delete per batch (default: 10,000)
+
+#### Example Request
+
+```python
+cleanup_data = {
+    "retention_days": 90,
+    "batch_size": 5000
+}
+
+response = await client.post("http://localhost:8000/log_cleanup", json=cleanup_data)
+result = response.json()
+```
+
+### Cleanup Process
+
+The system cleans up data from three main log tables:
+
+#### 1. Pipeline Executions
+- **Table**: `pipeline_execution`
+- **Filter**: Records with `start_date <= retention_date`
+- **Purpose**: Removes old pipeline execution records
+
+#### 2. Timeliness Logs
+- **Table**: `timeliness_pipeline_execution_log`
+- **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
+- **Purpose**: Removes old timeliness check logs
+
+#### 3. Anomaly Detection Results
+- **Table**: `anomaly_detection_result`
+- **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
+- **Purpose**: Removes old anomaly detection results
+
+### Batch Processing
+
+The cleanup process uses batch processing to:
+- **Avoid Database Locks**: Prevents long-running transactions that could block other operations
+- **Memory Efficiency**: Processes large datasets without consuming excessive memory
+- **Progress Tracking**: Provides visibility into cleanup progress
+- **Graceful Termination**: Stops when no more records are found
+
+
+### Best Practices
+
+1. **Regular Cleanup**: Schedule cleanup operations regularly (e.g., weekly or monthly)
+2. **Conservative Retention**: Start with longer retention periods and adjust based on your needs
+3. **Batch Size**: Use appropriate batch sizes based on your database performance
+
+### Safety Features
+
+- **Minimum Retention**: Enforces a minimum 90-day retention period
+- **Batch Processing**: Prevents database locks and memory issues
+- **Cascading Deletes**: Maintains referential integrity by cleaning dependent tables
+- **Progress Tracking**: Provides visibility into cleanup operations
+- **Graceful Handling**: Stops processing when no more records are found
+
+This log cleanup system helps maintain optimal database performance while preserving the data you need for monitoring and analysis.
 
 ## Complete Pipeline Workflow Example
 ```python

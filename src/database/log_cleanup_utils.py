@@ -1,3 +1,4 @@
+import asyncio
 import logging
 
 import pendulum
@@ -37,11 +38,6 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
 
     table_infos = [
         {
-            "table_name": "pipeline_execution",
-            "filter_column": "id",
-            "total_pipeline_executions_deleted": 0,
-        },
-        {
             "table_name": "timeliness_pipeline_execution_log",
             "filter_column": "pipeline_execution_id",
             "total_timeliness_pipeline_execution_logs_deleted": 0,
@@ -50,6 +46,11 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             "table_name": "anomaly_detection_result",
             "filter_column": "pipeline_execution_id",
             "total_anomaly_detection_results_deleted": 0,
+        },
+        {  # Make sure this is last because foreign key constraints
+            "table_name": "pipeline_execution",
+            "filter_column": "id",
+            "total_pipeline_executions_deleted": 0,
         },
     ]
 
@@ -69,6 +70,9 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             if result.rowcount == 0:
                 break
             table_info[name] += result.rowcount
+
+            # Small delay between batches to reduce database pressure
+            await asyncio.sleep(0.1)
 
     return {
         "total_pipeline_executions_deleted": table_infos[0][
