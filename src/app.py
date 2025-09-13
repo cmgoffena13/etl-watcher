@@ -15,6 +15,7 @@ from src.routes import (
     address_router,
     address_type_router,
     anomaly_detection_router,
+    freshness_router,
     log_cleanup_router,
     pipeline_execution_router,
     pipeline_router,
@@ -52,11 +53,12 @@ app.include_router(address_lineage_router)
 app.include_router(timeliness_router)
 app.include_router(anomaly_detection_router)
 app.include_router(log_cleanup_router)
+app.include_router(freshness_router)
 
 
 @app.get("/")
 async def heartbeat():
-    return {"message": "I'm up!"}
+    return {"status": "ok"}
 
 
 @app.get("/scalar", include_in_schema=False)

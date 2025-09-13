@@ -5,7 +5,7 @@ from sqlalchemy import Boolean, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
-from src.types import DatePartEnum
+from src.types import DatePartEnum, TimelinessDatePartEnum
 
 
 class PipelineType(SQLModel, table=True):
@@ -16,6 +16,11 @@ class PipelineType(SQLModel, table=True):
     freshness_number: Optional[int]
     freshness_datepart: Optional[DatePartEnum]
     mute_freshness_check: bool = Field(
+        sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
+    )
+    timeliness_number: Optional[int]
+    timeliness_datepart: Optional[TimelinessDatePartEnum]
+    mute_timeliness_check: bool = Field(
         sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
     )
 

@@ -66,10 +66,10 @@ def send_slack_message(
 
     formatted_message = create_slack_message(level, title, message, details, error)
 
-    webhook = WebhookClient(config.SLACK_WEBHOOK_URL)
-
-    if not webhook:
+    if not config.SLACK_WEBHOOK_URL:
         raise ValueError("SLACK_WEBHOOK_URL is not set")
+
+    webhook = WebhookClient(config.SLACK_WEBHOOK_URL)
 
     for retry in range(MAX_RETRIES):
         try:

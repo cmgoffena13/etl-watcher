@@ -123,12 +123,14 @@ def mock_slack_notifications():
     mock_send_slack_message = Mock()
 
     import src.database.anomaly_detection_utils
+    import src.database.freshness_utils
     import src.database.timeliness_utils
     import src.notifier
 
     src.notifier.send_slack_message = mock_send_slack_message
     src.database.timeliness_utils.send_slack_message = mock_send_slack_message
     src.database.anomaly_detection_utils.send_slack_message = mock_send_slack_message
+    src.database.freshness_utils.send_slack_message = mock_send_slack_message
 
     yield mock_send_slack_message
 

@@ -24,6 +24,9 @@ class DevConfig(GlobalConfig):
 
 class TestConfig(GlobalConfig):
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
+    SLACK_WEBHOOK_URL: Optional[str] = (
+        "https://hooks.slack.com/services/test/dummy/webhook"
+    )
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
 

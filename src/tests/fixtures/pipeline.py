@@ -5,7 +5,7 @@ TEST_PIPELINE_POST_DATA = {
     "next_watermark": 10,
 }
 
-TEST_PIPELINE_TIMELINESS_DATA = {
+TEST_PIPELINE_FRESHNESS_DATA = {
     "name": "Timeliness Test Pipeline",
     "pipeline_type_name": "audit",
     "pipeline_type_group_name": "databricks",

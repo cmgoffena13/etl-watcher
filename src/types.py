@@ -13,6 +13,11 @@ class DatePartEnum(str, Enum):
     YEAR = "year"
 
 
+class TimelinessDatePartEnum(str, Enum):
+    MINUTE = "minute"
+    HOUR = "hour"
+
+
 class AnomalyMetricFieldEnum(str, Enum):
     DURATION_SECONDS = "duration_seconds"
     INSERTS = "inserts"
