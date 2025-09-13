@@ -139,13 +139,11 @@ async def db_check_pipeline_freshness(session: Session):
                 f"Too many values ({total_values}) - exceeds PostgreSQL parameter limit of 65,535"
             )
 
-        values_clauses = []
-        for result in fail_results:
-            values_clauses.append(
-                f"({result['pipeline_id']}, '{result['last_dml']}'::timestamp with time zone, '{timestamp}'::timestamp with time zone, {result['freshness_number']}, '{result['freshness_datepart']}'::datepartenum, {result.get('used_child_config', False)})"
-            )
-
-        values_sql = ",\n".join(values_clauses)
+        # Build values clause directly without intermediate list
+        values_sql = ",\n".join(
+            f"({result['pipeline_id']}, '{result['last_dml']}'::timestamp with time zone, '{timestamp}'::timestamp with time zone, {result['freshness_number']}, '{result['freshness_datepart']}'::datepartenum, {result.get('used_child_config', False)})"
+            for result in fail_results
+        )
         insert_query = text(f"""
             INSERT INTO freshness_pipeline_log (pipeline_id, last_dml_timestamp, evaluation_timestamp, freshness_number, freshness_datepart, used_child_config)
             SELECT 
@@ -167,29 +165,23 @@ async def db_check_pipeline_freshness(session: Session):
         result = await session.exec(insert_query)
         rows_inserted = result.rowcount
         await session.commit()
-        values_clauses.clear()
 
         logger.info(f"Inserted {rows_inserted} new freshness pipeline log records")
 
         try:
-            pipeline_details = []
-            for result in fail_results:
-                pipeline_details.append(
-                    f"\t• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
-                    f"Last DML {result['last_dml']}, Expected within {
-                        result['freshness_number']
-                    } {
-                        _get_display_datepart(
-                            result['freshness_datepart'], result['freshness_number']
-                        )
-                    }"
-                )
+            # Build pipeline details string directly without intermediate list
+            pipeline_details = "\n".join(
+                f"\t• {result['pipeline_name']} (ID: {result['pipeline_id']}): "
+                f"Last DML {result['last_dml']}, Expected within {result['freshness_number']} {_get_display_datepart(result['freshness_datepart'], result['freshness_number'])}"
+                for result in fail_results
+            )
+
             send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Freshness Check - Pipeline DML",
                 message=f"Pipeline Freshness Check Failed - {len(fail_results)} pipeline(s) overdue",
                 details={
-                    "Failed Pipelines": "\n" + "\n".join(pipeline_details),
+                    "Failed Pipelines": "\n" + pipeline_details,
                     "Total Overdue": len(fail_results),
                 },
             )

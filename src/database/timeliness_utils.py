@@ -164,13 +164,10 @@ async def db_check_pipeline_execution_timeliness(
                 f"Too many values ({total_values}) - exceeds PostgreSQL parameter limit of 65,535"
             )
 
-        values_clauses = []
-        for result in fail_results:
-            values_clauses.append(
-                f"({result['pipeline_execution_id']}, {result['pipeline_id']}, {result['duration_seconds']}, {result['seconds_threshold']}, '{result['execution_status']}', {result['timely_number']}, '{result['timely_datepart']}'::timelinessdatepartenum, {result['used_child_config']})"
-            )
-
-        values_sql = ",\n".join(values_clauses)
+        values_sql = ",\n".join(
+            f"({result['pipeline_execution_id']}, {result['pipeline_id']}, {result['duration_seconds']}, {result['seconds_threshold']}, '{result['execution_status']}', {result['timely_number']}, '{result['timely_datepart']}'::timelinessdatepartenum, {result['used_child_config']})"
+            for result in fail_results
+        )
         insert_query = text(f"""
             INSERT INTO timeliness_pipeline_execution_log (pipeline_execution_id, pipeline_id, duration_seconds, seconds_threshold, execution_status, timely_number, timely_datepart, used_child_config)
             SELECT 
@@ -194,28 +191,26 @@ async def db_check_pipeline_execution_timeliness(
         rows_inserted = result.rowcount
         await session.commit()
 
-        values_clauses.clear()
-
         logger.info(
             f"Inserted {rows_inserted} new timeliness pipeline execution log records"
         )
 
         # Send Slack notification for failed results
         try:
-            pipeline_details = []
-            for result in fail_results:
-                config_text = "child" if result["used_child_config"] else "parent"
-                pipeline_details.append(
-                    f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
-                    f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} ({config_text} config)"
-                )
+            # Build pipeline details string directly without intermediate list
+            pipeline_details = "\n".join(
+                f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
+                f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
+                f"({'child' if result['used_child_config'] else 'parent'} config)"
+                for result in fail_results
+            )
 
-            await send_slack_message(
+            send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Timeliness Check - Pipeline Execution",
                 message=f"Pipeline Execution Timeliness Check Failed - {len(fail_results)} execution(s) overdue",
                 details={
-                    "Failed Executions": "\n" + "\n".join(pipeline_details),
+                    "Failed Executions": "\n" + pipeline_details,
                     "Total Overdue": len(fail_results),
                 },
             )
