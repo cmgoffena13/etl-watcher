@@ -13,7 +13,6 @@ from src.database.models.anomaly_detection import (
 )
 from src.database.models.pipeline_execution import PipelineExecution
 from src.models.anomaly_detection import (
-    AnomalyDetectionResultOutput,
     AnomalyDetectionRulePatchInput,
     AnomalyDetectionRulePostInput,
     AnomalyDetectionRulePostOutput,

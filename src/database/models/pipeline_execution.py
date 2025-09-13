@@ -1,7 +1,7 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import Date, DateTime
-from sqlalchemy import BigInteger, Boolean, Column, Index, Integer, text
+from sqlalchemy import BigInteger, Column, Index, Integer, text
 from sqlalchemy import Date as DateTZ
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlalchemy.dialects.postgresql import JSONB
@@ -37,9 +37,8 @@ class PipelineExecution(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_pipeline_execution_end_date_filter",
-            "end_date",
-            postgresql_where=text("end_date IS NOT NULL"),
+            "ix_pipeline_execution_start_date",
+            "start_date",
             postgresql_include=["id"],
         ),
         Index(
