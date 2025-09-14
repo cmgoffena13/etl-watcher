@@ -16,9 +16,11 @@ class GlobalConfig(BaseConfig):
     LOGFIRE_CONSOLE: Optional[bool] = None
     SLACK_WEBHOOK_URL: Optional[str] = None
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
+    PROFILING_ENABLED: Optional[bool] = False
 
 
 class DevConfig(GlobalConfig):
+    PROFILING_ENABLED: Optional[bool] = True
     model_config = SettingsConfigDict(env_prefix="DEV_")
 
 

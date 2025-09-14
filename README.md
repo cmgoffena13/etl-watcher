@@ -9,16 +9,17 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 1. [Development Setup](#development-setup)
 2. [Configuration](#configuration)
-3. [Features](#features)
-4. [API Endpoints](#-api-endpoints)
-5. [Documentation](#-documentation)
-6. [Database Schema](#️-database-schema)
-7. [Development](#️-development)
-8. [Technology Stack](#️-technology-stack)
-9. [Timeliness & Freshness](#-timeliness--freshness)
-10. [Anomaly Checks](#-anomaly-checks)
-11. [Log Cleanup](#-log-cleanup--maintenance)
-12. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+3. [Performance Profiling](#performance-profiling)
+4. [Features](#features)
+5. [API Endpoints](#-api-endpoints)
+6. [Documentation](#-documentation)
+7. [Database Schema](#️-database-schema)
+8. [Development](#️-development)
+9. [Technology Stack](#️-technology-stack)
+10. [Timeliness & Freshness](#-timeliness--freshness)
+11. [Anomaly Checks](#-anomaly-checks)
+12. [Log Cleanup](#-log-cleanup--maintenance)
+13. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 
 ## Development Setup
 1. Install `uv`
@@ -83,6 +84,38 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 ```
 
 **Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements.
+
+## Performance Profiling
+
+Watcher includes built-in performance profiling for development using pyinstrument to help identify bottlenecks and optimize your pipeline operations.
+
+### On-Demand Profiling
+
+Profile any API endpoint by adding `?profile=true` to the URL:
+
+### Using Scalar API Docs
+
+1. **Start your app**: `make start`
+2. **Open Scalar**: http://localhost:8000/scalar
+3. **Add `?profile=true`** as a query parameter to any endpoint URL in the interface
+4. **Execute the request** - you'll get an interactive HTML profile directly in your browser
+
+### Profile Features
+
+- **Interactive Call Stack**: Click to expand/collapse function calls
+- **Timing Breakdown**: See exactly where time is spent
+- **Database Operations**: Identify slow queries and connection issues
+- **Memory Usage**: Track memory allocation patterns
+- **Search & Filter**: Find specific functions or modules
+
+### Configuration
+
+Profiling is enabled by default in development mode. To disable:
+
+```bash
+# Set in your environment
+DEV_PROFILING_ENABLED=false
+```
 
 ## Features
 
