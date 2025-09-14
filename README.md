@@ -59,7 +59,6 @@ Watcher supports various configuration options through environment variables. Th
 | `DATABASE_URL` | PostgreSQL connection string | `None` | Yes |
 | `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | `None` | No |
 | `LOGFIRE_TOKEN` | Logfire token for logging | `None` | No |
-| `LOGFIRE_CONSOLE` | Enable console logging | `None` | No |
 | `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create anomaly detection rules for new pipelines | `False` | No |
 
 ### Auto-Create Anomaly Detection Rules
