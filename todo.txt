@@ -2,10 +2,4 @@
     to provide information on Completeness and Accuracy (and then anomaly alerting on that as well)
 2. Look into Celery for background tasks like anomaly and timeliness checks to have response time be faster
 3. Think about throughput. Endpoint to showcase?
-
-5. Implement timely columns into pipeline execution checks
-6. Split the timeliness endpoint out into timeliness and freshness endpoints
-7. Add lookback window for pipeline execution checks to account for long-running pipelines as well
-8. pipeline_metadata: "daily_additive_cumulation": True
-9. Check query filters where MAX(id) where start_date <= timestamp
-    vs MIN(id) where start_date >= timestamp. Which one is better?
+4. pipeline_metadata: "daily_additive_cumulation": True
