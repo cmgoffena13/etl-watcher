@@ -12,3 +12,4 @@ class LogCleanupPostOutput(ValidatorModel):
     total_pipeline_executions_deleted: int
     total_timeliness_pipeline_execution_logs_deleted: int
     total_anomaly_detection_results_deleted: int
+    total_freshness_pipeline_logs_deleted: int

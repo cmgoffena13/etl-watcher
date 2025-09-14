@@ -16,6 +16,37 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
     retention_date = current_date.subtract(days=config.retention_days)
     batch_size = config.batch_size
 
+    # One off pattern to delete freshness pipeline logs
+    freshness_delete_query = """
+    WITH CTE AS (
+    SELECT id
+    FROM {table_name}
+    WHERE {filter_column} <= :retention_date
+    LIMIT :batch_size
+    )
+    DELETE FROM {table_name}
+    USING CTE
+    WHERE {table_name}.id = CTE.id
+    """
+
+    formatted_delete_query = freshness_delete_query.format(
+        table_name="freshness_pipeline_log",
+        filter_column="last_dml_timestamp",
+    )
+
+    total_freshness_pipeline_logs_deleted = 0
+    while True:
+        result = await session.exec(
+            text(formatted_delete_query).bindparams(
+                batch_size=batch_size, retention_date=retention_date
+            )
+        )
+
+        if result.rowcount == 0:
+            break
+            total_freshness_pipeline_logs_deleted += result.rowcount
+
+    # Pattern for exeuction dependent logs
     max_pipeline_execution_id = (
         await session.exec(
             select(func.max(PipelineExecution.id)).where(
@@ -84,4 +115,5 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
         "total_pipeline_executions_deleted": table_infos[2][
             "total_pipeline_executions_deleted"
         ],
+        "total_freshness_pipeline_logs_deleted": total_freshness_pipeline_logs_deleted,
     }
