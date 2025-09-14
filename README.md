@@ -70,6 +70,12 @@ When `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` is set to `true`, the system 
 - **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
 - **Volume Monitoring**: `total_rows` - Tracks total rows processed
 
+**Default Rule Settings:**
+- **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
+- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
+- **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
+- **Active by Default**: `true` (rules are enabled immediately)
+
 **Example Configuration:**
 ```bash
 # Development environment
@@ -131,6 +137,8 @@ DEV_PROFILING_ENABLED=false
 - **Configurable Thresholds**: Set custom rules per pipeline type and individual pipelines
 - **Mute Capability**: Skip checks for specific pipelines when needed
 
+*See [Timeliness & Freshness](#-timeliness--freshness) section for detailed configuration and usage.*
+
 ### 🔗 Data Lineage Tracking
 - **Address Management**: Track source and target data addresses with type classification
 - **Lineage Relationships**: Create and maintain data flow relationships between sources and targets
@@ -154,6 +162,8 @@ DEV_PROFILING_ENABLED=false
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
 - **Lookback Periods**: Analyze historical data over configurable time windows
+
+*See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
 
 ### 🧹 Log Cleanup
 - **Automated Maintenance**: Remove old log data to maintain database performance
@@ -202,6 +212,8 @@ DEV_PROFILING_ENABLED=false
 - `GET /anomaly_detection_rule` - List all anomaly detection rules
 - `PATCH /anomaly_detection_rule` - Update anomaly detection rule
 - `POST /anomaly_detection/detect/{pipeline_id}` - Run anomaly detection for a pipeline
+
+*See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
 
 ### Monitoring & Health
 - `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)
@@ -403,7 +415,7 @@ Long-running pipeline executions are automatically logged to the `timeliness_pip
 
 ### Slack Notifications
 
-The timeliness system sends Slack notifications for two types of issues:
+The system sends comprehensive Slack notifications for various monitoring issues:
 
 #### DML Freshness Failures
 When pipelines fail their freshness checks, detailed Slack notifications are sent including:
@@ -501,11 +513,7 @@ else:
 The timeliness system provides comprehensive error handling and monitoring:
 
 #### Slack Notifications
-When timeliness issues are detected, detailed Slack notifications are automatically sent with:
-- **Pipeline Information**: Pipeline ID, name, and overdue duration
-- **DML Timestamps**: Last insert, update, and soft delete timestamps  
-- **Expected Timeframe**: Configured timeliness rules and thresholds
-- **Specific Details**: Exact duration beyond expected timeframe
+When timeliness issues are detected, detailed Slack notifications are automatically sent. *See [Slack Notifications](#slack-notifications) section below for examples and details.*
 
 #### Graceful Degradation
 - **Non-Blocking**: Timeliness failures don't interrupt the check process
@@ -542,8 +550,8 @@ Create anomaly detection rules per pipeline with the following parameters:
 - **`pipeline_id`**: Target pipeline to monitor
 - **`name`**: Descriptive name for the rule
 - **`metric_field`**: Metric to monitor (duration_seconds, total_rows, total_inserts, etc.)
-- **`lookback_days`**: Number of days of historical data to analyze (default: 7)
-- **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 5)
+- **`lookback_days`**: Number of days of historical data to analyze (default: 30)
+- **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 10)
 - **`std_deviation_threshold_multiplier`**: How many standard deviations above mean to trigger (default: 2.0)
 - **`active`**: Whether the rule is enabled
 
@@ -570,28 +578,7 @@ Anomaly detection runs automatically after each pipeline execution:
 
 ### Slack Notifications
 
-When anomalies are detected, the system sends detailed Slack notifications including:
-
-- **Rule Information**: Rule name, metric being monitored, threshold settings
-- **Anomaly Details**: Execution ID, actual value, baseline value, deviation percentage
-- **Confidence Score**: Statistical confidence in the anomaly detection
-- **Context**: Lookback period, execution count, z-score
-
-Example notification:
-```
-⚠️ WARNING
-Timestamp: 2025-01-09 20:30:45 UTC
-Message: Anomaly detected in pipeline 123 - 2 execution(s) flagged
-
-Details:
-• Rule: Duration Anomaly Detection
-• Metric: duration_seconds
-• Threshold Multiplier: 2.0
-• Lookback Days: 7
-• Anomalies:
-  • Execution ID 456: 3600 (baseline: 1200.00, deviation: 200.0%, confidence: 0.85)
-  • Execution ID 457: 4200 (baseline: 1200.00, deviation: 250.0%, confidence: 0.92)
-```
+When anomalies are detected, the system sends detailed Slack notifications. *See [Slack Notifications](#slack-notifications) section above for examples and details.*
 
 ### Best Practices
 
