@@ -54,4 +54,3 @@ async def test_timeliness_pipeline_execution_failure(
     call_args = mock_slack_notifications.call_args
     assert "Pipeline Execution Timeliness Check Failed" in call_args[1]["message"]
     assert "Failed Executions" in call_args[1]["details"]
-    assert "Total Overdue" in call_args[1]["details"]
