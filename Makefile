@@ -8,8 +8,8 @@ docker-run:
 	docker run --rm -p 8000:8000 \
 		--name watcher_dev \
 		-v $(shell pwd):/watcher \
-		-v /watcher/.venv watcher \
-		sh -c "uv run -- uvicorn src.app:app --reload --host 0.0.0.0 --port 8000" && \
+		watcher \
+		sh -c "uv run -- gunicorn src.app:app -c gunicorn.conf.py --reload --workers 1" && \
 	docker logs watcher_dev --follow
 
 docker-stop:

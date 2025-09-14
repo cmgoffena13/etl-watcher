@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.16.5",
     "asyncpg>=0.30.0",
     "fastapi>=0.116.1",
+    "gunicorn>=23.0.0",
     "httpx>=0.28.1",
     "logfire[fastapi,sqlalchemy]>=4.4.0",
     "orjson>=3.11.3",
