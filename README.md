@@ -199,6 +199,7 @@ make trigger-migration
 - **PostgreSQL** - Robust relational database with JSONB support
 - **Alembic** - Database migration tool for SQLAlchemy
 - **AsyncPG** - Async PostgreSQL driver
+- **HTTPX** - Async HTTP client for external API calls (Slack)
 
 ### Development & Testing
 - **Pytest** - Testing framework with async support
@@ -330,19 +331,19 @@ Long-running pipeline executions are automatically logged to the `timeliness_pip
 
 The timeliness system sends Slack notifications for two types of issues:
 
-#### Pipeline Timeliness Failures
-When pipelines fail their timeliness checks, detailed Slack notifications are sent including:
+#### DML Freshness Failures
+When pipelines fail their freshness checks, detailed Slack notifications are sent including:
 
-- **Pipeline Information**: Pipeline name, ID, and overdue duration
+- **Pipeline Information**: Pipeline name, ID, and last DML timestamp
 - **DML Timestamps**: Last insert, update, and soft delete timestamps
-- **Expected Timeframe**: Configured timeliness rules and thresholds
+- **Expected Timeframe**: Configured freshness rules and thresholds
 - **Overdue Details**: Specific duration beyond expected timeframe
 
 Example notification:
 ```
 ⚠️ WARNING
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Pipeline Timeliness Check Failed - 2 pipeline(s) overdue
+Message: Pipeline Freshness Check Failed - 2 pipeline(s) overdue
 
 Details:
 • Failed Pipelines:
@@ -367,8 +368,8 @@ Message: Pipeline Execution Timeliness Check Failed - 2 execution(s) overdue
 
 Details:
 • Failed Executions:
-  • Pipeline Execution ID: 456 (Pipeline ID: 1): 3600 seconds (running), Expected within 30 minutes (child config)
-  • Pipeline Execution ID: 457 (Pipeline ID: 2): 2400 seconds (completed), Expected within 15 minutes (parent config)
+  • Pipeline Execution ID: 456 (Pipeline ID: 1): 3621 seconds (running), Expected within 30 minutes (child config)
+  • Pipeline Execution ID: 457 (Pipeline ID: 2): 2415 seconds (completed), Expected within 15 minutes (parent config)
 • Total Overdue: 2
 ```
 
