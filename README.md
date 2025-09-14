@@ -411,7 +411,7 @@ pipeline_type_data = {
 
 ### Execution Logging
 
-Long-running pipeline executions are automatically logged to the `timeliness_pipeline_execution_log` table when they exceed the configured threshold (default: 30 minutes).
+Long-running pipeline executions are automatically logged to the `timeliness_pipeline_execution_log` table when they exceed the configured threshold.
 
 ### Slack Notifications
 
@@ -435,7 +435,6 @@ Details:
 • Failed Pipelines:
   • stock-price-worker (ID: 1): Last DML 2025-01-09 15:30:00, Expected within 12 hours
   • user-analytics-pipeline (ID: 2): Last DML 2025-01-09 10:15:00, Expected within 6 hours
-• Total Overdue: 2
 ```
 
 #### Pipeline Execution Timeliness Failures
@@ -456,7 +455,6 @@ Details:
 • Failed Executions:
   • Pipeline Execution ID: 456 (Pipeline ID: 1): 3621 seconds (running), Expected within 30 minutes (child config)
   • Pipeline Execution ID: 457 (Pipeline ID: 2): 2415 seconds (completed), Expected within 15 minutes (parent config)
-• Total Overdue: 2
 ```
 
 ### API Usage
@@ -515,7 +513,7 @@ The timeliness system provides comprehensive error handling and monitoring:
 #### Slack Notifications
 When timeliness issues are detected, detailed Slack notifications are automatically sent. *See [Slack Notifications](#slack-notifications) section below for examples and details.*
 
-#### Graceful Degradation
+#### Resilience Features
 - **Non-Blocking**: Timeliness failures don't interrupt the check process
 - **Comprehensive Logging**: All issues are logged for debugging and analysis
 - **Status Reporting**: API returns warning status for programmatic handling
@@ -633,14 +631,14 @@ result = response.json()
 
 ### Cleanup Process
 
-The system cleans up data from three main log tables:
+The system cleans up data from four main log tables in a specific order to maintain referential integrity:
 
-#### 1. Pipeline Executions
-- **Table**: `pipeline_execution`
-- **Filter**: Records with `start_date <= retention_date`
-- **Purpose**: Removes old pipeline execution records
+#### 1. Freshness Pipeline Logs
+- **Table**: `freshness_pipeline_log`
+- **Filter**: Records with `last_dml_timestamp <= retention_date`
+- **Purpose**: Removes old DML freshness check logs
 
-#### 2. Timeliness Logs
+#### 2. Timeliness Pipeline Execution Logs
 - **Table**: `timeliness_pipeline_execution_log`
 - **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
 - **Purpose**: Removes old timeliness check logs
@@ -649,6 +647,11 @@ The system cleans up data from three main log tables:
 - **Table**: `anomaly_detection_result`
 - **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
 - **Purpose**: Removes old anomaly detection results
+
+#### 4. Pipeline Executions (Last)
+- **Table**: `pipeline_execution`
+- **Filter**: Records with `id <= max_pipeline_execution_id`
+- **Purpose**: Removes old pipeline execution records (must be last due to foreign key constraints)
 
 ### Best Practices
 

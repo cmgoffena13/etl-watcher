@@ -207,10 +207,7 @@ async def db_check_pipeline_execution_timeliness(
                 level=AlertLevel.WARNING,
                 title="Timeliness Check - Pipeline Execution",
                 message=f"Pipeline Execution Timeliness Check Failed - {len(fail_results)} execution(s) overdue",
-                details={
-                    "Failed Executions": "\n" + pipeline_details,
-                    "Total Overdue": len(fail_results),
-                },
+                details={"Failed Executions": "\n" + pipeline_details},
             )
         except Exception as e:
             logger.error(

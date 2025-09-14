@@ -179,10 +179,7 @@ async def db_check_pipeline_freshness(session: Session):
                 level=AlertLevel.WARNING,
                 title="Freshness Check - Pipeline DML",
                 message=f"Pipeline Freshness Check Failed - {len(fail_results)} pipeline(s) overdue",
-                details={
-                    "Failed Pipelines": "\n" + pipeline_details,
-                    "Total Overdue": len(fail_results),
-                },
+                details={"Failed Pipelines": "\n" + pipeline_details},
             )
         except Exception as e:
             logger.error(
