@@ -8,16 +8,17 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ## Table of Contents
 
 1. [Development Setup](#development-setup)
-2. [Features](#features)
-3. [API Endpoints](#-api-endpoints)
-4. [Documentation](#-documentation)
-5. [Database Schema](#️-database-schema)
-6. [Development](#️-development)
-7. [Technology Stack](#️-technology-stack)
-8. [Timeliness & Freshness](#-timeliness--freshness)
-9. [Anomaly Checks](#-anomaly-checks)
-10. [Log Cleanup](#-log-cleanup--maintenance)
-11. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+2. [Configuration](#configuration)
+3. [Features](#features)
+4. [API Endpoints](#-api-endpoints)
+5. [Documentation](#-documentation)
+6. [Database Schema](#️-database-schema)
+7. [Development](#️-development)
+8. [Technology Stack](#️-technology-stack)
+9. [Timeliness & Freshness](#-timeliness--freshness)
+10. [Anomaly Checks](#-anomaly-checks)
+11. [Log Cleanup](#-log-cleanup--maintenance)
+12. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 
 ## Development Setup
 1. Install `uv`
@@ -42,6 +43,47 @@ pre-commit install
 pre-commit install --hook-type pre-push
 ```
 6. Add in Environment Variables referencing `.env.example`
+
+## Configuration
+
+Watcher supports various configuration options through environment variables. The system uses different prefixes for different environments:
+
+- **Development**: `DEV_` prefix
+- **Production**: `PROD_` prefix  
+- **Testing**: `TEST_` prefix
+
+### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | `None` | Yes |
+| `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | `None` | No |
+| `LOGFIRE_TOKEN` | Logfire token for logging | `None` | No |
+| `LOGFIRE_CONSOLE` | Enable console logging | `None` | No |
+| `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create anomaly detection rules for new pipelines | `False` | No |
+
+### Auto-Create Anomaly Detection Rules
+
+When `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` is set to `true`, the system automatically creates anomaly detection rules for all available metrics when a new pipeline is created. This includes rules for:
+
+- **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
+- **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
+- **Volume Monitoring**: `total_rows` - Tracks total rows processed
+
+**Example Configuration:**
+```bash
+# Development environment
+DEV_DATABASE_URL=postgresql://user:password@localhost:5432/watcher_dev
+DEV_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
+
+# Production environment  
+PROD_DATABASE_URL=postgresql://user:password@prod-db:5432/watcher_prod
+PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
+```
+
+**Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements.
 
 ## Features
 
