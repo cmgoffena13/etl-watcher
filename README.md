@@ -667,91 +667,103 @@ async def run_pipeline_workflow():
         "full_load": False,
         "next_watermark": max_id_from_source  # Converted to string
     }
-    
-    async with httpx.AsyncClient() as client:
-        # Create the pipeline
-        pipeline_response = await client.post("http://localhost:8000/pipeline", json=pipeline_data)
-        pipeline_result = pipeline_response.json()
-        
-        print(f"Pipeline ID: {pipeline_result['id']}")
-        print(f"Active: {pipeline_result['active']}")
-        print(f"Load Lineage: {pipeline_result['load_lineage']}")
-        print(f"Watermark: {pipeline_result}['watermark']")
-        
-        # Step 2: Check if pipeline is active
-        # Programmatic way to control pipelines for flexibility
-        if not pipeline_result['active']:
-            print("Pipeline is not active. Exiting...")
-            return
-        
-        # Step 3: If load_lineage is true, create address lineage relationships
-        # This forces lineage data to be in source control and only reloads if necessary
-        # Can set manually through API, once execution is complete defaults back to False
-        if pipeline_result['load_lineage']:
-            lineage_data = {
+    try:
+        async with httpx.AsyncClient() as client:
+            # Create the pipeline
+            pipeline_response = await client.post("http://localhost:8000/pipeline", json=pipeline_data)
+            pipeline_result = pipeline_response.json()
+            
+            print(f"Pipeline ID: {pipeline_result['id']}")
+            print(f"Active: {pipeline_result['active']}")
+            print(f"Load Lineage: {pipeline_result['load_lineage']}")
+            print(f"Watermark: {pipeline_result}['watermark']")
+            
+            # Step 2: Check if pipeline is active
+            # Programmatic way to control pipelines for flexibility
+            if not pipeline_result['active']:
+                print("Pipeline is not active. Exiting...")
+                return
+            
+            # Step 3: If load_lineage is true, create address lineage relationships
+            # This forces lineage data to be in source control and only reloads if necessary
+            # Can set manually through API, once execution is complete defaults back to False
+            if pipeline_result['load_lineage']:
+                lineage_data = {
+                    "pipeline_id": pipeline_result['id'],
+                    "source_addresses": [
+                        {
+                            "address_name": "source_db.stock_prices",
+                            "address_type_name": "postgresql",
+                            "address_type_group_name": "database"
+                        }
+                    ],
+                    "target_addresses": [
+                        {
+                            "address_name": "warehouse.stock_prices",
+                            "address_type_name": "postgresql",
+                            "address_type_group_name": "database"
+                        }
+                    ]
+                }
+                
+                lineage_response = await client.post("http://localhost:8000/address_lineage", json=lineage_data)
+                lineage_result = lineage_response.json()
+                print(f"Lineage relationships created: {lineage_result['lineage_relationships_created']}")
+            
+            # Step 4: Start Pipeline Execution
+            execution_start_data = {
                 "pipeline_id": pipeline_result['id'],
-                "source_addresses": [
-                    {
-                        "address_name": "source_db.stock_prices",
-                        "address_type_name": "postgresql",
-                        "address_type_group_name": "database"
-                    }
-                ],
-                "target_addresses": [
-                    {
-                        "address_name": "warehouse.stock_prices",
-                        "address_type_name": "postgresql",
-                        "address_type_group_name": "database"
-                    }
-                ]
+                "start_date": pendulum.now("UTC").isoformat()
             }
             
-            lineage_response = await client.post("http://localhost:8000/address_lineage", json=lineage_data)
-            lineage_result = lineage_response.json()
-            print(f"Lineage relationships created: {lineage_result['lineage_relationships_created']}")
-        
-        # Step 4: Start Pipeline Execution
-        execution_start_data = {
-            "pipeline_id": pipeline_result['id'],
-            "start_date": pendulum.now("UTC").isoformat()
-        }
-        
-        start_response = await client.post("http://localhost:8000/start_pipeline_execution", json=execution_start_data)
-        execution_id = start_response.json()['id']
-        
-        print(f"Pipeline execution associated with ID: {execution_id}")
+            start_response = await client.post("http://localhost:8000/start_pipeline_execution", json=execution_start_data)
+            execution_id = start_response.json()['id']
+            
+            print(f"Pipeline execution associated with ID: {execution_id}")
 
-        # Utilize watermarks
-        next_watermark = max_id_from_source
-        watermark = int(pipeline_result['watermark'])
-        
-        # Step 5: Incremental Data Pipeline (utilizing watermarks)
-        # ...
-        SELECT
-        *
-        FROM Table_A
-        WHERE id <= next_watermark
-            AND id > watermark
-        # ...
-        
-        # Step 6: End Pipeline Execution (with DML counts gathered from work)
-        execution_end_data = {
-            "id": execution_id,
-            "end_date": pendulum.now("UTC").isoformat(),
-            "inserts": 150,
-            "updates": 25,
-            "soft_deletes": 5,
-            "total_rows": 180,
-            "execution_metadata": {
-                "partition": ...
+            # Utilize watermarks
+            next_watermark = max_id_from_source
+            watermark = int(pipeline_result['watermark'])
+            
+            # Step 5: Incremental Data Pipeline (utilizing watermarks)
+            # ...
+            SELECT
+            *
+            FROM Table_A
+            WHERE id <= next_watermark
+                AND id > watermark
+            # ...
+            
+            # Step 6: End Pipeline Execution (with DML counts gathered from work)
+            execution_end_data = {
+                "id": execution_id,
+                "end_date": pendulum.now("UTC").isoformat(),
+                "completed_successfully": True,
+                "inserts": 150,
+                "updates": 25,
+                "soft_deletes": 5,
+                "total_rows": 180,
+                "execution_metadata": {
+                    "partition": ...
+                }
             }
-        }
-        
-        # Ending execution automatically increments watermark to next_watermark
-        # Also automatically sets load_lineage back to False to avoid excess calls
-        await client.post("http://localhost:8000/end_pipeline_execution", json=execution_end_data)
-        print("Pipeline execution completed successfully")
-        
+            
+            # Ending execution automatically increments watermark to next_watermark
+            # Also automatically sets load_lineage back to False to avoid excess calls
+            await client.post("http://localhost:8000/end_pipeline_execution", json=execution_end_data)
+            print("Pipeline execution completed successfully")
+        except Exception as e:
+            execution_end_data = {
+                "id": execution_id,
+                "end_date": pendulum.now("UTC").isoformat(),
+                "completed_successfully": False,
+                "execution_metadata": {
+                    "error": ...
+                }
+            }
+            
+            # Alerting
+            ...
 
 if __name__ == "__main__":
     asyncio.run(run_pipeline_workflow())
