@@ -1,6 +1,8 @@
 from enum import Enum
 from typing import Any
 
+import orjson
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel, model_validator
 
 
@@ -40,3 +42,16 @@ class ValidatorModel(BaseModel):
         if "watermark" in values and values["watermark"] is not None:
             values["watermark"] = str(values["watermark"])
         return values
+
+
+class ORJSONResponse(JSONResponse):
+    """
+    Function to convert JSON directly to bytes.
+    Faster Serialization than default.
+    Requester needs to use orjson to decode.
+    """
+
+    media_type = "application/json"
+
+    def render(self, content) -> bytes:
+        return orjson.dumps(content)

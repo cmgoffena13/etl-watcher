@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:7-alpine
+    container_name: watcher-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  postgres:
+    image: postgres:15
+    container_name: watcher-postgres
+    environment:
+      POSTGRES_DB: watcher
+      POSTGRES_USER: watcher
+      POSTGRES_PASSWORD: watcher
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  api:
+    build: .
+    container_name: watcher-api
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    command: ["uv", "run", "--", "gunicorn", "src.app:app", "-c", "gunicorn.conf.py"]
+
+  worker:
+    build: .
+    container_name: watcher-worker
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "worker", "--loglevel=info"]
+
+volumes:
+  redis_data:
+  postgres_data:

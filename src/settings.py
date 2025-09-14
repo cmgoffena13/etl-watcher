@@ -17,10 +17,14 @@ class GlobalConfig(BaseConfig):
     SLACK_WEBHOOK_URL: Optional[str] = None
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
     PROFILING_ENABLED: Optional[bool] = False
+    REDIS_HOST: Optional[str] = None
+    REDIS_PORT: Optional[int] = None
 
 
 class DevConfig(GlobalConfig):
     PROFILING_ENABLED: Optional[bool] = True
+    REDIS_HOST: Optional[str] = "redis"
+    REDIS_PORT: Optional[int] = 6379
     model_config = SettingsConfigDict(env_prefix="DEV_")
 
 
