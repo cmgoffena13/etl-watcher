@@ -283,14 +283,13 @@ async def _detect_anomalies_for_rule_batch(
         await session.commit()
 
         try:
-            anomaly_details = []
-            for result in new_anomaly_results:
-                anomaly_details.append(
-                    f"\t• Execution ID {result.pipeline_execution_id}: "
-                    f"{result.violation_value} (baseline: {result.baseline_value:.2f}, "
-                    f"deviation: {result.deviation_percentage:.1f}%, "
-                    f"confidence: {result.confidence_score:.2f})"
-                )
+            anomaly_details = "\n".join(
+                f"\t• Pipeline Execution ID {result.pipeline_execution_id}: "
+                f"{result.violation_value} (baseline: {result.baseline_value:.2f}, "
+                f"deviation: {result.deviation_percentage:.1f}%, "
+                f"confidence: {result.confidence_score:.2f})"
+                for result in new_anomaly_results
+            )
 
             await send_slack_message(
                 level=AlertLevel.WARNING,
@@ -300,7 +299,7 @@ async def _detect_anomalies_for_rule_batch(
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
                     "Lookback Days": rule.lookback_days,
-                    "Anomalies": "\n" + "\n".join(anomaly_details),
+                    "Anomalies": f"\n" + {anomaly_details},
                 },
             )
         except Exception as e:
