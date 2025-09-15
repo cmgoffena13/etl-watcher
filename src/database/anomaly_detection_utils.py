@@ -299,7 +299,7 @@ async def _detect_anomalies_for_rule_batch(
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
                     "Lookback Days": rule.lookback_days,
-                    "Anomalies": f"\n" + {anomaly_details},
+                    "Anomalies": f"\n{anomaly_details}",
                 },
             )
         except Exception as e:
