@@ -56,8 +56,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ### 🚨 Anomaly Detection
 - **Statistical Analysis**: Detect anomalies using standard deviation and z-score analysis
-- **Configurable Metrics**: Monitor duration, row counts, and DML operations
-- **Pipeline-Specific Rules**: Create custom anomaly detection rules per pipeline
+- **Configurable Metrics**: Monitor duration, row counts, and DML operations for individual pipelines
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
 - **Lookback Periods**: Analyze historical data over configurable time windows
@@ -69,6 +68,8 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Batch Processing**: Safe deletion in configurable batches to avoid database locks
 - **Cascading Cleanup**: Maintains referential integrity across related tables
 - **Configurable Retention**: Set custom retention periods for different data types
+
+*See [Log Cleanup & Maintenance](#-log-cleanup--maintenance) section for detailed configuration and usage.*
 
 ### 🔧 Development & Operations
 - **RESTful API**: Complete REST API for all operations with automatic documentation
@@ -126,14 +127,14 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ### Core Tables
 - **`pipeline`** - Pipeline definitions with configuration and metadata
-- **`pipeline_type`** - Pipeline type definitions and broad timeliness rules
+- **`pipeline_type`** - Pipeline type definitions and broad timeliness & freshness rules
 - **`pipeline_execution`** - Individual pipeline execution records and metrics
 - **`address`** - Data address definitions (databases, files, APIs, etc.)
 - **`address_type`** - Address type categorization
 - **`address_lineage`** - Source-to-target data lineage relationships
 - **`address_lineage_closure`** - Optimized closure table for efficient lineage queries
-- **`timeliness_pipeline_execution_log`** - Log of pipeline executions exceeding timeliness thresholds
-- **`freshness_pipeline_log`** - Log of pipelines failing freshness checks
+- **`timeliness_pipeline_execution_log`** - Log of pipeline executions that have exceeded timeliness thresholds
+- **`freshness_pipeline_log`** - Log of pipelines that have failed freshness checks
 - **`anomaly_detection_rule`** - Anomaly detection rules and configuration per pipeline
 - **`anomaly_detection_result`** - Detected anomalies with statistical analysis and confidence scores
 
@@ -222,13 +223,13 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 
 ## ⏰ Timeliness & Freshness
 
-The monitoring system provides two complementary checks, timeliness & freshness, to ensure your data pipelines are running optimally. They run on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoints as often as you like, they do broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
+The monitoring system provides two complementary checks, timeliness & freshness, to ensure your data pipelines are running optimally. They run through the two endpoints: `freshness` and `timeliness` (ping the endpoints as often as you like, they do broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
 
 ### Pipeline Execution Timeliness
-Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes. Uses a configurable lookback window to check both running and completed pipelines to alert on long-running pipelines as well.
+Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes. Uses a configurable lookback window to check executions (running and completed).
 
 #### Timeliness Check Features
-- **Lookback Window**: Configurable time window to check for overdue executions (e.g., last 60 minutes)
+- **Lookback Window**: Configurable time window to check for overdue executions (e.g., any execution started within the last 60 minutes)
 - **Running Pipeline Detection**: Identifies currently running pipelines that exceed their threshold
 - **Completed Pipeline Detection**: Identifies completed pipelines that took longer than expected
 - **Dynamic Thresholds**: Uses pipeline-specific or pipeline-type-specific timeliness settings
@@ -238,7 +239,7 @@ Monitors if pipeline executions complete within expected timeframes, helping ide
 Checks if data manipulation operations (inserts, updates, deletes) are recent enough, ensuring data freshness for downstream consumers.
 
 #### Freshness Check Features
-- **DML Operation Tracking**: Monitors insert, update, and soft delete timestamps (calculated behind the scenes from pipeline execution data)
+- **DML Operation Tracking**: Monitors insert, update, and soft delete timestamps (calculated behind the scenes from completed pipeline execution data)
 - **Configurable Thresholds**: Set freshness rules per pipeline type and individual pipelines
 - **Recent Activity Detection**: Identifies pipelines with stale data based on last DML operations
 - **Flexible Time Units**: Support for hours, days, or other time units for freshness rules
