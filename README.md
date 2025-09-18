@@ -14,11 +14,12 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 3. [Database Schema](#️-database-schema)
 4. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
-5. [Timeliness & Freshness](#-timeliness--freshness)
-6. [Anomaly Checks](#-anomaly-checks)
-7. [Log Cleanup](#-log-cleanup--maintenance)
-8. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
-9. [Development](#️-development)
+5. [Recommended Organization](#-recommended-organization)
+6. [Timeliness & Freshness](#-timeliness--freshness)
+7. [Anomaly Checks](#-anomaly-checks)
+8. [Log Cleanup](#-log-cleanup--maintenance)
+9. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+10. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
 
@@ -207,6 +208,90 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 ```
 
 **Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements. *See [Auto-Create Anomaly Detection Rules](#auto-create-anomaly-detection-rules) section for details.*
+
+## 📋 Recommended Organization
+
+Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration. This section provides recommended naming conventions and organizational patterns.
+
+### Pipeline Type Organization
+
+Organize pipeline types by data processing patterns or business domains or a combination of both:
+
+**Type Names:**
+- `extraction` - Data extraction pipelines
+- `transformation` - Data transformation and processing
+- `loading` - Data loading and materialization
+- `audit` - Data quality and validation
+- `monitoring` - System monitoring and health checks
+
+OR
+
+Organize pipeline types by business domain:
+**Type Names:**
+- `sales`
+- `marketing`
+- `finance`
+
+OR
+
+A combination of both:
+**Type Names:**
+- `sales_extraction`
+- `marketing_audit`
+- `finance_monitoring`
+
+### Pipeline Naming Convention
+
+Use a clear naming structure that matches back to the pipeline code (e.g., DAG name, job name, or workflow identifier). 
+
+**Best Practices:**
+- Match your DAG/job/workflow names exactly
+- Use consistent abbreviations across your organization
+- Keep names descriptive but concise
+- Use underscores for separation, avoid special characters
+
+### Address Type Organization
+
+Categorize addresses by their technical characteristics:
+
+**Group Names:**
+- `databases` - Database systems (PostgreSQL, MySQL, etc.)
+- `warehouses` - Data warehouses (Snowflake, BigQuery, etc.)
+- `lakes` - Data lakes (S3, ADLS, etc.)
+- `apis` - API endpoints and services
+- `files` - File systems and storage
+- `streams` - Streaming data sources
+
+**Type Names:**
+- `postgresql` - PostgreSQL databases
+- `snowflake` - Snowflake data warehouse
+- `s3` - Amazon S3 storage
+- `rest_api` - REST API endpoints
+- `kafka` - Kafka streaming platform
+
+### Address Naming Convention
+
+Addresses should be the actual, usable path/URL that you would use to access the data:
+
+**Examples:**
+- `gs://my-bucket/raw/events/2024/01/09/` - GCS bucket path for raw events
+- `https://api.example.com/v1/customers` - REST API endpoint for customers
+- `analytics.public.users` - database table
+- `topic-name` - Kafka topic with broker info
+
+**Best Practices:**
+- Use the URL format for the system
+- Be specific enough that someone could use the address to access the data given the address type context
+- Use standard formats for each system type (Bucket URLs, HTTP endpoints, database.schema.table)
+
+### Best Practices
+
+1. **Consistency**: Use the same naming patterns across all teams and projects
+2. **Descriptiveness**: Names should clearly indicate purpose and scope
+3. **Hierarchy**: Use underscores to create logical hierarchies
+4. **Future-Proofing**: Choose names that will remain relevant as systems evolve
+5. **Documentation**: Document your naming conventions and share with all teams
+6. **Validation**: Implement naming validation in your CI/CD pipeline or code reviews
 
 ## ⏰ Timeliness & Freshness
 
