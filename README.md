@@ -15,7 +15,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 4. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
 5. [Recommended Organization](#-recommended-organization)
-6. [Nested Pipeline Executions](#Nested-Pipeline-Executions)
+6. [Nested Pipeline Executions](#-nested-pipeline-executions)
 7. [Timeliness & Freshness](#-timeliness--freshness)
 8. [Anomaly Checks](#-anomaly-checks)
 9. [Log Cleanup](#-log-cleanup--maintenance)
@@ -295,7 +295,7 @@ Addresses should be the actual, usable path/URL that you would use to access the
 - Be specific enough that someone could use the address to access the data given the address type context
 - Use standard formats for each system type (Bucket URLs, HTTP endpoints, database.schema.table)
 
-## Nested Pipeline Executions
+## 🔗 Nested Pipeline Executions
 
 Watcher supports hierarchical pipeline execution tracking through the `parent_id` field, enabling you to model complex workflows with sub-pipelines and dependencies:
 
