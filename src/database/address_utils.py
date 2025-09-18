@@ -37,6 +37,13 @@ async def db_get_or_create_address(
             )
         )
 
+        if address.address_type_group_name == "database":
+            address_parts = address.name.split(".")
+            if len(address_parts) == 3:
+                new_address.database_name = address_parts[0]
+                new_address.schema_name = address_parts[1]
+                new_address.table_name = address_parts[2]
+
         address_stmt = (
             Address.__table__.insert()
             .returning(Address.id)
