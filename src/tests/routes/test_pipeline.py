@@ -25,7 +25,7 @@ async def test_get_or_create_pipeline(async_client: AsyncClient):
     assert response.json() == {
         "id": 1,
         "active": True,
-        "load_lineage": False,
+        "load_lineage": True,
         "watermark": None,
     }
 
@@ -34,7 +34,7 @@ async def test_get_or_create_pipeline(async_client: AsyncClient):
     assert response.json() == {
         "id": 1,
         "active": True,
-        "load_lineage": False,
+        "load_lineage": True,
         "watermark": None,
     }
 
@@ -58,7 +58,7 @@ async def test_watermark_increment_pipeline(async_client: AsyncClient):
     assert response.json() == {
         "id": 1,
         "active": True,
-        "load_lineage": False,
+        "load_lineage": True,
         "watermark": None,
     }
 
