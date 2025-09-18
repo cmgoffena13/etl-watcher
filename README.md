@@ -116,6 +116,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)
 - `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
+- `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard
 - `GET /` - Health check endpoint
 - `GET /scalar` - Interactive API documentation (utilizes Scalar for an intuitive interface to explore and test all available endpoints)
 
