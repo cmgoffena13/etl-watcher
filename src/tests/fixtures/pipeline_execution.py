@@ -1,13 +1,20 @@
+import pendulum
+
+# Use current timestamps for test data (needed for anomaly detection)
+now = pendulum.now("UTC")
+start_time = now.subtract(hours=1)
+end_time = now
+
 TEST_PIPELINE_EXECUTION_START_DATA = {
     "pipeline_id": 1,
     "full_load": False,
-    "start_date": "2025-09-06T00:07:43.824220+00:00",
+    "start_date": start_time.isoformat(),
 }
 
 TEST_PIPELINE_EXECUTION_END_DATA = {
     "id": 1,
     "pipeline_id": 1,
-    "end_date": "2025-09-06T01:07:43.824220+00:00",
+    "end_date": end_time.isoformat(),
     "inserts": 10,
     "updates": 12,
     "soft_deletes": 14,

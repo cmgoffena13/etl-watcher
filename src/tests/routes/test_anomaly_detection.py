@@ -1,3 +1,4 @@
+import pendulum
 import pytest
 from httpx import AsyncClient
 
@@ -125,19 +126,25 @@ async def test_anomaly_detection_result_failure(
     assert response.status_code == 201
 
     for i in range(1, 6):
-        if i == 5:  # Trigger anomaly by giving ridiculous duration_seconds
-            post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
-            post_data.update(
-                {
-                    "end_date": "2025-09-12T23:07:43.824220+00:00",
-                }
-            )
-        else:
-            post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
+
+        if (
+            i == 5
+        ):  # Trigger anomaly by giving ridiculous end_date to create high duration_seconds
+            post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+
+            ridiculous_end_date = pendulum.now("UTC").add(seconds=999999)
+            post_data.update(
+                {
+                    "end_date": ridiculous_end_date.isoformat(),
+                }
+            )
+        else:
+            post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+
         post_data.update(
             {
                 "id": response.json()["id"],
@@ -145,7 +152,7 @@ async def test_anomaly_detection_result_failure(
         )
         response = await async_client.post("/end_pipeline_execution", json=post_data)
         assert response.status_code == 204
-        # Call anomaly detection directly since background tasks don't run in tests
+        # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
             await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
 
