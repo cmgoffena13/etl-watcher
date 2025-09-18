@@ -145,13 +145,23 @@ def mock_background_tasks():
     # Mock FastAPI's BackgroundTasks.add_task method
     from fastapi import BackgroundTasks
 
-    original_add_task = BackgroundTasks.add_task
     BackgroundTasks.add_task = mock_add_task
 
     yield {"add_task": mock_add_task}
 
-    # Restore original method
-    BackgroundTasks.add_task = original_add_task
+
+@pytest.fixture(autouse=True)
+def mock_celery_tasks():
+    """Mock Celery tasks globally to prevent them from executing during tests"""
+    mock_delay = Mock()
+    mock_delay.return_value.id = "test-task-id"
+
+    # Mock the delay method on all Celery tasks
+    from celery import Task
+
+    Task.delay = mock_delay
+
+    yield mock_delay
 
 
 @pytest.fixture()

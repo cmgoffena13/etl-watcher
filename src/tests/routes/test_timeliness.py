@@ -2,6 +2,8 @@ import pendulum
 import pytest
 from httpx import AsyncClient
 
+from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
+from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.pipeline import (
     TEST_PIPELINE_POST_DATA,
 )
@@ -47,8 +49,8 @@ async def test_timeliness_pipeline_execution_failure(
     response = await async_client.post("/end_pipeline_execution", json=post_data)
     assert response.status_code == 204
 
-    response = await async_client.post("/timeliness", json={"lookback_minutes": 60})
-    assert response.status_code == 200
+    async with AsyncSessionLocal() as session:
+        await db_check_pipeline_execution_timeliness(session, None, 60)
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args

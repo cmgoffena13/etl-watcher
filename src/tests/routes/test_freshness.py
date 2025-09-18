@@ -3,8 +3,10 @@ import pytest
 from httpx import AsyncClient
 from sqlmodel import Session
 
+from src.database.freshness_utils import db_check_pipeline_freshness
 from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_type import PipelineType
+from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.pipeline import TEST_PIPELINE_FRESHNESS_DATA
 from src.tests.fixtures.pipeline_type import TEST_PIPELINE_TYPE_POST_DATA
 
@@ -95,10 +97,8 @@ async def test_pipeline_freshness_check_failure(
     db_session.add(pipeline)
     await db_session.commit()
 
-    response = await async_client.post("/freshness")
-    assert response.status_code in [200, 201]
-    response_data = response.json()
-    assert response_data["status"] == "warning"
+    async with AsyncSessionLocal() as session:
+        await db_check_pipeline_freshness(session)
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
