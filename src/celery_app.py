@@ -1,4 +1,3 @@
-# src/celery_app.py
 import logfire
 from celery import Celery
 from celery.signals import worker_init

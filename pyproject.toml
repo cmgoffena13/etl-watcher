@@ -6,6 +6,7 @@ readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "alembic>=1.16.5",
+    "asgiref>=3.7.0",
     "asyncpg>=0.30.0",
     "celery[redis]>=5.5.3",
     "fastapi>=0.116.1",
@@ -25,5 +26,5 @@ dependencies = [
     "slack-sdk>=3.36.0",
     "sqlalchemy[asyncio]>=2.0.43",
     "sqlmodel>=0.0.24",
-    "uvicorn>=0.35.0",
+    "uvicorn[standard]>=0.35.0",
 ]

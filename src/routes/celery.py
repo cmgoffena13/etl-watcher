@@ -1,11 +1,14 @@
 # src/routes/celery.py
 import asyncio
 import json
+import logging
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
 from fastapi.responses import HTMLResponse
 
 from src.celery_app import celery
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
@@ -16,11 +19,17 @@ async def websocket_worker_monitor(websocket: WebSocket):
 
     try:
         while True:
-            # Get worker stats
+            # Get worker stats (optimized for minimal overhead)
             inspect = celery.control.inspect()
-            active_tasks = inspect.active()
-            stats = inspect.stats()
-            reserved_tasks = inspect.reserved()
+            try:
+                active_tasks = inspect.active() or {}
+                reserved_tasks = inspect.reserved() or {}
+                stats = inspect.stats() or {}
+            except Exception as e:
+                logger.warning(f"Failed to get worker stats: {e}")
+                active_tasks = {}
+                reserved_tasks = {}
+                stats = {}
 
             # Build monitoring data
             worker_data = {}
@@ -74,12 +83,12 @@ async def websocket_worker_monitor(websocket: WebSocket):
                 }
             )
 
-            await asyncio.sleep(2)  # Update every 2 seconds
+            await asyncio.sleep(10)  # Update every 10 seconds
 
     except WebSocketDisconnect:
-        print("Client disconnected from worker monitor")
+        logger.info("Client disconnected from worker monitor")
     except Exception as e:
-        print(f"WebSocket error: {e}")
+        logger.error(f"WebSocket error: {e}")
         await websocket.close()
 
 
