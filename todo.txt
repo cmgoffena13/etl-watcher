@@ -1,5 +1,4 @@
 1. Create an audit log framework for auditing pipelines 
     to provide information on Completeness and Accuracy (and then anomaly alerting on that as well)
-2. Look into Celery for background tasks like anomaly and timeliness checks to have response time be faster
 3. Think about throughput. Endpoint to showcase?
 4. pipeline_metadata: "daily_additive_cumulation": True

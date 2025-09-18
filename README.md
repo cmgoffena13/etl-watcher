@@ -7,121 +7,18 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ## Table of Contents
 
-1. [Development Setup](#development-setup)
-2. [Configuration](#configuration)
-3. [Performance Profiling](#performance-profiling)
-4. [Features](#features)
-5. [API Endpoints](#-api-endpoints)
-6. [Documentation](#-documentation)
-7. [Database Schema](#️-database-schema)
-8. [Development](#️-development)
-9. [Technology Stack](#️-technology-stack)
-10. [Timeliness & Freshness](#-timeliness--freshness)
-11. [Anomaly Checks](#-anomaly-checks)
-12. [Log Cleanup](#-log-cleanup--maintenance)
-13. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
-
-## Development Setup
-1. Install `uv`
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-2. Install python 3.12
-```bash
-uv python install 3.12
-```
-3. Check installation
-```bash
-uv python list
-```
-4. Sync python packages
-```bash
-uv sync
-```
-5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
-```bash
-pre-commit install
-pre-commit install --hook-type pre-push
-```
-6. Add in Environment Variables referencing `.env.example`
-
-## Configuration
-
-Watcher supports various configuration options through environment variables. The system uses different prefixes for different environments:
-
-- **Development**: `DEV_` prefix
-- **Production**: `PROD_` prefix  
-- **Testing**: `TEST_` prefix
-
-### Environment Variables
-
-| Variable | Description | Default | Required |
-|----------|-------------|---------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | `None` | Yes |
-| `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | `None` | No |
-| `LOGFIRE_TOKEN` | Logfire token for logging | `None` | No |
-| `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create anomaly detection rules for new pipelines | `False` | No |
-
-### Auto-Create Anomaly Detection Rules
-
-When `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` is set to `true`, the system automatically creates anomaly detection rules for all available metrics when a new pipeline is created. This includes rules for:
-
-- **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
-- **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
-- **Volume Monitoring**: `total_rows` - Tracks total rows processed
-
-**Default Rule Settings:**
-- **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
-- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
-- **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
-- **Active by Default**: `true` (rules are enabled immediately)
-
-**Example Configuration:**
-```bash
-# Development environment
-DEV_DATABASE_URL=postgresql://user:password@localhost:5432/watcher_dev
-DEV_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
-DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
-
-# Production environment  
-PROD_DATABASE_URL=postgresql://user:password@prod-db:5432/watcher_prod
-PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
-PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
-```
-
-**Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements.
-
-## Performance Profiling
-
-Watcher includes built-in performance profiling for development using pyinstrument to help identify bottlenecks and optimize your pipeline operations.
-
-### On-Demand Profiling
-
-Profile any API endpoint by adding `?profile=true` to the URL:
-
-### Using Scalar API Docs
-
-1. **Start your app**: `make start`
-2. **Open Scalar**: http://localhost:8000/scalar
-3. **Add `?profile=true`** as a query parameter to any endpoint URL in the interface
-4. **Execute the request** - you'll get an interactive HTML profile directly in your browser
-
-### Profile Features
-
-- **Interactive Call Stack**: Click to expand/collapse function calls
-- **Timing Breakdown**: See exactly where time is spent
-- **Database Operations**: Identify slow queries and connection issues
-- **Memory Usage**: Track memory allocation patterns
-- **Search & Filter**: Find specific functions or modules
-
-### Configuration
-
-Profiling is enabled by default in development mode. To disable:
-
-```bash
-# Set in your environment
-DEV_PROFILING_ENABLED=false
-```
+1. [Features](#features)
+2. [API Endpoints](#-api-endpoints)
+3. [Database Schema](#️-database-schema)
+4. [Technology Stack](#️-technology-stack)
+   - [Configuration](#configuration)
+5. [Timeliness & Freshness](#-timeliness--freshness)
+6. [Anomaly Checks](#-anomaly-checks)
+7. [Log Cleanup](#-log-cleanup--maintenance)
+8. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+9. [Development](#️-development)
+    - [Development Setup](#development-setup)
+    - [Performance Profiling](#performance-profiling)
 
 ## Features
 
@@ -220,10 +117,7 @@ DEV_PROFILING_ENABLED=false
 - `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
 - `GET /` - Health check endpoint
-- `GET /scalar` - Interactive API documentation
-
-## 📖 Documentation
-The repo utilizes Scalar for interactive API documentation found at the `/scalar` route. This provides an intuitive interface to explore and test all available endpoints.
+- `GET /scalar` - Interactive API documentation (utilizes Scalar for an intuitive interface to explore and test all available endpoints)
 
 ## 🗄️ Database Schema
 
@@ -246,35 +140,6 @@ The repo utilizes Scalar for interactive API documentation found at the `/scalar
 - **Optimized indexes** for performance-critical queries
 - **Foreign key constraints** for data integrity
 - **Closure table pattern** for efficient lineage traversal
-
-## 🛠️ Development
-
-### Quick Start
-```bash
-# Start the development server
-make start
-
-# Run tests
-make test
-
-# Format and lint code
-make format
-```
-
-### Database Management
-```bash
-# Add a new migration
-make add-migration msg="description of changes"
-
-# Apply migrations
-make trigger-migration
-```
-
-### Development Workflow
-1. **Adding New Tables**: Add model to `src.database.models.__init__.py` for SQLModel metadata
-2. **Database Migrations**: Use `make add-migration` to generate migration scripts
-3. **Testing**: Use `make test` to run the comprehensive test suite
-4. **Code Quality**: Pre-commit hooks automatically format and lint code
 
 ## 🛠️ Technology Stack
 
@@ -302,6 +167,54 @@ make trigger-migration
 - **Docker** - Containerization
 - **Uvicorn** - ASGI server for FastAPI
 - **Pendulum** - Better dates and times for Python
+- **Celery** - Distributed task queue for background processing
+- **Redis** - Message broker and result backend for Celery
+
+### Configuration
+
+Watcher supports various configuration options through environment variables. The system uses different prefixes for different environments:
+
+- **Development**: `DEV_` prefix
+- **Production**: `PROD_` prefix  
+- **Testing**: `TEST_` prefix
+
+#### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | `None` | Yes |
+| `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | `None` | No |
+| `LOGFIRE_TOKEN` | Logfire token for logging | `None` | No |
+| `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create anomaly detection rules for new pipelines | `False` | No |
+
+#### Auto-Create Anomaly Detection Rules
+
+When `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` is set to `true`, the system automatically creates anomaly detection rules for all available metrics when a new pipeline is created. This includes rules for:
+
+- **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
+- **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
+- **Volume Monitoring**: `total_rows` - Tracks total rows processed
+
+**Default Rule Settings:**
+- **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
+- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
+- **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
+- **Active by Default**: `true` (rules are enabled immediately)
+
+**Example Configuration:**
+```bash
+# Development environment
+DEV_DATABASE_URL=postgresql://user:password@localhost:5432/watcher_dev
+DEV_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
+
+# Production environment  
+PROD_DATABASE_URL=postgresql://user:password@prod-db:5432/watcher_prod
+PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
+```
+
+**Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements.
 
 ## ⏰ Timeliness & Freshness
 
@@ -315,7 +228,7 @@ Checks if data manipulation operations (inserts, updates, deletes) are recent en
 
 ### How It Works
 
-The timeliness check runs on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoint as often as you like, it does broad coverage) and evaluates each pipeline against its defined rules.
+The timeliness check runs on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoint as often as you like, it does broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
 
 #### Timeliness Check Features
 - **Lookback Window**: Configurable time window to check for overdue executions (e.g., last 60 minutes)
@@ -469,11 +382,9 @@ timeliness_data = {
 response = await client.post("http://localhost:8000/timeliness", json=timeliness_data)
 result = response.json()
 
-if result["status"] == "warning":
-    print("Timeliness check completed with warnings - some executions are overdue")
-    print("Check Slack notifications for detailed information")
-elif result["status"] == "success":
-    print("All pipeline executions are running on time")
+if result["status"] == "queued":
+    print("Timeliness check has been queued for background processing")
+    print("Check Slack notifications for detailed results when processing completes")
 else:
     print(f"Unexpected status: {result['status']}")
 ```
@@ -484,20 +395,17 @@ else:
 response = await client.post("http://localhost:8000/freshness")
 result = response.json()
 
-if result["status"] == "warning":
-    print("Freshness check completed with warnings - some DML operations are stale")
-    print("Check Slack notifications for detailed information")
-elif result["status"] == "success":
-    print("All DML operations are fresh")
+if result["status"] == "queued":
+    print("Freshness check has been queued for background processing")
+    print("Check Slack notifications for detailed results when processing completes")
 else:
     print(f"Unexpected status: {result['status']}")
 ```
 
 #### Response Status Codes
 
-- **200 OK**: Timeliness check completed successfully
-  - `{"status": "success"}` - All pipelines are running on time
-  - `{"status": "warning"}` - Some pipelines are overdue (Slack notifications sent)
+- **200 OK**: Timeliness check queued successfully
+  - `{"status": "queued"}` - Check has been queued for background processing by Celery workers
 
 #### Input Parameters
 
@@ -565,14 +473,15 @@ The system can monitor various execution metrics:
 
 ### Automatic Detection
 
-Anomaly detection runs automatically after each pipeline execution:
+Anomaly detection runs automatically after each pipeline execution using Celery background workers:
 
-1. **Trigger**: Executes when `end_pipeline_execution` is called
-2. **Rule Lookup**: Finds active rules for the completed pipeline
-3. **Historical Analysis**: Analyzes execution history for the same hour of day
-4. **Statistical Calculation**: Computes baseline mean and standard deviation
-5. **Anomaly Detection**: Identifies executions exceeding thresholds
-6. **Notification**: Sends Slack alerts for detected anomalies
+1. **Trigger**: Queues when `end_pipeline_execution` is called
+2. **Background Processing**: Celery worker picks up the task
+3. **Rule Lookup**: Finds active rules for the completed pipeline
+4. **Historical Analysis**: Analyzes execution history for the same hour of day
+5. **Statistical Calculation**: Computes baseline mean and standard deviation
+6. **Anomaly Detection**: Identifies executions exceeding thresholds
+7. **Notification**: Sends Slack alerts for detected anomalies
 
 ### Slack Notifications
 
@@ -791,3 +700,88 @@ async def run_pipeline_workflow():
 if __name__ == "__main__":
     asyncio.run(run_pipeline_workflow())
 ```
+
+## 🛠️ Development
+
+### Development Setup
+1. Install `uv`
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+2. Install python 3.12
+```bash
+uv python install 3.12
+```
+3. Check installation
+```bash
+uv python list
+```
+4. Sync python packages
+```bash
+uv sync
+```
+5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
+```bash
+pre-commit install
+pre-commit install --hook-type pre-push
+```
+6. Add in Environment Variables referencing `.env.example`
+
+### Quick Start
+```bash
+# Start the development server
+make start
+
+# Run tests
+make test
+
+# Format and lint code
+make format
+```
+
+### Database Management
+```bash
+# Add a new migration
+make add-migration msg="description of changes"
+
+# Apply migrations
+make trigger-migration
+```
+
+### Performance Profiling
+
+Watcher includes built-in performance profiling for development using pyinstrument to help identify bottlenecks and optimize your pipeline operations.
+
+#### On-Demand Profiling
+
+Profile any API endpoint by adding `?profile=true` to the URL:
+
+#### Using Scalar API Docs
+
+1. **Start your app**: `make start`
+2. **Open Scalar**: http://localhost:8000/scalar
+3. **Add `?profile=true`** as a query parameter to any endpoint URL in the interface
+4. **Execute the request** - you'll get an interactive HTML profile directly in your browser
+
+#### Profile Features
+
+- **Interactive Call Stack**: Click to expand/collapse function calls
+- **Timing Breakdown**: See exactly where time is spent
+- **Database Operations**: Identify slow queries and connection issues
+- **Memory Usage**: Track memory allocation patterns
+- **Search & Filter**: Find specific functions or modules
+
+#### Configuration
+
+Profiling is enabled by default in development mode. To disable:
+
+```bash
+# Set in your environment
+DEV_PROFILING_ENABLED=false
+```
+
+### Development Workflow
+1. **Adding New Tables**: Add model to `src.database.models.__init__.py` for SQLModel metadata
+2. **Database Migrations**: Use `make add-migration` to generate migration scripts
+3. **Testing**: Use `make test` to run the comprehensive test suite
+4. **Code Quality**: Pre-commit hooks automatically format and lint code
