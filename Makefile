@@ -4,6 +4,9 @@ install:
 build:
 	docker build -t watcher . && docker images -f "dangling=true" -q | xargs docker rmi
 
+dev-compose:
+	docker compose up --build --remove-orphans
+
 docker-run:
 	docker run --rm -p 8000:8000 \
 		--name watcher_dev \

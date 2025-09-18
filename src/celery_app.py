@@ -1,7 +1,17 @@
 # src/celery_app.py
+import logfire
 from celery import Celery
+from celery.signals import worker_init
 
+from src.logging_conf import configure_logging
 from src.settings import config
+
+
+@worker_init.connect()
+def init_worker(*args, **kwargs):
+    configure_logging()
+    logfire.instrument_celery()
+
 
 celery = Celery(
     "watcher",

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   redis:
     image: redis:7-alpine
@@ -29,16 +27,22 @@ services:
       - "8000:8000"
     env_file:
       - .env
+    # environment:
+    #   - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
     depends_on:
       - redis
       - postgres
-    command: ["uv", "run", "--", "gunicorn", "src.app:app", "-c", "gunicorn.conf.py"]
+    volumes:
+      - ./src:/watcher/src
+    command: ["uv", "run", "--", "gunicorn", "src.app:app", "-c", "gunicorn.conf.py", "--workers", "1", "--reload"]
 
   worker:
     build: .
     container_name: watcher-worker
     env_file:
       - .env
+    # environment:
+    #   - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
     depends_on:
       - redis
       - postgres

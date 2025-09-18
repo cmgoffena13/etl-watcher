@@ -1,6 +1,6 @@
-from fastapi import APIRouter, BackgroundTasks, status
+from fastapi import APIRouter, status
 
-from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
+from src.celery_tasks import detect_anomalies_task
 from src.database.pipeline_execution_utils import (
     db_end_pipeline_execution,
     db_start_pipeline_execution,
@@ -32,18 +32,15 @@ async def start_pipeline_execution(
 @router.post("/end_pipeline_execution", status_code=status.HTTP_204_NO_CONTENT)
 async def end_pipeline_execution(
     pipeline_execution: PipelineExecutionEndInput,
-    background_tasks: BackgroundTasks,
     session: SessionDep,
 ):
     await db_end_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
     )
 
-    # Run anomaly detection in background for faster response
+    # Queue anomaly detection as a Celery task for faster response
     if pipeline_execution.completed_successfully:
-        background_tasks.add_task(
-            db_detect_anomalies_for_pipeline,
-            session=session,
+        detect_anomalies_task.delay(
             pipeline_id=pipeline_execution.pipeline_id,
             pipeline_execution_id=pipeline_execution.id,
         )
