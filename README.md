@@ -252,12 +252,12 @@ Use a clear naming structure that matches back to the pipeline code (e.g., DAG n
 Categorize addresses by their technical characteristics:
 
 **Group Names:**
-- `databases` - Database systems (PostgreSQL, MySQL, etc.)
-- `warehouses` - Data warehouses (Snowflake, BigQuery, etc.)
-- `lakes` - Data lakes (S3, ADLS, etc.)
-- `apis` - API endpoints and services
-- `files` - File systems and storage
-- `streams` - Streaming data sources
+- `database` - Database systems (PostgreSQL, MySQL, etc.)
+- `warehouse` - Data warehouses (Snowflake, BigQuery, etc.)
+- `data lake` - Data lakes (S3, ADLS, etc.)
+- `api` - API endpoints and services
+- `file` - File systems and storage
+- `stream` - Streaming data sources
 
 **Type Names:**
 - `postgresql` - PostgreSQL databases
