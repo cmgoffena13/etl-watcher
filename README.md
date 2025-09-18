@@ -235,7 +235,6 @@ Effective organization of your Watcher metadata is crucial for maintainability, 
 Organize pipeline types by data processing patterns or business domains or a combination of both:
 
 Data Processing Pattern:  
-**Type Names:**
 - `extraction` - Data extraction pipelines
 - `transformation` - Data transformation and processing
 - `loading` - Data loading and materialization
@@ -243,13 +242,11 @@ Data Processing Pattern:
 - `monitoring` - System monitoring and health checks  
 
 Organize pipeline types by business domain:  
-**Type Names:**
 - `sales`
 - `marketing`
 - `finance` 
 
 A combination of both:  
-**Type Names:**
 - `sales_extraction`
 - `marketing_audit`
 - `finance_monitoring`
@@ -271,7 +268,7 @@ Categorize addresses by their technical characteristics:
 **Group Names:**
 - `database` - Database systems (PostgreSQL, MySQL, etc.)
 - `warehouse` - Data warehouses (Snowflake, BigQuery, etc.)
-- `data lake` - Data lakes (S3, ADLS, etc.)
+- `bucket` - Data lakes (S3, ADLS, etc.)
 - `api` - API endpoints and services
 - `file` - File systems and storage
 - `stream` - Streaming data sources
