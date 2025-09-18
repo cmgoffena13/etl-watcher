@@ -284,12 +284,12 @@ pipeline_data = {
 
 The monitoring system supports granular time windows for flexible monitoring configurations. You can set any combination of time unit and number to create precise timeliness rules:
 
-- **MINUTE** - Check every N minutes (e.g., 5 minutes, 30 minutes)
-- **HOUR** - Check every N hours (e.g., 1 hour, 6 hours, 12 hours)  
-- **DAY** - Check every N days (e.g., 1 day, 3 days, 7 days)
-- **WEEK** - Check every N weeks (e.g., 1 week, 2 weeks, 4 weeks)
-- **MONTH** - Check every N months (e.g., 1 month, 3 months, 6 months)
-- **YEAR** - Check every N years (e.g., 1 year, 2 years)
+- **MINUTE** - Within N minutes (e.g., 5 minutes, 30 minutes)
+- **HOUR** - Within N hours (e.g., 1 hour, 6 hours, 12 hours)  
+- **DAY** - Within N days (e.g., 1 day, 3 days, 7 days)
+- **WEEK** - Within N weeks (e.g., 1 week, 2 weeks, 4 weeks)
+- **MONTH** - Within N months (e.g., 1 month, 3 months, 6 months)
+- **YEAR** - Within N years (e.g., 1 year, 2 years)
 
 ### Priority System
 
@@ -410,7 +410,6 @@ Anomaly detection uses statistical methods to analyze historical pipeline execut
 Create anomaly detection rules per pipeline with the following parameters:
 
 - **`pipeline_id`**: Target pipeline to monitor
-- **`name`**: Descriptive name for the rule
 - **`metric_field`**: Metric to monitor (duration_seconds, total_rows, total_inserts, etc.)
 - **`lookback_days`**: Number of days of historical data to analyze (default: 30)
 - **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 10)
@@ -431,7 +430,7 @@ The system can monitor various execution metrics:
 
 Anomaly detection runs automatically after each successful pipeline execution using Celery background workers:
 
-1. **Trigger**: Queues when `end_pipeline_execution` is called
+1. **Trigger**: Queues when `end_pipeline_execution` is called and the execution was successful
 2. **Background Processing**: Celery worker picks up the task
 3. **Rule Lookup**: Finds active rules for the completed pipeline
 4. **Historical Analysis**: Analyzes execution history for the same hour of day
@@ -450,7 +449,7 @@ Timestamp: 2025-01-09 20:30:45 UTC
 Message: Anomaly detected in pipeline 123 - 2 execution(s) flagged
 
 Details:
-• Metric: duration
+• Metric: duration_seconds
 • Threshold Multiplier: 2.0
 • Lookback Days: 30
 • Anomalies: 
