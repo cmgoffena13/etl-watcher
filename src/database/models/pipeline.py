@@ -42,7 +42,7 @@ class Pipeline(SQLModel, table=True):
     )
 
     load_lineage: bool = Field(
-        sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
+        sa_column=Column(Boolean, server_default=text("TRUE"), nullable=False)
     )
     active: bool = Field(
         sa_column=Column(Boolean, server_default=text("TRUE"), nullable=False)
