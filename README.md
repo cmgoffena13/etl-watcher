@@ -1,7 +1,7 @@
 # Watcher
 **Open Source Metadata Framework for Data Pipeline Monitoring & Lineage Tracking**
 
-A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, store watermarks, track data lineage, ensure timeliness, detect anomalies, and manage data addresses across your data infrastructure.
+A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, store watermarks, track data lineage, ensure timeliness & freshness of data, detect anomalies among operations, and manage data addresses across your data infrastructure.
 
 ![linesofcode](https://aschey.tech/tokei/github/cmgoffena13/watcher?category=code)
 
@@ -167,6 +167,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ### Infrastructure
 - **Docker** - Containerization
 - **Uvicorn** - ASGI server for FastAPI
+- **Gunicorn** - WSGI server to handle mutliple Uvicorn workers
 - **Pendulum** - Better dates and times for Python
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and result backend for Celery
@@ -219,17 +220,10 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 
 ## ⏰ Timeliness & Freshness
 
-The monitoring system provides two complementary checks to ensure your data pipelines are running optimally:
+The monitoring system provides two complementary checks, timeliness & freshness, to ensure your data pipelines are running optimally. They run on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoints as often as you like, they do broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
 
 ### Pipeline Execution Timeliness
 Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes. Uses a configurable lookback window to check both running and completed pipelines to alert on long-running pipelines as well.
-
-### DML Freshness Monitoring  
-Checks if data manipulation operations (inserts, updates, deletes) are recent enough, ensuring data freshness for downstream consumers.
-
-### How It Works
-
-The timeliness check runs on a configurable schedule through the two endpoints: `freshness` and `timeliness` (ping the endpoint as often as you like, it does broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
 
 #### Timeliness Check Features
 - **Lookback Window**: Configurable time window to check for overdue executions (e.g., last 60 minutes)
@@ -237,9 +231,20 @@ The timeliness check runs on a configurable schedule through the two endpoints: 
 - **Completed Pipeline Detection**: Identifies completed pipelines that took longer than expected
 - **Dynamic Thresholds**: Uses pipeline-specific or pipeline-type-specific timeliness settings
 
+
+### Pipeline Freshness (DML Monitoring)
+Checks if data manipulation operations (inserts, updates, deletes) are recent enough, ensuring data freshness for downstream consumers.
+
+#### Freshness Check Features
+- **DML Operation Tracking**: Monitors insert, update, and soft delete timestamps (calculated behind the scenes from pipeline execution data)
+- **Configurable Thresholds**: Set freshness rules per pipeline type and individual pipelines
+- **Recent Activity Detection**: Identifies pipelines with stale data based on last DML operations
+- **Flexible Time Units**: Support for hours, days, or other time units for freshness rules
+- **Mute Capability**: Skip freshness checks for specific pipelines when needed
+
 ### Configuration
 
-Timeliness rules can be set at two levels:
+Timeliness & Freshness rules can be set at two levels:
 
 #### Pipeline Type Level (Parent Rules)
 Set broad timeliness rules that apply to all pipelines of a specific type:
@@ -274,7 +279,7 @@ pipeline_data = {
 
 ### Supported Time Units
 
-The timeliness system supports granular time windows for flexible monitoring configurations. You can set any combination of time unit and number to create precise timeliness rules:
+The monitoring system supports granular time windows for flexible monitoring configurations. You can set any combination of time unit and number to create precise timeliness rules:
 
 - **MINUTE** - Check every N minutes (e.g., 5 minutes, 30 minutes)
 - **HOUR** - Check every N hours (e.g., 1 hour, 6 hours, 12 hours)  
@@ -288,44 +293,6 @@ The timeliness system supports granular time windows for flexible monitoring con
 1. **Child Rules** - Pipeline-specific settings take precedence
 2. **Parent Rules** - Fall back to pipeline type settings
 3. **Skip** - If neither child nor parent rules are configured, the pipeline is skipped
-
-### DML Tracking
-
-The system tracks the most recent DML operation across three types:
-- **INSERT** operations (`last_target_insert`)
-- **UPDATE** operations (`last_target_update`) 
-- **SOFT DELETE** operations (`last_target_soft_delete`)
-
-The timeliness check uses the **most recent** of these three timestamps as the baseline for comparison. These fields are calculated behind the scenes from the DML operations data provided when ending a pipeline execution.
-
-### Mute Capability
-
-Pipelines can be temporarily excluded from timeliness checks:
-
-```python
-# Mute freshness checks for a specific pipeline
-pipeline_data = {
-    "name": "maintenance-pipeline",
-    "mute_freshness_check": True
-}
-
-# Mute timeliness checks for a specific pipeline
-pipeline_data = {
-    "name": "long-running-pipeline",
-    "mute_timeliness_check": True
-}
-
-# Mute both checks for an entire pipeline type
-pipeline_type_data = {
-    "name": "batch-processing",
-    "mute_freshness_check": True,
-    "mute_timeliness_check": True
-}
-```
-
-### Execution Logging
-
-Long-running pipeline executions are automatically logged to the `timeliness_pipeline_execution_log` table when they exceed the configured threshold.
 
 ### Slack Notifications
 
@@ -415,26 +382,11 @@ else:
   - Example: `1440` - Check executions from the last 24 hours
   - Example: `10080` - Check executions from the last week
 
-### Error Handling
-
-The timeliness system provides comprehensive error handling and monitoring:
-
-#### Slack Notifications
-When timeliness issues are detected, detailed Slack notifications are automatically sent. *See [Slack Notifications](#slack-notifications) section below for examples and details.*
-
-#### Resilience Features
-- **Non-Blocking**: Timeliness failures don't interrupt the check process
-- **Comprehensive Logging**: All issues are logged for debugging and analysis
-- **Status Reporting**: API returns warning status for programmatic handling
-- **Notification Reliability**: Failed Slack notifications are logged but don't affect timeliness detection
-
 #### Monitoring Integration
 - **Real-time Alerts**: Immediate Slack notifications for urgent issues
-- **Historical Tracking**: All timeliness issues are logged to the database
-- **Watermark Filtering**: Notifications only alert on new executions within the current watermark range
-- **Pipeline Context**: Clear identification of which specific pipeline had issues
-
-This comprehensive error handling ensures you're immediately notified of data freshness issues while maintaining system reliability and providing detailed context for quick resolution.
+- **Historical Tracking**: All timeliness & freshness issues are logged to the database
+- **Lookback Filtering**: Notifications only alert on new executions within the current lookback range
+- **Issue Context**: Clear identification of which specific pipelines/executions had issues
 
 ## 🚨 Anomaly Checks
 
@@ -444,7 +396,7 @@ The anomaly detection system provides statistical analysis to identify unusual p
 
 Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers:
 
-1. **Baseline Calculation**: Analyzes historical execution data over a configurable lookback period
+1. **Baseline Calculation**: Analyzes historical execution data over a configurable lookback period for the same hour of day to account for seasonality
 2. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
 3. **Threshold Detection**: Flags executions that exceed configurable statistical thresholds
 4. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
@@ -474,7 +426,7 @@ The system can monitor various execution metrics:
 
 ### Automatic Detection
 
-Anomaly detection runs automatically after each pipeline execution using Celery background workers:
+Anomaly detection runs automatically after each successful pipeline execution using Celery background workers:
 
 1. **Trigger**: Queues when `end_pipeline_execution` is called
 2. **Background Processing**: Celery worker picks up the task
@@ -486,26 +438,36 @@ Anomaly detection runs automatically after each pipeline execution using Celery 
 
 ### Slack Notifications
 
-When anomalies are detected, the system sends detailed Slack notifications. *See [Slack Notifications](#slack-notifications) section above for examples and details.*
+When anomalies are detected, the system sends detailed Slack notifications:
+
+```
+⚠️ WARNING
+Anomaly Detection
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Anomaly detected in pipeline 123 - 2 execution(s) flagged
+
+Details:
+• Metric: duration
+• Threshold Multiplier: 2.0
+• Lookback Days: 30
+• Anomalies: 
+  - Execution ID 21: 1814400 (baseline: 164945.45, deviation: 1000.0%, confidence: 1.00)
+  - Execution ID 22: 1952000 (baseline: 164945.45, deviation: 1083.3%, confidence: 0.99)
+```
+
+### Configuration
+
+All anomaly detection rules can be automatically created for new pipelines by setting the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable to `true`. This creates default rules for duration and record count metrics when pipelines are first created.
+
+*See [Configuration](#configuration) section for all available environment variables.*
 
 ### Best Practices
 
 1. **Start Conservative**: Begin with higher threshold multipliers (2.5-3.0) and adjust based on your data patterns
 2. **Monitor Multiple Metrics**: Create rules for different metrics to get comprehensive coverage
 3. **Regular Review**: Periodically review and adjust rules based on changing data patterns
-4. **Sufficient History**: Ensure you have enough historical data for accurate baseline calculations
+4. **Sufficient History**: Ensure you have enough historical data for accurate baseline calculations 
 5. **Hour-Specific Analysis**: The system analyzes data by hour of day, so consider time-of-day patterns
-
-### Error Handling
-
-The anomaly detection system includes robust error handling:
-
-- **Insufficient Data**: Rules are skipped if not enough historical executions exist
-- **Missing Metrics**: Executions with null metric values are excluded from analysis
-- **Database Errors**: Failed detections are logged but don't interrupt pipeline execution
-- **Notification Failures**: Slack notification failures are logged but don't affect anomaly detection
-
-This comprehensive anomaly detection system helps maintain data quality and performance by automatically identifying unusual patterns in your pipeline executions.
 
 ## 🧹 Log Cleanup & Maintenance
 
