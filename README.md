@@ -15,11 +15,12 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 4. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
 5. [Recommended Organization](#-recommended-organization)
-6. [Timeliness & Freshness](#-timeliness--freshness)
-7. [Anomaly Checks](#-anomaly-checks)
-8. [Log Cleanup](#-log-cleanup--maintenance)
-9. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
-10. [Development](#️-development)
+6. [Nested Pipeline Executions](#Nested-Pipeline-Executions)
+7. [Timeliness & Freshness](#-timeliness--freshness)
+8. [Anomaly Checks](#-anomaly-checks)
+9. [Log Cleanup](#-log-cleanup--maintenance)
+10. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+11. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
 
@@ -30,6 +31,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Performance Metrics**: Track duration, DML counts (inserts, updates, deletes), and total rows processed
 - **Execution History**: Maintain complete audit trail of all pipeline runs
 - **Status Management**: Monitor active/inactive pipeline states
+- **Nested Executions**: Support for hierarchical pipeline execution tracking using parent_id
 
 ### ⏰ Timeliness & Freshness Checks
 - **Pipeline Execution Timeliness**: Monitor if pipeline executions complete within expected timeframes
@@ -289,6 +291,48 @@ Addresses should be the actual, usable path/URL that you would use to access the
 - Use the URL format for the system
 - Be specific enough that someone could use the address to access the data given the address type context
 - Use standard formats for each system type (Bucket URLs, HTTP endpoints, database.schema.table)
+
+## Nested Pipeline Executions
+
+Watcher supports hierarchical pipeline execution tracking through the `parent_id` field, enabling you to model complex workflows with sub-pipelines and dependencies:
+
+**Use Cases:**
+- **Master Pipeline**: A main orchestration pipeline that coordinates multiple sub-pipelines
+- **Sub-Pipeline Tracking**: Individual components or steps within a larger workflow
+- **Dependency Management**: Track which sub-pipelines depend on others
+- **Performance Analysis**: Analyze execution times at both master and sub-pipeline levels
+- **Error Isolation**: Identify which specific sub-pipeline failed within a complex workflow
+
+**Example Workflow:**
+```
+Master Pipeline: data_processing_master
+├── Sub-Pipeline: extract_sales_data (parent_id: master_execution_id)
+├── Sub-Pipeline: extract_marketing_data (parent_id: master_execution_id)
+├── Sub-Pipeline: transform_combined_data (parent_id: master_execution_id)
+└── Sub-Pipeline: load_to_warehouse (parent_id: master_execution_id)
+```
+
+**API Usage:**
+```python
+# Start master pipeline execution
+master_response = await client.post("/start_pipeline_execution", json={
+    "pipeline_name": "data_processing_master"
+})
+master_execution_id = master_response.json()["id"]
+
+# Start sub-pipeline execution with parent reference
+sub_response = await client.post("/start_pipeline_execution", json={
+    "pipeline_name": "extract_sales_data",
+    "parent_id": master_execution_id
+})
+```
+
+**Benefits:**
+- **Hierarchical Monitoring**: Track both overall workflow progress and individual component performance
+- **Dependency Tracking**: Understand which sub-pipelines are blocking others
+- **Root Cause Analysis**: Quickly identify which specific component caused a failure
+- **Resource Optimization**: Analyze which sub-pipelines consume the most time/resources
+- **Audit Trail**: Complete visibility into complex multi-step data processes
 
 ## ⏰ Timeliness & Freshness
 
