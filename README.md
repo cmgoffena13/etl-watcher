@@ -165,11 +165,17 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Ruff** - Fast Python linter and formatter
 - **Pre-commit** - Git hooks for code quality
 - **UV** - Fast Python package manager
-
-### Monitoring & Observability
-- **Logfire** - Structured logging and observability
-- **Rich** - Rich text and beautiful formatting in the terminal
 - **Scalar** - Interactive API documentation
+
+### Logging & Observability
+- **Logfire** - Comprehensive structured logging and observability platform
+  - **Application Logs**: FastAPI request/response logging with automatic instrumentation
+  - **Database Logs**: SQLAlchemy query logging and performance monitoring
+  - **Background Tasks**: Celery worker execution logging and task tracking
+  - **Structured Data**: JSON-formatted logs with consistent metadata across all components
+  - **Logical Grouping**: Logs organized by operation type (API, Database, Background Tasks)
+  - **Performance Insights**: Automatic timing and performance metrics collection
+  - **Error Tracking**: Detailed error context and stack traces with correlation IDs
 
 ### Infrastructure
 - **Docker** - Containerization
