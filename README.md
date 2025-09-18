@@ -217,24 +217,21 @@ Effective organization of your Watcher metadata is crucial for maintainability, 
 
 Organize pipeline types by data processing patterns or business domains or a combination of both:
 
+Data Processing Pattern:  
 **Type Names:**
 - `extraction` - Data extraction pipelines
 - `transformation` - Data transformation and processing
 - `loading` - Data loading and materialization
 - `audit` - Data quality and validation
-- `monitoring` - System monitoring and health checks
+- `monitoring` - System monitoring and health checks  
 
-OR
-
-Organize pipeline types by business domain:
+Organize pipeline types by business domain:  
 **Type Names:**
 - `sales`
 - `marketing`
-- `finance`
+- `finance` 
 
-OR
-
-A combination of both:
+A combination of both:  
 **Type Names:**
 - `sales_extraction`
 - `marketing_audit`
