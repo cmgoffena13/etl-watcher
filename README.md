@@ -213,6 +213,15 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 
 Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration. This section provides recommended naming conventions and organizational patterns.
 
+### Best Practices
+
+1. **Consistency**: Use the same naming patterns across all teams and projects
+2. **Descriptiveness**: Names should clearly indicate purpose and scope
+3. **Hierarchy**: Use underscores to create logical hierarchies
+4. **Future-Proofing**: Choose names that will remain relevant as systems evolve
+5. **Documentation**: Document your naming conventions and share with all teams
+6. **Validation**: Implement naming validation in your CI/CD pipeline or code reviews
+
 ### Pipeline Type Organization
 
 Organize pipeline types by data processing patterns or business domains or a combination of both:
@@ -281,18 +290,9 @@ Addresses should be the actual, usable path/URL that you would use to access the
 - Be specific enough that someone could use the address to access the data given the address type context
 - Use standard formats for each system type (Bucket URLs, HTTP endpoints, database.schema.table)
 
-### Best Practices
-
-1. **Consistency**: Use the same naming patterns across all teams and projects
-2. **Descriptiveness**: Names should clearly indicate purpose and scope
-3. **Hierarchy**: Use underscores to create logical hierarchies
-4. **Future-Proofing**: Choose names that will remain relevant as systems evolve
-5. **Documentation**: Document your naming conventions and share with all teams
-6. **Validation**: Implement naming validation in your CI/CD pipeline or code reviews
-
 ## ⏰ Timeliness & Freshness
 
-The monitoring system provides two complementary checks, timeliness & freshness, to ensure your data pipelines are running optimally. They run through the two endpoints: `freshness` and `timeliness` (ping the endpoints as often as you like, they do broad coverage). These endpoints queue background tasks using Celery workers to evaluate each pipeline against its defined rules.
+The monitoring system provides two complementary checks, timeliness & freshness, to ensure your data pipelines are running optimally. They run through the two endpoints: `freshness` and `timeliness`. Ping these endpoints on a regular cadence to have constant broad coverage. These endpoints queue background tasks using Celery workers to lessen the impact on the server.
 
 ### Pipeline Execution Timeliness
 Monitors if pipeline executions complete within expected timeframes, helping identify performance issues and long-running processes. Uses a configurable lookback window to check executions (running and completed).
