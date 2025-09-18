@@ -1,7 +1,7 @@
 # Watcher
-**Open Source Metadata Framework for Data Pipeline Monitoring & Lineage Tracking**
+**Open Source Metadata Framework for Data Engineers**
 
-A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, store watermarks, track data lineage, ensure timeliness & freshness of data, detect anomalies among operations, and manage data addresses across your data infrastructure.
+A comprehensive FastAPI-based metadata management system designed to monitor data pipeline executions, store watermarks, track data lineage, ensure timeliness & freshness of data, detect anomalies among operations, manage data addresses, and provide observability across your data infrastructure.
 
 ![Watcher](watcher.jpg)
 
