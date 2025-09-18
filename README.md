@@ -159,6 +159,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Alembic** - Database migration tool for SQLAlchemy
 - **AsyncPG** - Async PostgreSQL driver
 - **HTTPX** - Async HTTP client for external API calls (Slack)
+- **Pendulum** - Better dates and times for Python
 
 ### Development & Testing
 - **Pytest** - Testing framework with async support
@@ -181,7 +182,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Docker** - Containerization
 - **Uvicorn** - ASGI server for FastAPI
 - **Gunicorn** - WSGI server to handle mutliple Uvicorn workers
-- **Pendulum** - Better dates and times for Python
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and result backend for Celery
 
