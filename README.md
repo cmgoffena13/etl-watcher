@@ -60,6 +60,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
 - **Lookback Periods**: Analyze historical data over configurable time windows
+- **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
 
@@ -190,21 +191,7 @@ Watcher supports various configuration options through environment variables. Th
 | `DATABASE_URL` | PostgreSQL connection string | `None` | Yes |
 | `SLACK_WEBHOOK_URL` | Slack webhook URL for notifications | `None` | No |
 | `LOGFIRE_TOKEN` | Logfire token for logging | `None` | No |
-| `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create anomaly detection rules for new pipelines | `False` | No |
-
-#### Auto-Create Anomaly Detection Rules
-
-When `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` is set to `true`, the system automatically creates anomaly detection rules for all available metrics when a new pipeline is created. This includes rules for:
-
-- **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
-- **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
-- **Volume Monitoring**: `total_rows` - Tracks total rows processed
-
-**Default Rule Settings:**
-- **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
-- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
-- **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
-- **Active by Default**: `true` (rules are enabled immediately)
+| `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` | Auto-create all anomaly detection rules for new pipelines | `False` | No |
 
 **Example Configuration:**
 ```bash
@@ -219,7 +206,7 @@ PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 ```
 
-**Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements.
+**Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements. *See [Auto-Create Anomaly Detection Rules](#auto-create-anomaly-detection-rules) section for details.*
 
 ## ⏰ Timeliness & Freshness
 
@@ -457,11 +444,19 @@ Details:
   - Execution ID 22: 1952000 (baseline: 164945.45, deviation: 1083.3%, confidence: 0.99)
 ```
 
-### Configuration
+#### Auto-Create Anomaly Detection Rules
 
-All anomaly detection rules can be automatically created for new pipelines by setting the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable to `true`. This creates default rules for duration and record count metrics when pipelines are first created.
+When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is set to `true`, the system automatically creates anomaly detection rules for all available metrics when a new pipeline is created. This includes rules for:
 
-*See [Configuration](#configuration) section for all available environment variables.*
+- **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
+- **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
+- **Volume Monitoring**: `total_rows` - Tracks total rows processed
+
+**Default Rule Settings:**
+- **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
+- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
+- **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
+- **Active by Default**: `true` (rules are enabled immediately)
 
 ### Best Practices
 
