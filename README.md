@@ -462,7 +462,7 @@ Details:
 ```python
 # Check pipeline execution timeliness with lookback window
 timeliness_data = {
-    "lookback_minutes": 60  # Check executions from the last 60 minutes
+    "lookback_minutes": 60  # Check executions that started within the last 60 minutes
 }
 
 response = await client.post("http://localhost:8000/timeliness", json=timeliness_data)
@@ -496,9 +496,9 @@ else:
 #### Input Parameters
 
 - **`lookback_minutes`** (required): Time window in minutes to check for overdue executions
-  - Example: `60` - Check executions from the last 60 minutes
-  - Example: `1440` - Check executions from the last 24 hours
-  - Example: `10080` - Check executions from the last week
+  - Example: `60` - Check executions that started within the last 60 minutes
+  - Example: `1440` - Check executions that started within the last 24 hours
+  - Example: `10080` - Check executions that started within the last week
 
 #### Monitoring Integration
 - **Real-time Alerts**: Immediate Slack notifications for urgent issues
