@@ -371,7 +371,6 @@ Set broad timeliness rules that apply to all pipelines of a specific type:
 ```python
 pipeline_type_data = {
     "name": "api-integration",
-    "group_name": "extraction", 
     "freshness_number": 12,
     "freshness_datepart": "hour",
     "mute_freshness_check": False,
