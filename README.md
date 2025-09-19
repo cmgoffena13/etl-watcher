@@ -432,8 +432,8 @@ Message: Pipeline Freshness Check Failed - 2 pipeline(s) overdue
 
 Details:
 • Failed Pipelines:
-  • stock-price-worker (ID: 1): Last DML 2025-01-09 15:30:00, Expected within 12 hours
-  • user-analytics-pipeline (ID: 2): Last DML 2025-01-09 10:15:00, Expected within 6 hours
+  • stock-price-worker (ID: 1): Last DML 2025-01-09 05:30:00, Expected within 12 hours
+  • user-analytics-pipeline (ID: 2): Last DML 2025-01-09 08:15:00, Expected within 6 hours
 ```
 
 #### Pipeline Execution Timeliness Failures
