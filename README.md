@@ -272,6 +272,7 @@ Categorize addresses by their technical characteristics:
 - `api` - API endpoints and services
 - `file` - File systems and storage
 - `stream` - Streaming data sources
+- `dashboard` - dashboard targets
 
 **Type Names:**
 - `postgresql` - PostgreSQL databases
@@ -279,6 +280,7 @@ Categorize addresses by their technical characteristics:
 - `s3` - Amazon S3 storage
 - `rest_api` - REST API endpoints
 - `kafka` - Kafka streaming platform
+- `looker` - Looker dashboard
 
 ### Address Naming Convention
 
