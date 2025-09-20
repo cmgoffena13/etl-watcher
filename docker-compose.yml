@@ -6,7 +6,7 @@ services:
       - "6379:6379"
     command: redis-server --appendonly yes
     volumes:
-      - redis_data:/data
+      - watcher_redis_data:/data
 
   postgres:
     image: postgres:15
@@ -18,7 +18,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - watcher_postgres_data:/var/lib/postgresql/data
 
   api:
     build: .
@@ -41,6 +41,7 @@ services:
   worker:
     build: .
     container_name: watcher-worker
+    user: celery
     env_file:
       - .env
     environment:
@@ -52,5 +53,5 @@ services:
     command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "worker", "--loglevel=info"]
 
 volumes:
-  redis_data:
-  postgres_data:
+  watcher_redis_data:
+  watcher_postgres_data:

@@ -11,9 +11,13 @@ ENV UV_LINK_MODE=copy
 
 WORKDIR /watcher
 
-
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --compile-bytecode
+
+# Create celery user and group
+RUN groupadd -r celery && useradd -r -g celery -m -d /home/celery celery
+RUN chown -R celery:celery /watcher
+RUN chown -R celery:celery /home/celery
 
 COPY . .
 
