@@ -43,11 +43,16 @@ async def check_schema_health():
                     t.tablename, 
                     pg_size_pretty(pg_total_relation_size(t.schemaname||'.'||t.tablename)) as size,
                     pg_total_relation_size(t.schemaname||'.'||t.tablename) as size_bytes,
-                    n_live_tup as row_count
+                    COALESCE(n_live_tup, 0) as row_count,
+                    COALESCE(n_tup_ins, 0) as inserts,
+                    COALESCE(n_tup_upd, 0) as updates,
+                    COALESCE(n_tup_del, 0) as deletes,
+                    EXTRACT(EPOCH FROM (NOW() - pg_postmaster_start_time())) / 86400 as days_since_restart
                 FROM pg_tables t
                 LEFT JOIN pg_stat_user_tables s 
                     ON t.tablename = s.relname 
                     AND t.schemaname = s.schemaname
+                CROSS JOIN (SELECT pg_postmaster_start_time() as start_time) st
                 WHERE t.schemaname = 'public'
                 ORDER BY t.tablename;
             """)
@@ -59,11 +64,25 @@ async def check_schema_health():
             table.add_column("Table Name", style="cyan")
             table.add_column("Size (KB)", style="yellow", justify="right")
             table.add_column("Rows", style="blue", justify="right")
+            table.add_column("Inserts", style="green", justify="right")
+            table.add_column("Updates", style="orange3", justify="right")
+            table.add_column("Deletes", style="red", justify="right")
+            table.add_column("Days Since Restart", style="purple", justify="right")
 
             for row in result:
                 size_kb = round(row.size_bytes / 1024, 1) if row.size_bytes else 0
-                row_count = row.row_count if row.row_count is not None else 0
-                table.add_row(row.tablename, f"{size_kb:,} KB", f"{row_count:,}")
+                days_restart = (
+                    int(row.days_since_restart) if row.days_since_restart else 0
+                )
+                table.add_row(
+                    row.tablename,
+                    f"{size_kb:,} KB",
+                    f"{row.row_count:,}",
+                    f"{row.inserts:,}",
+                    f"{row.updates:,}",
+                    f"{row.deletes:,}",
+                    f"{days_restart}",
+                )
 
             console.print(table)
 
