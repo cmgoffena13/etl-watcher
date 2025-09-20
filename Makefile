@@ -49,3 +49,5 @@ test-db-speed:
 
 diagnose-db:
 	uv run -- python -m src.diagnostics.diagnose_connection
+	uv run -- python -m src.diagnostics.diagnose_schema
+
