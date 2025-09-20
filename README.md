@@ -834,10 +834,6 @@ uv sync
 pre-commit install --install-hooks
 ```
 6. Add in Environment Variables referencing `.env.example`
-7. Trigger the migrations for your Postgres instance  
-```bash
-make trigger-migration
-```
 
 ### Quick Start
 ```bash
@@ -870,7 +866,7 @@ Profile any API endpoint by adding `?profile=true` to the URL:
 
 #### Using Scalar API Docs
 
-1. **Start your app**: `make start`
+1. **Start your app**: `make dev-compose`
 2. **Open Scalar**: http://localhost:8000/scalar
 3. **Add `?profile=true`** as a query parameter to any endpoint URL in the interface
 4. **Execute the request** - you'll get an interactive HTML profile directly in your browser
