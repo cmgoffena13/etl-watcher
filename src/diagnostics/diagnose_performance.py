@@ -125,7 +125,8 @@ async def check_performance_health():
                 FROM pg_stat_activity 
                 WHERE state != 'idle' 
                 AND query NOT LIKE '%pg_stat_activity%'
-                ORDER BY query_start;
+                ORDER BY query_start
+                LIMIT 10;
             """)
             )
 
@@ -171,12 +172,13 @@ async def check_performance_health():
                     state,
                     query_start,
                     EXTRACT(EPOCH FROM (NOW() - query_start)) as duration_seconds,
-                    LEFT(query, 80) as query_preview
+                    LEFT(query, 100) as query_preview
                 FROM pg_stat_activity 
                 WHERE state != 'idle' 
                 AND EXTRACT(EPOCH FROM (NOW() - query_start)) > 30
                 AND query NOT LIKE '%pg_stat_activity%'
-                ORDER BY duration_seconds DESC;
+                ORDER BY duration_seconds DESC
+                LIMIT 10;
             """)
             )
 
