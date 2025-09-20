@@ -15,7 +15,7 @@ from src.settings import get_database_config
 logger = logging.getLogger(__name__)
 
 
-@celery.task(bind=True, rate_limit="5/s", max_retries=3, default_retry_delay=60)
+@celery.task(bind=True, rate_limit="10/s", max_retries=3, default_retry_delay=60)
 def detect_anomalies_task(self, pipeline_id: int, pipeline_execution_id: int):
     """Rate-limited anomaly detection task with retries"""
     try:
@@ -72,7 +72,7 @@ async def _run_async_anomaly_detection(pipeline_id: int, pipeline_execution_id: 
         await engine.dispose()
 
 
-@celery.task(bind=True, rate_limit="2/s", max_retries=3, default_retry_delay=60)
+@celery.task(bind=True, rate_limit="1/s", max_retries=3, default_retry_delay=60)
 def timeliness_check_task(self, lookback_minutes: int = 60):
     """Rate-limited timeliness check task with retries"""
     try:
@@ -127,7 +127,7 @@ async def _run_async_timeliness_check(lookback_minutes: int):
         await engine.dispose()
 
 
-@celery.task(bind=True, rate_limit="2/s", max_retries=3, default_retry_delay=60)
+@celery.task(bind=True, rate_limit="1/s", max_retries=3, default_retry_delay=60)
 def freshness_check_task(self):
     """Rate-limited freshness check task with retries"""
     try:
