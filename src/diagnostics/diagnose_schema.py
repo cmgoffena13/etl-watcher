@@ -10,7 +10,7 @@ from rich.table import Table
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import create_async_engine
 
-from src.settings import get_database_config
+from src.settings import config
 
 console = Console()
 
@@ -23,13 +23,8 @@ async def check_schema_health():
         )
     )
 
-    # Create engine with echo disabled for clean output
-    db_config = get_database_config()
     engine = create_async_engine(
-        url=db_config["sqlalchemy.url"],
-        echo=False,
-        future=db_config["sqlalchemy.future"],
-        connect_args=db_config.get("sqlalchemy.connect_args", {}),
+        config.DATABASE_URL, pool_size=1, max_overflow=0, pool_timeout=5
     )
 
     try:

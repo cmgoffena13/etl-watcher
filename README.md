@@ -139,6 +139,11 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
     - Potential missing indexes for tables with sequential scans
     - Unused indexes identification
     - Table statistics and dead tuple analysis
+  - **Performance & Locks** - Database performance monitoring including:
+    - Deadlock statistics and trends
+    - Currently locked tables (public schema only)
+    - Top active queries with duration and wait events
+    - Long running queries (>30s) identification
 
 ### Celery Monitoring Dashboard
 - `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard

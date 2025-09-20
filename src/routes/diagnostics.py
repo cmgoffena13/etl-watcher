@@ -7,9 +7,11 @@ from fastapi.responses import HTMLResponse
 from rich.console import Console
 
 import src.diagnostics.diagnose_connection as conn_module
+import src.diagnostics.diagnose_performance as perf_module
 import src.diagnostics.diagnose_schema as schema_module
 import src.diagnostics.test_connection_speed as speed_module
 from src.diagnostics.diagnose_connection import test_connection_scenarios
+from src.diagnostics.diagnose_performance import check_performance_health
 from src.diagnostics.diagnose_schema import check_schema_health
 from src.diagnostics.test_connection_speed import test_connection_speed
 
@@ -219,4 +221,16 @@ async def get_diagnostics_schema_health():
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Schema health check failed: {str(e)}"
+        )
+
+
+@router.get("/diagnostics/performance", include_in_schema=False)
+async def get_diagnostics_performance():
+    """Get database performance diagnostics"""
+    try:
+        output = await capture_rich_output(check_performance_health, perf_module)
+        return {"status": "success", "output": output, "type": "performance"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Performance diagnostics failed: {str(e)}"
         )
