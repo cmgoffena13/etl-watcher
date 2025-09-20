@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watcher Diagnostics</title>
+    <style>
+        body {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.4;
+        }
+        .container {
+            max-width: none;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .header h1 {
+            color: #4fc3f7;
+            margin-bottom: 10px;
+        }
+        .nav {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        .nav button {
+            background-color: #2d2d2d;
+            color: #d4d4d4;
+            border: 1px solid #555;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: inherit;
+        }
+        .nav button:hover {
+            background-color: #3d3d3d;
+        }
+        .nav button.active {
+            background-color: #4fc3f7;
+            color: #1e1e1e;
+        }
+        .output {
+            background-color: #2d2d2d;
+            border: 1px solid #555;
+            border-radius: 4px;
+            padding: 20px;
+            white-space: pre-wrap;
+            font-size: 14px;
+            overflow-x: auto;
+            min-height: 400px;
+            max-width: none;
+            width: 100%;
+        }
+        .loading {
+            color: #ffa726;
+            text-align: center;
+            padding: 20px;
+        }
+        .error {
+            color: #f44336;
+            background-color: #2d1b1b;
+            border: 1px solid #f44336;
+            border-radius: 4px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .success {
+            color: #4caf50;
+        }
+        .warning {
+            color: #ff9800;
+        }
+        .info {
+            color: #2196f3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 Watcher Diagnostics</h1>
+            <p>System health and performance monitoring</p>
+        </div>
+        
+        <div class="nav">
+            <button onclick="loadDiagnostic('connection-speed')" class="active">Connection Speed</button>
+            <button onclick="loadDiagnostic('connection-performance')">Connection Performance</button>
+            <button onclick="loadDiagnostic('schema-health')">Schema Health</button>
+        </div>
+        
+        <div id="output" class="output"></div>
+    </div>
+
+    <script>
+        let currentDiagnostic = 'connection-speed';
+        
+        async function loadDiagnostic(type) {
+            currentDiagnostic = type;
+            updateActiveButton(type);
+            
+            const output = document.getElementById('output');
+            output.innerHTML = '<div class="loading">Loading ' + type.replace('-', ' ') + ' diagnostics...</div>';
+            
+            try {
+                const response = await fetch(`/diagnostics/${type}`);
+                const data = await response.json();
+                
+                if (data.status === 'success') {
+                    output.innerHTML = `<div class="success">${data.output}</div>`;
+                } else {
+                    output.innerHTML = `<div class="error">Error: ${escapeHtml(data.error || 'Unknown error')}</div>`;
+                }
+            } catch (error) {
+                output.innerHTML = `<div class="error">Failed to load diagnostics: ${escapeHtml(error.message)}</div>`;
+            }
+        }
+        
+        
+        function updateActiveButton(type) {
+            document.querySelectorAll('.nav button').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Load initial diagnostic
+        loadDiagnostic('connection-speed');
+    </script>
+</body>
+</html>

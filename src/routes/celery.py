@@ -1,6 +1,4 @@
-# src/routes/celery.py
 import asyncio
-import json
 import logging
 
 from fastapi import APIRouter, WebSocket, WebSocketDisconnect
@@ -19,7 +17,8 @@ async def websocket_worker_monitor(websocket: WebSocket):
 
     try:
         while True:
-            # Get worker stats (optimized for minimal overhead)
+            await asyncio.sleep(1)  # Don't block the event loop!
+
             inspect = celery.control.inspect()
             try:
                 active_tasks = inspect.active() or {}
@@ -72,7 +71,6 @@ async def websocket_worker_monitor(websocket: WebSocket):
                             }
                         )
 
-            # Send data to client
             await websocket.send_json(
                 {
                     "timestamp": asyncio.get_event_loop().time(),
@@ -92,153 +90,14 @@ async def websocket_worker_monitor(websocket: WebSocket):
         await websocket.close()
 
 
-@router.get("/celery/monitoring")
+@router.get("/celery/monitoring", include_in_schema=False)
 async def celery_monitoring_dashboard():
     """Real-time Celery worker monitoring dashboard"""
-    return HTMLResponse("""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Watcher Celery Monitor</title>
-        <style>
-            body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
-            .container { max-width: 1200px; margin: 0 auto; }
-            .header { background: #2c3e50; color: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; }
-            .stats { display: flex; gap: 20px; margin-bottom: 20px; }
-            .stat-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); flex: 1; }
-            .stat-number { font-size: 2em; font-weight: bold; color: #3498db; }
-            .stat-label { color: #7f8c8d; margin-top: 5px; }
-            .workers { display: grid; gap: 15px; }
-            .worker-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-            .worker-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-            .worker-name { font-weight: bold; font-size: 1.2em; }
-            .worker-status { padding: 5px 10px; border-radius: 20px; font-size: 0.9em; }
-            .status-busy { background: #e74c3c; color: white; }
-            .status-idle { background: #27ae60; color: white; }
-            .task-list { margin-top: 10px; }
-            .task-item { background: #ecf0f1; padding: 10px; margin: 5px 0; border-radius: 4px; font-size: 0.9em; }
-            .task-name { font-weight: bold; color: #2c3e50; }
-            .task-args { color: #7f8c8d; margin-top: 5px; }
-            .connection-status { position: fixed; top: 20px; right: 20px; padding: 10px 20px; border-radius: 20px; }
-            .connected { background: #27ae60; color: white; }
-            .disconnected { background: #e74c3c; color: white; }
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="header">
-                <h1>🔍 Watcher Celery Monitor</h1>
-                <p>Real-time monitoring of Celery workers and tasks</p>
-            </div>
-            
-            <div class="connection-status" id="connectionStatus">Connecting...</div>
-            
-            <div class="stats">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalWorkers">0</div>
-                    <div class="stat-label">Total Workers</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="activeTasks">0</div>
-                    <div class="stat-label">Active Tasks</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="reservedTasks">0</div>
-                    <div class="stat-label">Reserved Tasks</div>
-                </div>
-            </div>
-            
-            <div class="workers" id="workersContainer">
-                <div style="text-align: center; padding: 40px; color: #7f8c8d;">
-                    Loading workers...
-                </div>
-            </div>
-        </div>
-
-        <script>
-            let ws;
-            let reconnectInterval;
-            
-            function connect() {
-                ws = new WebSocket('ws://localhost:8000/celery/ws/workers');
-                
-                ws.onopen = function() {
-                    console.log('Connected to Celery monitor');
-                    document.getElementById('connectionStatus').textContent = 'Connected';
-                    document.getElementById('connectionStatus').className = 'connection-status connected';
-                    clearInterval(reconnectInterval);
-                };
-                
-                ws.onmessage = function(event) {
-                    const data = JSON.parse(event.data);
-                    updateDashboard(data);
-                };
-                
-                ws.onclose = function() {
-                    console.log('Disconnected from Celery monitor');
-                    document.getElementById('connectionStatus').textContent = 'Disconnected';
-                    document.getElementById('connectionStatus').className = 'connection-status disconnected';
-                    
-                    // Reconnect after 3 seconds
-                    reconnectInterval = setInterval(connect, 3000);
-                };
-                
-                ws.onerror = function(error) {
-                    console.error('WebSocket error:', error);
-                };
-            }
-            
-            function updateDashboard(data) {
-                // Update stats
-                document.getElementById('totalWorkers').textContent = data.total_workers;
-                document.getElementById('activeTasks').textContent = data.total_active_tasks;
-                document.getElementById('reservedTasks').textContent = data.total_reserved_tasks;
-                
-                // Update workers
-                const workersContainer = document.getElementById('workersContainer');
-                workersContainer.innerHTML = '';
-                
-                if (data.workers.length === 0) {
-                    workersContainer.innerHTML = '<div style="text-align: center; padding: 40px; color: #7f8c8d;">No workers connected</div>';
-                    return;
-                }
-                
-                data.workers.forEach(worker => {
-                    const workerCard = document.createElement('div');
-                    workerCard.className = 'worker-card';
-                    
-                    const statusClass = worker.status === 'busy' ? 'status-busy' : 'status-idle';
-                    const statusText = worker.status === 'busy' ? 'BUSY' : 'IDLE';
-                    
-                    workerCard.innerHTML = `
-                        <div class="worker-header">
-                            <div class="worker-name">${worker.name}</div>
-                            <div class="worker-status ${statusClass}">${statusText}</div>
-                        </div>
-                        <div style="margin-bottom: 10px;">
-                            <strong>Active Tasks:</strong> ${worker.active_tasks || 0}
-                            ${worker.reserved_tasks ? `<br><strong>Reserved Tasks:</strong> ${worker.reserved_tasks}` : ''}
-                        </div>
-                        <div class="task-list">
-                            ${worker.tasks ? worker.tasks.map(task => `
-                                <div class="task-item">
-                                    <div class="task-name">${task.name}</div>
-                                    <div class="task-args">Args: ${JSON.stringify(task.args)}</div>
-                                    <div style="font-size: 0.8em; color: #95a5a6; margin-top: 5px;">
-                                        Started: ${new Date(task.time_start * 1000).toLocaleTimeString()}
-                                    </div>
-                                </div>
-                            `).join('') : '<div style="color: #7f8c8d; font-style: italic;">No active tasks</div>'}
-                        </div>
-                    `;
-                    
-                    workersContainer.appendChild(workerCard);
-                });
-            }
-            
-            // Connect on page load
-            connect();
-        </script>
-    </body>
-    </html>
-    """)
+    try:
+        with open("src/templates/celery_monitoring.html", "r") as f:
+            html_content = f.read()
+        return HTMLResponse(content=html_content)
+    except FileNotFoundError:
+        return HTMLResponse(
+            content="<h1>Celery monitoring page not found</h1>", status_code=404
+        )

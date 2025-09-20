@@ -27,22 +27,25 @@ services:
       - "8000:8000"
     env_file:
       - .env
-    # environment:
-    #   - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
+    environment:
+      - ENV_STATE=dev
+      - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
     depends_on:
       - redis
       - postgres
     volumes:
       - ./src:/watcher/src
-    command: ["uv", "run", "--", "gunicorn", "src.app:app", "-c", "gunicorn.conf.py", "--workers", "1", "--reload"]
+      - ./start.sh:/watcher/start.sh
+    command: ["/bin/bash", "/watcher/start.sh"]
 
   worker:
     build: .
     container_name: watcher-worker
     env_file:
       - .env
-    # environment:
-    #   - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
+    environment:
+      - ENV_STATE=dev
+      - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
     depends_on:
       - redis
       - postgres

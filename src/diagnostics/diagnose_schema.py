@@ -34,15 +34,22 @@ async def check_schema_health():
 
     try:
         async with engine.connect() as conn:
-            # Table Sizes
-            console.print("\n[bold green]Table Sizes[/bold green]")
+            # Table Sizes and Row Counts
+            console.print("\n[bold green]Table Sizes and Row Counts[/bold green]")
             result = await conn.execute(
                 text("""
-                SELECT schemaname, tablename, 
-                       pg_size_pretty(pg_total_relation_size(schemaname||'.'||tablename)) as size
-                FROM pg_tables 
-                WHERE schemaname = 'public'
-                ORDER BY pg_total_relation_size(schemaname||'.'||tablename) DESC;
+                SELECT 
+                    t.schemaname, 
+                    t.tablename, 
+                    pg_size_pretty(pg_total_relation_size(t.schemaname||'.'||t.tablename)) as size,
+                    pg_total_relation_size(t.schemaname||'.'||t.tablename) as size_bytes,
+                    n_live_tup as row_count
+                FROM pg_tables t
+                LEFT JOIN pg_stat_user_tables s 
+                    ON t.tablename = s.relname 
+                    AND t.schemaname = s.schemaname
+                WHERE t.schemaname = 'public'
+                ORDER BY t.tablename;
             """)
             )
 
@@ -50,10 +57,13 @@ async def check_schema_health():
                 show_header=True, header_style="bold magenta", box=box.ROUNDED
             )
             table.add_column("Table Name", style="cyan")
-            table.add_column("Size", style="green")
+            table.add_column("Size (KB)", style="yellow", justify="right")
+            table.add_column("Rows", style="blue", justify="right")
 
             for row in result:
-                table.add_row(row.tablename, row.size)
+                size_kb = round(row.size_bytes / 1024, 1) if row.size_bytes else 0
+                row_count = row.row_count if row.row_count is not None else 0
+                table.add_row(row.tablename, f"{size_kb:,} KB", f"{row_count:,}")
 
             console.print(table)
 

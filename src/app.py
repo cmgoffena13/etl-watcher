@@ -15,6 +15,7 @@ from src.routes import (
     address_type_router,
     anomaly_detection_router,
     celery_router,
+    diagnostics_router,
     freshness_router,
     log_cleanup_router,
     pipeline_execution_router,
@@ -56,6 +57,7 @@ app.include_router(anomaly_detection_router)
 app.include_router(log_cleanup_router)
 app.include_router(freshness_router)
 app.include_router(celery_router)
+app.include_router(diagnostics_router)
 
 
 @app.get("/")

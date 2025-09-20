@@ -11,16 +11,17 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 1. [Features](#features)
 2. [API Endpoints](#-api-endpoints)
-3. [Database Schema](#️-database-schema)
-4. [Technology Stack](#️-technology-stack)
+3. [Webpages](#-webpages)
+4. [Database Schema](#️-database-schema)
+5. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
-5. [Recommended Organization](#-recommended-organization)
-6. [Nested Pipeline Executions](#-nested-pipeline-executions)
-7. [Timeliness & Freshness](#-timeliness--freshness)
-8. [Anomaly Checks](#-anomaly-checks)
-9. [Log Cleanup](#-log-cleanup--maintenance)
-10. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
-11. [Development](#️-development)
+6. [Recommended Organization](#-recommended-organization)
+7. [Nested Pipeline Executions](#-nested-pipeline-executions)
+8. [Timeliness & Freshness](#-timeliness--freshness)
+9. [Anomaly Checks](#-anomaly-checks)
+10. [Log Cleanup](#-log-cleanup--maintenance)
+11. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+12. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
 
@@ -123,10 +124,28 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)
 - `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
-- `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard
 - `GET /` - Health check endpoint
 - `GET /scalar` - Interactive API documentation (utilizes Scalar for an intuitive interface to explore and test all available endpoints)
 
+## 🌐 Webpages
+
+### Diagnostics Dashboard
+- `GET /diagnostics` - Interactive database diagnostics dashboard
+  - **Connection Speed Test** - Raw asyncpg connection performance testing
+  - **Connection Performance** - Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution)
+  - **Schema Health Check** - Database schema analysis including:
+    - Table sizes and row counts
+    - Index usage statistics and performance metrics
+    - Potential missing indexes for tables with sequential scans
+    - Unused indexes identification
+    - Table statistics and dead tuple analysis
+
+### Celery Monitoring Dashboard
+- `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard
+  - **Worker Status** - Live worker process monitoring
+  - **Task Queue** - Active and scheduled task tracking
+  - **Performance Metrics** - Task execution statistics and timing
+  - **WebSocket Updates** - Real-time status updates without page refresh
 ## 🗄️ Database Schema
 
 ### Core Tables
