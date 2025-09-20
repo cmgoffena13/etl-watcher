@@ -185,33 +185,49 @@ async def db_check_pipeline_execution_timeliness(
                 FROM timeliness_pipeline_execution_log t
                 WHERE t.pipeline_execution_id = v.pipeline_execution_id
             )
+            RETURNING pipeline_execution_id
         """)
 
         result = await session.exec(insert_query)
-        rows_inserted = result.rowcount
+        inserted_records = result.fetchall()
+        rows_inserted = len(inserted_records)
         await session.commit()
 
         logger.info(
             f"Inserted {rows_inserted} new timeliness pipeline execution log records"
         )
 
-        try:
-            pipeline_details = "\n".join(
-                f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
-                f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
-                f"({'child' if result['used_child_config'] else 'parent'} config)"
-                for result in fail_results
-            )
+        if rows_inserted > 0:
+            try:
+                inserted_execution_ids = {record[0] for record in inserted_records}
 
-            await send_slack_message(
-                level=AlertLevel.WARNING,
-                title="Timeliness Check - Pipeline Execution",
-                message=f"Pipeline Execution Timeliness Check Failed - {len(fail_results)} execution(s) overdue",
-                details={"Failed Executions": "\n" + pipeline_details},
-            )
-        except Exception as e:
-            logger.error(
-                f"Failed to send Slack notification for timeliness executions: {e}"
+                new_fail_results = [
+                    result
+                    for result in fail_results
+                    if result["pipeline_execution_id"] in inserted_execution_ids
+                ]
+
+                if new_fail_results:
+                    pipeline_details = "\n".join(
+                        f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
+                        f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
+                        f"({'child' if result['used_child_config'] else 'parent'} config)"
+                        for result in new_fail_results
+                    )
+
+                    await send_slack_message(
+                        level=AlertLevel.WARNING,
+                        title="Timeliness Check - Pipeline Execution",
+                        message=f"Pipeline Execution Timeliness Check Failed - {len(new_fail_results)} NEW execution(s) overdue",
+                        details={"Failed Executions": "\n" + pipeline_details},
+                    )
+            except Exception as e:
+                logger.error(
+                    f"Failed to send Slack notification for timeliness executions: {e}"
+                )
+        else:
+            logger.info(
+                "No new timeliness failures to report - all failures were already logged"
             )
 
         return {"status": "warning"}
