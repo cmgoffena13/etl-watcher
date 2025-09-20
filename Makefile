@@ -44,8 +44,8 @@ add-migration:
 trigger-migration:
 	uv run -- alembic upgrade head
 
-diagnose-db:
-	uv run -- python -m src.diagnostics.diagnose_connection
-
 test-db-speed:
 	uv run -- python -m src.diagnostics.test_connection_speed
+
+diagnose-db:
+	uv run -- python -m src.diagnostics.diagnose_connection

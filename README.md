@@ -812,15 +812,18 @@ uv sync
 ```
 5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
 ```bash
-pre-commit install
-pre-commit install --hook-type pre-push
+pre-commit install --install-hooks
 ```
 6. Add in Environment Variables referencing `.env.example`
+7. Trigger the migrations for your Postgres instance  
+```bash
+make trigger-migration
+```
 
 ### Quick Start
 ```bash
 # Start the development server
-make start
+make dev-compose
 
 # Run tests
 make test
