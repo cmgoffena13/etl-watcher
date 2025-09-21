@@ -1,4 +1,5 @@
 import logging
+from pathlib import Path
 
 import pendulum
 from sqlalchemy import text
@@ -35,6 +36,9 @@ async def reset_database():
         await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
         await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
         await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
+        await conn.execute(
+            text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
+        )
 
 
 def _calculate_timely_time(timestamp, datepart, number):
@@ -68,3 +72,44 @@ def _get_display_datepart(datepart, number):
         return datepart_lower
     else:
         return f"{datepart_lower}s"
+
+
+async def setup_reporting():
+    async with engine.begin() as conn:
+        reporting_folder = Path(__file__).parent.parent / "reporting"
+
+        if not reporting_folder.exists():
+            logger.warning(f"Reporting folder not found: {reporting_folder}")
+            return
+
+        for sql_file in reporting_folder.glob("*.sql"):
+            try:
+                logger.info(f"Executing {sql_file.name}...")
+
+                with open(sql_file, "r") as f:
+                    sql_content = f.read().strip()
+
+                if sql_content:
+                    statements = [
+                        stmt.strip() for stmt in sql_content.split(";") if stmt.strip()
+                    ]
+
+                    for i, statement in enumerate(statements):
+                        try:
+                            logger.info(
+                                f"  Executing statement {i + 1}/{len(statements)}..."
+                            )
+                            await conn.execute(text(statement))
+                        except Exception as e:
+                            logger.error(f"  Failed to execute statement {i + 1}: {e}")
+                            logger.error(f"  Statement: {statement[:200]}...")
+                            raise
+                    logger.info(f"Successfully executed {sql_file.name}")
+                else:
+                    logger.warning(f"{sql_file.name} is empty, skipping")
+
+            except Exception as e:
+                logger.error(f"Failed to execute {sql_file.name}: {e}")
+                raise
+
+        logger.info("Reporting setup complete")

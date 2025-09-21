@@ -49,18 +49,24 @@ class PipelineExecution(SQLModel, table=True):
     )
 
     __table_args__ = (
-        Index(
+        Index(  # Used for Timeliness purposes
             "ix_pipeline_execution_start_date",
             "start_date",
             postgresql_include=["id"],
         ),
-        Index(
+        Index(  # Used for Anomaly Detection purposes
             "ix_pipeline_execution_hour_recorded",
             "pipeline_id",
             "hour_recorded",
             "end_date",
             postgresql_include=["completed_successfully", "id"],
             postgresql_where=text("end_date IS NOT NULL"),
+        ),
+        Index(  # Used for Reporting purposes
+            "ix_pipeline_execution_date_recorded_seek",
+            "date_recorded",
+            "pipeline_id",
+            postgresql_include=["id"],
         ),
         CheckConstraint("end_date IS NULL OR end_date > start_date"),
     )

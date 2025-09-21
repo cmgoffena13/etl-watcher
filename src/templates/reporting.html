@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pipeline Reporting Dashboard</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: #2c3e50;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .filters {
+            padding: 20px;
+            background: #ecf0f1;
+            border-bottom: 1px solid #bdc3c7;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        .filter-group label {
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        select, input {
+            padding: 8px 12px;
+            border: 1px solid #bdc3c7;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            padding: 8px 16px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background: #2980b9;
+        }
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+        }
+        .table-container {
+            overflow-x: auto;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13px;
+        }
+        th, td {
+            padding: 12px 8px;
+            text-align: left;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        th {
+            background: #f8f9fa;
+            font-weight: 600;
+            color: #2c3e50;
+            position: sticky;
+            top: 0;
+        }
+        tr:hover {
+            background: #f8f9fa;
+        }
+        .error-rate {
+            font-weight: 600;
+        }
+        .error-rate.high {
+            color: #e74c3c;
+        }
+        .error-rate.medium {
+            color: #f39c12;
+        }
+        .error-rate.low {
+            color: #27ae60;
+        }
+        .pagination {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f8f9fa;
+        }
+        .pagination button {
+            padding: 6px 12px;
+            margin: 0 2px;
+        }
+        .pagination button:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        .pagination-info {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #ecf0f1;
+        }
+        .stat {
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        .stat-label {
+            font-size: 12px;
+            color: #7f8c8d;
+            text-transform: uppercase;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📊 Pipeline Reporting Dashboard</h1>
+            <p>Daily pipeline execution metrics and performance analytics</p>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label for="pipeline-select">Pipeline</label>
+                <select id="pipeline-select">
+                    <option value="">All Pipelines</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="pipeline-type-select">Pipeline Type</label>
+                <select id="pipeline-type-select">
+                    <option value="">All Types</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="days-input">Days</label>
+                <input type="number" id="days-input" value="30" min="1" max="30">
+            </div>
+            
+            <div class="filter-group">
+                <label for="page-size-select">Page Size</label>
+                <select id="page-size-select">
+                    <option value="25">25</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            
+            <button onclick="loadData()">Refresh Data</button>
+            <button onclick="refreshAndLoad()" style="background: #27ae60;">Refresh View & Data</button>
+        </div>
+        
+        <div id="stats" class="stats" style="display: none;">
+            <div class="stat">
+                <div class="stat-value" id="total-executions">-</div>
+                <div class="stat-label">Total Executions</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="avg-error-rate">-</div>
+                <div class="stat-label">Avg Error Rate</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="total-rows">-</div>
+                <div class="stat-label">Total Rows Processed</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="avg-throughput">-</div>
+                <div class="stat-label">Avg Throughput</div>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">
+            Loading pipeline metrics...
+        </div>
+        
+        <div id="table-container" class="table-container" style="display: none;">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Pipeline</th>
+                        <th>Type</th>
+                        <th>Executions</th>
+                        <th>Failed</th>
+                        <th>Error Rate</th>
+                        <th>Inserts</th>
+                        <th>Updates</th>
+                        <th>Deletes</th>
+                        <th>Total Rows</th>
+                        <th>Avg Duration (s)</th>
+                        <th>Throughput</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table">
+                </tbody>
+            </table>
+        </div>
+        
+        <div id="pagination" class="pagination" style="display: none;">
+            <div>
+                <button id="first-page" onclick="goToPage(1)">First</button>
+                <button id="prev-page" onclick="goToPrevPage()">Previous</button>
+                <span id="page-info"></span>
+                <button id="next-page" onclick="goToNextPage()">Next</button>
+                <button id="last-page" onclick="goToLastPage()">Last</button>
+            </div>
+            <div class="pagination-info" id="pagination-info"></div>
+        </div>
+    </div>
+
+    <script>
+        // Simple console logging
+        const logger = {
+            info: (message, data) => console.log(`[INFO] ${message}`, data || ''),
+            warn: (message, data) => console.warn(`[WARN] ${message}`, data || ''),
+            error: (message, data) => console.error(`[ERROR] ${message}`, data || ''),
+            debug: (message, data) => console.debug(`[DEBUG] ${message}`, data || '')
+        };
+
+        let currentPage = 1;
+        let totalPages = 1;
+        let currentData = null;
+
+        // Load pipeline names for dropdown
+        async function loadPipelineNames() {
+            try {
+                logger.info('Loading pipeline names');
+                const response = await fetch('/reporting/pipeline-names');
+                const data = await response.json();
+                
+                const select = document.getElementById('pipeline-select');
+                select.innerHTML = '<option value="">All Pipelines</option>';
+                
+                data.pipeline_names.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+                
+                logger.info('Pipeline names loaded successfully', { count: data.pipeline_names.length });
+            } catch (error) {
+                logger.error('Failed to load pipeline names', { error: error.message, stack: error.stack });
+                console.error('Failed to load pipeline names:', error);
+            }
+        }
+
+        // Load pipeline type names for dropdown
+        async function loadPipelineTypeNames() {
+            try {
+                logger.info('Loading pipeline type names');
+                const response = await fetch('/reporting/pipeline-type-names');
+                const data = await response.json();
+                
+                const select = document.getElementById('pipeline-type-select');
+                select.innerHTML = '<option value="">All Types</option>';
+                
+                data.pipeline_type_names.forEach(name => {
+                    const option = document.createElement('option');
+                    option.value = name;
+                    option.textContent = name;
+                    select.appendChild(option);
+                });
+                
+                logger.info('Pipeline type names loaded successfully', { count: data.pipeline_type_names.length });
+            } catch (error) {
+                logger.error('Failed to load pipeline type names', { error: error.message, stack: error.stack });
+                console.error('Failed to load pipeline type names:', error);
+            }
+        }
+
+        // Load data from API
+        async function loadData() {
+            const loading = document.getElementById('loading');
+            const tableContainer = document.getElementById('table-container');
+            const pagination = document.getElementById('pagination');
+            const stats = document.getElementById('stats');
+            
+            loading.style.display = 'block';
+            tableContainer.style.display = 'none';
+            pagination.style.display = 'none';
+            stats.style.display = 'none';
+            
+            try {
+                const pipeline = document.getElementById('pipeline-select').value;
+                const pipelineType = document.getElementById('pipeline-type-select').value;
+                const days = document.getElementById('days-input').value;
+                const pageSize = document.getElementById('page-size-select').value;
+                
+                logger.info('Loading daily pipeline metrics', { 
+                    pipeline: pipeline || 'all', 
+                    pipelineType: pipelineType || 'all',
+                    days: parseInt(days), 
+                    page: currentPage, 
+                    pageSize: parseInt(pageSize) 
+                });
+                
+                const params = new URLSearchParams({
+                    page: currentPage,
+                    page_size: pageSize,
+                    days: days
+                });
+                
+                if (pipeline) {
+                    params.append('pipeline_name', pipeline);
+                }
+                
+                if (pipelineType) {
+                    params.append('pipeline_type_name', pipelineType);
+                }
+                
+                const url = `/reporting/daily-pipeline-metrics?${params}`;
+                logger.debug('Making API request', { url });
+                
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+                
+                const data = await response.json();
+                
+                logger.info('Daily pipeline metrics loaded successfully', { 
+                    recordCount: data.data.length,
+                    totalRecords: data.pagination.total_records,
+                    totalPages: data.pagination.total_pages
+                });
+                
+                currentData = data;
+                totalPages = data.pagination.total_pages;
+                
+                displayData(data);
+                updatePagination();
+                updateStats(data);
+                
+                loading.style.display = 'none';
+                tableContainer.style.display = 'block';
+                pagination.style.display = 'flex';
+                stats.style.display = 'flex';
+                
+            } catch (error) {
+                logger.error('Failed to load daily pipeline metrics', { 
+                    error: error.message, 
+                    stack: error.stack,
+                    pipeline: document.getElementById('pipeline-select').value || 'all',
+                    days: document.getElementById('days-input').value,
+                    page: currentPage
+                });
+                console.error('Failed to load data:', error);
+                loading.innerHTML = `<div style="color: #e74c3c;">Failed to load data: ${error.message}. Please try again.</div>`;
+            }
+        }
+
+        // Display data in table
+        function displayData(data) {
+            const tbody = document.getElementById('data-table');
+            tbody.innerHTML = '';
+            
+            data.data.forEach(record => {
+                const row = document.createElement('tr');
+                
+                const errorRateClass = record.error_percentage > 10 ? 'high' : 
+                                     record.error_percentage > 5 ? 'medium' : 'low';
+                
+                row.innerHTML = `
+                    <td>${record.date_recorded}</td>
+                    <td>${record.pipeline_name}</td>
+                    <td>${record.pipeline_type_name}</td>
+                    <td>${record.total_executions.toLocaleString()}</td>
+                    <td>${record.failed_executions.toLocaleString()}</td>
+                    <td class="error-rate ${errorRateClass}">${record.error_percentage.toFixed(2)}%</td>
+                    <td>${record.daily_inserts.toLocaleString()}</td>
+                    <td>${record.daily_updates.toLocaleString()}</td>
+                    <td>${record.daily_soft_deletes.toLocaleString()}</td>
+                    <td>${record.daily_total_rows.toLocaleString()}</td>
+                    <td>${record.avg_duration_seconds.toFixed(2)}</td>
+                    <td>${record.daily_throughput.toFixed(2)}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+        }
+
+        // Update pagination controls
+        function updatePagination() {
+            document.getElementById('first-page').disabled = currentPage === 1;
+            document.getElementById('prev-page').disabled = currentPage === 1;
+            document.getElementById('next-page').disabled = currentPage === totalPages;
+            document.getElementById('last-page').disabled = currentPage === totalPages;
+            
+            document.getElementById('page-info').textContent = `Page ${currentPage} of ${totalPages}`;
+            document.getElementById('pagination-info').textContent = 
+                `Showing ${currentData.data.length} of ${currentData.pagination.total_records} records`;
+        }
+
+        // Update summary stats
+        function updateStats(data) {
+            const totalExecutions = data.data.reduce((sum, record) => sum + record.total_executions, 0);
+            const totalFailed = data.data.reduce((sum, record) => sum + record.failed_executions, 0);
+            const avgErrorRate = totalExecutions > 0 ? (totalFailed / totalExecutions * 100) : 0;
+            const totalRows = data.data.reduce((sum, record) => sum + record.daily_total_rows, 0);
+            const avgThroughput = data.data.reduce((sum, record) => sum + record.daily_throughput, 0) / data.data.length || 0;
+            
+            document.getElementById('total-executions').textContent = totalExecutions.toLocaleString();
+            document.getElementById('avg-error-rate').textContent = avgErrorRate.toFixed(2) + '%';
+            document.getElementById('total-rows').textContent = totalRows.toLocaleString();
+            document.getElementById('avg-throughput').textContent = avgThroughput.toFixed(2);
+        }
+
+        // Pagination functions
+        function goToPage(page) {
+            currentPage = Math.max(1, Math.min(page, totalPages));
+            loadData();
+        }
+
+        function goToPrevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                loadData();
+            }
+        }
+
+        function goToNextPage() {
+            if (currentPage < totalPages) {
+                currentPage++;
+                loadData();
+            }
+        }
+
+        function goToLastPage() {
+            currentPage = totalPages;
+            loadData();
+        }
+
+        // Refresh materialized view and load data
+        async function refreshAndLoad() {
+            try {
+                logger.info('Starting refresh and load process');
+                
+                // Show loading state
+                const loading = document.getElementById('loading');
+                loading.innerHTML = 'Refreshing data and loading pipeline metrics...';
+                loading.style.display = 'block';
+                
+                // Refresh the materialized view
+                logger.info('Refreshing materialized view');
+                const refreshResponse = await fetch('/reporting/refresh', { method: 'POST' });
+                const refreshResult = await refreshResponse.json();
+                
+                if (refreshResult.status === 'success') {
+                    logger.info('Materialized view refreshed successfully');
+                    console.log('Materialized view refreshed successfully');
+                } else {
+                    logger.warn('Failed to refresh materialized view', { message: refreshResult.message });
+                    console.warn('Failed to refresh materialized view:', refreshResult.message);
+                }
+                
+                // Load pipeline names, pipeline type names, and data
+                await loadPipelineNames();
+                await loadPipelineTypeNames();
+                await loadData();
+                
+                logger.info('Refresh and load process completed successfully');
+                
+            } catch (error) {
+                logger.error('Failed to refresh and load data', { 
+                    error: error.message, 
+                    stack: error.stack 
+                });
+                console.error('Failed to refresh and load data:', error);
+                const loading = document.getElementById('loading');
+                loading.innerHTML = `<div style="color: #e74c3c;">Failed to refresh data: ${error.message}. Please try again.</div>`;
+            }
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add event listeners for filters
+            document.getElementById('pipeline-select').addEventListener('change', loadData);
+            document.getElementById('pipeline-type-select').addEventListener('change', loadData);
+            document.getElementById('days-input').addEventListener('change', loadData);
+            document.getElementById('page-size-select').addEventListener('change', loadData);
+            
+            refreshAndLoad();
+        });
+    </script>
+</body>
+</html>

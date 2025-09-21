@@ -9,6 +9,7 @@ from src.routes.log_cleanup import router as log_cleanup_router
 from src.routes.pipeline import router as pipeline_router
 from src.routes.pipeline_execution import router as pipeline_execution_router
 from src.routes.pipeline_type import router as pipeline_type_router
+from src.routes.reporting import router as reporting_router
 from src.routes.timeliness import router as timeliness_router
 
 __all__ = [
@@ -24,4 +25,5 @@ __all__ = [
     "pipeline_execution_router",
     "pipeline_type_router",
     "timeliness_router",
+    "reporting_router",
 ]
