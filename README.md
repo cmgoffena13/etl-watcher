@@ -611,6 +611,7 @@ The system can monitor various execution metrics:
 - **`total_inserts`**: Number of insert operations
 - **`total_updates`**: Number of update operations
 - **`total_soft_deletes`**: Number of soft delete operations
+- **`throughput`**: Total rows processed per second (automatically calculated)
 
 ### Automatic Detection
 
@@ -650,6 +651,7 @@ When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is s
 - **Duration Monitoring**: `duration_seconds` - Tracks pipeline execution time
 - **DML Operations**: `inserts`, `updates`, `soft_deletes` - Monitors data modification counts
 - **Volume Monitoring**: `total_rows` - Tracks total rows processed
+- **Performance Monitoring**: `throughput` - Tracks total rows processed per second
 
 **Default Rule Settings:**
 - **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
