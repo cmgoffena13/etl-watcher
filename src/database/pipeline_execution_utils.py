@@ -56,13 +56,9 @@ async def db_end_pipeline_execution(
             .values(
                 **pipeline_execution.model_dump(exclude={"id"}, exclude_unset=True),
                 duration_seconds=duration_seconds,
-                throughput=func.coalesce(
-                    func.round(
-                        func.coalesce(pipeline_execution.total_rows, 0)
-                        / func.greatest(duration_seconds, 1),
-                        4,
-                    ),
-                    0,
+                throughput=func.round(
+                    pipeline_execution.total_rows / duration_seconds,
+                    4,
                 ),
             )
             .returning(PipelineExecution.pipeline_id)
