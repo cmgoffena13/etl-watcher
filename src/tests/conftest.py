@@ -1,4 +1,7 @@
 import os
+
+# Needs to happen before local imports
+os.environ["ENV_STATE"] = "test"
 from typing import AsyncGenerator, Generator
 from unittest.mock import Mock
 
@@ -10,13 +13,10 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-# Needs to happen before local imports
-os.environ["ENV_STATE"] = "test"
-
 from src.app import app
 from src.database.models import *  # To add to SQLModel metadata
 from src.database.session import create_async_engine, get_session
-from src.settings import get_database_config
+from src.settings import config, get_database_config
 
 db_config = get_database_config()
 test_engine = create_async_engine(
