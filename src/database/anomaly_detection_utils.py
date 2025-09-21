@@ -1,6 +1,5 @@
 import logging
 import statistics
-from typing import List
 
 import pendulum
 from fastapi import HTTPException, Response, status
@@ -133,30 +132,21 @@ async def db_detect_anomalies_for_pipeline(
     )
     execution_ids = (await session.exec(ids_query)).scalars().all()
 
-    # Get full execution data for all rules (# PK seek for execution data)
-    if all_same_lookback:
-        executions_query = select(
-            PipelineExecution.id,
-            PipelineExecution.duration_seconds,
-            PipelineExecution.total_rows,
-            PipelineExecution.inserts,
-            PipelineExecution.updates,
-            PipelineExecution.soft_deletes,
-            PipelineExecution.throughput,
-        ).where(PipelineExecution.id.in_(execution_ids))
-        all_executions = (await session.exec(executions_query)).all()
-    else:
-        executions_query = select(
-            PipelineExecution.id,
-            PipelineExecution.duration_seconds,
-            PipelineExecution.total_rows,
-            PipelineExecution.inserts,
-            PipelineExecution.updates,
-            PipelineExecution.soft_deletes,
-            PipelineExecution.throughput,
-            PipelineExecution.end_date,
-        ).where(PipelineExecution.id.in_(execution_ids))
-        all_executions = (await session.exec(executions_query)).all()
+    base_columns = [PipelineExecution.id]
+    if not all_same_lookback:
+        base_columns.append(PipelineExecution.end_date)
+
+    # Only bring in metric columns we actually need
+    for rule in rules:
+        metric_field = rule.metric_field.value
+        if hasattr(PipelineExecution, metric_field):
+            base_columns.append(getattr(PipelineExecution, metric_field))
+
+    # PK seek for execution data
+    executions_query = select(*base_columns).where(
+        PipelineExecution.id.in_(execution_ids)
+    )
+    all_executions = (await session.exec(executions_query)).all()
     execution_ids.clear()
 
     for rule in rules:
