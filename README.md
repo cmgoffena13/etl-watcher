@@ -154,6 +154,19 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
   - **Task Tracking** - Active, reserved, and scheduled task counts
   - **Performance Metrics** - Task execution statistics and timing
   - **WebSocket Updates** - Real-time status updates without page refresh
+
+### Pipeline Reporting Dashboard
+- `GET /reporting` - Daily pipeline metrics and performance analytics dashboard
+  - **Pipeline Metrics** - Daily aggregations of execution counts, error rates, and performance data
+  - **Pipeline Type Filtering** - Filter metrics by pipeline type (e.g., extraction, audit, sales)
+  - **Pipeline Name Filtering** - Filter metrics by specific pipeline names
+  - **Time Range Filtering** - View metrics for the last 1-30 days
+  - **Performance Analytics** - Track throughput, duration, and DML operation trends
+  - **Error Rate Monitoring** - Visual indicators for high, medium, and low error rates
+  - **Pagination** - Navigate through large datasets with configurable page sizes
+  - **Auto-Refresh** - Materialized view refreshes automatically on page load for fresh data
+  - **Real-time Data** - Built on PostgreSQL materialized views for fast query performance
+  
 ## 🗄️ Database Schema
 
 ### Core Tables
