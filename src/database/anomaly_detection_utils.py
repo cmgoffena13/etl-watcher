@@ -189,7 +189,11 @@ async def _detect_anomalies_for_rule_batch(
     for execution in rule_executions:
         metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
-            metric_values.append(metric_value)
+            # Convert throughput DECIMAL to float for statistics calculations
+            if rule.metric_field.value == "throughput":
+                metric_values.append(float(metric_value))
+            else:
+                metric_values.append(metric_value)
 
     if len(metric_values) < rule.minimum_executions:
         logger.warning(
@@ -233,6 +237,10 @@ async def _detect_anomalies_for_rule_batch(
         current_value = getattr(execution, rule.metric_field.value, None)
         if current_value is None:
             continue
+
+        # Convert current_value to float for calculations if it's throughput
+        if rule.metric_field.value == "throughput":
+            current_value = float(current_value)
 
         if (
             current_value > threshold
