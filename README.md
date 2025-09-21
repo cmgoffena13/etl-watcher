@@ -13,6 +13,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 2. [API Endpoints](#-api-endpoints)
 3. [Webpages](#-webpages)
 4. [Database Schema](#️-database-schema)
+   - [Custom Querying](#custom-querying)
 5. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
 6. [Celery Background Processing](#-celery-background-processing)
@@ -188,6 +189,39 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Optimized indexes** for performance-critical queries
 - **Foreign key constraints** for data integrity
 - **Closure table pattern** for efficient lineage traversal
+
+### Custom Querying
+There is obviously the option of querying the database directly for investigative/reporting purposes. Main point of recommendation is be cautious when querying the `pipeline_execution` table as that will be the main target for DML operations. There is an index on `date_recorded, pipeline_id` that can be utilized by following this pattern:
+```sql
+with CTE AS (
+    SELECT
+    id
+    FROM pipeline_execution
+    WHERE pipeline_id = 1
+        AND date_recorded >= CURRENT_DATE - INTERVAL '8 days'
+        AND date_recorded < CURRENT_DATE  /* Stay away from current records being inserted/updated */
+)
+SELECT
+pe.*  /* Columns you want to see */
+FROM pipeline_execution AS pe
+INNER JOIN CTE
+    ON CTE.id = pe.id
+```
+
+If you are wanting to look at recent executions, you can utilize the index on `start_date` by utilizing the following pattern:
+```sql
+with CTE AS (
+    SELECT
+    id
+    FROM pipeline_execution
+    WHERE start_date >= CURRENT_TIMESTSAMP - INTERVAL '1 hour'
+)
+SELECT
+pe.*  /* Columns you want to see */
+FROM pipeline_execution pe
+INNER JOIN CTE
+    ON CTE.id = pe.id
+```
 
 ## 🛠️ Technology Stack
 
