@@ -142,6 +142,7 @@ async def db_detect_anomalies_for_pipeline(
             PipelineExecution.inserts,
             PipelineExecution.updates,
             PipelineExecution.soft_deletes,
+            PipelineExecution.throughput,
         ).where(PipelineExecution.id.in_(execution_ids))
         all_executions = (await session.exec(executions_query)).all()
     else:
@@ -152,6 +153,7 @@ async def db_detect_anomalies_for_pipeline(
             PipelineExecution.inserts,
             PipelineExecution.updates,
             PipelineExecution.soft_deletes,
+            PipelineExecution.throughput,
             PipelineExecution.end_date,
         ).where(PipelineExecution.id.in_(execution_ids))
         all_executions = (await session.exec(executions_query)).all()
