@@ -240,6 +240,7 @@ DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
 PROD_DATABASE_URL=postgresql://user:password@prod-db:5432/watcher_prod
 PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
+PROD_LOGFIRE_TOKEN=12345/kjoi3rjasdfaeon
 ```
 
 **Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements. *See [Auto-Create Anomaly Detection Rules](#auto-create-anomaly-detection-rules) section for details.*
