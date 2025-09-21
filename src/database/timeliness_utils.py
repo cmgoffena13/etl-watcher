@@ -190,7 +190,7 @@ async def db_check_pipeline_execution_timeliness(
 
         result = await session.exec(insert_query)
         inserted_records = result.fetchall()
-        rows_inserted = len(inserted_records)
+        rows_inserted = result.rowcount
         await session.commit()
 
         logger.info(

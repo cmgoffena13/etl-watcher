@@ -19,7 +19,7 @@ class AlertLevel(Enum):
     SUCCESS = "✅"
 
 
-def create_slack_message(
+def _create_slack_message(
     level: AlertLevel,
     title: str,
     message: str,
@@ -65,7 +65,7 @@ async def send_slack_message(
     MAX_RETRIES = 3
     RETRY_DELAY = 1
 
-    formatted_message = create_slack_message(level, title, message, details, error)
+    formatted_message = _create_slack_message(level, title, message, details, error)
 
     if not config.SLACK_WEBHOOK_URL:
         raise ValueError("SLACK_WEBHOOK_URL is not set")
