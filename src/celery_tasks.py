@@ -1,4 +1,5 @@
 # src/celery_tasks.py
+import asyncio
 import logging
 
 from asgiref.sync import async_to_sync  # So annoying
@@ -10,7 +11,7 @@ from src.celery_app import celery
 from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
 from src.database.freshness_utils import db_check_pipeline_freshness
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
-from src.notifier import AlertLevel, create_slack_message, send_slack_message
+from src.notifier import AlertLevel, send_slack_message
 from src.settings import get_database_config
 
 logger = logging.getLogger(__name__)
@@ -224,7 +225,7 @@ def monitor_celery_queues_task(self):
                         reserved_tasks.get(worker_name, [])
                     )
 
-        alerts = []
+        alerts_sent = 0
         for queue_name, data in queue_data.items():
             messages = data["messages"]
             reserved_count = data["reserved"]
@@ -239,52 +240,37 @@ def monitor_celery_queues_task(self):
             else:
                 continue
 
-            details = {
-                "Active Workers": total_workers,
-                "Waiting in Queue": messages,
-                "Ready to Process - Waiting on Worker": reserved_count,
-                "Total Backlog": total_pending,
-            }
-
-            alert_message = create_slack_message(
-                level=alert_level,
-                title="Celery Queue Alert",
-                message=f"Queue {queue_name} has {messages} pending messages",
-                details=details,
-            )
-
-            alerts.append(
-                {
-                    "level": alert_level,
-                    "message": alert_message,
-                    "queue": queue_name,
-                    "messages": messages,
-                }
-            )
-
-        if alerts:
-            for alert in alerts:
-                try:
-                    send_slack_message(alert["message"], alert["level"])
-                    logger.info(
-                        f"Sent queue alert for {alert['queue']}: {alert['messages']} messages"
+            try:
+                asyncio.run(
+                    send_slack_message(
+                        level=alert_level,
+                        title="Celery Queue Alert",
+                        message=f"Queue '{queue_name}' has {messages} pending messages",
+                        details={
+                            "Active Workers": str(total_workers),
+                            "Waiting in Queue": str(messages),
+                            "Ready to Process - Waiting on Worker": str(reserved_count),
+                            "Total Backlog": str(total_pending),
+                        },
                     )
-                except Exception as e:
-                    logger.error(f"Failed to send queue alert: {e}")
+                )
+                logger.info(f"Sent queue alert for '{queue_name}': {messages} messages")
+                alerts_sent += 1
+            except Exception as e:
+                logger.error(f"Failed to send queue alert: {e}")
 
         self.update_state(
             state="SUCCESS",
             meta={
                 "status": "Queue monitoring completed",
-                "alerts_sent": len(alerts),
+                "alerts_sent": alerts_sent,
                 "queues_checked": sum(len(queues) for queues in active_queues.values()),
             },
         )
 
         return {
             "status": "success",
-            "message": f"Queue monitoring completed, {len(alerts)} alerts sent",
-            "alerts": alerts,
+            "message": f"Queue monitoring completed, {alerts_sent} alerts sent",
         }
 
     except Exception as exc:

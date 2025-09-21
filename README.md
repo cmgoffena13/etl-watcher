@@ -261,6 +261,31 @@ Watcher uses Celery for distributed background task processing, providing reliab
 - **Task Retries** - Built-in retry logic with exponential backoff for failed tasks
 - **Rate Limiting** - Configurable rate limits to prevent system overload
 
+### Monitoring & Alerting
+- **Real-time Dashboard** - Live worker status and queue statistics via WebSocket
+- **Queue Depth Alerts** - Automatic Slack notifications when queues exceed thresholds
+- **Task Tracking** - Individual task status and execution metrics
+- **Performance Metrics** - Worker utilization and task processing rates
+
+#### Alert Thresholds
+- **INFO** (20+ messages): Queue is building up, monitor closely
+- **WARNING** (50+ messages): Queue is getting backed up, consider scaling workers
+- **CRITICAL** (100+ messages): Queue is severely backed up, immediate attention required
+
+#### Example Alert Message
+```
+🚨 CRITICAL
+Celery Queue Alert
+Timestamp: 2025-09-21 01:15:50 UTC
+Message: Queue 'default' has 140 pending messages
+
+Details:
+• Active Workers: 3
+• Waiting in Queue: 140
+• Ready to Process - Waiting on Worker: 25
+• Total Backlog: 165
+```
+
 ## 📋 Recommended Organization
 
 Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration. This section provides recommended naming conventions and organizational patterns.

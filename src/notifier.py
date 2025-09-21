@@ -38,7 +38,7 @@ def create_slack_message(
     if details:
         detail_lines = []
         for key, value in details.items():
-            detail_lines.append(f"• *{key}:* {value}")
+            detail_lines.append(f"\n• *{key}:* {value}")
         if detail_lines:
             formatted_message.append("\n*Details:*")
             formatted_message.extend(detail_lines)
