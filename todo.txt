@@ -1,4 +1,3 @@
 1. Create an audit log framework for auditing pipelines 
     to provide information on Completeness and Accuracy (and then anomaly alerting on that as well)
-3. Think about throughput. Endpoint to showcase?
-4. pipeline_metadata: "daily_additive_cumulation": True
+2. pipeline_metadata: "daily_additive_cumulation": True
