@@ -1,7 +1,15 @@
 from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import Date, DateTime
-from sqlalchemy import BigInteger, Column, Index, Integer, text
+from sqlalchemy import (
+    DECIMAL,
+    BigInteger,
+    CheckConstraint,
+    Column,
+    Index,
+    Integer,
+    text,
+)
 from sqlalchemy import Date as DateTZ
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlalchemy.dialects.postgresql import JSONB
@@ -26,14 +34,19 @@ class PipelineExecution(SQLModel, table=True):
     )
     duration_seconds: Optional[int]
     completed_successfully: Optional[bool] = None
-    inserts: Optional[int] = None
-    updates: Optional[int] = None
-    soft_deletes: Optional[int] = None
-    total_rows: Optional[int] = None
+    inserts: Optional[int] = Field(default=None, ge=0)
+    updates: Optional[int] = Field(default=None, ge=0)
+    soft_deletes: Optional[int] = Field(default=None, ge=0)
+    total_rows: Optional[int] = Field(default=None, ge=0)
     full_load: Optional[bool]
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
     execution_metadata: Optional[dict] = Field(sa_column=Column(JSONB, nullable=True))
+    throughput: Optional[float] = Field(
+        sa_column=Column(
+            DECIMAL(precision=12, scale=4), nullable=True
+        )  # Up to 10,000,000.0000
+    )
 
     __table_args__ = (
         Index(
@@ -49,4 +62,5 @@ class PipelineExecution(SQLModel, table=True):
             postgresql_include=["completed_successfully", "id"],
             postgresql_where=text("end_date IS NOT NULL"),
         ),
+        CheckConstraint("end_date IS NULL OR end_date > start_date"),
     )

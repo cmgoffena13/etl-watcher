@@ -26,6 +26,7 @@ class AnomalyMetricFieldEnum(str, Enum):
     UPDATES = "updates"
     SOFT_DELETES = "soft_deletes"
     TOTAL_ROWS = "total_rows"
+    THROUGHPUT = "throughput"
 
 
 class ValidatorModel(BaseModel):

@@ -26,7 +26,7 @@ class PipelineExecutionEndInput(ValidatorModel):
     pipeline_id: int
     end_date: DateTime
     completed_successfully: bool = Field(default=True)
-    inserts: Optional[int] = None
-    updates: Optional[int] = None
-    soft_deletes: Optional[int] = None
-    total_rows: Optional[int] = None
+    inserts: Optional[int] = Field(default=None, ge=0)
+    updates: Optional[int] = Field(default=None, ge=0)
+    soft_deletes: Optional[int] = Field(default=None, ge=0)
+    total_rows: Optional[int] = Field(default=None, ge=0)

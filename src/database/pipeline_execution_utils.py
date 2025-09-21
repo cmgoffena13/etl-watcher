@@ -1,5 +1,7 @@
 import logging
 
+from fastapi import HTTPException
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Integer, Session, case, func, update
 
 from src.database.models import Pipeline, PipelineExecution
@@ -42,19 +44,46 @@ async def db_end_pipeline_execution(
 
     # Transaction Handling
     async with session.begin():
+        # Calculate duration in seconds
+        duration_seconds = func.extract(
+            "epoch", pipeline_execution.end_date - PipelineExecution.start_date
+        ).cast(Integer)
+
         # Update Pipeline Execution record with completion details
         execution_update_stmt = (
             update(PipelineExecution)
             .where(PipelineExecution.id == pipeline_execution.id)
             .values(
                 **pipeline_execution.model_dump(exclude={"id"}, exclude_unset=True),
-                duration_seconds=func.extract(
-                    "epoch", pipeline_execution.end_date - PipelineExecution.start_date
-                ).cast(Integer),
+                duration_seconds=duration_seconds,
+                throughput=func.coalesce(
+                    func.round(
+                        func.coalesce(pipeline_execution.total_rows, 0)
+                        / func.greatest(duration_seconds, 1),
+                        4,
+                    ),
+                    0,
+                ),
             )
             .returning(PipelineExecution.pipeline_id)
         )
-        pipeline_id = (await session.exec(execution_update_stmt)).scalar_one()
+
+        try:
+            pipeline_id = (await session.exec(execution_update_stmt)).scalar_one()
+        except NoResultFound as e:
+            logger.error(f"Pipeline execution not found: {e}")
+            raise HTTPException(status_code=404, detail="Pipeline execution not found")
+        except IntegrityError as e:
+            if (
+                "check constraint" in str(e).lower()
+                and "pipeline_execution_check" in str(e).lower()
+            ):
+                raise HTTPException(
+                    status_code=400, detail="end_date must be greater than start_date"
+                )
+            else:
+                logger.error(f"Database integrity error: {e}")
+                raise HTTPException(status_code=500, detail="Database integrity error")
 
         pipeline_execution_inserts = pipeline_execution.inserts or 0
         pipeline_execution_updates = pipeline_execution.updates or 0

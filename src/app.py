@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from rich import panel, print
 from scalar_fastapi import get_scalar_api_reference
 
+from src.database.db import reset_database
 from src.database.session import engine, test_connection
 from src.logging_conf import configure_logging
 from src.middleware import register_profiling_middleware
@@ -34,6 +35,7 @@ async def lifespan(app: FastAPI):
     print(panel.Panel("Server is starting up...", border_style="green"))
     configure_logging()
     await test_connection()
+    # await reset_database()
     yield
     print(panel.Panel("Server is shutting down...", border_style="red"))
     await engine.dispose()

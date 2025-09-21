@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250913174135
+Revision ID: 20250920200320
 Revises:
-Create Date: 2025-09-13 17:41:37.516218
+Create Date: 2025-09-20 20:03:22.805201
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250913174135"
+revision: str = "20250920200320"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -179,10 +179,7 @@ def upgrade() -> None:
             nullable=False,
         ),
         sa.Column(
-            "load_lineage",
-            sa.Boolean(),
-            server_default=sa.text("FALSE"),
-            nullable=False,
+            "load_lineage", sa.Boolean(), server_default=sa.text("TRUE"), nullable=False
         ),
         sa.Column(
             "active", sa.Boolean(), server_default=sa.text("TRUE"), nullable=False
@@ -290,6 +287,7 @@ def upgrade() -> None:
                 "UPDATES",
                 "SOFT_DELETES",
                 "TOTAL_ROWS",
+                "THROUGHPUT",
                 name="anomalymetricfieldenum",
             ),
             nullable=False,
@@ -357,7 +355,7 @@ def upgrade() -> None:
     op.create_index(
         "ix_freshness_pipeline_log_covering",
         "freshness_pipeline_log",
-        ["pipeline_id", "last_dml_timestamp"],
+        ["last_dml_timestamp", "pipeline_id"],
         unique=True,
     )
     op.create_table(
@@ -385,6 +383,8 @@ def upgrade() -> None:
         sa.Column(
             "execution_metadata", postgresql.JSONB(astext_type=sa.Text()), nullable=True
         ),
+        sa.Column("throughput", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.CheckConstraint("end_date IS NULL OR end_date > start_date"),
         sa.ForeignKeyConstraint(
             ["pipeline_id"],
             ["pipeline.id"],
