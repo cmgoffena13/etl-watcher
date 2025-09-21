@@ -879,7 +879,7 @@ uv python list
 ```
 4. Sync python packages
 ```bash
-uv sync
+uv sync --frozen --compile-bytecode
 ```
 5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
 ```bash
