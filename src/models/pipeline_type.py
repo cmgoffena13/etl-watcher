@@ -7,10 +7,10 @@ from src.types import DatePartEnum, TimelinessDatePartEnum, ValidatorModel
 
 class PipelineTypePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
-    freshness_number: Optional[int] = None
+    freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
     mute_freshness_check: Optional[bool] = Field(default=False)
-    timeliness_number: Optional[int] = None
+    timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[TimelinessDatePartEnum] = None
     mute_timeliness_check: Optional[bool] = Field(default=False)
 
@@ -22,9 +22,9 @@ class PipelineTypePostOutput(ValidatorModel):
 class PipelineTypePatchInput(ValidatorModel):
     id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
-    freshness_number: Optional[int] = None
+    freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
     mute_freshness_check: Optional[bool] = None
-    timeliness_number: Optional[int] = None
+    timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[TimelinessDatePartEnum] = None
     mute_timeliness_check: Optional[bool] = None
