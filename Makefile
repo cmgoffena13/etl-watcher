@@ -7,18 +7,6 @@ build:
 dev-compose:
 	docker compose up --build --remove-orphans
 
-# docker-run:
-# 	docker run --rm -p 8000:8000 \
-# 		--name watcher_dev \
-# 		-v $(shell pwd):/watcher \
-# 		watcher \
-# 		sh -c "uv run -- gunicorn src.app:app -c gunicorn.conf.py --reload --workers 1" && \
-# 	docker logs watcher_dev --follow
-
-# docker-stop:
-# 	docker stop watcher_dev || true
-# 	docker rm watcher_dev || true
-
 docker-clean:
 	docker container prune -f
 	docker images -f "dangling=true" -q | xargs -r docker rmi
