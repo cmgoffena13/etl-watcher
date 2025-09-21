@@ -15,13 +15,14 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 4. [Database Schema](#️-database-schema)
 5. [Technology Stack](#️-technology-stack)
    - [Configuration](#configuration)
-6. [Recommended Organization](#-recommended-organization)
-7. [Nested Pipeline Executions](#-nested-pipeline-executions)
-8. [Timeliness & Freshness](#-timeliness--freshness)
-9. [Anomaly Checks](#-anomaly-checks)
-10. [Log Cleanup](#-log-cleanup--maintenance)
-11. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
-12. [Development](#️-development)
+6. [Celery Background Processing](#-celery-background-processing)
+7. [Recommended Organization](#-recommended-organization)
+8. [Nested Pipeline Executions](#-nested-pipeline-executions)
+9. [Timeliness & Freshness](#-timeliness--freshness)
+10. [Anomaly Checks](#-anomaly-checks)
+11. [Log Cleanup](#-log-cleanup--maintenance)
+12. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
+13. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
 
@@ -124,6 +125,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)
 - `POST /freshness` - Check DML operation freshness
 - `POST /log_cleanup` - Clean up old log data
+- `POST /celery/monitor-queue` - Trigger Celery queue monitoring and alerting (see [Celery Background Processing](#-celery-background-processing) for details)
 - `GET /` - Health check endpoint
 - `GET /scalar` - Interactive API documentation (utilizes Scalar for an intuitive interface to explore and test all available endpoints)
 
@@ -148,7 +150,8 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ### Celery Monitoring Dashboard
 - `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard
   - **Worker Status** - Live worker process monitoring
-  - **Task Queue** - Active and scheduled task tracking
+  - **Queue Statistics** - Real-time queue depth and backlog monitoring
+  - **Task Tracking** - Active, reserved, and scheduled task counts
   - **Performance Metrics** - Task execution statistics and timing
   - **WebSocket Updates** - Real-time status updates without page refresh
 ## 🗄️ Database Schema
@@ -240,6 +243,23 @@ PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 ```
 
 **Note**: When auto-creation is enabled, default anomaly detection rules are created with standard thresholds. You may want to customize these rules after creation based on your specific pipeline patterns and requirements. *See [Auto-Create Anomaly Detection Rules](#auto-create-anomaly-detection-rules) section for details.*
+
+## 🔄 Celery Background Processing
+
+Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks to make sure the main framework performs optimally. I recommend setting up a scheduled ping for the `celery/monitor-queue` endpoint every 5 minutes to have proper alerting on the Celery queue.
+
+### Task Types
+- **Anomaly Detection** - Statistical analysis of pipeline execution patterns
+- **Freshness Checks** - DML operation monitoring and data staleness detection  
+- **Timeliness Checks** - Pipeline execution timing validation
+- **Queue Monitoring** - Real-time queue depth and backlog alerting
+- **Log Cleanup** - Automated maintenance of historical data
+
+### Queue Management
+- **Default Queue** - All tasks are processed through the main queue
+- **Worker Scaling** - Multiple workers can handle the same queue for load distribution
+- **Task Retries** - Built-in retry logic with exponential backoff for failed tasks
+- **Rate Limiting** - Configurable rate limits to prevent system overload
 
 ## 📋 Recommended Organization
 

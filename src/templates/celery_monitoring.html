@@ -24,6 +24,12 @@
         .connection-status { position: fixed; top: 20px; right: 20px; padding: 10px 20px; border-radius: 20px; }
         .connected { background: #27ae60; color: white; }
         .disconnected { background: #e74c3c; color: white; }
+        .queues { margin-top: 20px; }
+        .queue-card { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); margin-bottom: 15px; }
+        .queue-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        .queue-name { font-weight: bold; font-size: 1.1em; }
+        .queue-messages { font-size: 1.5em; font-weight: bold; color: #e74c3c; }
+        .queue-workers { color: #7f8c8d; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -48,12 +54,20 @@
                 <div class="stat-number" id="reservedTasks">0</div>
                 <div class="stat-label">Reserved Tasks</div>
             </div>
+            <div class="stat-card">
+                <div class="stat-number" id="scheduledTasks">0</div>
+                <div class="stat-label">Scheduled Tasks</div>
+            </div>
         </div>
         
         <div class="workers" id="workersContainer">
             <div style="text-align: center; padding: 40px; color: #7f8c8d;">
                 Loading workers...
             </div>
+        </div>
+        
+        <div class="queues" id="queuesContainer" style="display: none;">
+            <h2>Queue Status</h2>
         </div>
     </div>
 
@@ -95,6 +109,7 @@
             document.getElementById('totalWorkers').textContent = data.total_workers;
             document.getElementById('activeTasks').textContent = data.total_active_tasks;
             document.getElementById('reservedTasks').textContent = data.total_reserved_tasks;
+            document.getElementById('scheduledTasks').textContent = data.total_scheduled_tasks || 0;
             
             // Update workers
             const workersContainer = document.getElementById('workersContainer');
@@ -136,6 +151,34 @@
                 
                 workersContainer.appendChild(workerCard);
             });
+            
+            // Update queues
+            const queuesContainer = document.getElementById('queuesContainer');
+            if (data.queues && data.queues.length > 0) {
+                queuesContainer.style.display = 'block';
+                queuesContainer.innerHTML = '<h2>Queue Status</h2>';
+                
+                data.queues.forEach(queue => {
+                    const queueCard = document.createElement('div');
+                    queueCard.className = 'queue-card';
+                    
+                    const messageColor = queue.messages > 50 ? '#e74c3c' : queue.messages > 10 ? '#f39c12' : '#27ae60';
+                    
+                    queueCard.innerHTML = `
+                        <div class="queue-header">
+                            <div class="queue-name">${queue.name}</div>
+                            <div class="queue-messages" style="color: ${messageColor};">${queue.messages}</div>
+                        </div>
+                        <div class="queue-workers">
+                            Workers: ${queue.workers.join(', ')}
+                        </div>
+                    `;
+                    
+                    queuesContainer.appendChild(queueCard);
+                });
+            } else {
+                queuesContainer.style.display = 'none';
+            }
         }
         
         // Connect on page load

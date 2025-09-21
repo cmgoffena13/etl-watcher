@@ -15,6 +15,7 @@ class AlertLevel(Enum):
     INFO = "ℹ️"
     WARNING = "⚠️"
     ERROR = "❌"
+    CRITICAL = "🚨"
     SUCCESS = "✅"
 
 
