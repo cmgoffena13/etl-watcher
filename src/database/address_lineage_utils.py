@@ -216,8 +216,6 @@ async def db_rebuild_closure_table_incremental(
     logger.info(
         f"Rebuilding closure table for {len(connected_addresses)} addresses for pipeline {pipeline_id}"
     )
-
-    savepoint = await session.begin_nested()
     try:
         # Traverse to find all connected addresses and collect edges simultaneously
         start_time = time.time()
@@ -268,6 +266,7 @@ async def db_rebuild_closure_table_incremental(
             f"Edge collection completed for pipeline {pipeline_id}: {len(connected_addresses)} addresses, {len(all_edges)} edges in {edge_collection_time:.3f}s"
         )
 
+        savepoint = await session.begin_nested()
         # Delete all closure paths that involve any of the connected addresses
         # Use two separate deletes to leverage indexes efficiently
         delete_result_1 = await session.exec(
@@ -319,23 +318,21 @@ async def db_rebuild_closure_table_incremental(
         )
 
         closure_records = [
-            {
-                "source_address_id": source_address_id,
-                "target_address_id": target_address_id,
-                "depth": depth,
-            }
+            AddressLineageClosure(
+                source_address_id=source_address_id,
+                target_address_id=target_address_id,
+                depth=depth,
+            )
             for source_address_id, target_address_id, depth in closure
         ]
 
-        insert_result = await session.exec(
-            AddressLineageClosure.__table__.insert().values(closure_records)
-        )
-        logger.info(
-            f"Inserted {insert_result.rowcount} closure records for pipeline {pipeline_id}"
-        )
+        session.add_all(closure_records)
 
         await savepoint.commit()
         await session.commit()
+        logger.info(
+            f"Inserted {len(closure_records)} closure records for pipeline {pipeline_id}"
+        )
     except Exception:
         await savepoint.rollback()
         raise
