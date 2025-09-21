@@ -587,9 +587,10 @@ The anomaly detection system provides statistical analysis to identify unusual p
 Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers:
 
 1. **Baseline Calculation**: Analyzes historical execution data over a configurable lookback period for the same hour of day to account for seasonality
-2. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
-3. **Threshold Detection**: Flags executions that exceed configurable statistical thresholds
-4. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
+2. **Seasonality Adjustment**: Only compares executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
+3. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
+4. **Threshold Detection**: Flags executions that exceed configurable statistical thresholds
+5. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
 
 ### Configuration
 
@@ -656,7 +657,7 @@ When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is s
 
 **Default Rule Settings:**
 - **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
-- **Lookback Period**: `30 days` (analyzes historical data over 30 days)
+- **Lookback Period**: `30 days` (analyzes historical data over 30 days within the same hour)
 - **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
 - **Active by Default**: `true` (rules are enabled immediately)
 
