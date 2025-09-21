@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250920200320
+Revision ID: 20250921102503
 Revises:
-Create Date: 2025-09-20 20:03:22.805201
+Create Date: 2025-09-21 10:25:06.447876
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250920200320"
+revision: str = "20250921102503"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -392,6 +392,13 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
+        "ix_pipeline_execution_date_recorded_seek",
+        "pipeline_execution",
+        ["date_recorded", "pipeline_id"],
+        unique=False,
+        postgresql_include=["id"],
+    )
+    op.create_index(
         "ix_pipeline_execution_hour_recorded",
         "pipeline_execution",
         ["pipeline_id", "hour_recorded", "end_date"],
@@ -503,6 +510,11 @@ def downgrade() -> None:
         table_name="pipeline_execution",
         postgresql_include=["completed_successfully", "id"],
         postgresql_where=sa.text("end_date IS NOT NULL"),
+    )
+    op.drop_index(
+        "ix_pipeline_execution_date_recorded_seek",
+        table_name="pipeline_execution",
+        postgresql_include=["id"],
     )
     op.drop_table("pipeline_execution")
     op.drop_index(

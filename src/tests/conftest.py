@@ -101,25 +101,25 @@ async def truncate_tables():
 async def setup_teardown():
     try:
         async with test_engine.begin() as conn:
-            await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
-            await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
-            await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
             await conn.execute(
                 text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
             )
+            await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
+            await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
+            await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
             await conn.run_sync(SQLModel.metadata.create_all)
 
         yield
 
     finally:
         async with test_engine.begin() as conn:
+            await conn.execute(
+                text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
+            )
             await conn.run_sync(SQLModel.metadata.drop_all)
             await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
             await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
             await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
-            await conn.execute(
-                text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
-            )
 
         # Properly dispose of the engine to close all connections
         await test_engine.dispose()
