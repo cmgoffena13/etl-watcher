@@ -34,15 +34,13 @@ async def check_schema_health():
             result = await conn.execute(
                 text("""
                 SELECT 
-                    t.schemaname, 
                     t.tablename, 
-                    pg_size_pretty(pg_total_relation_size(t.schemaname||'.'||t.tablename)) as size,
-                    pg_total_relation_size(t.schemaname||'.'||t.tablename) as size_bytes,
-                    COALESCE(n_live_tup, 0) as row_count,
-                    COALESCE(n_tup_ins, 0) as inserts,
-                    COALESCE(n_tup_upd, 0) as updates,
-                    COALESCE(n_tup_del, 0) as deletes,
-                    EXTRACT(EPOCH FROM (NOW() - pg_postmaster_start_time())) / 86400 as days_since_restart
+                    pg_total_relation_size(t.schemaname||'.'||t.tablename) AS size_bytes,
+                    COALESCE(s.n_live_tup, 0) AS row_count,
+                    COALESCE(s.n_tup_ins, 0) AS inserts,
+                    COALESCE(s.n_tup_upd, 0) AS updates,
+                    COALESCE(s.n_tup_del, 0) AS deletes,
+                    EXTRACT(EPOCH FROM (NOW() - pg_postmaster_start_time())) / 86400 AS days_since_restart
                 FROM pg_tables t
                 LEFT JOIN pg_stat_user_tables s 
                     ON t.tablename = s.relname 
@@ -57,7 +55,7 @@ async def check_schema_health():
                 show_header=True, header_style="bold magenta", box=box.ROUNDED
             )
             table.add_column("Table Name", style="cyan")
-            table.add_column("Size (KB)", style="yellow", justify="right")
+            table.add_column("Size (MB)", style="yellow", justify="right")
             table.add_column("Rows", style="blue", justify="right")
             table.add_column("Inserts", style="green", justify="right")
             table.add_column("Updates", style="orange3", justify="right")
@@ -65,13 +63,15 @@ async def check_schema_health():
             table.add_column("Days Since Restart", style="purple", justify="right")
 
             for row in result:
-                size_kb = round(row.size_bytes / 1024, 1) if row.size_bytes else 0
+                size_mb = (
+                    round(row.size_bytes / (1024 * 1024), 2) if row.size_bytes else 0
+                )
                 days_restart = (
                     int(row.days_since_restart) if row.days_since_restart else 0
                 )
                 table.add_row(
                     row.tablename,
-                    f"{size_kb:,} KB",
+                    f"{size_mb:,} MB",
                     f"{row.row_count:,}",
                     f"{row.inserts:,}",
                     f"{row.updates:,}",
@@ -85,8 +85,11 @@ async def check_schema_health():
             console.print("\n[bold green]Index Usage[/bold green]")
             result = await conn.execute(
                 text("""
-                SELECT schemaname, relname as tablename, indexrelname as indexname, 
-                       idx_scan, idx_tup_read, idx_tup_fetch
+                SELECT 
+                    relname AS tablename, 
+                    indexrelname AS indexname, 
+                    idx_scan, 
+                    idx_tup_read
                 FROM pg_stat_user_indexes 
                 WHERE schemaname = 'public'
                 ORDER BY tablename, idx_scan DESC;
@@ -115,9 +118,13 @@ async def check_schema_health():
             console.print("\n[bold yellow]Potential Missing Indexes[/bold yellow]")
             result = await conn.execute(
                 text("""
-                SELECT schemaname, relname as tablename, seq_scan, seq_tup_read
+                SELECT 
+                    relname AS tablename, 
+                    seq_scan, 
+                    seq_tup_read
                 FROM pg_stat_user_tables 
-                WHERE schemaname = 'public' AND seq_scan > 0
+                WHERE schemaname = 'public' 
+                    AND seq_scan > 0
                 ORDER BY seq_tup_read DESC;
             """)
             )
@@ -154,9 +161,13 @@ async def check_schema_health():
             )
             result = await conn.execute(
                 text("""
-                SELECT schemaname, relname as tablename, indexrelname as indexname, idx_scan
+                SELECT 
+                    relname AS tablename, 
+                    indexrelname AS indexname, 
+                    idx_scan
                 FROM pg_stat_user_indexes 
-                WHERE schemaname = 'public' AND idx_scan = 0
+                WHERE schemaname = 'public' 
+                    AND idx_scan = 0
                 ORDER BY relname;
             """)
             )
@@ -182,13 +193,9 @@ async def check_schema_health():
             result = await conn.execute(
                 text("""
                 SELECT 
-                schemaname, 
-                relname as tablename, 
-                n_tup_ins, 
-                n_tup_upd, 
-                n_tup_del, 
-                n_live_tup, 
-                n_dead_tup
+                    relname AS tablename, 
+                    n_live_tup, 
+                    n_dead_tup
                 FROM pg_stat_user_tables 
                 WHERE schemaname = 'public'
                 ORDER BY n_live_tup DESC;

@@ -20,7 +20,7 @@ async def websocket_worker_monitor(websocket: WebSocket):
         while True:
             await asyncio.sleep(1)  # Don't block the event loop!
 
-            inspect = celery.control.inspect()
+            inspect = celery.control.inspect(timeout=2)  # 2 second timeout
             try:
                 active_tasks = inspect.active() or {}
                 reserved_tasks = inspect.reserved() or {}

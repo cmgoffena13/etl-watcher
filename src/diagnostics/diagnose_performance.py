@@ -35,9 +35,9 @@ async def check_performance_health():
             result = await conn.execute(
                 text("""
                 SELECT 
-                    datname as database_name,
+                    datname AS database_name,
                     deadlocks,
-                    EXTRACT(EPOCH FROM (NOW() - stats_reset)) / 86400 as days_since_reset
+                    EXTRACT(EPOCH FROM (NOW() - stats_reset)) / 86400 AS days_since_reset
                 FROM pg_stat_database 
                 WHERE datname = current_database()
                 ORDER BY deadlocks DESC;
@@ -79,14 +79,16 @@ async def check_performance_health():
             result = await conn.execute(
                 text("""
                 SELECT 
-                    relation::regclass as table_name,
+                    relation::regclass AS table_name,
                     mode,
-                    COUNT(*) as lock_count
+                    COUNT(*) AS lock_count
                 FROM pg_locks l
-                JOIN pg_class c ON l.relation = c.oid
-                JOIN pg_namespace n ON c.relnamespace = n.oid
+                JOIN pg_class c 
+                    ON l.relation = c.oid
+                JOIN pg_namespace n 
+                    ON c.relnamespace = n.oid
                 WHERE l.relation IS NOT NULL
-                AND n.nspname = 'public'
+                    AND n.nspname = 'public'
                 GROUP BY l.relation, mode
                 ORDER BY lock_count DESC, table_name;
             """)
@@ -118,13 +120,13 @@ async def check_performance_health():
                     pid,
                     state,
                     query_start,
-                    EXTRACT(EPOCH FROM (NOW() - query_start)) as duration_seconds,
+                    EXTRACT(EPOCH FROM (NOW() - query_start)) AS duration_seconds,
                     LEFT(query, 100) as query_preview,
                     wait_event_type,
                     wait_event
                 FROM pg_stat_activity 
                 WHERE state != 'idle' 
-                AND query NOT LIKE '%pg_stat_activity%'
+                    AND query NOT LIKE '%pg_stat_activity%'
                 ORDER BY query_start
                 LIMIT 10;
             """)
@@ -171,12 +173,12 @@ async def check_performance_health():
                     pid,
                     state,
                     query_start,
-                    EXTRACT(EPOCH FROM (NOW() - query_start)) as duration_seconds,
-                    LEFT(query, 100) as query_preview
+                    EXTRACT(EPOCH FROM (NOW() - query_start)) AS duration_seconds,
+                    LEFT(query, 100) AS query_preview
                 FROM pg_stat_activity 
                 WHERE state != 'idle' 
-                AND EXTRACT(EPOCH FROM (NOW() - query_start)) > 30
-                AND query NOT LIKE '%pg_stat_activity%'
+                    AND EXTRACT(EPOCH FROM (NOW() - query_start)) > 30
+                    AND query NOT LIKE '%pg_stat_activity%'
                 ORDER BY duration_seconds DESC
                 LIMIT 10;
             """)
