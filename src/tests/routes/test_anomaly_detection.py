@@ -136,14 +136,14 @@ async def test_anomaly_detection_duration_seconds_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
         if (
-            i == 5
+            i == 6
         ):  # Trigger anomaly by giving ridiculous end_date to create high duration_seconds
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
 
@@ -154,7 +154,16 @@ async def test_anomaly_detection_duration_seconds_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different duration_seconds values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            # Vary end_date to create different duration_seconds
+            post_data.update(
+                {
+                    "end_date": pendulum.now("UTC")
+                    .add(minutes=30 + (i * 10))
+                    .isoformat(),  # 40, 50, 60, 70, 80 minutes
+                }
+            )
 
         post_data.update(
             {
@@ -169,12 +178,12 @@ async def test_anomaly_detection_duration_seconds_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
@@ -191,13 +200,13 @@ async def test_anomaly_detection_inserts_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
-        if i == 5:  # Trigger anomaly by giving ridiculous inserts count
+        if i == 6:  # Trigger anomaly by giving ridiculous inserts count
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
             post_data.update(
                 {
@@ -205,7 +214,13 @@ async def test_anomaly_detection_inserts_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different inserts values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            post_data.update(
+                {
+                    "inserts": 8 + (i * 2),  # 10, 12, 14, 16, 18
+                }
+            )
 
         post_data.update(
             {
@@ -220,12 +235,12 @@ async def test_anomaly_detection_inserts_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
@@ -242,13 +257,13 @@ async def test_anomaly_detection_updates_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
-        if i == 5:  # Trigger anomaly by giving ridiculous updates count
+        if i == 6:  # Trigger anomaly by giving ridiculous updates count
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
             post_data.update(
                 {
@@ -256,7 +271,13 @@ async def test_anomaly_detection_updates_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different updates values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            post_data.update(
+                {
+                    "updates": 10 + (i * 2),  # 12, 14, 16, 18, 20
+                }
+            )
 
         post_data.update(
             {
@@ -271,12 +292,12 @@ async def test_anomaly_detection_updates_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
@@ -293,13 +314,13 @@ async def test_anomaly_detection_soft_deletes_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
-        if i == 5:  # Trigger anomaly by giving ridiculous soft_deletes count
+        if i == 6:  # Trigger anomaly by giving ridiculous soft_deletes count
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
             post_data.update(
                 {
@@ -307,7 +328,13 @@ async def test_anomaly_detection_soft_deletes_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different soft_deletes values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            post_data.update(
+                {
+                    "soft_deletes": 12 + (i * 2),  # 14, 16, 18, 20, 22
+                }
+            )
 
         post_data.update(
             {
@@ -322,12 +349,12 @@ async def test_anomaly_detection_soft_deletes_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
@@ -344,13 +371,13 @@ async def test_anomaly_detection_total_rows_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
-        if i == 5:  # Trigger anomaly by giving ridiculous total_rows count
+        if i == 6:  # Trigger anomaly by giving ridiculous total_rows count
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
             post_data.update(
                 {
@@ -358,7 +385,13 @@ async def test_anomaly_detection_total_rows_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different total_rows values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            post_data.update(
+                {
+                    "total_rows": 30 + (i * 5),  # 35, 40, 45, 50, 55
+                }
+            )
 
         post_data.update(
             {
@@ -373,12 +406,12 @@ async def test_anomaly_detection_total_rows_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
@@ -395,14 +428,14 @@ async def test_anomaly_detection_throughput_result_failure(
     )
     assert response.status_code == 201
 
-    for i in range(1, 6):
+    for i in range(1, 7):
         response = await async_client.post(
             "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
         )
         execution_id = response.json()["id"]
 
         if (
-            i == 5
+            i == 6
         ):  # Trigger anomaly by giving ridiculous throughput (high total_rows, low duration)
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
             post_data.update(
@@ -414,7 +447,17 @@ async def test_anomaly_detection_throughput_result_failure(
                 }
             )
         else:
+            # Vary the baseline data to create different throughput values
             post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+            # Vary total_rows and duration to create different throughput values
+            post_data.update(
+                {
+                    "total_rows": 30 + (i * 5),  # 35, 40, 45, 50, 55
+                    "end_date": pendulum.now("UTC")
+                    .add(minutes=50 + (i * 10))
+                    .isoformat(),  # 60, 70, 80, 90, 100 minutes
+                }
+            )
 
         post_data.update(
             {
@@ -429,9 +472,9 @@ async def test_anomaly_detection_throughput_result_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in pipeline" in call_args[1]["message"]
-    assert "execution(s) flagged" in call_args[1]["message"]
+    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
     assert "Threshold Multiplier" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomalies" in call_args[1]["details"]
+    assert "Anomaly" in call_args[1]["details"]

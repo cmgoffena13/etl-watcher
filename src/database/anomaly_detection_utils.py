@@ -152,7 +152,7 @@ async def db_detect_anomalies_for_pipeline(
     for rule in rules:
         try:
             await _detect_anomalies_for_rule_batch(
-                session, rule, all_executions, all_same_lookback
+                session, rule, all_executions, all_same_lookback, pipeline_execution_id
             )
         except Exception as e:
             logger.error(
@@ -166,6 +166,7 @@ async def _detect_anomalies_for_rule_batch(
     rule: AnomalyDetectionRule,
     executions: list,
     all_same_lookback: bool,
+    current_execution_id: int,
 ):
     logger.info(
         f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id}"
@@ -179,14 +180,22 @@ async def _detect_anomalies_for_rule_batch(
             exec for exec in executions if exec.end_date >= rule_lookback_date
         ]
 
-    if len(rule_executions) < rule.minimum_executions:
+    # Skip current execution when building baseline, so minus one
+    if len(rule_executions) - 1 < rule.minimum_executions:
         logger.warning(
             f"Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions)} < {rule.minimum_executions}"
         )
         return
 
+    current_execution = None
+
     metric_values = []
     for execution in rule_executions:
+        # Skip current execution when building baseline
+        if execution.id == current_execution_id:
+            current_execution = execution
+            continue
+
         metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
             # Convert throughput DECIMAL to float for statistics calculations
@@ -214,93 +223,66 @@ async def _detect_anomalies_for_rule_batch(
 
     # Define anomaly threshold using standard deviations
     threshold = baseline_mean + (rule.std_deviation_threshold_multiplier * baseline_std)
-
-    existing_anomalies_query = select(
-        AnomalyDetectionResult.pipeline_execution_id
-    ).where(
-        AnomalyDetectionResult.rule_id == rule.id,
-        AnomalyDetectionResult.pipeline_execution_id.in_(
-            [execution.id for execution in rule_executions]
-        ),
-    )
-
-    existing_anomaly_execution_ids = set(
-        (await session.exec(existing_anomalies_query)).scalars().all()
-    )
-
-    new_anomaly_results = []
     logger.info(
-        f"Processing {len(rule_executions)} executions for anomaly detection: Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+        f"Checking current execution {current_execution_id} for anomalies on rule '{rule.metric_field.value}': Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
     )
 
-    for execution in rule_executions:
-        current_value = getattr(execution, rule.metric_field.value, None)
-        if current_value is None:
-            continue
+    current_value = getattr(current_execution, rule.metric_field.value, None)
+    if current_value is None:
+        logger.info(
+            f"No metric value for rule '{rule.metric_field.value}' for current execution {current_execution_id}"
+        )
+        return
 
-        # Convert current_value to float for calculations if it's throughput
-        if rule.metric_field.value == "throughput":
-            current_value = float(current_value)
+    # Convert current_value to float for calculations if it's throughput
+    if rule.metric_field.value == "throughput":
+        current_value = float(current_value)
 
-        if (
-            current_value > threshold
-            and execution.id not in existing_anomaly_execution_ids
-        ):
-            # Calculate z-score (how many standard deviations above mean)
-            z_score = (current_value - baseline_mean) / baseline_std
-            deviation_percentage = (
-                (current_value - baseline_mean) / baseline_mean
-            ) * 100
+    if current_value > threshold:
+        # Calculate z-score (how many standard deviations above mean)
+        z_score = (current_value - baseline_mean) / baseline_std
+        deviation_percentage = ((current_value - baseline_mean) / baseline_mean) * 100
 
-            # Confidence score based on how many std devs beyond the threshold
-            confidence_score = min(
-                1.0, z_score / rule.std_deviation_threshold_multiplier
-            )
+        # Confidence score based on how many std devs beyond the threshold
+        confidence_score = min(1.0, z_score / rule.std_deviation_threshold_multiplier)
 
-            anomaly_result = AnomalyDetectionResult(
-                rule_id=rule.id,
-                pipeline_execution_id=execution.id,
-                violation_value=current_value,
-                baseline_value=baseline_mean,
-                deviation_percentage=deviation_percentage,
-                confidence_score=confidence_score,
-                context={
-                    "threshold_multiplier": rule.std_deviation_threshold_multiplier,
-                    "baseline_std": baseline_std,
-                    "lookback_days": rule.lookback_days,
-                    "execution_count": len(metric_values),
-                    "z_score": z_score,
-                    "threshold_value": threshold,
-                },
-            )
+        anomaly_result = AnomalyDetectionResult(
+            pipeline_execution_id=current_execution.id,
+            rule_id=rule.id,
+            violation_value=current_value,
+            baseline_value=baseline_mean,
+            deviation_percentage=deviation_percentage,
+            confidence_score=confidence_score,
+            context={
+                "threshold_multiplier": rule.std_deviation_threshold_multiplier,
+                "baseline_std": baseline_std,
+                "lookback_days": rule.lookback_days,
+                "execution_count": len(metric_values),
+                "z_score": z_score,
+                "threshold_value": threshold,
+            },
+        )
 
-            new_anomaly_results.append(anomaly_result)
-
-    executions.clear()
-
-    if new_anomaly_results:
-        session.add_all(new_anomaly_results)
+        session.add(anomaly_result)
         await session.commit()
 
         try:
-            anomaly_details = "\n".join(
-                f"\t• Pipeline Execution ID {result.pipeline_execution_id}: "
-                f"{result.violation_value} (baseline: {result.baseline_value:.2f}, "
-                f"deviation: {result.deviation_percentage:.1f}%, "
-                f"confidence: {result.confidence_score:.2f})"
-                for result in new_anomaly_results
+            anomaly_details = (
+                f"\n\t• value:{anomaly_result.violation_value} (baseline: {anomaly_result.baseline_value:.2f}, "
+                f"deviation: {anomaly_result.deviation_percentage:.1f}%, "
+                f"confidence: {anomaly_result.confidence_score:.2f})"
             )
 
             await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Anomaly Detection",
-                message=f"Anomaly detected in pipeline {rule.pipeline_id} - {len(new_anomaly_results)} execution(s) flagged",
+                message=f"Anomaly detected in Pipeline {rule.pipeline_id} - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
                 details={
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
                     "Lookback Days": rule.lookback_days,
-                    "Anomalies": f"\n{anomaly_details}",
+                    "Anomaly": f"\n{anomaly_details}",
                 },
             )
         except Exception as e:
-            logger.error(f"Failed to send Slack notification for anomalies: {e}")
+            logger.error(f"Failed to send Slack notification for anomaly: {e}")
