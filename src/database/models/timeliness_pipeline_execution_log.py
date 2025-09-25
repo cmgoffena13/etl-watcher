@@ -9,10 +9,7 @@ from src.types import TimelinessDatePartEnum
 class TimelinessPipelineExecutionLog(SQLModel, table=True):
     __tablename__ = "timeliness_pipeline_execution_log"
 
-    id: int | None = Field(
-        sa_column=Column(BigInteger, default=None, primary_key=True, nullable=False)
-    )
-    pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
+    pipeline_execution_id: int = Field(sa_column=Column(BigInteger, primary_key=True))
     pipeline_id: int = Field(foreign_key="pipeline.id")
     duration_seconds: int
     seconds_threshold: int
@@ -33,10 +30,5 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
     __table_args__ = (
         ForeignKeyConstraint(
             columns=["pipeline_execution_id"], refcolumns=["pipeline_execution.id"]
-        ),
-        Index(
-            "ix_timeliness_pipeline_execution_log_execution_id",
-            "pipeline_execution_id",
-            unique=True,
         ),
     )

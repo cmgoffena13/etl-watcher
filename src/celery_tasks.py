@@ -8,7 +8,9 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.celery_app import celery
-from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
+from src.database.anomaly_detection_utils import (
+    db_detect_anomalies_for_pipeline_execution,
+)
 from src.database.freshness_utils import db_check_pipeline_freshness
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
 from src.notifier import AlertLevel, send_slack_message
@@ -66,7 +68,7 @@ async def _run_async_anomaly_detection(pipeline_id: int, pipeline_execution_id: 
             engine, class_=AsyncSession, expire_on_commit=False
         )
         async with celery_sessionmaker() as session:
-            await db_detect_anomalies_for_pipeline(
+            await db_detect_anomalies_for_pipeline_execution(
                 session, pipeline_id, pipeline_execution_id
             )
         return {"status": "success", "message": "Anomaly detection completed"}

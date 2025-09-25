@@ -57,14 +57,14 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
 
     delete_query = """
     WITH CTE AS (
-    SELECT id
+    SELECT {id_column}
     FROM {table_name}
     WHERE {filter_column} <= :max_pipeline_execution_id
     LIMIT :batch_size
     )
     DELETE FROM {table_name}
     USING CTE
-    WHERE {table_name}.id = CTE.id
+    WHERE {table_name}.{id_column} = CTE.{id_column}
     """
 
     table_infos = [
@@ -72,16 +72,19 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             "table_name": "timeliness_pipeline_execution_log",
             "filter_column": "pipeline_execution_id",
             "total_timeliness_pipeline_execution_logs_deleted": 0,
+            "id_column": "pipeline_execution_id",
         },
         {
             "table_name": "anomaly_detection_result",
             "filter_column": "pipeline_execution_id",
             "total_anomaly_detection_results_deleted": 0,
+            "id_column": "pipeline_execution_id",
         },
         {  # Make sure this is last because foreign key constraints
             "table_name": "pipeline_execution",
             "filter_column": "id",
             "total_pipeline_executions_deleted": 0,
+            "id_column": "id",
         },
     ]
 
@@ -91,6 +94,7 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             formatted_query = delete_query.format(
                 table_name=table_info["table_name"],
                 filter_column=table_info["filter_column"],
+                id_column=table_info["id_column"],
             )
             result = await session.exec(
                 text(formatted_query).bindparams(

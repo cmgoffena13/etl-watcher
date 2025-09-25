@@ -1,6 +1,5 @@
 from src.database.models.address import Address
-from src.database.models.address_lineage import AddressLineage
-from src.database.models.address_lineage_closure import AddressLineageClosure
+from src.database.models.address_lineage import AddressLineage, AddressLineageClosure
 from src.database.models.address_type import AddressType
 from src.database.models.anomaly_detection import (
     AnomalyDetectionResult,

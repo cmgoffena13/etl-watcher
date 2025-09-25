@@ -81,10 +81,12 @@ async def db_update_anomaly_detection_rule(
     return rule
 
 
-async def db_detect_anomalies_for_pipeline(
+async def db_detect_anomalies_for_pipeline_execution(
     session: Session, pipeline_id: int, pipeline_execution_id: int
 ):
-    logger.info(f"Detecting anomalies for pipeline {pipeline_id}")
+    logger.info(
+        f"Detecting anomalies for pipeline {pipeline_id} for execution {pipeline_execution_id}"
+    )
 
     # First query: Get rule IDs using index
     rule_ids_query = select(AnomalyDetectionRule.id).where(
@@ -136,7 +138,7 @@ async def db_detect_anomalies_for_pipeline(
     if not all_same_lookback:
         base_columns.append(PipelineExecution.end_date)
 
-    # Only bring in metric columns we actually need
+    # Only bring in metric columns we actually need from pipeline execution
     for rule in rules:
         metric_field = rule.metric_field.value
         if hasattr(PipelineExecution, metric_field):
@@ -147,12 +149,15 @@ async def db_detect_anomalies_for_pipeline(
         PipelineExecution.id.in_(execution_ids)
     )
     all_executions = (await session.exec(executions_query)).all()
-    execution_ids.clear()
 
     for rule in rules:
         try:
             await _detect_anomalies_for_rule_batch(
-                session, rule, all_executions, all_same_lookback, pipeline_execution_id
+                session,
+                rule,
+                all_executions,
+                all_same_lookback,
+                pipeline_execution_id,
             )
         except Exception as e:
             logger.error(
@@ -183,7 +188,7 @@ async def _detect_anomalies_for_rule_batch(
     # Skip current execution when building baseline, so minus one
     if len(rule_executions) - 1 < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions)} < {rule.minimum_executions}"
+            f"Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions) - 1} < {rule.minimum_executions}"
         )
         return
 

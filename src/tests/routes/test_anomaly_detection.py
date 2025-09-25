@@ -2,7 +2,9 @@ import pendulum
 import pytest
 from httpx import AsyncClient
 
-from src.database.anomaly_detection_utils import db_detect_anomalies_for_pipeline
+from src.database.anomaly_detection_utils import (
+    db_detect_anomalies_for_pipeline_execution,
+)
 from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.anomaly_detection import (
     TEST_ANOMALY_DETECTION_RULE_DURATION_SECONDS_POST_DATA,
@@ -85,7 +87,9 @@ async def test_anomaly_detection_result_skip(
 
     # Call anomaly detection directly since background tasks don't run in tests
     async with AsyncSessionLocal() as session:
-        await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+        await db_detect_anomalies_for_pipeline_execution(
+            session, pipeline_id, execution_id
+        )
 
     mock_slack_notifications.assert_not_called()
 
@@ -119,7 +123,9 @@ async def test_anomaly_detection_result_success(async_client: AsyncClient):
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
 
 @pytest.mark.anyio
@@ -174,7 +180,9 @@ async def test_anomaly_detection_duration_seconds_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
@@ -231,7 +239,9 @@ async def test_anomaly_detection_inserts_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
@@ -288,7 +298,9 @@ async def test_anomaly_detection_updates_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
@@ -345,7 +357,9 @@ async def test_anomaly_detection_soft_deletes_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
@@ -402,7 +416,9 @@ async def test_anomaly_detection_total_rows_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
@@ -468,7 +484,9 @@ async def test_anomaly_detection_throughput_result_failure(
         assert response.status_code == 204
         # Call anomaly detection directly since background tasks don't run in tests (mocked)
         async with AsyncSessionLocal() as session:
-            await db_detect_anomalies_for_pipeline(session, pipeline_id, execution_id)
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args

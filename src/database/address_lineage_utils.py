@@ -8,8 +8,7 @@ from sqlmodel import Session
 
 from src.database.address_utils import db_get_or_create_address
 from src.database.models.address import Address
-from src.database.models.address_lineage import AddressLineage
-from src.database.models.address_lineage_closure import AddressLineageClosure
+from src.database.models.address_lineage import AddressLineage, AddressLineageClosure
 from src.database.models.pipeline import Pipeline
 from src.models.address import AddressPostInput, AddressPostOutput
 from src.models.address_lineage import (
