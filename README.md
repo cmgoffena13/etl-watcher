@@ -65,7 +65,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Configurable Metrics**: Monitor duration, row counts, and DML operations for individual pipelines
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
 - **Confidence Scoring**: Calculate confidence scores based on statistical deviation
-- **Lookback Periods**: Analyze historical data over configurable time windows
+- **Lookback Periods**: Analyze executions against historical data over configurable time windows
 - **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
@@ -633,10 +633,10 @@ The anomaly detection system provides statistical analysis to identify unusual p
 
 Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers:
 
-1. **Baseline Calculation**: Analyzes historical execution data over a configurable lookback period for the same hour of day to account for seasonality
+1. **Baseline Calculation**: Analyzes completed execution against historical execution data over a configurable lookback period for the same hour of day to account for seasonality
 2. **Seasonality Adjustment**: Only compares executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
 3. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
-4. **Threshold Detection**: Flags executions that exceed configurable statistical thresholds
+4. **Threshold Detection**: Flags execution if exceeds configurable statistical thresholds
 5. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
 
 ### Configuration
@@ -646,7 +646,7 @@ Create anomaly detection rules per pipeline with the following parameters:
 
 - **`pipeline_id`**: Target pipeline to monitor
 - **`metric_field`**: Metric to monitor (duration_seconds, total_rows, total_inserts, etc.)
-- **`lookback_days`**: Number of days of historical data to analyze (default: 30)
+- **`lookback_days`**: Number of days of historical data to compare against execution (default: 30)
 - **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 10)
 - **`std_deviation_threshold_multiplier`**: How many standard deviations above mean to trigger (default: 2.0)
 - **`active`**: Whether the rule is enabled
@@ -669,9 +669,9 @@ Anomaly detection runs automatically after each successful pipeline execution us
 1. **Trigger**: Queues when `end_pipeline_execution` is called and the execution was successful
 2. **Background Processing**: Celery worker picks up the task
 3. **Rule Lookup**: Finds active rules for the completed pipeline
-4. **Historical Analysis**: Analyzes execution history for the same hour of day
+4. **Historical Analysis**: Analyzes execution against execution history for the same hour of day
 5. **Statistical Calculation**: Computes baseline mean and standard deviation
-6. **Anomaly Detection**: Identifies executions exceeding thresholds
+6. **Anomaly Detection**: Identifies if execution exceeds thresholds
 7. **Notification**: Sends Slack alerts for detected anomalies
 
 ### Slack Notifications
@@ -682,15 +682,14 @@ When anomalies are detected, the system sends detailed Slack notifications:
 ⚠️ WARNING
 Anomaly Detection
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Anomaly detected in pipeline 123 - 2 execution(s) flagged
+Message: Anomaly detected in Pipeline 123 - Pipeline Execution ID 21 flagged
 
 Details:
 • Metric: duration_seconds
 • Threshold Multiplier: 2.0
 • Lookback Days: 30
-• Anomalies: 
-  - Execution ID 21: 1814400 (baseline: 164945.45, deviation: 1000.0%, confidence: 1.00)
-  - Execution ID 22: 1952000 (baseline: 164945.45, deviation: 1083.3%, confidence: 0.99)
+• Anomaly: 
+	• value: 1814400 (baseline: 164945.45, deviation: 1000.0%, confidence: 1.00)
 ```
 
 #### Auto-Create Anomaly Detection Rules
@@ -704,7 +703,7 @@ When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is s
 
 **Default Rule Settings:**
 - **Standard Deviation Threshold**: `2.0` (flags values 2+ standard deviations from mean)
-- **Lookback Period**: `30 days` (analyzes historical data over 30 days within the same hour)
+- **Lookback Period**: `30 days` (analyzes execution against 30 days of historical data within the same hour)
 - **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
 - **Active by Default**: `true` (rules are enabled immediately)
 
@@ -714,7 +713,7 @@ When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is s
 2. **Monitor Multiple Metrics**: Create rules for different metrics to get comprehensive coverage
 3. **Regular Review**: Periodically review and adjust rules based on changing data patterns
 4. **Sufficient History**: Ensure you have enough historical data for accurate baseline calculations 
-5. **Hour-Specific Analysis**: The system analyzes data by hour of day, so consider time-of-day patterns
+5. **Hour-Specific Analysis**: The system analyzes against hour of day, so consider time-of-day patterns
 
 ## 🧹 Log Cleanup & Maintenance
 
