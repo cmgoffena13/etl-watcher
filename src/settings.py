@@ -54,7 +54,16 @@ config = get_config(BaseConfig().ENV_STATE)
 
 def get_database_config():
     """Get database configuration for both SQLAlchemy and Alembic"""
-    db_config = get_config(BaseConfig().ENV_STATE)
+    env_state = BaseConfig().ENV_STATE
+    db_config = get_config(env_state)
+
+    if db_config.DATABASE_URL is None:
+        env_prefix = {"dev": "DEV_", "test": "TEST_", "prod": "PROD_"}.get(
+            env_state, ""
+        )
+        raise ValueError(
+            f"{env_prefix}DATABASE_URL is not set for the {env_state} environment"
+        )
 
     config_dict = {
         "sqlalchemy.url": db_config.DATABASE_URL,
