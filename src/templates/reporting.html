@@ -258,8 +258,11 @@
         // Load pipeline names for dropdown
         async function loadPipelineNames() {
             try {
-                logger.info('Loading pipeline names');
-                const response = await fetch('/reporting/pipeline-names');
+                const pipelineType = document.getElementById('pipeline-type-select').value;
+                logger.info('Loading pipeline names', { pipelineType: pipelineType || 'all' });
+                
+                const url = pipelineType ? `/reporting/pipeline-names?pipeline_type_name=${encodeURIComponent(pipelineType)}` : '/reporting/pipeline-names';
+                const response = await fetch(url);
                 const data = await response.json();
                 
                 const select = document.getElementById('pipeline-select');
@@ -511,7 +514,14 @@
         document.addEventListener('DOMContentLoaded', function() {
             // Add event listeners for filters
             document.getElementById('pipeline-select').addEventListener('change', loadData);
-            document.getElementById('pipeline-type-select').addEventListener('change', loadData);
+            document.getElementById('pipeline-type-select').addEventListener('change', async function() {
+                // Reset pipeline selection when type changes
+                document.getElementById('pipeline-select').value = '';
+                // Reload pipeline names filtered by type
+                await loadPipelineNames();
+                // Reload data
+                loadData();
+            });
             document.getElementById('days-input').addEventListener('change', loadData);
             document.getElementById('page-size-select').addEventListener('change', loadData);
             

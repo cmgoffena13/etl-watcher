@@ -125,15 +125,25 @@ async def get_daily_pipeline_metrics(
 
 
 @router.get("/reporting/pipeline-names", include_in_schema=False)
-async def get_pipeline_names(session: SessionDep):
-    """Get list of pipeline names for dropdown"""
-    query = text("""
+async def get_pipeline_names(
+    session: SessionDep, pipeline_type_name: Optional[str] = Query(None)
+):
+    """Get list of pipeline names for dropdown, optionally filtered by pipeline type"""
+    where_clause = ""
+    params = {}
+
+    if pipeline_type_name:
+        where_clause = "WHERE pipeline_type_name = :pipeline_type_name"
+        params["pipeline_type_name"] = pipeline_type_name
+
+    query = text(f"""
         SELECT DISTINCT pipeline_name 
         FROM daily_pipeline_report 
+        {where_clause}
         ORDER BY pipeline_name
     """)
 
-    result = await session.exec(query)
+    result = await session.exec(query, params=params)
     pipeline_names = [row.pipeline_name for row in result.fetchall()]
 
     return {"pipeline_names": pipeline_names}

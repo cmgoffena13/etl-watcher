@@ -145,7 +145,7 @@ async def celery_monitoring_dashboard():
 
 
 @router.post("/celery/monitor-queue")
-async def trigger_celery_queue_monitoring():
+async def check_celery_queue():
     """Trigger Celery queue monitoring task"""
     try:
         task = monitor_celery_queues_task.delay()
