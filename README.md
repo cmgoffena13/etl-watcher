@@ -26,6 +26,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 13. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
+14. [Deployment](#-deployment)
 
 ## Features
 
@@ -994,3 +995,145 @@ DEV_PROFILING_ENABLED=false
 2. **Database Migrations**: Use `make add-migration` to generate migration scripts
 3. **Testing**: Use `make test` to run the comprehensive test suite
 4. **Code Quality**: Pre-commit hooks automatically format and lint code
+
+## 🚀 Deployment
+
+The Watcher system requires several components to run in production. This section outlines the complete deployment architecture and setup requirements.
+
+### Architecture Overview
+
+The Watcher system consists of the following components:
+
+```
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│   FastAPI App   │    │  Celery Worker  │    │   PostgreSQL    │
+│   (Web API)     │    │ (Background     │    │   (Database)    │
+│                 │    │  Tasks)         │    │                 │
+└─────────────────┘    └─────────────────┘    └─────────────────┘
+         │                       │                       │
+         └───────────────────────┼───────────────────────┘
+                                 │
+                    ┌─────────────────┐
+                    │     Redis       │
+                    │ (Message Queue) │
+                    └─────────────────┘
+```
+
+### Required Components
+
+#### 1. PostgreSQL Database
+- **Purpose**: Primary data storage for all pipeline metadata, execution logs, and anomaly detection results
+- **Requirements**: 
+  - PostgreSQL 12+ recommended
+  - Sufficient storage for historical execution data
+  - Regular backups configured
+- **Configuration**: Set `PROD_DATABASE_URL` environment variable
+
+#### 2. Redis Instance
+- **Purpose**: Message broker for Celery background tasks
+- **Requirements**:
+  - Redis 6+ recommended
+  - Persistent storage enabled
+  - Memory allocation based on expected task volume
+- **Configuration**: Set `PROD_REDIS_HOST` and `PROD_REDIS_PORT` environment variables
+
+#### 3. FastAPI Application Container
+- **Purpose**: Main web API for pipeline execution tracking and monitoring
+- **Features**:
+  - REST API endpoints
+  - Database connections
+  - Slack webhook integration
+  - Health checks and monitoring
+- **Configuration**: Set `PROD_SLACK_WEBHOOK_URL` and other production environment variables
+
+#### 4. Celery Worker Container
+- **Purpose**: Background task processing for non-critical tasks
+- **Features**:
+  - Anomaly detection processing
+  - Log cleanup tasks
+  - Timeliness & Freshness checks
+- **Scaling**: Can run multiple worker instances for high throughput
+
+#### 5. Logfire Account Setup
+- **Purpose**: Application monitoring and observability
+- **Setup Required**:
+  1. Create account at [logfire.pydantic.dev](https://logfire.pydantic.dev)
+  2. Generate API token (Free Account gives you 10 million calls per month!)
+  3. Configure `PROD_LOGFIRE_TOKEN` environment variable
+- **Benefits**:
+  - Request tracing
+  - Performance monitoring & Alerting
+  - Error & Celery Task tracking
+  - Database query analysis
+
+### Environment Variables
+
+```bash
+# Database Configuration
+PROD_DATABASE_URL=postgresql://user:password@postgres-host:5432/watcher_prod
+
+# Redis Configuration
+PROD_REDIS_HOST=redis-host
+PROD_REDIS_PORT=6379
+
+# Slack Integration
+PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+
+# Logfire Monitoring
+PROD_LOGFIRE_TOKEN=your-logfire-token-here
+PROD_LOGFIRE_CONSOLE=false
+
+# Feature Flags
+PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
+PROD_PROFILING_ENABLED=false
+```
+
+### Database Migration
+Before starting the application, run the database migrations on the Prod database:
+(You can always implement the `start.sh` script into the DockerFile as well (It is only used in the dev-compose right now...))
+```bash
+# With PROD_DATABASE_URL set
+make trigger-migration
+```
+
+### Production Considerations
+
+#### Security
+- Use strong, unique passwords for database and Redis
+- Enable SSL/TLS for database connections
+- Restrict network access to database and Redis
+- Use secrets management for sensitive environment variables
+   - I would recommend using a secret manager. Setup new environment variables with the name of the secrets and create a module that pulls the secrets and then assigns them to the appropriate variables in `settings.py`
+
+
+#### Monitoring
+- Set up health checks for all services
+    - Create scheduled jobs that ping the `freshness`, `timeliness`, and `log_cleanup`, and `celery/monitor-queue` endpoints on a desired cadence
+- Monitor database connection pools
+- Track Celery task queue depth
+
+#### Scaling
+- **Horizontal Scaling**: Add more Celery worker instances
+- **Database Scaling**: Consider read replicas for reporting queries
+- **Redis Scaling**: Use Redis Cluster for high availability
+
+#### Backup Strategy
+- **Database Backups**: Daily automated backups with point-in-time recovery
+- **Redis Persistence**: Enable AOF and RDB persistence
+- **Configuration Backup**: Version control all environment configurations
+
+### Health Checks
+
+The application provides several health check endpoints:
+
+- `GET /` - Basic heartbeat
+- Database connectivity checks through the webpage `/diagnostics`
+- Live monitoring of celery workers at the webpage `/celery/monitoring`
+
+### Troubleshooting
+
+#### Common Issues
+1. **Database Connection Errors**: Verify `PROD_DATABASE_URL` format and network connectivity
+2. **Celery Task Failures**: Check Redis connectivity and worker logs
+3. **Slack Notifications Not Working**: Verify webhook URL and permissions
+4. **Logfire Not Receiving Data**: Check token validity and network access
