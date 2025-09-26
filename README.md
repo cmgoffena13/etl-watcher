@@ -1089,8 +1089,8 @@ PROD_PROFILING_ENABLED=false
 ```
 
 ### Database Migration
-Before starting the application, run the database migrations on the Prod database:
-(You can always implement the `start.sh` script into the DockerFile as well (It is only used in the dev-compose right now...))
+Before starting the application, run the database migrations on the Prod database:  
+(You can always implement the `start.sh` script into the DockerFile as well, it is only used in the dev-compose right now...)
 ```bash
 # With PROD_DATABASE_URL set
 make trigger-migration
