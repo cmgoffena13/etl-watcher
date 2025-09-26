@@ -279,13 +279,13 @@ Watcher supports various configuration options through environment variables. Th
 **Example Configuration:**
 ```bash
 # Development environment
-DEV_DATABASE_URL=postgresql://user:password@localhost:5432/watcher_dev
-TEST_DATABASE_URL=postgresql://user:password@localhost:5432/watcher_test
+DEV_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_dev
+TEST_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_test
 DEV_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
 
 # Production environment  
-PROD_DATABASE_URL=postgresql://user:password@prod-db:5432/watcher_prod
+PROD_DATABASE_URL=postgresql+asyncpg://user:password@prod-db:5432/watcher_prod
 PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=false
 PROD_LOGFIRE_TOKEN=12345/kjoi3rjasdfaeon
