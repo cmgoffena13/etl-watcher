@@ -42,7 +42,6 @@ async def reset_database():
         # Drop custom types last
         await conn.execute(text("DROP TYPE IF EXISTS datepartenum"))
         await conn.execute(text("DROP TYPE IF EXISTS anomalymetricfieldenum"))
-        await conn.execute(text("DROP TYPE IF EXISTS timelinessdatepartenum"))
 
 
 def _calculate_timely_time(timestamp, datepart, number):

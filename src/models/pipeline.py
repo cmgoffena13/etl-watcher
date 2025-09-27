@@ -3,7 +3,7 @@ from typing import Optional, Union
 from pydantic import Field
 from pydantic_extra_types.pendulum_dt import DateTime
 
-from src.types import DatePartEnum, TimelinessDatePartEnum, ValidatorModel
+from src.types import DatePartEnum, ValidatorModel
 
 
 class PipelinePostInput(ValidatorModel):
@@ -15,7 +15,7 @@ class PipelinePostInput(ValidatorModel):
     freshness_datepart: Optional[DatePartEnum] = None
     mute_freshness_check: Optional[bool] = False
     timeliness_number: Optional[int] = Field(default=None, gt=0)
-    timeliness_datepart: Optional[TimelinessDatePartEnum] = None
+    timeliness_datepart: Optional[DatePartEnum] = None
     mute_timeliness_check: Optional[bool] = False
     load_lineage: Optional[bool] = None
 
@@ -37,6 +37,6 @@ class PipelinePatchInput(ValidatorModel):
     freshness_datepart: Optional[DatePartEnum] = None
     mute_freshness_check: Optional[bool] = None
     timeliness_number: Optional[int] = Field(default=None, gt=0)
-    timeliness_datepart: Optional[TimelinessDatePartEnum] = None
+    timeliness_datepart: Optional[DatePartEnum] = None
     mute_timeliness_check: Optional[bool] = None
     load_lineage: Optional[bool] = None

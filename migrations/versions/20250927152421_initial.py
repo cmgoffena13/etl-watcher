@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250924194900
+Revision ID: 20250927152421
 Revises:
-Create Date: 2025-09-24 19:49:03.018411
+Create Date: 2025-09-27 15:24:23.755465
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250924194900"
+revision: str = "20250927152421"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -67,7 +67,9 @@ def upgrade() -> None:
         sa.Column("timeliness_number", sa.Integer(), nullable=True),
         sa.Column(
             "timeliness_datepart",
-            sa.Enum("MINUTE", "HOUR", name="timelinessdatepartenum"),
+            sa.Enum(
+                "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
+            ),
             nullable=True,
         ),
         sa.Column(
@@ -169,7 +171,9 @@ def upgrade() -> None:
         sa.Column("timeliness_number", sa.Integer(), nullable=True),
         sa.Column(
             "timeliness_datepart",
-            sa.Enum("MINUTE", "HOUR", name="timelinessdatepartenum"),
+            sa.Enum(
+                "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
+            ),
             nullable=True,
         ),
         sa.Column(
@@ -450,7 +454,9 @@ def upgrade() -> None:
         sa.Column("timely_number", sa.Integer(), nullable=False),
         sa.Column(
             "timely_datepart",
-            sa.Enum("MINUTE", "HOUR", name="timelinessdatepartenum"),
+            sa.Enum(
+                "MINUTE", "HOUR", "DAY", "WEEK", "MONTH", "YEAR", name="datepartenum"
+            ),
             nullable=False,
         ),
         sa.Column("used_child_config", sa.Boolean(), nullable=False),

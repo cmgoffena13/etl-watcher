@@ -6,7 +6,7 @@ from sqlalchemy import DateTime as DateTimeTZ
 from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
-from src.types import DatePartEnum, TimelinessDatePartEnum
+from src.types import DatePartEnum
 
 
 class Pipeline(SQLModel, table=True):
@@ -36,7 +36,7 @@ class Pipeline(SQLModel, table=True):
         sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
     )
     timeliness_number: Optional[int]
-    timeliness_datepart: Optional[TimelinessDatePartEnum]
+    timeliness_datepart: Optional[DatePartEnum]
     mute_timeliness_check: bool = Field(
         sa_column=Column(Boolean, server_default=text("FALSE"), nullable=False)
     )

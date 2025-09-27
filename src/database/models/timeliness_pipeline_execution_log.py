@@ -3,7 +3,7 @@ from sqlalchemy import BigInteger, Column, ForeignKeyConstraint, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
 from sqlmodel import Field, SQLModel
 
-from src.types import TimelinessDatePartEnum
+from src.types import DatePartEnum
 
 
 class TimelinessPipelineExecutionLog(SQLModel, table=True):
@@ -15,7 +15,7 @@ class TimelinessPipelineExecutionLog(SQLModel, table=True):
     seconds_threshold: int
     execution_status: str
     timely_number: int
-    timely_datepart: TimelinessDatePartEnum
+    timely_datepart: DatePartEnum
     used_child_config: bool
     created_at: DateTime = Field(
         sa_column=Column(
