@@ -165,7 +165,7 @@ async def db_check_pipeline_execution_timeliness(
             )
 
         values_sql = ",\n".join(
-            f"({result['pipeline_execution_id']}, {result['pipeline_id']}, {result['duration_seconds']}, {result['seconds_threshold']}, '{result['execution_status']}', {result['timely_number']}, '{result['timely_datepart']}'::timelinessdatepartenum, {result['used_child_config']})"
+            f"({result['pipeline_execution_id']}, {result['pipeline_id']}, {result['duration_seconds']}, {result['seconds_threshold']}, '{result['execution_status']}', {result['timely_number']}, '{result['timely_datepart']}'::datepartenum, {result['used_child_config']})"
             for result in fail_results
         )
         insert_query = text(f"""
