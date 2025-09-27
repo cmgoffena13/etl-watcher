@@ -14,6 +14,31 @@ async def create_test_db():
         await conn.execute(text("CREATE DATABASE test"))
 
 
+async def truncate_tables():
+    try:
+        async with engine.begin() as conn:
+            await conn.execute(
+                text(
+                    """
+                    TRUNCATE TABLE 
+                    anomaly_detection_result,
+                    anomaly_detection_rule,
+                    timeliness_pipeline_execution_log,
+                    pipeline_execution,
+                    address_lineage_closure,
+                    address_lineage,
+                    pipeline,
+                    address,
+                    pipeline_type,
+                    address_type
+                    RESTART IDENTITY CASCADE
+                    """
+                )
+            )
+    except Exception as e:
+        print(f"Warning: Failed to truncate tables: {e}")
+
+
 async def reset_database():
     logger.info("Dropping All Tables")
     async with engine.begin() as conn:

@@ -12,6 +12,7 @@ dependencies = [
     "fastapi>=0.116.1",
     "gunicorn>=23.0.0",
     "httpx>=0.28.1",
+    "locust>=2.41.1",
     "logfire[celery,fastapi,sqlalchemy]>=4.4.0",
     "orjson>=3.11.3",
     "pendulum>=3.1.0",

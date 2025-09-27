@@ -26,6 +26,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 13. [Development](#️-development)
     - [Development Setup](#development-setup)
     - [Performance Profiling](#performance-profiling)
+    - [Load Testing](#load-testing)
 14. [Deployment](#-deployment)
 
 ## Features
@@ -215,7 +216,7 @@ with CTE AS (
     SELECT
     id
     FROM pipeline_execution
-    WHERE start_date >= CURRENT_TIMESTSAMP - INTERVAL '1 hour'
+    WHERE start_date >= CURRENT_TIMESTAMP - INTERVAL '1 hour'
 )
 SELECT
 pe.*  /* Columns you want to see */
@@ -995,6 +996,96 @@ DEV_PROFILING_ENABLED=false
 2. **Database Migrations**: Use `make add-migration` to generate migration scripts
 3. **Testing**: Use `make test` to run the comprehensive test suite
 4. **Code Quality**: Pre-commit hooks automatically format and lint code
+
+### Load Testing
+
+The Watcher system includes comprehensive load testing capabilities using Locust to simulate realistic pipeline execution patterns and system monitoring.
+
+#### Overview
+
+The load testing suite simulates:
+- **1000 pipelines** executing every 5 minutes
+- **System monitoring** (freshness, timeliness, Celery queue monitoring)
+- **Heartbeat checks** every 5 minutes
+- **Realistic data patterns** with random success/failure rates
+
+#### Running Load Tests
+
+```bash
+# Start load test (foreground - Ctrl+C to stop)
+make load-test
+
+# The test will:
+# - Start 1000 users (pipelines) at 10 user/second spawn rate
+# - Open web interface at http://localhost:8089
+# - Run continuously until stopped
+```
+
+#### Load Test Configuration
+
+The load test is configured in `src/diagnostics/locustfile.py`:
+
+- **Pipeline Execution**: Each user simulates one pipeline running every 5 minutes
+- **System Checks**: Run every 5 minutes (freshness, timeliness, Celery monitoring)
+- **Heartbeat Checks**: Run every 5 minutes to verify system health
+- **Realistic Data**: Random processing times (30s-10min), 95% success rate
+
+#### Monitoring Load Tests
+
+1. **Locust Web UI**: Access http://localhost:8089 for real-time statistics
+2. **Key Metrics**:
+   - **RPS**: Requests per second
+   - **Response Times**: 50th, 90th, 95th percentiles
+   - **Failure Rate**: Percentage of failed requests
+   - **Active Users**: Current number of simulated pipelines
+
+3. **Database Monitoring**: Use the diagnostics page at `/diagnostics` to monitor:
+   - Connection performance
+   - Query execution times
+   - Active queries and locks
+   - Database health metrics
+
+#### Load Test Scenarios
+
+The test includes several realistic scenarios:
+
+1. **Pipeline Execution Cycle**:
+   - Create/get pipeline
+   - Start execution
+   - Simulate processing time
+   - End execution with results
+
+2. **System Monitoring**:
+   - Freshness checks for all pipelines
+   - Timeliness validation
+   - Celery queue depth monitoring
+
+3. **Error Handling**:
+   - Proper failure logging in Locust
+   - Detailed error messages for debugging
+   - Graceful handling of timeouts
+
+#### Performance Targets
+
+Based on the load test configuration, the system should handle:
+- **1000 concurrent pipelines** executing every 5 minutes
+- **~3-10 RPS** sustained load (1000 users ÷ 300 seconds)
+- **Sub-second response times** for most endpoints
+- **<1% failure rate** under normal conditions
+
+#### Troubleshooting Load Tests
+
+**Common Issues**:
+1. **High Response Times**: Check database performance and connection pooling
+2. **High Failure Rate**: Verify all services are running (FastAPI, PostgreSQL, Redis)
+3. **Memory Issues**: Monitor database connection limits and query performance
+4. **Celery Timeouts**: Ensure Celery workers are running and Redis is accessible
+
+**Debugging**:
+- Check Locust web UI for detailed error messages
+- Use `/diagnostics` page to monitor database health
+- Review application logs for specific error patterns
+- Monitor system resources (CPU, memory, disk I/O)
 
 ## 🚀 Deployment
 

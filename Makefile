@@ -16,3 +16,6 @@ add-migration:
 
 trigger-migration:
 	uv run -- alembic upgrade head
+
+load-test:
+	uv run -- locust -f src/diagnostics/locustfile.py --host=http://localhost:8000 --users=1000 --spawn-rate=10

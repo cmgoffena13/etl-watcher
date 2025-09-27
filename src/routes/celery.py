@@ -20,8 +20,8 @@ async def websocket_worker_monitor(websocket: WebSocket):
         while True:
             await asyncio.sleep(1)  # Don't block the event loop!
 
-            inspect = celery.control.inspect(timeout=2)  # 2 second timeout
             try:
+                inspect = celery.control.inspect(timeout=2)  # 2 second timeout
                 active_tasks = inspect.active() or {}
                 reserved_tasks = inspect.reserved() or {}
                 scheduled_tasks = inspect.scheduled() or {}
@@ -29,11 +29,21 @@ async def websocket_worker_monitor(websocket: WebSocket):
                 active_queues = inspect.active_queues() or {}
             except Exception as e:
                 logger.warning(f"Failed to get worker stats: {e}")
-                active_tasks = {}
-                reserved_tasks = {}
-                scheduled_tasks = {}
-                stats = {}
-                active_queues = {}
+                # Send a message indicating no workers are available
+                await websocket.send_json(
+                    {
+                        "timestamp": asyncio.get_event_loop().time(),
+                        "error": "No Celery workers available",
+                        "total_workers": 0,
+                        "total_active_tasks": 0,
+                        "total_reserved_tasks": 0,
+                        "total_scheduled_tasks": 0,
+                        "workers": [],
+                        "queues": [],
+                    }
+                )
+                await asyncio.sleep(10)  # Wait before retrying
+                continue
 
             # Build monitoring data
             worker_data = {}

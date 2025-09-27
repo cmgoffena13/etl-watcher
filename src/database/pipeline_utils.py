@@ -1,6 +1,7 @@
 import logging
 
 import pendulum
+from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select, update
 from sqlmodel import Session
@@ -62,8 +63,15 @@ async def db_get_or_create_pipeline(
                 pipeline_type_id=pipeline_type.id,
             )
         )
-        new_row = (await session.exec(pipeline_stmt)).one()
-        await session.commit()
+        try:
+            new_row = (await session.exec(pipeline_stmt)).one()
+            await session.commit()
+        except UniqueViolationError:
+            await session.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Violated unique constraint",
+            )
 
         if config.WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES:
             for value in AnomalyMetricFieldEnum:

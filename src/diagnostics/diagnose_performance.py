@@ -121,7 +121,7 @@ async def check_performance_health():
                     state,
                     query_start,
                     EXTRACT(EPOCH FROM (NOW() - query_start)) AS duration_seconds,
-                    LEFT(query, 100) as query_preview,
+                    query as query_preview,
                     wait_event_type,
                     wait_event
                 FROM pg_stat_activity 
@@ -174,7 +174,7 @@ async def check_performance_health():
                     state,
                     query_start,
                     EXTRACT(EPOCH FROM (NOW() - query_start)) AS duration_seconds,
-                    LEFT(query, 100) AS query_preview
+                    query AS query_preview
                 FROM pg_stat_activity 
                 WHERE state != 'idle' 
                     AND EXTRACT(EPOCH FROM (NOW() - query_start)) > 30
