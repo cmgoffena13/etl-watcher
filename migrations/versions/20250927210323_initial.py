@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250927152421
+Revision ID: 20250927210323
 Revises:
-Create Date: 2025-09-27 15:24:23.755465
+Create Date: 2025-09-27 21:03:25.539089
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250927152421"
+revision: str = "20250927210323"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -421,10 +421,18 @@ def upgrade() -> None:
         "anomaly_detection_result",
         sa.Column("pipeline_execution_id", sa.BigInteger(), nullable=False),
         sa.Column("rule_id", sa.Integer(), nullable=False),
-        sa.Column("violation_value", sa.Float(), nullable=False),
-        sa.Column("baseline_value", sa.Float(), nullable=False),
-        sa.Column("deviation_percentage", sa.Float(), nullable=False),
-        sa.Column("confidence_score", sa.Float(), nullable=False),
+        sa.Column("violation_value", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column("baseline_value", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column(
+            "std_deviation_value", sa.DECIMAL(precision=12, scale=4), nullable=True
+        ),
+        sa.Column(
+            "std_deviation_threshold_multiplier",
+            sa.DECIMAL(precision=12, scale=4),
+            nullable=True,
+        ),
+        sa.Column("lower_bound", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column("upper_bound", sa.DECIMAL(precision=12, scale=4), nullable=True),
         sa.Column("context", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column(
             "detected_at",

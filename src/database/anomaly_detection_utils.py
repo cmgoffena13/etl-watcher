@@ -245,27 +245,31 @@ async def _detect_anomalies_for_rule_batch(
         current_value = float(current_value)
 
     if current_value > threshold:
-        # Calculate z-score (how many standard deviations above mean)
+        # Calculate z-score for context (how many standard deviations above mean)
         z_score = (current_value - baseline_mean) / baseline_std
-        deviation_percentage = ((current_value - baseline_mean) / baseline_mean) * 100
 
-        # Confidence score based on how many std devs beyond the threshold
-        confidence_score = min(1.0, z_score / rule.std_deviation_threshold_multiplier)
+        # Calculate bounds for easy reference
+        # Lower bound can't be below zero for metrics like duration, rows, etc.
+        lower_bound = max(
+            0, baseline_mean - (rule.std_deviation_threshold_multiplier * baseline_std)
+        )
+        upper_bound = baseline_mean + (
+            rule.std_deviation_threshold_multiplier * baseline_std
+        )
 
         anomaly_result = AnomalyDetectionResult(
             pipeline_execution_id=current_execution.id,
             rule_id=rule.id,
             violation_value=current_value,
             baseline_value=baseline_mean,
-            deviation_percentage=deviation_percentage,
-            confidence_score=confidence_score,
+            std_deviation_value=baseline_std,
+            std_deviation_threshold_multiplier=rule.std_deviation_threshold_multiplier,
+            lower_bound=lower_bound,
+            upper_bound=upper_bound,
             context={
-                "threshold_multiplier": rule.std_deviation_threshold_multiplier,
-                "baseline_std": baseline_std,
                 "lookback_days": rule.lookback_days,
                 "execution_count": len(metric_values),
                 "z_score": z_score,
-                "threshold_value": threshold,
             },
         )
 
@@ -284,11 +288,7 @@ async def _detect_anomalies_for_rule_batch(
                 f"'{pipeline_name}'" if pipeline_name else f"ID:{rule.pipeline_id}"
             )
 
-            anomaly_details = (
-                f"\n\t• Value: {anomaly_result.violation_value} (Baseline: {anomaly_result.baseline_value:.2f}, "
-                f"Deviation: {anomaly_result.deviation_percentage:.1f}%, "
-                f"Confidence: {anomaly_result.confidence_score:.2f})"
-            )
+            anomaly_details = f"\n\t• Value: {anomaly_result.violation_value} (Range: {anomaly_result.lower_bound:.0f} - {anomaly_result.upper_bound:.0f})"
 
             await send_slack_message(
                 level=AlertLevel.WARNING,

@@ -2,6 +2,7 @@ from typing import Optional
 
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import (
+    DECIMAL,
     BigInteger,
     Boolean,
     Column,
@@ -64,10 +65,14 @@ class AnomalyDetectionResult(SQLModel, table=True):
     pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
     rule_id: int = Field(foreign_key="anomaly_detection_rule.id")
 
-    violation_value: float = Field()
-    baseline_value: float = Field()
-    deviation_percentage: float = Field()  # How much it deviated from baseline
-    confidence_score: float = Field()  # 0.0 to 1.0 confidence in the anomaly
+    violation_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    baseline_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    std_deviation_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    std_deviation_threshold_multiplier: float = Field(
+        sa_column=Column(DECIMAL(precision=12, scale=4))
+    )
+    lower_bound: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    upper_bound: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
 
     context: Optional[dict] = Field(sa_column=Column(JSONB))
 
