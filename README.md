@@ -1179,7 +1179,7 @@ The Watcher system consists of the following components:
   - Redis 6+ recommended
   - Persistent storage enabled
   - Memory allocation based on expected task volume
-- **Configuration**: Set `PROD_REDIS_HOST` and `PROD_REDIS_PORT` environment variables
+- **Configuration**: Set `PROD_REDIS_URL` environment variable
 
 #### 3. FastAPI Application Container
 - **Purpose**: Main web API for pipeline execution tracking and monitoring
@@ -1217,8 +1217,7 @@ The Watcher system consists of the following components:
 PROD_DATABASE_URL=postgresql://user:password@postgres-host:5432/watcher_prod
 
 # Redis Configuration
-PROD_REDIS_HOST=redis-host
-PROD_REDIS_PORT=6379
+PROD_REDIS_URL=redis://redis-host:6379/1
 
 # Slack Integration
 PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
