@@ -24,8 +24,7 @@ async def get_or_create_pipeline(
 
 @router.get("/pipeline", response_model=list[Pipeline], status_code=status.HTTP_200_OK)
 async def get_pipelines(session: SessionDep):
-    result = await session.exec(select(Pipeline))
-    return result.scalars().all()
+    return (await session.exec(select(Pipeline))).scalars().all()
 
 
 @router.patch("/pipeline", response_model=Pipeline, status_code=status.HTTP_200_OK)

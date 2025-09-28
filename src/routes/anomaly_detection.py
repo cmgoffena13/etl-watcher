@@ -31,8 +31,7 @@ async def get_or_create_anomaly_detection_rule(
     status_code=status.HTTP_200_OK,
 )
 async def get_anomaly_detection_rules(session: SessionDep):
-    result = await session.exec(select(AnomalyDetectionRule))
-    return result.scalars().all()
+    return (await session.exec(select(AnomalyDetectionRule))).scalars().all()
 
 
 @router.patch(

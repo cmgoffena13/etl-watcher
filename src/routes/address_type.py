@@ -29,8 +29,7 @@ async def get_or_create_address_type(
     "/address_type", response_model=list[AddressType], status_code=status.HTTP_200_OK
 )
 async def get_address_types(session: SessionDep):
-    result = await session.exec(select(AddressType))
-    return result.scalars().all()
+    return (await session.exec(select(AddressType))).scalars().all()
 
 
 @router.patch(

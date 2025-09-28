@@ -24,8 +24,7 @@ async def get_or_create_address(
 
 @router.get("/address", response_model=list[Address], status_code=status.HTTP_200_OK)
 async def get_addresses(session: SessionDep):
-    result = await session.exec(select(Address))
-    return result.scalars().all()
+    return (await session.exec(select(Address))).scalars().all()
 
 
 @router.patch("/address", response_model=Address, status_code=status.HTTP_200_OK)
