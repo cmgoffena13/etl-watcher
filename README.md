@@ -1071,7 +1071,7 @@ make load-test
 
 #### Load Test Configuration
 
-The load test is configured in `src/diagnostics/locustfile.py`:
+The load test is configured in `src/diagnostics/locustfile.py` (DO NOT run this on production, it will generate a crap ton of fake data):
 
 - **Pipeline Execution**: Each user simulates one pipeline running every 5 minutes
 - **System Checks**: Run every 5 minutes (freshness, timeliness, Celery monitoring)
