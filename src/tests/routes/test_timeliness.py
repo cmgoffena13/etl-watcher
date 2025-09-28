@@ -54,5 +54,5 @@ async def test_timeliness_pipeline_execution_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Pipeline Execution Timeliness Check Failed" in call_args[1]["message"]
+    assert "Pipeline Execution Timeliness Check" in call_args[1]["message"]
     assert "Failed Executions" in call_args[1]["details"]

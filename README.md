@@ -1029,6 +1029,10 @@ The load test is configured in `src/diagnostics/locustfile.py`:
 - **System Checks**: Run every 5 minutes (freshness, timeliness, Celery monitoring)
 - **Heartbeat Checks**: Run every 5 minutes to verify system health
 - **Realistic Data**: Random processing times (30s-10min), 95% success rate
+- **Anomaly Generation**: 1% chance of generating anomalous data to trigger alerts:
+  - **High Volume**: 500K-2M total rows (vs normal 1K-100K)
+  - **Long Duration**: 30min-2hr processing time (vs normal 30s-10min)
+  - **High Activity**: 50K-200K inserts/updates (vs normal 100-10K)
 
 #### Monitoring Load Tests
 
@@ -1044,6 +1048,7 @@ The load test is configured in `src/diagnostics/locustfile.py`:
    - Query execution times
    - Active queries and locks
    - Database health metrics
+   - Celery Worker metrics
 
 #### Load Test Scenarios
 

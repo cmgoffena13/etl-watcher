@@ -81,7 +81,7 @@ class PipelineExecutionUser(HttpUser):
 
         # Step 4: End pipeline execution with realistic data (occasionally anomalous)
         # 5% chance of generating anomalous data to trigger anomaly detection
-        is_anomalous = random.random() < 0.05
+        is_anomalous = random.random() < 0.01
 
         if is_anomalous:
             # Generate anomalous data that should trigger alerts

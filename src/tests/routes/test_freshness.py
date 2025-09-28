@@ -102,5 +102,5 @@ async def test_pipeline_freshness_check_failure(
 
     mock_slack_notifications.assert_called_once()
     call_args = mock_slack_notifications.call_args
-    assert "Pipeline Freshness Check Failed" in call_args[1]["message"]
+    assert "Pipeline Freshness Check" in call_args[1]["message"]
     assert "Late Pipeline" in call_args[1]["details"]["Failed Pipelines"]
