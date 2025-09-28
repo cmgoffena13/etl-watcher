@@ -21,6 +21,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 8. [Nested Pipeline Executions](#-nested-pipeline-executions)
 9. [Timeliness & Freshness](#-timeliness--freshness)
 10. [Anomaly Checks](#-anomaly-checks)
+    - [Adjusting Thresholds](#adjusting-thresholds)
 11. [Log Cleanup](#-log-cleanup--maintenance)
 12. [Complete Pipeline Workflow Example](#complete-pipeline-workflow-example)
 13. [Development](#️-development)
@@ -66,7 +67,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Statistical Analysis**: Detect anomalies using standard deviation and z-score analysis
 - **Configurable Metrics**: Monitor duration, row counts, and DML operations for individual pipelines
 - **Automatic Detection**: Run anomaly detection automatically after pipeline execution
-- **Confidence Scoring**: Calculate confidence scores based on statistical deviation
+- **Statistical Analysis**: Calculate z-scores and threshold ranges for precise anomaly detection
 - **Lookback Periods**: Analyze executions against historical data over configurable time windows
 - **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
@@ -183,7 +184,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **`timeliness_pipeline_execution_log`** - Log of pipeline executions that have exceeded timeliness thresholds
 - **`freshness_pipeline_log`** - Log of pipelines that have failed freshness checks
 - **`anomaly_detection_rule`** - Anomaly detection rules and configuration per pipeline
-- **`anomaly_detection_result`** - Detected anomalies with statistical analysis and confidence scores
+- **`anomaly_detection_result`** - Detected anomalies with statistical analysis and z-score data
 
 ### Database Key Features
 - **PostgreSQL JSONB** for flexible configuration storage
@@ -632,15 +633,30 @@ else:
 
 The anomaly detection system provides statistical analysis to identify unusual patterns in pipeline execution metrics, helping you quickly spot performance issues and data quality problems.
 
-### How It Works
-
-Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers:
-
 1. **Baseline Calculation**: Analyzes completed execution against historical execution data over a configurable lookback period for the same hour of day to account for seasonality
 2. **Seasonality Adjustment**: Only compares executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
 3. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
 4. **Threshold Detection**: Flags execution if exceeds configurable statistical thresholds
-5. **Confidence Scoring**: Provides confidence scores based on how far outside normal ranges the execution falls
+5. **Z-Score Analysis**: Provides z-scores showing how many standard deviations above normal the execution falls
+
+### How It Works
+
+Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers. These are the components:
+
+- **`Mean`** - the average of historical metric values from the same hour of day
+- **`Standard Deviation`** - measures the spread/variability of historical values using sample standard deviation
+- **`Z-Score`** - how many standard deviations the current value is from the historical mean
+- **`Z-Threshold`** - sensitivity setting (e.g., 2.0 = flag anything beyond 2 standard deviations)
+- **`Threshold Range`** - calculated bounds: `mean ± (std_dev * z_threshold)`
+
+Below are the calculation steps:
+
+1. Take the executions within the lookback period and the same hour (not including the execution being checked for anomalies)
+2. Calculate the mean of the previous execution data for the metric
+3. Calculate the standard deviation of the previous execution data for the metric
+4. Calculate the threshold range using our provided `z_threshold` and this formula:  
+   `mean ± (std_dev * z_threshold)`
+5. If the metric value we're evaluating is outside the threshold range (above upper bound or below lower bound), flag as an anomaly
 
 ### Configuration
 
@@ -651,7 +667,7 @@ Create anomaly detection rules per pipeline with the following parameters:
 - **`metric_field`**: Metric to monitor (duration_seconds, total_rows, total_inserts, etc.)
 - **`lookback_days`**: Number of days of historical data to compare against execution (default: 30)
 - **`minimum_executions`**: Minimum executions needed for baseline calculation (default: 10)
-- **`std_deviation_threshold_multiplier`**: How many standard deviations above mean to trigger (default: 2.0)
+- **`z_threshold`**: How many standard deviations above mean to trigger (default: 2.0)
 - **`active`**: Whether the rule is enabled
 
 #### Supported Metrics
@@ -689,8 +705,9 @@ Message: Anomaly detected in Pipeline 'analytics_pipeline' - Pipeline Execution 
 
 Details:
 • Metric: duration_seconds
-• Threshold Multiplier: 2.0
+• Z-Threshold: 2.0
 • Lookback Days: 30
+• Minimum Executions: 10
 • Anomaly:
     • Value: 4914 (Range: 0 - 4767)
 ```
@@ -709,6 +726,45 @@ When the `WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES` environment variable is s
 - **Lookback Period**: `30 days` (analyzes execution against 30 days of historical data within the same hour)
 - **Minimum Executions**: `10` (requires at least 10 historical executions for analysis)
 - **Active by Default**: `true` (rules are enabled immediately)
+
+### Adjusting Thresholds
+
+The system provides detailed statistical data to help you fine-tune anomaly detection sensitivity. Each anomaly result includes both the **z-score** (actual deviation) and **z-threshold** (sensitivity setting) to guide adjustments.
+
+#### Understanding the Data
+
+**Z-Score vs Z-Threshold:**
+- **Z-Score**: How many standard deviations the current value is from the historical mean
+- **Z-Threshold**: Your sensitivity setting (e.g., 2.0 = flag anything beyond 2 standard deviations)
+- **Relationship**: If `z_score > z_threshold` → Anomaly detected
+
+#### Tuning Process
+You are given the pipeline execution id in the alert message. You can utilize this to query the `anomaly_detection_result` table. Example below:
+
+```sql
+SELECT
+/* Current Values */
+adr.pipeline_execution_id,
+rule.metric_field,
+adr.violation_value,
+adr.historical_mean,
+adr.std_deviation_value,
+adr.z_threshold,
+adr.threshold_min_value,
+adr.threshold_max_value,
+
+/* Z-Score for analysis */
+adr.z_score,
+FLOOR(0, adr.historical_mean - (adr.std_deviation_value * adr.z_score)) AS new_threshold_min_value,
+adr.historical_mean + (adr.std_deviation_value * adr.z_score) AS new_threshold_max_value
+FROM public.anomaly_detection_result AS adr
+INNER JOIN public.anomaly_detection_rule AS rule
+    ON rule.id = adr.rule_id
+WHERE pipeline_execution_id = 12  /* Grab from Alert */
+    AND rule.metric_field = 'DURATION_SECONDS'  /* Grab from Alert */
+```
+
+This gives you information around how close the `violation_value` was to the threshold and what a new threshold would look like if adjusted to the violation value and its z_score. This gives you an idea of how to adjust the `z_threshold` to mitigate false positives.
 
 ### Best Practices
 

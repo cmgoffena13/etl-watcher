@@ -189,7 +189,7 @@ async def test_anomaly_detection_duration_seconds_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]
 
@@ -248,7 +248,7 @@ async def test_anomaly_detection_inserts_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]
 
@@ -307,7 +307,7 @@ async def test_anomaly_detection_updates_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]
 
@@ -366,7 +366,7 @@ async def test_anomaly_detection_soft_deletes_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]
 
@@ -425,7 +425,7 @@ async def test_anomaly_detection_total_rows_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]
 
@@ -493,6 +493,6 @@ async def test_anomaly_detection_throughput_result_failure(
     assert "Anomaly detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Metric" in call_args[1]["details"]
-    assert "Threshold Multiplier" in call_args[1]["details"]
+    assert "Z-Threshold" in call_args[1]["details"]
     assert "Lookback Days" in call_args[1]["details"]
     assert "Anomaly" in call_args[1]["details"]

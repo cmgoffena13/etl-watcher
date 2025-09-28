@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250927210323
+Revision ID: 20250927222116
 Revises:
-Create Date: 2025-09-27 21:03:25.539089
+Create Date: 2025-09-27 22:21:18.698072
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250927210323"
+revision: str = "20250927222116"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -296,7 +296,7 @@ def upgrade() -> None:
             ),
             nullable=False,
         ),
-        sa.Column("std_deviation_threshold_multiplier", sa.Float(), nullable=False),
+        sa.Column("z_threshold", sa.DECIMAL(precision=4, scale=2), nullable=True),
         sa.Column("lookback_days", sa.Integer(), nullable=False),
         sa.Column("minimum_executions", sa.Integer(), nullable=False),
         sa.Column(
@@ -422,17 +422,18 @@ def upgrade() -> None:
         sa.Column("pipeline_execution_id", sa.BigInteger(), nullable=False),
         sa.Column("rule_id", sa.Integer(), nullable=False),
         sa.Column("violation_value", sa.DECIMAL(precision=12, scale=4), nullable=True),
-        sa.Column("baseline_value", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column("z_score", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column("historical_mean", sa.DECIMAL(precision=12, scale=4), nullable=True),
         sa.Column(
             "std_deviation_value", sa.DECIMAL(precision=12, scale=4), nullable=True
         ),
+        sa.Column("z_threshold", sa.DECIMAL(precision=12, scale=4), nullable=True),
         sa.Column(
-            "std_deviation_threshold_multiplier",
-            sa.DECIMAL(precision=12, scale=4),
-            nullable=True,
+            "threshold_min_value", sa.DECIMAL(precision=12, scale=4), nullable=True
         ),
-        sa.Column("lower_bound", sa.DECIMAL(precision=12, scale=4), nullable=True),
-        sa.Column("upper_bound", sa.DECIMAL(precision=12, scale=4), nullable=True),
+        sa.Column(
+            "threshold_max_value", sa.DECIMAL(precision=12, scale=4), nullable=True
+        ),
         sa.Column("context", postgresql.JSONB(astext_type=sa.Text()), nullable=True),
         sa.Column(
             "detected_at",

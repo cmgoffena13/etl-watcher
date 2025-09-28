@@ -107,7 +107,7 @@ async def db_detect_anomalies_for_pipeline_execution(
         AnomalyDetectionRule.lookback_days,
         AnomalyDetectionRule.minimum_executions,
         AnomalyDetectionRule.metric_field,
-        AnomalyDetectionRule.std_deviation_threshold_multiplier,
+        AnomalyDetectionRule.z_threshold,
     ).where(AnomalyDetectionRule.id.in_(rule_ids))
 
     rules = (await session.exec(rules_query)).all()
@@ -227,10 +227,15 @@ async def _detect_anomalies_for_rule_batch(
         )
         return
 
-    # Define anomaly threshold using standard deviations
-    threshold = baseline_mean + (rule.std_deviation_threshold_multiplier * baseline_std)
+    # Calculate threshold values for easy reference
+    # Min threshold can't be below zero for metrics like duration, rows, etc.
+    threshold_min_value = max(
+        0, baseline_mean - (float(rule.z_threshold) * baseline_std)
+    )
+    threshold_max_value = baseline_mean + (float(rule.z_threshold) * baseline_std)
+
     logger.info(
-        f"Pipeline {rule.pipeline_id}: Checking current execution {current_execution_id} for anomalies on rule '{rule.metric_field.value}': Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+        f"Pipeline {rule.pipeline_id}: Checking current execution {current_execution_id} for anomalies on rule '{rule.metric_field.value}': Threshold range: [{threshold_min_value}, {threshold_max_value}], Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
     )
 
     current_value = getattr(current_execution, rule.metric_field.value, None)
@@ -244,32 +249,29 @@ async def _detect_anomalies_for_rule_batch(
     if rule.metric_field.value == "throughput":
         current_value = float(current_value)
 
-    if current_value > threshold:
-        # Calculate z-score for context (how many standard deviations above mean)
-        z_score = (current_value - baseline_mean) / baseline_std
+    # Check for anomalies (both above upper bound and below lower bound)
+    is_anomaly = (
+        current_value > threshold_max_value or current_value < threshold_min_value
+    )
 
-        # Calculate bounds for easy reference
-        # Lower bound can't be below zero for metrics like duration, rows, etc.
-        lower_bound = max(
-            0, baseline_mean - (rule.std_deviation_threshold_multiplier * baseline_std)
-        )
-        upper_bound = baseline_mean + (
-            rule.std_deviation_threshold_multiplier * baseline_std
-        )
+    if is_anomaly:
+        # Calculate z-score for context (how many standard deviations from mean)
+        z_score = (current_value - baseline_mean) / baseline_std
 
         anomaly_result = AnomalyDetectionResult(
             pipeline_execution_id=current_execution.id,
             rule_id=rule.id,
             violation_value=current_value,
-            baseline_value=baseline_mean,
+            historical_mean=baseline_mean,
             std_deviation_value=baseline_std,
-            std_deviation_threshold_multiplier=rule.std_deviation_threshold_multiplier,
-            lower_bound=lower_bound,
-            upper_bound=upper_bound,
+            z_threshold=float(rule.z_threshold),
+            threshold_min_value=threshold_min_value,
+            threshold_max_value=threshold_max_value,
+            z_score=z_score,
             context={
                 "lookback_days": rule.lookback_days,
+                "minimum_executions": rule.minimum_executions,
                 "execution_count": len(metric_values),
-                "z_score": z_score,
             },
         )
 
@@ -288,7 +290,7 @@ async def _detect_anomalies_for_rule_batch(
                 f"'{pipeline_name}'" if pipeline_name else f"ID:{rule.pipeline_id}"
             )
 
-            anomaly_details = f"\n\t• Value: {anomaly_result.violation_value} (Range: {anomaly_result.lower_bound:.0f} - {anomaly_result.upper_bound:.0f})"
+            anomaly_details = f"\n\t• Value: {anomaly_result.violation_value} (Range: {anomaly_result.threshold_min_value:.0f} - {anomaly_result.threshold_max_value:.0f})"
 
             await send_slack_message(
                 level=AlertLevel.WARNING,
@@ -296,8 +298,9 @@ async def _detect_anomalies_for_rule_batch(
                 message=f"Anomaly detected in Pipeline {pipeline_display} - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
                 details={
                     "Metric": rule.metric_field.value,
-                    "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
+                    "Z-Threshold": float(rule.z_threshold),
                     "Lookback Days": rule.lookback_days,
+                    "Minimum Executions": rule.minimum_executions,
                     "Anomaly": f"\n{anomaly_details}",
                 },
             )

@@ -24,7 +24,9 @@ class AnomalyDetectionRule(SQLModel, table=True):
     id: int | None = Field(default=None, primary_key=True, nullable=False)
     pipeline_id: int = Field(foreign_key="pipeline.id")
     metric_field: AnomalyMetricFieldEnum = Field(max_length=50)
-    std_deviation_threshold_multiplier: float = Field(default=2.0)
+    z_threshold: float = Field(
+        sa_column=Column(DECIMAL(precision=4, scale=2), default=2.0)
+    )
     lookback_days: int = Field(default=30)
     minimum_executions: int = Field(default=10)
     active: bool = Field(
@@ -65,14 +67,18 @@ class AnomalyDetectionResult(SQLModel, table=True):
     pipeline_execution_id: int = Field(sa_column=Column(BigInteger))
     rule_id: int = Field(foreign_key="anomaly_detection_rule.id")
 
+    # Current anomaly values
     violation_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
-    baseline_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    z_score: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+
+    # Historical baseline statistics
+    historical_mean: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
     std_deviation_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
-    std_deviation_threshold_multiplier: float = Field(
-        sa_column=Column(DECIMAL(precision=12, scale=4))
-    )
-    lower_bound: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
-    upper_bound: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+
+    # Threshold configuration and values
+    z_threshold: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    threshold_min_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
+    threshold_max_value: float = Field(sa_column=Column(DECIMAL(precision=12, scale=4)))
 
     context: Optional[dict] = Field(sa_column=Column(JSONB))
 
