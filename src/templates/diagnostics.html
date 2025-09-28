@@ -92,8 +92,7 @@
         </div>
         
         <div class="nav">
-            <button onclick="loadDiagnostic('connection-speed')" class="active">DB Connection Speed</button>
-            <button onclick="loadDiagnostic('connection-performance')">DB Connection Performance</button>
+            <button onclick="loadDiagnostic('connection-performance')" class="active">DB Connection</button>
             <button onclick="loadDiagnostic('schema-health')">DB Schema Health</button>
             <button onclick="loadDiagnostic('performance')">DB Performance & Locks</button>
             <button onclick="loadDiagnostic('celery')">Celery Workers</button>
@@ -103,7 +102,7 @@
     </div>
 
     <script>
-        let currentDiagnostic = 'connection-speed';
+        let currentDiagnostic = 'connection-performance';
         
         async function loadDiagnostic(type) {
             currentDiagnostic = type;
@@ -141,7 +140,7 @@
         }
         
         // Load initial diagnostic
-        loadDiagnostic('connection-speed');
+        loadDiagnostic('connection-performance');
     </script>
 </body>
 </html>
