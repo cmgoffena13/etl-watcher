@@ -64,11 +64,11 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Address Type System**: Categorize data sources and targets by type and group
 
 ### 🚨 Anomaly Detection
-- **Statistical Analysis**: Detect anomalies using standard deviation and z-score analysis
+- **Statistical Analysis**: Analyze individual pipeline executions against historical baselines using standard deviation and z-score analysis
 - **Configurable Metrics**: Monitor duration, row counts, and DML operations for individual pipelines
-- **Automatic Detection**: Run anomaly detection automatically after pipeline execution
-- **Statistical Analysis**: Calculate z-scores and threshold ranges for precise anomaly detection
-- **Lookback Periods**: Analyze executions against historical data over configurable time windows
+- **Automatic Detection**: Run anomaly detection automatically after each pipeline execution
+- **Historical Baselines**: Calculate statistical baselines from historical execution data over configurable time windows
+- **Single Execution Analysis**: Compare each pipeline execution against its calculated statistical baseline
 - **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
@@ -631,17 +631,17 @@ else:
 
 ## 🚨 Anomaly Checks
 
-The anomaly detection system provides statistical analysis to identify unusual patterns in pipeline execution metrics, helping you quickly spot performance issues and data quality problems.
+The anomaly detection system analyzes individual pipeline executions against statistical baselines calculated from historical execution data, helping you quickly spot performance issues and data quality problems.
 
-1. **Baseline Calculation**: Analyzes completed execution against historical execution data over a configurable lookback period for the same hour of day to account for seasonality
-2. **Seasonality Adjustment**: Only compares executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
-3. **Statistical Analysis**: Uses standard deviation and z-score calculations to determine normal ranges
-4. **Threshold Detection**: Flags execution if exceeds configurable statistical thresholds
-5. **Z-Score Analysis**: Provides z-scores showing how many standard deviations above normal the execution falls
+1. **Historical Analysis**: Calculates statistical baselines (mean and standard deviation) from historical execution data for the same hour of day over a configurable lookback period
+2. **Seasonality Adjustment**: Only uses executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
+3. **Statistical Baseline**: Uses standard deviation and z-score calculations to determine normal ranges from historical data
+4. **Single Execution Analysis**: Compares the current pipeline execution against the calculated statistical baseline
+5. **Z-Score Analysis**: Provides z-scores showing how many standard deviations the current execution deviates from the historical mean
 
 ### How It Works
 
-Anomaly detection uses statistical methods to analyze historical pipeline execution data and identify outliers. These are the components:
+Anomaly detection uses statistical methods to analyze one pipeline execution against statistical values calculated from historical execution data to identify whether it is an outlier. These are the components:
 
 - **`Mean`** - the average of historical metric values from the same hour of day
 - **`Standard Deviation`** - measures the spread/variability of historical values using sample standard deviation
@@ -651,12 +651,22 @@ Anomaly detection uses statistical methods to analyze historical pipeline execut
 
 Below are the calculation steps:
 
-1. Take the executions within the lookback period and the same hour (not including the execution being checked for anomalies)
-2. Calculate the mean of the previous execution data for the metric
-3. Calculate the standard deviation of the previous execution data for the metric
-4. Calculate the threshold range using our provided `z_threshold` and this formula:  
+1. **Gather Historical Data**: Collect executions within the lookback period and the same hour (excluding the current execution being analyzed)
+2. **Calculate Statistical Baseline**: Compute the mean and standard deviation from the historical execution data for the metric
+3. **Calculate Threshold Range**: Use the provided `z_threshold` and this formula:  
    `mean ± (std_dev * z_threshold)`
-5. If the metric value we're evaluating is outside the threshold range (above upper bound or below lower bound), flag as an anomaly
+4. **Analyze Current Execution**: Compare the current pipeline execution's metric value against the calculated threshold range
+5. **Flag Anomaly**: If the current execution's value is outside the threshold range (above upper bound or below lower bound), flag as an anomaly
+
+### Automatic Detection Process
+
+Anomaly detection runs automatically after each successful pipeline execution using Celery background workers:
+
+1. **Trigger**: Queues when `end_pipeline_execution` is called and the execution was successful
+2. **Background Processing**: Celery worker picks up the task
+3. **Rule Lookup**: Finds active rules for the completed pipeline
+4. **Process Execution**: Follows the calculation steps above to analyze the execution
+5. **Notification**: Sends Slack alerts for detected anomalies
 
 ### Configuration
 
@@ -680,18 +690,6 @@ The system can monitor various execution metrics:
 - **`total_updates`**: Number of update operations
 - **`total_soft_deletes`**: Number of soft delete operations
 - **`throughput`**: Total rows processed per second (automatically calculated)
-
-### Automatic Detection
-
-Anomaly detection runs automatically after each successful pipeline execution using Celery background workers:
-
-1. **Trigger**: Queues when `end_pipeline_execution` is called and the execution was successful
-2. **Background Processing**: Celery worker picks up the task
-3. **Rule Lookup**: Finds active rules for the completed pipeline
-4. **Historical Analysis**: Analyzes execution against execution history for the same hour of day
-5. **Statistical Calculation**: Computes baseline mean and standard deviation
-6. **Anomaly Detection**: Identifies if execution exceeds thresholds
-7. **Notification**: Sends Slack alerts for detected anomalies
 
 ### Slack Notifications
 
