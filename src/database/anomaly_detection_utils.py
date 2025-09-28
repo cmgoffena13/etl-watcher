@@ -10,6 +10,7 @@ from src.database.models.anomaly_detection import (
     AnomalyDetectionResult,
     AnomalyDetectionRule,
 )
+from src.database.models.pipeline import Pipeline
 from src.database.models.pipeline_execution import PipelineExecution
 from src.models.anomaly_detection import (
     AnomalyDetectionRulePatchInput,
@@ -188,7 +189,7 @@ async def _detect_anomalies_for_rule_batch(
     # Skip current execution when building baseline, so minus one
     if len(rule_executions) - 1 < rule.minimum_executions:
         logger.warning(
-            f"Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions) - 1} < {rule.minimum_executions}"
+            f"Pipeline {rule.pipeline_id}: Not enough executions for rule '{rule.metric_field.value}': {len(rule_executions) - 1} < {rule.minimum_executions}"
         )
         return
 
@@ -211,7 +212,7 @@ async def _detect_anomalies_for_rule_batch(
 
     if len(metric_values) < rule.minimum_executions:
         logger.warning(
-            f"Not enough metric values for rule '{rule.metric_field}': {len(metric_values)} < {rule.minimum_executions}"
+            f"Pipeline {rule.pipeline_id}: Not enough metric values for rule '{rule.metric_field}': {len(metric_values)} < {rule.minimum_executions}"
         )
         return
 
@@ -222,20 +223,20 @@ async def _detect_anomalies_for_rule_batch(
     # Handle case where std dev is 0 (all values are identical, like 0 rows)
     if baseline_std == 0:
         logger.warning(
-            f"No variance in data for rule '{rule.metric_field}', skipping anomaly detection"
+            f"Pipeline {rule.pipeline_id}: No variance in data for rule '{rule.metric_field}', skipping anomaly detection"
         )
         return
 
     # Define anomaly threshold using standard deviations
     threshold = baseline_mean + (rule.std_deviation_threshold_multiplier * baseline_std)
     logger.info(
-        f"Checking current execution {current_execution_id} for anomalies on rule '{rule.metric_field.value}': Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
+        f"Pipeline {rule.pipeline_id}: Checking current execution {current_execution_id} for anomalies on rule '{rule.metric_field.value}': Threshold: {threshold}, Baseline mean: {baseline_mean}, Baseline std: {baseline_std}"
     )
 
     current_value = getattr(current_execution, rule.metric_field.value, None)
     if current_value is None:
         logger.info(
-            f"No metric value for rule '{rule.metric_field.value}' for current execution {current_execution_id}"
+            f"Pipeline {rule.pipeline_id}: No metric value for rule '{rule.metric_field.value}' for current execution {current_execution_id}"
         )
         return
 
@@ -272,6 +273,17 @@ async def _detect_anomalies_for_rule_batch(
         await session.commit()
 
         try:
+            # Fetch pipeline name for better readability
+            pipeline_name_query = select(Pipeline.name).where(
+                Pipeline.id == rule.pipeline_id
+            )
+            pipeline_name = (
+                await session.exec(pipeline_name_query)
+            ).scalar_one_or_none()
+            pipeline_display = (
+                f"'{pipeline_name}'" if pipeline_name else f"ID:{rule.pipeline_id}"
+            )
+
             anomaly_details = (
                 f"\n\t• value: {anomaly_result.violation_value} (baseline: {anomaly_result.baseline_value:.2f}, "
                 f"deviation: {anomaly_result.deviation_percentage:.1f}%, "
@@ -281,7 +293,7 @@ async def _detect_anomalies_for_rule_batch(
             await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Anomaly Detection",
-                message=f"Anomaly detected in Pipeline {rule.pipeline_id} - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
+                message=f"Anomaly detected in Pipeline '{pipeline_display}' - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
                 details={
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
@@ -290,4 +302,6 @@ async def _detect_anomalies_for_rule_batch(
                 },
             )
         except Exception as e:
-            logger.error(f"Failed to send Slack notification for anomaly: {e}")
+            logger.error(
+                f"Failed to send Slack notification for anomaly on pipeline {rule.pipeline_id}: {e}"
+            )
