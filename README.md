@@ -151,13 +151,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
     - Top active queries with duration and wait events
     - Long running queries (>30s) identification
 
-### Celery Monitoring Dashboard
-- `GET /celery/monitoring` - Real-time Celery worker monitoring dashboard
-  - **Worker Status** - Live worker process monitoring
-  - **Queue Statistics** - Real-time queue depth and backlog monitoring
-  - **Task Tracking** - Active, reserved, and scheduled task counts
-  - **Performance Metrics** - Task execution statistics and timing
-  - **WebSocket Updates** - Real-time status updates without page refresh
 
 ### Pipeline Reporting Dashboard
 - `GET /reporting` - Daily pipeline metrics and performance analytics dashboard
@@ -313,7 +306,6 @@ Watcher uses Celery for distributed background task processing, providing reliab
 - **Rate Limiting** - Configurable rate limits to prevent system overload
 
 ### Monitoring & Alerting
-- **Real-time Dashboard** - Live worker status and queue statistics via WebSocket
 - **Task Tracking** - Individual task status and execution metrics
 - **Performance Metrics** - Worker utilization and task processing rates
 - **Diagnostics Page** - Comprehensive Celery worker and queue monitoring at `/diagnostics/celery`
@@ -1276,7 +1268,7 @@ The application provides several health check endpoints:
 
 - `GET /` - Basic heartbeat
 - Database connectivity checks through the webpage `/diagnostics`
-- Live monitoring of celery workers at the webpage `/celery/monitoring`
+- Celery worker and queue monitoring through the webpage `/diagnostics`
 
 ### Troubleshooting
 
