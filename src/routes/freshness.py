@@ -10,7 +10,7 @@ router = APIRouter()
 @router.post(
     "/freshness", response_model=FreshnessPostOutput, status_code=status.HTTP_200_OK
 )
-async def check_freshness(session: SessionDep):
+async def check_freshness():
     # Queue the freshness check as a Celery task
     freshness_check_task.delay()
 
