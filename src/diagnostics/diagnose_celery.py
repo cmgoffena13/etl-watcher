@@ -83,13 +83,13 @@ async def check_celery_health():
 
             # Determine status based on queue depth (same thresholds as alert system)
             if queued_count >= 100:
-                status = "Critical"
+                status = "🚨 Critical"
             elif queued_count >= 50:
-                status = "Warning"
+                status = "⚠️  Warning"
             elif queued_count > 0:
-                status = "Low"
+                status = "ℹ️  Low"
             else:
-                status = "Empty"
+                status = "✅ Empty"
 
             redis_table.add_row(
                 queue_name, str(queued_count), str(scheduled_count), status
@@ -160,19 +160,13 @@ async def check_celery_health():
                 active_table.add_column("Worker", style="cyan")
                 active_table.add_column("Task Name", style="green")
                 active_table.add_column("Task ID", style="blue")
-                active_table.add_column("Args", style="yellow")
 
                 for worker_name, tasks in active_tasks.items():
                     for task in tasks:
                         task_name = task.get("name", "Unknown")
                         task_id = task.get("id", "Unknown")
-                        args = (
-                            str(task.get("args", []))[:50] + "..."
-                            if len(str(task.get("args", []))) > 50
-                            else str(task.get("args", []))
-                        )
 
-                        active_table.add_row(worker_name, task_name, task_id, args)
+                        active_table.add_row(worker_name, task_name, task_id)
 
                 console.print(active_table)
 
@@ -208,6 +202,88 @@ async def check_celery_health():
 
         except Exception as e:
             console.print(f"[red]Failed to get scheduled tasks: {e}[/red]")
+
+        # Task Performance Summary
+        console.print("\n[bold blue]Task Performance Summary[/bold blue]")
+        try:
+            # Get aggregated task averages from Redis
+            task_averages = redis_client.hgetall("celery_task_averages")
+
+            if not task_averages:
+                console.print(
+                    "No task performance data found (tasks may need to be restarted to capture duration)"
+                )
+            else:
+                task_table = Table()
+                task_table.add_column("Task Name", header_style="bold blue")
+                task_table.add_column(
+                    "Avg Duration", header_style="bold blue", justify="right"
+                )
+                task_table.add_column(
+                    "Total Executions", header_style="bold blue", justify="right"
+                )
+
+                task_durations = []
+                total_executions = 0
+
+                for task_name_bytes, avg_data_bytes in task_averages.items():
+                    task_name = task_name_bytes.decode()
+                    avg_data = avg_data_bytes.decode()
+
+                    try:
+                        avg_duration, count = avg_data.split(",")
+                        avg_duration = float(avg_duration)
+                        count = int(count)
+
+                        # Clean up task name for display
+                        display_name = (
+                            task_name.split(".")[-1].replace("_", " ").title()
+                        )
+
+                        task_table.add_row(
+                            display_name, f"{avg_duration * 1000:.1f}ms", str(count)
+                        )
+
+                        task_durations.append(avg_duration)
+                        total_executions += count
+
+                    except (ValueError, IndexError) as e:
+                        console.print(f"  Error parsing data for {task_name}: {e}")
+                        continue
+
+                console.print(task_table)
+
+                if task_durations:
+                    console.print("\n[bold blue]Task Overall Summary[/bold blue]")
+                    overall_avg = sum(task_durations) / len(task_durations)
+                    min_avg = min(task_durations)
+                    max_avg = max(task_durations)
+
+                    # Create summary table
+                    summary_table = Table()
+                    summary_table.add_column("Metric", header_style="bold blue")
+                    summary_table.add_column(
+                        "Value", header_style="bold blue", justify="right"
+                    )
+
+                    summary_table.add_row(
+                        "Task types with data", str(len(task_durations))
+                    )
+                    summary_table.add_row("Total executions", str(total_executions))
+                    summary_table.add_row(
+                        "Average across all types", f"{overall_avg * 1000:.1f}ms"
+                    )
+                    summary_table.add_row(
+                        "Fastest task type", f"{min_avg * 1000:.1f}ms"
+                    )
+                    summary_table.add_row(
+                        "Slowest task type", f"{max_avg * 1000:.1f}ms"
+                    )
+
+                    console.print(summary_table)
+
+        except Exception as e:
+            console.print(f"[red]Failed to get task performance data: {e}[/red]")
 
     except Exception as e:
         console.print(f"[red]Celery diagnostic failed: {e}[/red]")

@@ -1,15 +1,66 @@
+import logging
+import time
+from collections import namedtuple
+
 import logfire
+import redis
 from celery import Celery
-from celery.signals import worker_init
+from celery.signals import task_postrun, task_prerun, worker_init
 
 from src.logging_conf import configure_logging
 from src.settings import config
+
+logger = logging.getLogger(__name__)
+
+# In-memory tracking
+tasks = {}
+task_avg_time = {}
+Average = namedtuple("Average", "avg_duration count")
 
 
 @worker_init.connect()
 def init_worker(*args, **kwargs):
     configure_logging()
     logfire.instrument_celery()
+
+
+@task_prerun.connect
+def task_prerun_handler(signal, sender, task_id, task, args, kwargs, **kwds):
+    """Record task start time in memory"""
+    tasks[task_id] = time.time()
+
+
+@task_postrun.connect
+def task_postrun_handler(
+    signal, sender, task_id, task, args, kwargs, retval, state, **kwds
+):
+    """Calculate task duration and update running averages"""
+    try:
+        cost = time.time() - tasks.pop(task_id)
+    except KeyError:
+        cost = None
+
+    if not cost:
+        return
+
+    try:
+        avg_duration, count = task_avg_time[task.name]
+        new_count = count + 1
+        new_avg = ((avg_duration * count) + cost) / new_count
+        task_avg_time[task.name] = Average(new_avg, new_count)
+    except KeyError:
+        task_avg_time[task.name] = Average(cost, 1)
+
+    # Write aggregated data to Redis
+    try:
+        r = redis.Redis.from_url(config.REDIS_URL)
+        r.hset(
+            "celery_task_averages",
+            task.name,
+            f"{task_avg_time[task.name].avg_duration:.6f},{task_avg_time[task.name].count}",
+        )
+    except Exception as e:
+        logger.warning(f"Error writing task averages to Redis: {e}")
 
 
 celery = Celery(

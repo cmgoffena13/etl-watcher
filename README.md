@@ -309,6 +309,10 @@ Watcher uses Celery for distributed background task processing, providing reliab
 - **Task Tracking** - Individual task status and execution metrics
 - **Performance Metrics** - Worker utilization and task processing rates
 - **Diagnostics Page** - Comprehensive Celery worker and queue monitoring at `/diagnostics/celery`
+  - Real-time worker status and activity
+  - Queue depth monitoring
+  - Task performance analytics with average duration by task type
+  - Currently active tasks and worker activity summary
 
 #### Alert Thresholds
 - **INFO** (20+ messages): Queue is building up, monitor closely
@@ -1092,7 +1096,7 @@ The load test is configured in `src/diagnostics/locustfile.py`:
    - Query execution times
    - Active queries and locks
    - Database health metrics
-   - Celery Worker metrics
+   - Celery Worker metrics and task performance analytics
 
 #### Load Test Scenarios
 
@@ -1119,7 +1123,7 @@ The test includes several realistic scenarios:
 Based on the load test configuration, the system should handle:
 - **1000 concurrent pipelines** executing every 5 minutes
 - **~3-10 RPS** sustained load (1000 users ÷ 300 seconds)
-- **Sub-second response times** for most endpoints
+- **Sub-second response times** for all endpoints
 - **<1% failure rate** under normal conditions
 
 #### Troubleshooting Load Tests

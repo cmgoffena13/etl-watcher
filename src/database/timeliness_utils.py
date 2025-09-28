@@ -15,45 +15,26 @@ logger = logging.getLogger(__name__)
 
 def _format_duration_for_datepart(duration_seconds: int, datepart: DatePartEnum) -> str:
     """Convert duration seconds to human-readable format matching the datepart"""
-    if datepart == DatePartEnum.MINUTE:
-        minutes = duration_seconds / 60
-        if minutes == int(minutes):
-            return f"{int(minutes)} minute{'s' if minutes != 1 else ''}"
+    datepart_config = {
+        DatePartEnum.MINUTE: (60, "minute"),
+        DatePartEnum.HOUR: (3600, "hour"),
+        DatePartEnum.DAY: (86400, "day"),
+        DatePartEnum.WEEK: (604800, "week"),
+        DatePartEnum.MONTH: (2592000, "month"),  # Approximate 30 days
+        DatePartEnum.YEAR: (31536000, "year"),  # Approximate 365 days
+    }
+
+    if datepart in datepart_config:
+        seconds_per_unit, unit_name = datepart_config[datepart]
+        units = duration_seconds / seconds_per_unit
+
+        if units == int(units):
+            return f"{int(units)} {unit_name}{'s' if units != 1 else ''}"
         else:
-            return f"{minutes:.2f} minutes"
-    elif datepart == DatePartEnum.HOUR:
-        hours = duration_seconds / 3600
-        if hours == int(hours):
-            return f"{int(hours)} hour{'s' if hours != 1 else ''}"
-        else:
-            return f"{hours:.2f} hours"
-    elif datepart == DatePartEnum.DAY:
-        days = duration_seconds / 86400
-        if days == int(days):
-            return f"{int(days)} day{'s' if days != 1 else ''}"
-        else:
-            return f"{days:.2f} days"
-    elif datepart == DatePartEnum.WEEK:
-        weeks = duration_seconds / 604800
-        if weeks == int(weeks):
-            return f"{int(weeks)} week{'s' if weeks != 1 else ''}"
-        else:
-            return f"{weeks:.2f} weeks"
-    elif datepart == DatePartEnum.MONTH:
-        months = duration_seconds / 2592000  # Approximate 30 days
-        if months == int(months):
-            return f"{int(months)} month{'s' if months != 1 else ''}"
-        else:
-            return f"{months:.2f} months"
-    elif datepart == DatePartEnum.YEAR:
-        years = duration_seconds / 31536000  # Approximate 365 days
-        if years == int(years):
-            return f"{int(years)} year{'s' if years != 1 else ''}"
-        else:
-            return f"{years:.2f} years"
-    else:
-        # Fallback to seconds
-        return f"{duration_seconds} second{'s' if duration_seconds != 1 else ''}"
+            return f"{units:.2f} {unit_name}s"
+
+    # Fallback to seconds
+    return f"{duration_seconds} second{'s' if duration_seconds != 1 else ''}"
 
 
 async def db_check_pipeline_execution_timeliness(
@@ -71,7 +52,7 @@ async def db_check_pipeline_execution_timeliness(
         WITH CTE AS (
             SELECT id
             FROM pipeline_execution
-            WHERE start_date > :lookback_timestamp
+            WHERE start_date >= :lookback_timestamp
         )
         SELECT
             pe.id,

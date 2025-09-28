@@ -1,6 +1,7 @@
 import logging
 
 import pendulum
+from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select
 from sqlmodel import Session
@@ -34,9 +35,16 @@ async def db_get_or_create_pipeline_type(
             .returning(PipelineType.id)
             .values(**pipeline_type.model_dump(exclude={"id"}))
         )
-        pipeline_type_id = (await session.exec(stmt)).scalar_one()
-        await session.commit()
-        created = True
+        try:
+            pipeline_type_id = (await session.exec(stmt)).scalar_one()
+            await session.commit()
+            created = True
+        except UniqueViolationError:
+            await session.rollback()
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Violated unique constraint",
+            )
         logger.info(f"Pipeline Type '{pipeline_type.name}' Successfully Created")
 
     if created:

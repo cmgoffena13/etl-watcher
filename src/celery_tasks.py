@@ -17,7 +17,7 @@ from src.settings import config, get_database_config
 logger = logging.getLogger(__name__)
 
 
-@celery.task(bind=True, rate_limit="10/s", max_retries=3, default_retry_delay=60)
+@celery.task(bind=True, rate_limit="15/s", max_retries=3, default_retry_delay=60)
 def detect_anomalies_task(self, pipeline_id: int, pipeline_execution_id: int):
     """Rate-limited anomaly detection task with retries"""
     try:
