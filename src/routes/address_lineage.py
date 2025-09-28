@@ -7,10 +7,9 @@ from src.database.address_lineage_utils import (
     db_get_address_lineage_for_address,
     db_rebuild_closure_table_incremental,
 )
-from src.database.models.address_lineage import AddressLineage
 from src.database.session import SessionDep
 from src.models.address_lineage import (
-    AddressLineageClosureOutput,
+    AddressLineageClosureGetOutput,
     AddressLineagePostInput,
     AddressLineagePostOutput,
 )
@@ -46,14 +45,14 @@ async def create_address_lineage(
 
 @router.get(
     "/address_lineage/{address_id}",
-    response_model=List[AddressLineageClosureOutput],
+    response_model=List[AddressLineageClosureGetOutput],
 )
 async def get_address_lineage_for_address(address_id: int, session: SessionDep):
     results = await db_get_address_lineage_for_address(
         session=session, address_id=address_id
     )
     return [
-        AddressLineageClosureOutput(
+        AddressLineageClosureGetOutput(
             source_address_id=row[0],
             target_address_id=row[1],
             depth=row[2],

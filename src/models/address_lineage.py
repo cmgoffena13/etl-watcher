@@ -36,7 +36,7 @@ class AddressLineageGetOutput(ValidatorModel):
     target_address_id: int
 
 
-class AddressLineageClosureOutput(ValidatorModel):
+class AddressLineageClosureGetOutput(ValidatorModel):
     source_address_id: int
     target_address_id: int
     depth: int

@@ -59,8 +59,7 @@ class AnomalyDetectionRulePostOutput(ValidatorModel):
     id: int
 
 
-# TODO: Implement Summary Endpoint
-class AnomalyDetectionResultOutput(ValidatorModel):
+class AnomalyDetectionResultGetOutput(ValidatorModel):
     rule_id: int
     pipeline_execution_id: int
 
@@ -81,8 +80,8 @@ class AnomalyDetectionResultOutput(ValidatorModel):
     detected_at: DateTime
 
 
-class AnomalyDetectionSummary(ValidatorModel):
+class AnomalyDetectionSummaryGetOutput(ValidatorModel):
     rule_id: int
     rule_name: str
     anomaly_count: int
-    latest_anomaly: Optional[AnomalyDetectionResultOutput] = None
+    latest_anomaly: Optional[AnomalyDetectionResultGetOutput] = None
