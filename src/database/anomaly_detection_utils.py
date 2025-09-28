@@ -293,7 +293,7 @@ async def _detect_anomalies_for_rule_batch(
             await send_slack_message(
                 level=AlertLevel.WARNING,
                 title="Anomaly Detection",
-                message=f"Anomaly detected in Pipeline '{pipeline_display}' - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
+                message=f"Anomaly detected in Pipeline {pipeline_display} - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
                 details={
                     "Metric": rule.metric_field.value,
                     "Threshold Multiplier": rule.std_deviation_threshold_multiplier,
