@@ -14,8 +14,8 @@ def init_worker(*args, **kwargs):
 
 celery = Celery(
     "watcher",
-    broker=f"redis://{config.REDIS_HOST}:{config.REDIS_PORT}/1",
-    backend=f"redis://{config.REDIS_HOST}:{config.REDIS_PORT}/1",
+    broker=config.REDIS_URL,
+    backend=config.REDIS_URL,
     include=["src.celery_tasks"],
 )
 

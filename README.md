@@ -304,7 +304,6 @@ Watcher uses Celery for distributed background task processing, providing reliab
 - **Anomaly Detection** - Statistical analysis of pipeline execution patterns
 - **Freshness Checks** - DML operation monitoring and data staleness detection  
 - **Timeliness Checks** - Pipeline execution timing validation
-- **Queue Monitoring** - Real-time queue depth and backlog alerting
 - **Log Cleanup** - Automated maintenance of historical data
 
 ### Queue Management
@@ -315,9 +314,9 @@ Watcher uses Celery for distributed background task processing, providing reliab
 
 ### Monitoring & Alerting
 - **Real-time Dashboard** - Live worker status and queue statistics via WebSocket
-- **Queue Depth Alerts** - Automatic Slack notifications when queues exceed thresholds
 - **Task Tracking** - Individual task status and execution metrics
 - **Performance Metrics** - Worker utilization and task processing rates
+- **Diagnostics Page** - Comprehensive Celery worker and queue monitoring at `/diagnostics/celery`
 
 #### Alert Thresholds
 - **INFO** (20+ messages): Queue is building up, monitor closely
@@ -328,14 +327,13 @@ Watcher uses Celery for distributed background task processing, providing reliab
 ```
 🚨 CRITICAL
 Celery Queue Alert
-Timestamp: 2025-09-21 01:15:50 UTC
-Message: Queue 'default' has 140 pending messages
+Timestamp: 2025-09-28 06:04:26 UTC
+Message: Queue has 2367 pending tasks
 
 Details:
-• Active Workers: 3
-• Waiting in Queue: 140
-• Ready to Process - Waiting on Worker: 25
-• Total Backlog: 165
+• Messages in queue: 2367
+• Scheduled tasks: 0
+• Total pending: 2367
 ```
 
 ## 📋 Recommended Organization

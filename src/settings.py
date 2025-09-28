@@ -20,6 +20,7 @@ class GlobalConfig(BaseConfig):
     PROFILING_ENABLED: Optional[bool] = False
     REDIS_HOST: Optional[str] = None
     REDIS_PORT: Optional[int] = None
+    REDIS_URL: Optional[str] = None
 
 
 class DevConfig(GlobalConfig):
@@ -27,6 +28,8 @@ class DevConfig(GlobalConfig):
     LOGFIRE_CONSOLE: Optional[bool] = False
     REDIS_HOST: Optional[str] = "redis"
     REDIS_PORT: Optional[int] = 6379
+    REDIS_URL: Optional[str] = f"redis://{REDIS_HOST}:{REDIS_PORT}/1"
+
     model_config = SettingsConfigDict(env_prefix="DEV_")
 
 
