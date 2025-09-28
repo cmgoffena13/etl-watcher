@@ -15,11 +15,10 @@ router = APIRouter()
 @router.websocket("/celery/ws/workers")
 async def websocket_worker_monitor(websocket: WebSocket):
     await websocket.accept()
+    logger.info("Client connected to worker monitor")
 
     try:
         while True:
-            await asyncio.sleep(1)  # Don't block the event loop!
-
             try:
                 inspect = celery.control.inspect(timeout=2)  # 2 second timeout
                 active_tasks = inspect.active() or {}
@@ -30,18 +29,24 @@ async def websocket_worker_monitor(websocket: WebSocket):
             except Exception as e:
                 logger.warning(f"Failed to get worker stats: {e}")
                 # Send a message indicating no workers are available
-                await websocket.send_json(
-                    {
-                        "timestamp": asyncio.get_event_loop().time(),
-                        "error": "No Celery workers available",
-                        "total_workers": 0,
-                        "total_active_tasks": 0,
-                        "total_reserved_tasks": 0,
-                        "total_scheduled_tasks": 0,
-                        "workers": [],
-                        "queues": [],
-                    }
-                )
+                try:
+                    await websocket.send_json(
+                        {
+                            "timestamp": asyncio.get_event_loop().time(),
+                            "error": "No Celery workers available",
+                            "total_workers": 0,
+                            "total_active_tasks": 0,
+                            "total_reserved_tasks": 0,
+                            "total_scheduled_tasks": 0,
+                            "workers": [],
+                            "queues": [],
+                        }
+                    )
+                except Exception as send_error:
+                    logger.warning(
+                        f"Failed to send error message to client: {send_error}"
+                    )
+                    break  # Exit the loop if we can't send data
                 await asyncio.sleep(10)  # Wait before retrying
                 continue
 
@@ -120,25 +125,32 @@ async def websocket_worker_monitor(websocket: WebSocket):
                             }
                         )
 
-            await websocket.send_json(
-                {
-                    "timestamp": asyncio.get_event_loop().time(),
-                    "total_workers": len(worker_data),
-                    "total_active_tasks": total_active,
-                    "total_reserved_tasks": total_reserved,
-                    "total_scheduled_tasks": total_scheduled,
-                    "workers": list(worker_data.values()),
-                    "queues": list(queue_data.values()),
-                }
-            )
+            try:
+                await websocket.send_json(
+                    {
+                        "timestamp": asyncio.get_event_loop().time(),
+                        "total_workers": len(worker_data),
+                        "total_active_tasks": total_active,
+                        "total_reserved_tasks": total_reserved,
+                        "total_scheduled_tasks": total_scheduled,
+                        "workers": list(worker_data.values()),
+                        "queues": list(queue_data.values()),
+                    }
+                )
+            except Exception as send_error:
+                logger.warning(f"Failed to send data to client: {send_error}")
+                break  # Exit the loop if we can't send data
 
-            await asyncio.sleep(10)  # Update every 10 seconds
+            await asyncio.sleep(5)  # Update every 5 seconds
 
     except WebSocketDisconnect:
         logger.info("Client disconnected from worker monitor")
     except Exception as e:
         logger.error(f"WebSocket error: {e}")
-        await websocket.close()
+        try:
+            await websocket.close()
+        except:
+            pass  # Ignore errors when closing
 
 
 @router.get("/celery/monitoring", include_in_schema=False)

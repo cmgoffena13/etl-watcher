@@ -1,4 +1,3 @@
-import asyncio
 import io
 import re
 
@@ -6,10 +5,12 @@ from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
 from rich.console import Console
 
+import src.diagnostics.diagnose_celery as celery_module
 import src.diagnostics.diagnose_connection as conn_module
 import src.diagnostics.diagnose_performance as perf_module
 import src.diagnostics.diagnose_schema as schema_module
 import src.diagnostics.test_connection_speed as speed_module
+from src.diagnostics.diagnose_celery import check_celery_health
 from src.diagnostics.diagnose_connection import test_connection_scenarios
 from src.diagnostics.diagnose_performance import check_performance_health
 from src.diagnostics.diagnose_schema import check_schema_health
@@ -35,7 +36,7 @@ async def capture_rich_output(func, module):
     """Capture Rich console output and convert to HTML"""
     output_buffer = io.StringIO()
 
-    console = Console(file=output_buffer, width=120, force_terminal=True)
+    console = Console(file=output_buffer, width=200, force_terminal=True)
 
     module.console = console
 
@@ -233,4 +234,16 @@ async def get_diagnostics_performance():
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Performance diagnostics failed: {str(e)}"
+        )
+
+
+@router.get("/diagnostics/celery", include_in_schema=False)
+async def get_diagnostics_celery():
+    """Get Celery workers and task performance diagnostics"""
+    try:
+        output = await capture_rich_output(check_celery_health, celery_module)
+        return {"status": "success", "output": output, "type": "celery"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Celery diagnostics failed: {str(e)}"
         )

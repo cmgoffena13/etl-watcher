@@ -11,11 +11,20 @@ class PipelineExecutionUser(HttpUser):
     Each user represents one pipeline that runs every hour.
     """
 
+    _user_count = 0
+
     wait_time = between(300, 300)  # Wait 1 hour between executions (3600 seconds)
 
     def on_start(self):
         # Each user gets assigned a pipeline number (1-1000)
-        self.pipeline_number = random.randint(1, 1000)
+        # But ensure at least one user gets pipeline #1 for system checks
+        PipelineExecutionUser._user_count += 1
+
+        if PipelineExecutionUser._user_count == 1:
+            self.pipeline_number = 1  # First user is always pipeline #1
+        else:
+            self.pipeline_number = random.randint(2, 1000)
+
         self.pipeline_name = f"hourly_pipeline_{self.pipeline_number:03d}"
         print(f"Pipeline {self.pipeline_name} starting hourly execution cycle")
 
@@ -110,11 +119,11 @@ class PipelineExecutionUser(HttpUser):
     @task(1)
     def run_system_checks(self):
         """
-        Run system-wide checks every 15 minutes (only a few users)
+        Run system-wide checks every 5 minutes (only one ping)
         """
         current_time = pendulum.now("UTC")
         # Only run system checks every 15 minutes and only for one user
-        if current_time.minute % 15 == 0 and self.pipeline_number == 1:
+        if current_time.minute % 5 == 0 and self.pipeline_number == 1:
             # Freshness check
             with self.client.post("/freshness", catch_response=True) as response:
                 if response.status_code != 200:

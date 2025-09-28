@@ -23,7 +23,7 @@ class ProfilingMiddleware(BaseHTTPMiddleware):
 
         try:
             with Profiler(interval=0.001, async_mode="enabled") as profiler:
-                response = await call_next(request)
+                await call_next(request)
 
             # Return HTML profile directly in browser
             renderer = HTMLRenderer()

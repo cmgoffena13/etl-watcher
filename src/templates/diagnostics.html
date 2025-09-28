@@ -92,10 +92,11 @@
         </div>
         
         <div class="nav">
-            <button onclick="loadDiagnostic('connection-speed')" class="active">Connection Speed</button>
-            <button onclick="loadDiagnostic('connection-performance')">Connection Performance</button>
-            <button onclick="loadDiagnostic('schema-health')">Schema Health</button>
-            <button onclick="loadDiagnostic('performance')">Performance & Locks</button>
+            <button onclick="loadDiagnostic('connection-speed')" class="active">DB Connection Speed</button>
+            <button onclick="loadDiagnostic('connection-performance')">DB Connection Performance</button>
+            <button onclick="loadDiagnostic('schema-health')">DB Schema Health</button>
+            <button onclick="loadDiagnostic('performance')">DB Performance & Locks</button>
+            <button onclick="loadDiagnostic('celery')">Celery Workers</button>
         </div>
         
         <div id="output" class="output"></div>
