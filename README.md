@@ -691,8 +691,8 @@ Details:
 • Metric: duration_seconds
 • Threshold Multiplier: 2.0
 • Lookback Days: 30
-• Anomaly: 
-	• Value: 1814400 (Baseline: 164945.45, Deviation: 1000.0%, Confidence: 1.00)
+• Anomaly:
+    • Value: 4914 (Range: 0 - 4767)
 ```
 
 #### Auto-Create Anomaly Detection Rules
