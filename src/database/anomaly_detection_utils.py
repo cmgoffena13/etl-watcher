@@ -285,9 +285,9 @@ async def _detect_anomalies_for_rule_batch(
             )
 
             anomaly_details = (
-                f"\n\t• value: {anomaly_result.violation_value} (baseline: {anomaly_result.baseline_value:.2f}, "
-                f"deviation: {anomaly_result.deviation_percentage:.1f}%, "
-                f"confidence: {anomaly_result.confidence_score:.2f})"
+                f"\n\t• Value: {anomaly_result.violation_value} (Baseline: {anomaly_result.baseline_value:.2f}, "
+                f"Deviation: {anomaly_result.deviation_percentage:.1f}%, "
+                f"Confidence: {anomaly_result.confidence_score:.2f})"
             )
 
             await send_slack_message(

@@ -685,14 +685,14 @@ When anomalies are detected, the system sends detailed Slack notifications:
 ⚠️ WARNING
 Anomaly Detection
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Anomaly detected in Pipeline 123 - Pipeline Execution ID 21 flagged
+Message: Anomaly detected in Pipeline 'analytics_pipeline' - Pipeline Execution ID 21 flagged
 
 Details:
 • Metric: duration_seconds
 • Threshold Multiplier: 2.0
 • Lookback Days: 30
 • Anomaly: 
-	• value: 1814400 (baseline: 164945.45, deviation: 1000.0%, confidence: 1.00)
+	• Value: 1814400 (Baseline: 164945.45, Deviation: 1000.0%, Confidence: 1.00)
 ```
 
 #### Auto-Create Anomaly Detection Rules
