@@ -12,19 +12,13 @@ class PipelineExecutionUser(HttpUser):
     """
 
     _user_count = 0
+    weight = 998  # 998 out of 1000 users
 
     wait_time = between(300, 300)  # Wait 1 hour between executions (3600 seconds)
 
     def on_start(self):
-        # Each user gets assigned a pipeline number (1-1000)
-        # But ensure at least one user gets pipeline #1 for system checks
         PipelineExecutionUser._user_count += 1
-
-        if PipelineExecutionUser._user_count == 1:
-            self.pipeline_number = 1  # First user is always pipeline #1
-        else:
-            self.pipeline_number = random.randint(2, 1000)
-
+        self.pipeline_number = PipelineExecutionUser._user_count
         self.pipeline_name = f"hourly_pipeline_{self.pipeline_number:03d}"
         print(f"Pipeline {self.pipeline_name} starting hourly execution cycle")
 
@@ -45,11 +39,9 @@ class PipelineExecutionUser(HttpUser):
             if response.status_code in [200, 201]:
                 return response.json()["id"]
             else:
-                # Log as failure in Locust
                 response.failure(
                     f"Failed to create pipeline {self.pipeline_name}: {response.status_code} - {response.text}"
                 )
-                return 1  # Fallback ID
 
     @task(1)
     def execute_pipeline_hourly(self):
@@ -74,7 +66,6 @@ class PipelineExecutionUser(HttpUser):
             catch_response=True,
         ) as start_response:
             if start_response.status_code not in [200, 201]:
-                # Log as failure in Locust with detailed error info
                 error_msg = f"Failed to start pipeline {pipeline_id}: {start_response.status_code}"
                 error_msg += f"\nRequest: {start_response.request.body}"
                 error_msg += f"\nResponse: {start_response.text}"
@@ -88,7 +79,33 @@ class PipelineExecutionUser(HttpUser):
         processing_time = random.randint(30, 600)
         time.sleep(processing_time)
 
-        # Step 4: End pipeline execution with realistic data
+        # Step 4: End pipeline execution with realistic data (occasionally anomalous)
+        # 5% chance of generating anomalous data to trigger anomaly detection
+        is_anomalous = random.random() < 0.05
+
+        if is_anomalous:
+            # Generate anomalous data that should trigger alerts
+            data = {
+                "total_rows": random.randint(
+                    500000, 2000000
+                ),  # Much higher than normal
+                "inserts": random.randint(50000, 200000),  # Much higher than normal
+                "updates": random.randint(25000, 100000),  # Much higher than normal
+                "soft_deletes": random.randint(5000, 20000),  # Much higher than normal
+                "duration_seconds": random.randint(
+                    1800, 7200
+                ),  # Much longer than normal (30min-2hr)
+            }
+        else:
+            # Normal data
+            data = {
+                "total_rows": random.randint(1000, 100000),
+                "inserts": random.randint(100, 10000),
+                "updates": random.randint(50, 5000),
+                "soft_deletes": random.randint(0, 100),
+                "duration_seconds": processing_time,
+            }
+
         with self.client.post(
             "/end_pipeline_execution",
             json={
@@ -98,16 +115,11 @@ class PipelineExecutionUser(HttpUser):
                     [True, False], weights=[95, 5]
                 )[0],  # 95% success rate
                 "end_date": pendulum.now("UTC").isoformat(),
-                "total_rows": random.randint(1000, 100000),
-                "inserts": random.randint(100, 10000),
-                "updates": random.randint(50, 5000),
-                "soft_deletes": random.randint(0, 100),
-                "duration_seconds": processing_time,
+                **data,
             },
             catch_response=True,
         ) as end_response:
             if end_response.status_code != 204:
-                # Log as failure in Locust
                 end_response.failure(
                     f"Failed to end pipeline execution {execution_id}: {end_response.status_code} - {end_response.text}"
                 )
@@ -116,49 +128,70 @@ class PipelineExecutionUser(HttpUser):
             f"Pipeline {pipeline_id} completed execution {execution_id} in {processing_time}s"
         )
 
+
+class MonitoringUser(HttpUser):
+    """
+    Dedicated user for system monitoring (timeliness, freshness, celery checks)
+    Runs every 5 minutes without being blocked by pipeline execution sleep
+    """
+
+    weight = 1  # 1 out of 1000 users
+    wait_time = between(300, 300)  # Every 5 minutes
+
+    def on_start(self):
+        print("Monitoring user started - will run system checks every 5 minutes")
+
     @task(1)
     def run_system_checks(self):
-        """
-        Run system-wide checks every 5 minutes (only one ping)
-        """
-        current_time = pendulum.now("UTC")
-        # Only run system checks every 15 minutes and only for one user
-        if current_time.minute % 5 == 0 and self.pipeline_number == 1:
-            # Freshness check
-            with self.client.post("/freshness", catch_response=True) as response:
-                if response.status_code != 200:
-                    response.failure(
-                        f"Freshness check failed: {response.status_code} - {response.text}"
-                    )
+        """Run system-wide checks every 5 minutes"""
+        # Freshness check
+        with self.client.post(
+            "/freshness", catch_response=True, timeout=10
+        ) as response:
+            if response.status_code != 200:
+                response.failure(
+                    f"Freshness check failed: {response.status_code} - {response.text}"
+                )
 
-            # Timeliness check
-            with self.client.post(
-                "/timeliness", json={"lookback_minutes": 60}, catch_response=True
-            ) as response:
-                if response.status_code != 200:
-                    response.failure(
-                        f"Timeliness check failed: {response.status_code} - {response.text}"
-                    )
+        # Timeliness check
+        with self.client.post(
+            "/timeliness",
+            json={"lookback_minutes": 60},
+            catch_response=True,
+            timeout=10,
+        ) as response:
+            if response.status_code != 200:
+                response.failure(
+                    f"Timeliness check failed: {response.status_code} - {response.text}"
+                )
 
-            # Celery queue monitoring
-            with self.client.post(
-                "/celery/monitor-queue", catch_response=True
-            ) as response:
-                if response.status_code != 200:
-                    response.failure(
-                        f"Celery queue monitoring failed: {response.status_code} - {response.text}"
-                    )
+        # Celery queue monitoring
+        with self.client.post(
+            "/celery/monitor-queue", catch_response=True, timeout=10
+        ) as response:
+            if response.status_code != 200:
+                response.failure(
+                    f"Celery queue monitoring failed: {response.status_code} - {response.text}"
+                )
+
+
+class HeartbeatUser(HttpUser):
+    """
+    Dedicated user for heartbeat checks
+    Runs every minute to check if the API is responding
+    """
+
+    weight = 1  # 1 out of 1000 users
+    wait_time = between(60, 60)
+
+    def on_start(self):
+        print("Heartbeat user started - will check API health every minute")
 
     @task(1)
     def run_heartbeat_check(self):
-        """
-        Run heartbeat check every 5 minutes (only a few users)
-        """
-        current_time = pendulum.now("UTC")
-        # Only run heartbeat check every 5 minutes and only for 5% of users
-        if current_time.minute % 5 == 0 and random.random() < 0.05:
-            with self.client.get("/", catch_response=True, timeout=5) as response:
-                if response.status_code != 200:
-                    response.failure(
-                        f"Heartbeat check failed: {response.status_code} - {response.text}"
-                    )
+        """Run heartbeat check every minute"""
+        with self.client.get("/", catch_response=True, timeout=5) as response:
+            if response.status_code != 200:
+                response.failure(
+                    f"Heartbeat check failed: {response.status_code} - {response.text}"
+                )

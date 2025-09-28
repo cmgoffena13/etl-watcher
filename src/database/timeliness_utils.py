@@ -8,8 +8,52 @@ from sqlmodel import Session
 
 from src.database.db import _calculate_timely_time, _get_display_datepart
 from src.notifier import AlertLevel, send_slack_message
+from src.types import DatePartEnum
 
 logger = logging.getLogger(__name__)
+
+
+def _format_duration_for_datepart(duration_seconds: int, datepart: DatePartEnum) -> str:
+    """Convert duration seconds to human-readable format matching the datepart"""
+    if datepart == DatePartEnum.MINUTE:
+        minutes = duration_seconds / 60
+        if minutes == int(minutes):
+            return f"{int(minutes)} minute{'s' if minutes != 1 else ''}"
+        else:
+            return f"{minutes:.2f} minutes"
+    elif datepart == DatePartEnum.HOUR:
+        hours = duration_seconds / 3600
+        if hours == int(hours):
+            return f"{int(hours)} hour{'s' if hours != 1 else ''}"
+        else:
+            return f"{hours:.2f} hours"
+    elif datepart == DatePartEnum.DAY:
+        days = duration_seconds / 86400
+        if days == int(days):
+            return f"{int(days)} day{'s' if days != 1 else ''}"
+        else:
+            return f"{days:.2f} days"
+    elif datepart == DatePartEnum.WEEK:
+        weeks = duration_seconds / 604800
+        if weeks == int(weeks):
+            return f"{int(weeks)} week{'s' if weeks != 1 else ''}"
+        else:
+            return f"{weeks:.2f} weeks"
+    elif datepart == DatePartEnum.MONTH:
+        months = duration_seconds / 2592000  # Approximate 30 days
+        if months == int(months):
+            return f"{int(months)} month{'s' if months != 1 else ''}"
+        else:
+            return f"{months:.2f} months"
+    elif datepart == DatePartEnum.YEAR:
+        years = duration_seconds / 31536000  # Approximate 365 days
+        if years == int(years):
+            return f"{int(years)} year{'s' if years != 1 else ''}"
+        else:
+            return f"{years:.2f} years"
+    else:
+        # Fallback to seconds
+        return f"{duration_seconds} second{'s' if duration_seconds != 1 else ''}"
 
 
 async def db_check_pipeline_execution_timeliness(
@@ -208,9 +252,23 @@ async def db_check_pipeline_execution_timeliness(
                 ]
 
                 if new_fail_results:
+                    # Grab Pipeline Name for more readable output
+                    pipeline_ids = [
+                        result["pipeline_id"] for result in new_fail_results
+                    ]
+                    pipeline_names_query = text("""
+                        SELECT id, name 
+                        FROM pipeline 
+                        WHERE id = ANY(:pipeline_ids)
+                    """)
+                    pipeline_names_result = await session.exec(
+                        pipeline_names_query, params={"pipeline_ids": pipeline_ids}
+                    )
+                    pipeline_names = {row.id: row.name for row in pipeline_names_result}
+
                     pipeline_details = "\n".join(
-                        f"\t• Pipeline Execution ID: {result['pipeline_execution_id']} (Pipeline ID: {result['pipeline_id']}): "
-                        f"{result['duration_seconds']} seconds ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
+                        f"\t• Pipeline '{pipeline_names.get(result['pipeline_id'], f'ID:{result["pipeline_id"]}')}' (Execution ID: {result['pipeline_execution_id']}): "
+                        f"{_format_duration_for_datepart(result['duration_seconds'], DatePartEnum(result['timely_datepart'].lower()))} ({result['execution_status']}), Expected within {result['timely_number']} {_get_display_datepart(result['timely_datepart'], result['timely_number'])} "
                         f"({'child' if result['used_child_config'] else 'parent'} config)"
                         for result in new_fail_results
                     )
@@ -218,7 +276,7 @@ async def db_check_pipeline_execution_timeliness(
                     await send_slack_message(
                         level=AlertLevel.WARNING,
                         title="Timeliness Check - Pipeline Execution",
-                        message=f"Pipeline Execution Timeliness Check Failed - {len(new_fail_results)} NEW execution(s) overdue",
+                        message=f"Pipeline Execution Timeliness Check - {len(new_fail_results)} new execution(s) overdue",
                         details={"Failed Executions": "\n" + pipeline_details},
                     )
             except Exception as e:

@@ -550,7 +550,7 @@ Example notification:
 ```
 ⚠️ WARNING
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Pipeline Freshness Check Failed - 2 pipeline(s) overdue
+Message: Pipeline Freshness Check - 2 pipeline(s) overdue
 
 Details:
 • Failed Pipelines:
@@ -569,13 +569,13 @@ When pipeline executions exceed their timeliness threshold, notifications includ
 Example notification:
 ```
 ⚠️ WARNING
-Timestamp: 2025-01-09 20:30:45 UTC
-Message: Pipeline Execution Timeliness Check Failed - 2 execution(s) overdue
+Timestamp: 2025-09-28 01:14:37 UTC
+Message: Pipeline Execution Timeliness Check - 2 new execution(s) overdue
 
 Details:
 • Failed Executions:
-  • Pipeline Execution ID: 456 (Pipeline ID: 1): 3621 seconds (running), Expected within 30 minutes (child config)
-  • Pipeline Execution ID: 457 (Pipeline ID: 2): 2415 seconds (completed), Expected within 15 minutes (parent config)
+  • Pipeline 'hourly_pipeline_769' (Execution ID: 8374): 19.15 minutes (running), Expected within 15 minutes (child config)
+  • Pipeline 'analytics_pipeline' (Execution ID: 8375): 40.25 minutes (completed), Expected within 30 minutes (parent config)
 ```
 
 ### API Usage

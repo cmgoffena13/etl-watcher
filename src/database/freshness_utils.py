@@ -190,7 +190,7 @@ async def db_check_pipeline_freshness(session: Session):
                     await send_slack_message(
                         level=AlertLevel.WARNING,
                         title="Freshness Check - Pipeline DML",
-                        message=f"Pipeline Freshness Check Failed - {len(new_fail_results)} NEW pipeline(s) overdue",
+                        message=f"Pipeline Freshness Check - {len(new_fail_results)} NEW pipeline(s) overdue",
                         details={"Failed Pipelines": "\n" + pipeline_details},
                     )
             except Exception as e:
