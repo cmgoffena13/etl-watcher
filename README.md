@@ -1196,6 +1196,8 @@ The Watcher system consists of the following components:
   - Anomaly detection processing
   - Log cleanup tasks
   - Timeliness & Freshness checks
+  - Slack alert notifications
+- **Configuration**: Set `PROD_SLACK_WEBHOOK_URL` environment variable
 - **Scaling**: Can run multiple worker instances for high throughput
 
 #### 5. Logfire Account Setup
@@ -1203,7 +1205,7 @@ The Watcher system consists of the following components:
 - **Setup Required**:
   1. Create account at [logfire.pydantic.dev](https://logfire.pydantic.dev)
   2. Generate API token (Free Account gives you 10 million calls per month!)
-  3. Configure `PROD_LOGFIRE_TOKEN` environment variable
+  3. Configure `PROD_LOGFIRE_TOKEN` environment variable for both FastAPI and Celery containers
 - **Benefits**:
   - Request tracing
   - Performance monitoring & Alerting
@@ -1212,6 +1214,7 @@ The Watcher system consists of the following components:
 
 ### Environment Variables
 
+FASTAPI Example
 ```bash
 # Database Configuration
 PROD_DATABASE_URL=postgresql://user:password@postgres-host:5432/watcher_prod
@@ -1229,6 +1232,22 @@ PROD_LOGFIRE_CONSOLE=false
 # Feature Flags
 PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
 PROD_PROFILING_ENABLED=false
+```
+
+Celery Example
+```bash
+# Database Configuration
+PROD_DATABASE_URL=postgresql://user:password@postgres-host:5432/watcher_prod
+
+# Redis Configuration
+PROD_REDIS_URL=redis://redis-host:6379/1
+
+# Slack Integration
+PROD_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
+
+# Logfire Monitoring
+PROD_LOGFIRE_TOKEN=your-logfire-token-here
+PROD_LOGFIRE_CONSOLE=false
 ```
 
 ### Database Migration
