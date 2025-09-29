@@ -1252,7 +1252,7 @@ PROD_LOGFIRE_CONSOLE=false
 
 ### Database Migration
 Before starting the application, run the database migrations on the Prod database:  
-(You can always implement the `start.sh` script into the DockerFile as well, it is only used in the dev-compose right now...)
+(You can always implement the `start.sh` script into the DockerFile as well, it is only used in the dev-compose right now... but I would not recommend if you're using any scalable container service like GCP's Cloud Run or Kubernetes, it won't work properly)
 ```bash
 # With PROD_DATABASE_URL set
 make trigger-migration
