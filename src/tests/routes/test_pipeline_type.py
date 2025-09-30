@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
+from src.database.models.pipeline_type import PipelineType
 from src.tests.fixtures.pipeline_type import (
     TEST_PIPELINE_TYPE_PATCH_DATA,
     TEST_PIPELINE_TYPE_PATCH_OUTPUT_DATA,
@@ -21,6 +22,24 @@ async def test_get_or_create_pipeline_type(async_client: AsyncClient):
     )
     assert response.status_code == 200
     assert response.json() == {"id": 1}
+
+
+@pytest.mark.anyio
+async def test_get_pipeline_type(async_client: AsyncClient):
+    response = await async_client.post(
+        "/pipeline_type", json=TEST_PIPELINE_TYPE_POST_DATA
+    )
+    response = await async_client.get(f"/pipeline_type/{response.json()['id']}")
+    assert response.status_code == 200
+
+    pipeline_type_data = response.json()
+    pipeline_type = PipelineType(**pipeline_type_data)
+
+    assert pipeline_type.name == "audit"
+    assert pipeline_type.freshness_number == 10
+    assert pipeline_type.freshness_datepart == "hour"
+    assert pipeline_type.mute_freshness_check == False
+    assert pipeline_type.id == 1
 
 
 @pytest.mark.anyio

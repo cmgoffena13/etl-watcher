@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
+from src.database.models.pipeline import Pipeline
 from src.tests.fixtures.pipeline import (
     TEST_PIPELINE_PATCH_DATA,
     TEST_PIPELINE_PATCH_OUTPUT_DATA,
@@ -37,6 +38,28 @@ async def test_get_or_create_pipeline(async_client: AsyncClient):
         "load_lineage": True,
         "watermark": None,
     }
+
+
+@pytest.mark.anyio
+async def test_get_pipeline(async_client: AsyncClient):
+    response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    assert response.status_code == 201
+    assert response.json() == {
+        "id": 1,
+        "active": True,
+        "load_lineage": True,
+        "watermark": None,
+    }
+    response = await async_client.get(f"/pipeline/{response.json()['id']}")
+    assert response.status_code == 200
+
+    pipeline_data = response.json()
+    pipeline = Pipeline(**pipeline_data)
+
+    assert pipeline.name == "test pipeline 1"
+    assert pipeline.pipeline_type_id == 1
+    assert pipeline.next_watermark == "10"
+    assert pipeline.id == 1
 
 
 @pytest.mark.anyio

@@ -32,6 +32,17 @@ async def get_address_types(session: SessionDep):
     return (await session.exec(select(AddressType))).scalars().all()
 
 
+@router.get(
+    "/address_type/{address_type_id}",
+    response_model=AddressType,
+    status_code=status.HTTP_200_OK,
+)
+async def get_address_type(address_type_id: int, session: SessionDep):
+    return (
+        await session.exec(select(AddressType).where(AddressType.id == address_type_id))
+    ).scalar_one_or_none()
+
+
 @router.patch(
     "/address_type", response_model=AddressType, status_code=status.HTTP_200_OK
 )

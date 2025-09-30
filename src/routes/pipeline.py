@@ -27,6 +27,15 @@ async def get_pipelines(session: SessionDep):
     return (await session.exec(select(Pipeline))).scalars().all()
 
 
+@router.get(
+    "/pipeline/{pipeline_id}", response_model=Pipeline, status_code=status.HTTP_200_OK
+)
+async def get_pipeline(pipeline_id: int, session: SessionDep):
+    return (
+        await session.exec(select(Pipeline).where(Pipeline.id == pipeline_id))
+    ).scalar_one_or_none()
+
+
 @router.patch("/pipeline", response_model=Pipeline, status_code=status.HTTP_200_OK)
 async def update_pipeline(pipeline: PipelinePatchInput, session: SessionDep):
     return await db_update_pipeline(session=session, patch=pipeline)

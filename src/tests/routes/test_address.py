@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 
+from src.database.models.address import Address
 from src.tests.fixtures.address import (
     TEST_ADDRESS_DATABASE_GET_OUTPUT_DATA,
     TEST_ADDRESS_DATABASE_POST_DATA,
@@ -19,6 +20,21 @@ async def test_get_or_create_address(async_client: AsyncClient):
     response = await async_client.post("/address", json=TEST_ADDRESS_POST_DATA)
     assert response.status_code == 200
     assert response.json() == {"id": 1}
+
+
+@pytest.mark.anyio
+async def test_get_address(async_client: AsyncClient):
+    response = await async_client.post("/address", json=TEST_ADDRESS_POST_DATA)
+    response = await async_client.get(f"/address/{response.json()['id']}")
+    assert response.status_code == 200
+
+    address_data = response.json()
+    address = Address(**address_data)
+
+    assert address.name == "test address"
+    assert address.id == 1
+    assert address.address_type_id == 1
+    assert address.deprecated == False
 
 
 @pytest.mark.anyio

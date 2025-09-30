@@ -32,6 +32,19 @@ async def get_pipeline_types(session: SessionDep):
     return (await session.exec(select(PipelineType))).scalars().all()
 
 
+@router.get(
+    "/pipeline_type/{pipeline_type_id}",
+    response_model=PipelineType,
+    status_code=status.HTTP_200_OK,
+)
+async def get_pipeline_type(pipeline_type_id: int, session: SessionDep):
+    return (
+        await session.exec(
+            select(PipelineType).where(PipelineType.id == pipeline_type_id)
+        )
+    ).scalar_one_or_none()
+
+
 @router.patch(
     "/pipeline_type", response_model=PipelineType, status_code=status.HTTP_200_OK
 )

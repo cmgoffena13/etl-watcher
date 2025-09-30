@@ -5,6 +5,7 @@ from httpx import AsyncClient
 from src.database.anomaly_detection_utils import (
     db_detect_anomalies_for_pipeline_execution,
 )
+from src.database.models.anomaly_detection import AnomalyDetectionRule
 from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.anomaly_detection import (
     TEST_ANOMALY_DETECTION_RULE_DURATION_SECONDS_POST_DATA,
@@ -40,6 +41,32 @@ async def test_get_or_create_anomaly_detection_rule(async_client: AsyncClient):
     )
     assert response.status_code == 200
     assert response.json() == {"id": 1}
+
+
+@pytest.mark.anyio
+async def test_get_anomaly_detection_rule(async_client: AsyncClient):
+    await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    response = await async_client.post(
+        "/anomaly_detection_rule",
+        json=TEST_ANOMALY_DETECTION_RULE_DURATION_SECONDS_POST_DATA,
+    )
+    response = await async_client.get(
+        f"/anomaly_detection_rule/{response.json()['id']}"
+    )
+    assert response.status_code == 200
+
+    rule_data = response.json()
+    rule = AnomalyDetectionRule(**rule_data)
+
+    assert rule.pipeline_id == 1
+    assert rule.metric_field == "duration_seconds"
+    assert (
+        float(rule.z_threshold) == 1.0
+    )  # Decimal comes back as string to promote accuracy
+    assert rule.lookback_days == 10
+    assert rule.minimum_executions == 5
+    assert rule.active == True
+    assert rule.id == 1
 
 
 @pytest.mark.anyio

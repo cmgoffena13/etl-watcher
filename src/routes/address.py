@@ -27,6 +27,15 @@ async def get_addresses(session: SessionDep):
     return (await session.exec(select(Address))).scalars().all()
 
 
+@router.get(
+    "/address/{address_id}", response_model=Address, status_code=status.HTTP_200_OK
+)
+async def get_address(address_id: int, session: SessionDep):
+    return (
+        await session.exec(select(Address).where(Address.id == address_id))
+    ).scalar_one_or_none()
+
+
 @router.patch("/address", response_model=Address, status_code=status.HTTP_200_OK)
 async def update_address(address: AddressPatchInput, session: SessionDep):
     return await db_update_address(session=session, patch=address)

@@ -34,6 +34,23 @@ async def get_anomaly_detection_rules(session: SessionDep):
     return (await session.exec(select(AnomalyDetectionRule))).scalars().all()
 
 
+@router.get(
+    "/anomaly_detection_rule/{anomaly_detection_rule_id}",
+    response_model=AnomalyDetectionRule,
+    status_code=status.HTTP_200_OK,
+)
+async def get_anomaly_detection_rule(
+    anomaly_detection_rule_id: int, session: SessionDep
+):
+    return (
+        await session.exec(
+            select(AnomalyDetectionRule).where(
+                AnomalyDetectionRule.id == anomaly_detection_rule_id
+            )
+        )
+    ).scalar_one_or_none()
+
+
 @router.patch(
     "/anomaly_detection_rule",
     response_model=AnomalyDetectionRule,
