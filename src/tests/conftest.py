@@ -3,7 +3,7 @@ import os
 # Needs to happen before local imports
 os.environ["ENV_STATE"] = "test"
 from typing import AsyncGenerator, Generator
-from unittest.mock import Mock
+from unittest.mock import AsyncMock, Mock
 
 import pytest
 from fastapi.testclient import TestClient
@@ -128,17 +128,29 @@ def mock_slack_notifications():
     """Mock all Slack notifications globally to avoid setup in each test"""
     mock_send_slack_message = Mock()
 
-    import src.database.anomaly_detection_utils
     import src.database.freshness_utils
     import src.database.timeliness_utils
     import src.notifier
 
     src.notifier.send_slack_message = mock_send_slack_message
     src.database.timeliness_utils.send_slack_message = mock_send_slack_message
-    src.database.anomaly_detection_utils.send_slack_message = mock_send_slack_message
     src.database.freshness_utils.send_slack_message = mock_send_slack_message
 
     yield mock_send_slack_message
+
+
+@pytest.fixture(autouse=True)
+def mock_anomaly_alert():
+    """Mock anomaly alert globally to avoid setup in each test"""
+    mock_anomaly_alert = AsyncMock()
+
+    import src.database.anomaly_detection_utils
+    import src.notifier
+
+    src.database.anomaly_detection_utils.send_slack_message = mock_anomaly_alert
+    src.notifier.send_slack_message = mock_anomaly_alert
+
+    yield mock_anomaly_alert
 
 
 @pytest.fixture(autouse=True)

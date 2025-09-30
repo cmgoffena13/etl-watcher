@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250927222116
+Revision ID: 20250930170804
 Revises:
-Create Date: 2025-09-27 22:21:18.698072
+Create Date: 2025-09-30 17:08:07.084842
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250927222116"
+revision: str = "20250930170804"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -386,6 +386,9 @@ def upgrade() -> None:
         ),
         sa.Column(
             "execution_metadata", postgresql.JSONB(astext_type=sa.Text()), nullable=True
+        ),
+        sa.Column(
+            "anomaly_flags", postgresql.JSONB(astext_type=sa.Text()), nullable=True
         ),
         sa.Column("throughput", sa.DECIMAL(precision=12, scale=4), nullable=True),
         sa.CheckConstraint("end_date IS NULL OR end_date > start_date"),

@@ -68,7 +68,9 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Configurable Metrics**: Monitor duration, row counts, and DML operations for individual pipelines
 - **Automatic Detection**: Run anomaly detection automatically after each pipeline execution
 - **Historical Baselines**: Calculate statistical baselines from historical execution data over configurable time windows
-- **Single Execution Analysis**: Compare each pipeline execution against its calculated statistical baseline
+- **Anomaly Exclusion**: Previously flagged anomalies are excluded from future baseline calculations to prevent skewing
+- **Batched Processing**: Collect all anomalies for an execution and send a single comprehensive alert
+- **Per-Metric Tracking**: Track anomaly status per metric using JSONB flags on pipeline executions
 - **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
@@ -436,13 +438,13 @@ Master Pipeline: data_processing_master
 ```python
 # Start master pipeline execution
 master_response = await client.post("/start_pipeline_execution", json={
-    "pipeline_name": "data_processing_master"
+    "pipeline_id": 1
 })
 master_execution_id = master_response.json()["id"]
 
 # Start sub-pipeline execution with parent reference
 sub_response = await client.post("/start_pipeline_execution", json={
-    "pipeline_name": "extract_sales_data",
+    "pipeline_id": 2,
     "parent_id": master_execution_id
 })
 ```
@@ -629,9 +631,11 @@ The anomaly detection system analyzes individual pipeline executions against sta
 
 1. **Historical Analysis**: Calculates statistical baselines (mean and standard deviation) from historical execution data for the same hour of day over a configurable lookback period
 2. **Seasonality Adjustment**: Only uses executions from the same hour of day (e.g., 2 PM vs 2 PM) to account for daily patterns, business hours, and data processing cycles
-3. **Statistical Baseline**: Uses standard deviation and z-score calculations to determine normal ranges from historical data
-4. **Single Execution Analysis**: Compares the current pipeline execution against the calculated statistical baseline
-5. **Z-Score Analysis**: Provides z-scores showing how many standard deviations the current execution deviates from the historical mean
+3. **Anomaly Exclusion**: Previously flagged anomalies are excluded from baseline calculations to prevent skewing future thresholds
+4. **Statistical Baseline**: Uses standard deviation and z-score calculations to determine normal ranges from historical data
+5. **Single Execution Analysis**: Compares the current pipeline execution against the calculated statistical baseline
+6. **Batched Processing**: Collects all anomalies for an execution and sends a single comprehensive alert
+7. **Z-Score Analysis**: Provides z-scores showing how many standard deviations the current execution deviates from the historical mean
 
 ### How It Works
 
@@ -645,12 +649,14 @@ Anomaly detection uses statistical methods to analyze one pipeline execution aga
 
 Below are the calculation steps:
 
-1. **Gather Historical Data**: Collect executions within the lookback period and the same hour (excluding the current execution being analyzed)
+1. **Gather Historical Data**: Collect executions within the lookback period and the same hour (excluding the current execution being analyzed and previously flagged anomalies for the specific metric)
 2. **Calculate Statistical Baseline**: Compute the mean and standard deviation from the historical execution data for the metric
 3. **Calculate Threshold Range**: Use the provided `z_threshold` and this formula:  
    `mean ± (std_dev * z_threshold)`
 4. **Analyze Current Execution**: Compare the current pipeline execution's metric value against the calculated threshold range
 5. **Flag Anomaly**: If the current execution's value is outside the threshold range (above upper bound or below lower bound), flag as an anomaly
+6. **Update Execution Flags**: Mark the execution with anomaly flags per metric using JSONB storage
+7. **Batch Alert**: Collect all anomalies for the execution and send a single comprehensive Slack notification
 
 ### Automatic Detection Process
 
@@ -660,7 +666,8 @@ Anomaly detection runs automatically after each successful pipeline execution us
 2. **Background Processing**: Celery worker picks up the task
 3. **Rule Lookup**: Finds active rules for the completed pipeline
 4. **Process Execution**: Follows the calculation steps above to analyze the execution
-5. **Notification**: Sends Slack alerts for detected anomalies
+5. **Batch Collection**: Collects all detected anomalies for the execution
+6. **Single Notification**: Sends one comprehensive Slack alert for all detected anomalies
 
 ### Configuration
 
@@ -687,21 +694,20 @@ The system can monitor various execution metrics:
 
 ### Slack Notifications
 
-When anomalies are detected, the system sends detailed Slack notifications:
+When anomalies are detected, the system sends detailed Slack notifications with batched results:
 
 ```
 ⚠️ WARNING
 Anomaly Detection
 Timestamp: 2025-01-09 20:30:45 UTC
-Message: Anomaly detected in Pipeline 'analytics_pipeline' - Pipeline Execution ID 21 flagged
+Message: Anomalies detected in Pipeline 'analytics_pipeline' - Pipeline Execution ID 21 flagged
 
 Details:
-• Metric: duration_seconds
-• Z-Threshold: 2.0
-• Lookback Days: 30
-• Minimum Executions: 10
-• Anomaly:
-    • Value: 4914 (Range: 0 - 4767)
+• Total Anomalies: 2
+• Metrics: ['duration_seconds', 'throughput']
+• Anomalies: 
+	• duration_seconds: 4914 (Range: 0 - 4767)
+	• throughput: 271.96 (Range: 0 - 250)
 ```
 
 #### Auto-Create Anomaly Detection Rules
@@ -1052,10 +1058,10 @@ The Watcher system includes comprehensive load testing capabilities using Locust
 #### Overview
 
 The load testing suite simulates:
-- **1000 pipelines** executing every 5 minutes
-- **System monitoring** (freshness, timeliness, Celery queue monitoring)
-- **Heartbeat checks** every 5 minutes
-- **Realistic data patterns** with random success/failure rates
+- **998 pipelines** executing every 5 minutes
+- **1 monitoring user** running system checks every 5 minutes
+- **1 heartbeat user** checking API health every minute
+- **Realistic data patterns** with random success/failure rates and anomaly generation
 
 #### Running Load Tests
 
@@ -1064,7 +1070,7 @@ The load testing suite simulates:
 make load-test
 
 # The test will:
-# - Start 1000 users (pipelines) at 10 user/second spawn rate
+# - Start 1000 users (998 pipelines + 1 monitoring + 1 heartbeat) at 10 user/second spawn rate
 # - Open web interface at http://localhost:8089
 # - Run continuously until stopped
 ```
@@ -1073,9 +1079,9 @@ make load-test
 
 The load test is configured in `src/diagnostics/locustfile.py` (DO NOT run this on production, it will generate a crap ton of fake data):
 
-- **Pipeline Execution**: Each user simulates one pipeline running every 5 minutes
-- **System Checks**: Run every 5 minutes (freshness, timeliness, Celery monitoring)
-- **Heartbeat Checks**: Run every 5 minutes to verify system health
+- **Pipeline Execution**: 998 users simulate pipelines running every 5 minutes
+- **System Monitoring**: 1 dedicated user runs freshness, timeliness, and Celery queue checks every 5 minutes
+- **Heartbeat Monitoring**: 1 dedicated user checks API health every minute
 - **Realistic Data**: Random processing times (30s-10min), 95% success rate
 - **Anomaly Generation**: 1% chance of generating anomalous data to trigger alerts:
   - **High Volume**: 500K-2M total rows (vs normal 1K-100K)
@@ -1098,6 +1104,30 @@ The load test is configured in `src/diagnostics/locustfile.py` (DO NOT run this 
    - Database health metrics
    - Celery Worker metrics and task performance analytics
 
+#### Load Test User Types
+
+The test includes three distinct user types with specific behaviors:
+
+1. **PipelineExecutionUser** (998 users, 99.8% weight):
+   - Simulates individual pipelines running every 5 minutes
+   - Creates pipelines with realistic configuration (freshness, timeliness settings)
+   - Executes complete pipeline lifecycle (start → process → end)
+   - Generates realistic data with 1% anomaly rate
+   - 95% success rate with proper error handling
+
+2. **MonitoringUser** (1 user, 0.1% weight):
+   - Runs system-wide checks every 5 minutes
+   - Tests freshness validation across all pipelines
+   - Validates timeliness with 60-minute lookback
+   - Monitors Celery queue depth and health
+   - Ensures monitoring systems are functioning
+
+3. **HeartbeatUser** (1 user, 0.1% weight):
+   - Performs basic health checks every minute
+   - Validates API responsiveness
+   - Ensures system availability
+   - Provides continuous uptime monitoring
+
 #### Load Test Scenarios
 
 The test includes several realistic scenarios:
@@ -1108,9 +1138,9 @@ The test includes several realistic scenarios:
    - Simulate processing time
    - End execution with results
 
-2. **System Monitoring**:
+2. **System Monitoring** (every 5 minutes):
    - Freshness checks for all pipelines
-   - Timeliness validation
+   - Timeliness validation with 60-minute lookback
    - Celery queue depth monitoring
 
 3. **Error Handling**:
@@ -1121,10 +1151,11 @@ The test includes several realistic scenarios:
 #### Performance Targets
 
 Based on the load test configuration, the system should handle:
-- **1000 concurrent pipelines** executing every 5 minutes
-- **~3-10 RPS** sustained load (1000 users ÷ 300 seconds)
+- **998 concurrent pipelines** executing every 5 minutes
+- **~10-20 RPS** sustained load (998 users ÷ 300 seconds)
 - **Sub-second response times** for all endpoints
 - **<1% failure rate** under normal conditions
+- **Continuous monitoring** with dedicated monitoring and heartbeat users
 
 #### Troubleshooting Load Tests
 

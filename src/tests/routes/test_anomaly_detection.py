@@ -91,7 +91,7 @@ async def test_patch_anomaly_detection_rule(async_client: AsyncClient):
 
 @pytest.mark.anyio
 async def test_anomaly_detection_result_skip(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -118,7 +118,7 @@ async def test_anomaly_detection_result_skip(
             session, pipeline_id, execution_id
         )
 
-    mock_slack_notifications.assert_not_called()
+    mock_anomaly_alert.assert_not_called()
 
 
 @pytest.mark.anyio
@@ -157,7 +157,7 @@ async def test_anomaly_detection_result_success(async_client: AsyncClient):
 
 @pytest.mark.anyio
 async def test_anomaly_detection_duration_seconds_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -211,19 +211,18 @@ async def test_anomaly_detection_duration_seconds_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
 async def test_anomaly_detection_inserts_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -270,19 +269,18 @@ async def test_anomaly_detection_inserts_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
 async def test_anomaly_detection_updates_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -329,19 +327,18 @@ async def test_anomaly_detection_updates_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
 async def test_anomaly_detection_soft_deletes_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -388,19 +385,18 @@ async def test_anomaly_detection_soft_deletes_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
 async def test_anomaly_detection_total_rows_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -447,19 +443,18 @@ async def test_anomaly_detection_total_rows_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]
 
 
 @pytest.mark.anyio
 async def test_anomaly_detection_throughput_result_failure(
-    async_client: AsyncClient, mock_slack_notifications
+    async_client: AsyncClient, mock_anomaly_alert
 ):
     response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
     assert response.status_code == 201
@@ -515,11 +510,10 @@ async def test_anomaly_detection_throughput_result_failure(
                 session, pipeline_id, execution_id
             )
 
-    mock_slack_notifications.assert_called_once()
-    call_args = mock_slack_notifications.call_args
-    assert "Anomaly detected in Pipeline" in call_args[1]["message"]
+    mock_anomaly_alert.assert_called_once()
+    call_args = mock_anomaly_alert.call_args
+    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
-    assert "Metric" in call_args[1]["details"]
-    assert "Z-Threshold" in call_args[1]["details"]
-    assert "Lookback Days" in call_args[1]["details"]
-    assert "Anomaly" in call_args[1]["details"]
+    assert "Total Anomalies" in call_args[1]["details"]
+    assert "Metrics" in call_args[1]["details"]
+    assert "Anomalies" in call_args[1]["details"]

@@ -42,6 +42,9 @@ class PipelineExecution(SQLModel, table=True):
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
     execution_metadata: Optional[dict] = Field(sa_column=Column(JSONB, nullable=True))
+    anomaly_flags: Optional[dict] = Field(
+        sa_column=Column(JSONB, nullable=True), default=None
+    )
     throughput: Optional[float] = Field(
         sa_column=Column(
             DECIMAL(precision=12, scale=4), nullable=True

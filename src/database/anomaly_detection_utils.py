@@ -1,9 +1,10 @@
 import logging
 import statistics
+from typing import Optional
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from sqlalchemy import select
+from sqlalchemy import func, select, update
 from sqlmodel import Session
 
 from src.database.models.anomaly_detection import (
@@ -135,7 +136,7 @@ async def db_detect_anomalies_for_pipeline_execution(
     )
     execution_ids = (await session.exec(ids_query)).scalars().all()
 
-    base_columns = [PipelineExecution.id]
+    base_columns = [PipelineExecution.id, PipelineExecution.anomaly_flags]
     if not all_same_lookback:
         base_columns.append(PipelineExecution.end_date)
 
@@ -151,20 +152,67 @@ async def db_detect_anomalies_for_pipeline_execution(
     )
     all_executions = (await session.exec(executions_query)).all()
 
+    # Collect all anomaly results and flags
+    anomaly_results = []
+    anomaly_flags = {}
+    anomaly_metrics = []
+
     for rule in rules:
         try:
-            await _detect_anomalies_for_rule_batch(
+            anomaly_data = await _detect_anomalies_for_rule_batch(
                 session,
                 rule,
                 all_executions,
                 all_same_lookback,
                 pipeline_execution_id,
             )
+
+            if anomaly_data:
+                anomaly_results.append(AnomalyDetectionResult(**anomaly_data))
+                anomaly_flags[rule.metric_field.value] = True
+                anomaly_metrics.append(rule.metric_field.value)
+
         except Exception as e:
             logger.error(
-                f"Error detecting anomalies for rule '{rule.metric_field.value}' for pipeline {rule.pipeline_id}: {e}"
+                f"Error detecting anomalies for rule '{rule.metric_field.value}' for pipeline {rule.pipeline_id} for execution {pipeline_execution_id}: {e}"
             )
             continue
+
+    if anomaly_results:
+        savepoint = await session.begin_nested()
+        try:
+            session.add_all(anomaly_results)
+
+            await session.exec(
+                update(PipelineExecution)
+                .where(PipelineExecution.id == pipeline_execution_id)
+                .values(anomaly_flags=anomaly_flags)
+            )
+
+            await savepoint.commit()
+            await session.commit()
+
+        except Exception as e:
+            await savepoint.rollback()
+            logger.error(f"Failed to commit anomaly detection results: {e}")
+            raise
+
+        try:
+            for a_metric in anomaly_metrics:
+                logger.info(
+                    f"Anomaly detected: {a_metric} for pipeline {pipeline_id} for execution {pipeline_execution_id}"
+                )
+
+            await _send_anomaly_alert(
+                session,
+                pipeline_id,
+                pipeline_execution_id,
+                anomaly_results,
+                anomaly_metrics,
+            )
+        except Exception as e:
+            logger.error(f"Failed to send anomaly alert: {e}")
+            raise
 
 
 async def _detect_anomalies_for_rule_batch(
@@ -173,9 +221,9 @@ async def _detect_anomalies_for_rule_batch(
     executions: list,
     all_same_lookback: bool,
     current_execution_id: int,
-):
+) -> Optional[dict]:  # Return anomaly data dict or None
     logger.info(
-        f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id}"
+        f"Detecting anomalies for rule '{rule.metric_field.value}' on pipeline {rule.pipeline_id} for execution {current_execution_id}"
     )
     # Filter executions by this rule's specific lookback period
     if all_same_lookback:
@@ -202,6 +250,12 @@ async def _detect_anomalies_for_rule_batch(
             current_execution = execution
             continue
 
+        # Skip executions that have anomalies for THIS SPECIFIC METRIC
+        if execution.anomaly_flags and execution.anomaly_flags.get(
+            rule.metric_field.value, False
+        ):
+            continue  # Skip this execution for baseline calculation, will skew
+
         metric_value = getattr(execution, rule.metric_field.value)
         if metric_value is not None:
             # Convert throughput DECIMAL to float for statistics calculations
@@ -210,6 +264,7 @@ async def _detect_anomalies_for_rule_batch(
             else:
                 metric_values.append(metric_value)
 
+    # Check minimum executions AFTER filtering out anomalies and current execution
     if len(metric_values) < rule.minimum_executions:
         logger.warning(
             f"Pipeline {rule.pipeline_id}: Not enough metric values for rule '{rule.metric_field}': {len(metric_values)} < {rule.minimum_executions}"
@@ -258,53 +313,58 @@ async def _detect_anomalies_for_rule_batch(
         # Calculate z-score for context (how many standard deviations from mean)
         z_score = (current_value - baseline_mean) / baseline_std
 
-        anomaly_result = AnomalyDetectionResult(
-            pipeline_execution_id=current_execution.id,
-            rule_id=rule.id,
-            violation_value=current_value,
-            historical_mean=baseline_mean,
-            std_deviation_value=baseline_std,
-            z_threshold=float(rule.z_threshold),
-            threshold_min_value=threshold_min_value,
-            threshold_max_value=threshold_max_value,
-            z_score=z_score,
-            context={
+        return {
+            "pipeline_execution_id": current_execution.id,
+            "rule_id": rule.id,
+            "violation_value": current_value,
+            "historical_mean": baseline_mean,
+            "std_deviation_value": baseline_std,
+            "z_threshold": float(rule.z_threshold),
+            "threshold_min_value": threshold_min_value,
+            "threshold_max_value": threshold_max_value,
+            "z_score": z_score,
+            "context": {
                 "lookback_days": rule.lookback_days,
                 "minimum_executions": rule.minimum_executions,
                 "execution_count": len(metric_values),
             },
+        }
+
+    return None
+
+
+async def _send_anomaly_alert(
+    session: Session,
+    pipeline_id: int,
+    pipeline_execution_id: int,
+    anomaly_results: list,
+    anomaly_metrics: list,
+):
+    """Send a single alert for all anomalies detected on an execution"""
+    try:
+        # Get pipeline name for display
+        pipeline_name_query = select(Pipeline.name).where(Pipeline.id == pipeline_id)
+        pipeline_name = (await session.exec(pipeline_name_query)).scalar_one_or_none()
+        pipeline_display = (
+            f"'{pipeline_name}'" if pipeline_name else f"ID:{pipeline_id}"
         )
 
-        session.add(anomaly_result)
-        await session.commit()
+        anomaly_details = []
+        for i, anomaly in enumerate(anomaly_results):
+            details = f"\n\t• {anomaly_metrics[i]}: {anomaly.violation_value} (Range: {anomaly.threshold_min_value:.0f} - {anomaly.threshold_max_value:.0f})"
+            anomaly_details.append(details)
 
-        try:
-            # Fetch pipeline name for better readability
-            pipeline_name_query = select(Pipeline.name).where(
-                Pipeline.id == rule.pipeline_id
-            )
-            pipeline_name = (
-                await session.exec(pipeline_name_query)
-            ).scalar_one_or_none()
-            pipeline_display = (
-                f"'{pipeline_name}'" if pipeline_name else f"ID:{rule.pipeline_id}"
-            )
-
-            anomaly_details = f"\n\t• Value: {anomaly_result.violation_value} (Range: {anomaly_result.threshold_min_value:.0f} - {anomaly_result.threshold_max_value:.0f})"
-
-            await send_slack_message(
-                level=AlertLevel.WARNING,
-                title="Anomaly Detection",
-                message=f"Anomaly detected in Pipeline {pipeline_display} - Pipeline Execution ID {anomaly_result.pipeline_execution_id} flagged",
-                details={
-                    "Metric": rule.metric_field.value,
-                    "Z-Threshold": float(rule.z_threshold),
-                    "Lookback Days": rule.lookback_days,
-                    "Minimum Executions": rule.minimum_executions,
-                    "Anomaly": f"\n{anomaly_details}",
-                },
-            )
-        except Exception as e:
-            logger.error(
-                f"Failed to send Slack notification for anomaly on pipeline {rule.pipeline_id}: {e}"
-            )
+        await send_slack_message(
+            level=AlertLevel.WARNING,
+            title="Anomaly Detection",
+            message=f"Anomalies detected in Pipeline {pipeline_display} - Pipeline Execution ID {pipeline_execution_id} flagged",
+            details={
+                "Total Anomalies": len(anomaly_results),
+                "Metrics": anomaly_metrics,
+                "Anomalies": "\n".join(anomaly_details),
+            },
+        )
+    except Exception as e:
+        logger.error(
+            f"Failed to send Slack notification for anomalies on pipeline '{pipeline_name}' for execution {pipeline_execution_id}: {e}"
+        )
