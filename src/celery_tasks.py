@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.celery_app import celery
+from src.database.address_lineage_utils import db_rebuild_closure_table_incremental
 from src.database.anomaly_detection_utils import (
     db_detect_anomalies_for_pipeline_execution,
 )
@@ -176,5 +177,62 @@ async def _run_async_freshness_check():
         async with celery_sessionmaker() as session:
             await db_check_pipeline_freshness(session)
         return {"status": "success", "message": "Freshness check completed"}
+    finally:
+        await engine.dispose()
+
+
+@celery.task(bind=True, rate_limit="1/s", max_retries=3, default_retry_delay=60)
+def rebuild_closure_table_task(self, connected_addresses: list, pipeline_id: int):
+    """Rate-limited closure table rebuild task with retries"""
+    try:
+        self.update_state(
+            state="PROGRESS", meta={"status": "Starting closure table rebuild..."}
+        )
+
+        result = async_to_sync(_run_async_closure_table_rebuild)(
+            connected_addresses, pipeline_id
+        )
+
+        self.update_state(
+            state="SUCCESS", meta={"status": "Closure table rebuild completed"}
+        )
+        return result
+
+    except Exception as exc:
+        logger.error(f"Closure table rebuild failed: {exc}")
+
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": str(exc),
+                "retry_count": self.request.retries,
+                "max_retries": self.max_retries,
+            },
+        )
+        raise self.retry(exc=exc)
+
+
+async def _run_async_closure_table_rebuild(connected_addresses: list, pipeline_id: int):
+    """Async function that creates its own database connection"""
+    db_config = get_database_config()
+    engine = create_async_engine(
+        url=db_config["sqlalchemy.url"],
+        echo=db_config["sqlalchemy.echo"],
+        future=db_config["sqlalchemy.future"],
+        connect_args=db_config.get("sqlalchemy.connect_args", {}),
+        pool_size=1,
+        max_overflow=0,
+    )
+
+    try:
+        celery_sessionmaker = sessionmaker(
+            engine, class_=AsyncSession, expire_on_commit=False
+        )
+        async with celery_sessionmaker() as session:
+            await db_rebuild_closure_table_incremental(
+                session, set(connected_addresses), pipeline_id
+            )
+        return {"status": "success", "message": "Closure table rebuild completed"}
     finally:
         await engine.dispose()

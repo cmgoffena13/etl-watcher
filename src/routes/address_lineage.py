@@ -1,11 +1,11 @@
 from typing import List
 
-from fastapi import APIRouter, BackgroundTasks, Response, status
+from fastapi import APIRouter, Response, status
 
+from src.celery_tasks import rebuild_closure_table_task
 from src.database.address_lineage_utils import (
     db_create_address_lineage,
     db_get_address_lineage_for_address,
-    db_rebuild_closure_table_incremental,
 )
 from src.database.session import SessionDep
 from src.models.address_lineage import (
@@ -24,21 +24,18 @@ router = APIRouter()
 )
 async def create_address_lineage(
     lineage_input: AddressLineagePostInput,
-    background_tasks: BackgroundTasks,
     response: Response,
     session: SessionDep,
 ):
-    # Create lineage relationships and get affected address IDs
     result, affected_address_ids, pipeline_id = await db_create_address_lineage(
         session=session, lineage_input=lineage_input, response=response
     )
 
-    background_tasks.add_task(
-        db_rebuild_closure_table_incremental,
-        session=session,
-        connected_addresses=affected_address_ids,
-        pipeline_id=pipeline_id,
-    )
+    if affected_address_ids:
+        rebuild_closure_table_task.delay(
+            connected_addresses=list(affected_address_ids),
+            pipeline_id=pipeline_id,
+        )
 
     return result
 
