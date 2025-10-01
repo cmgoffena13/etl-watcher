@@ -1,6 +1,9 @@
 from fastapi import APIRouter, status
 
-from src.celery_tasks import detect_anomalies_task
+from src.celery_tasks import (
+    detect_anomalies_task,
+    pipeline_execution_closure_maintain_task,
+)
 from src.database.pipeline_execution_utils import (
     db_end_pipeline_execution,
     db_start_pipeline_execution,
@@ -24,9 +27,16 @@ async def start_pipeline_execution(
     pipeline_execution: PipelineExecutionStartInput,
     session: SessionDep,
 ):
-    return await db_start_pipeline_execution(
+    result = await db_start_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
     )
+
+    # Queue closure table maintenance task
+    pipeline_execution_closure_maintain_task.delay(
+        execution_id=result["id"], parent_id=pipeline_execution.parent_id
+    )
+
+    return result
 
 
 @router.post("/end_pipeline_execution", status_code=status.HTTP_204_NO_CONTENT)

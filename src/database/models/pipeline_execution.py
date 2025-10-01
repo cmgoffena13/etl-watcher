@@ -6,8 +6,10 @@ from sqlalchemy import (
     BigInteger,
     CheckConstraint,
     Column,
+    ForeignKeyConstraint,
     Index,
     Integer,
+    PrimaryKeyConstraint,
     text,
 )
 from sqlalchemy import Date as DateTZ
@@ -72,4 +74,35 @@ class PipelineExecution(SQLModel, table=True):
             postgresql_include=["id"],
         ),
         CheckConstraint("end_date IS NULL OR end_date > start_date"),
+        CheckConstraint("parent_id IS NULL OR parent_id != id"),
+    )
+
+
+class PipelineExecutionClosure(SQLModel, table=True):
+    __tablename__ = "pipeline_execution_closure"
+
+    parent_execution_id: int = Field(sa_column=Column(BigInteger))
+    child_execution_id: int = Field(sa_column=Column(BigInteger))
+    depth: int
+
+    __table_args__ = (
+        PrimaryKeyConstraint("parent_execution_id", "child_execution_id"),
+        ForeignKeyConstraint(
+            columns=["parent_execution_id"], refcolumns=["pipeline_execution.id"]
+        ),
+        ForeignKeyConstraint(
+            columns=["child_execution_id"], refcolumns=["pipeline_execution.id"]
+        ),
+        Index(
+            "ix_pipeline_execution_closure_depth_ancestor",
+            "parent_execution_id",
+            "depth",
+            postgresql_include=["child_execution_id"],
+        ),
+        Index(
+            "ix_pipeline_execution_closure_depth_descendant",
+            "child_execution_id",
+            "depth",
+            postgresql_include=["parent_execution_id"],
+        ),
     )

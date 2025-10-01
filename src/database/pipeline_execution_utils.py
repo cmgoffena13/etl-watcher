@@ -1,10 +1,11 @@
 import logging
+from typing import Optional
 
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
-from sqlmodel import Integer, Session, case, func, update
+from sqlmodel import Integer, Session, case, func, select, update
 
-from src.database.models import Pipeline, PipelineExecution
+from src.database.models import Pipeline, PipelineExecution, PipelineExecutionClosure
 from src.models.pipeline_execution import (
     PipelineExecutionEndInput,
     PipelineExecutionStartInput,
@@ -31,6 +32,7 @@ async def db_start_pipeline_execution(
     )
     pipeline_execution_id = (await session.exec(execution_start_stmt)).scalar_one()
     await session.commit()
+
     return {"id": pipeline_execution_id}
 
 
@@ -107,3 +109,34 @@ async def db_end_pipeline_execution(
             )
         )
         await session.exec(pipeline_update_stmt)
+
+
+async def db_maintain_pipeline_execution_closure_table(
+    session: Session, execution_id: int, parent_id: Optional[int]
+) -> None:
+    """Maintain the closure table when a new execution is created."""
+    # Add self-reference (depth 0)
+    self_reference = PipelineExecutionClosure(
+        parent_execution_id=execution_id, child_execution_id=execution_id, depth=0
+    )
+    session.add(self_reference)
+
+    # If there's a parent, copy all ancestor relationships and increment depth by 1
+    if parent_id:
+        # Get all ancestor relationships from parent
+        parent_relationships = await session.exec(
+            select(PipelineExecutionClosure).where(
+                PipelineExecutionClosure.child_execution_id == parent_id
+            )
+        )
+
+        # Create new relationships for this execution
+        for relationship in parent_relationships:
+            new_relationship = PipelineExecutionClosure(
+                parent_execution_id=relationship.parent_execution_id,
+                child_execution_id=execution_id,
+                depth=relationship.depth + 1,
+            )
+            session.add(new_relationship)
+
+    await session.commit()

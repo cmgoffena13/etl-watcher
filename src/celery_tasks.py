@@ -12,6 +12,9 @@ from src.database.anomaly_detection_utils import (
     db_detect_anomalies_for_pipeline_execution,
 )
 from src.database.freshness_utils import db_check_pipeline_freshness
+from src.database.pipeline_execution_utils import (
+    db_maintain_pipeline_execution_closure_table,
+)
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
 from src.settings import config, get_database_config
 
@@ -182,14 +185,16 @@ async def _run_async_freshness_check():
 
 
 @celery.task(bind=True, rate_limit="1/s", max_retries=3, default_retry_delay=60)
-def rebuild_closure_table_task(self, connected_addresses: list, pipeline_id: int):
+def address_lineage_closure_rebuild_task(
+    self, connected_addresses: list, pipeline_id: int
+):
     """Rate-limited closure table rebuild task with retries"""
     try:
         self.update_state(
             state="PROGRESS", meta={"status": "Starting closure table rebuild..."}
         )
 
-        result = async_to_sync(_run_async_closure_table_rebuild)(
+        result = async_to_sync(_run_async_address_lineage_closure_rebuild)(
             connected_addresses, pipeline_id
         )
 
@@ -213,7 +218,9 @@ def rebuild_closure_table_task(self, connected_addresses: list, pipeline_id: int
         raise self.retry(exc=exc)
 
 
-async def _run_async_closure_table_rebuild(connected_addresses: list, pipeline_id: int):
+async def _run_async_address_lineage_closure_rebuild(
+    connected_addresses: list, pipeline_id: int
+):
     """Async function that creates its own database connection"""
     db_config = get_database_config()
     engine = create_async_engine(
@@ -234,5 +241,67 @@ async def _run_async_closure_table_rebuild(connected_addresses: list, pipeline_i
                 session, set(connected_addresses), pipeline_id
             )
         return {"status": "success", "message": "Closure table rebuild completed"}
+    finally:
+        await engine.dispose()
+
+
+@celery.task(bind=True, rate_limit="10/s", max_retries=3, default_retry_delay=30)
+def pipeline_execution_closure_maintain_task(
+    self, execution_id: int, parent_id: int = None
+):
+    """Maintain pipeline execution closure table for a new execution"""
+    try:
+        self.update_state(
+            state="PROGRESS", meta={"status": "Maintaining execution closure table..."}
+        )
+
+        result = async_to_sync(_run_async_pipeline_execution_closure_maintenance)(
+            execution_id, parent_id
+        )
+
+        self.update_state(
+            state="SUCCESS", meta={"status": "Execution closure table maintained"}
+        )
+        return result
+
+    except Exception as exc:
+        logger.error(f"Execution closure table maintenance failed: {exc}")
+
+        self.update_state(
+            state="FAILURE",
+            meta={
+                "exc_type": type(exc).__name__,
+                "exc_message": str(exc),
+                "retry_count": self.request.retries,
+                "max_retries": self.max_retries,
+            },
+        )
+        raise self.retry(exc=exc)
+
+
+async def _run_async_pipeline_execution_closure_maintenance(
+    execution_id: int, parent_id: int = None
+):
+    """Async function that maintains execution closure table"""
+
+    db_config = get_database_config()
+    engine = create_async_engine(
+        url=db_config["sqlalchemy.url"],
+        echo=db_config["sqlalchemy.echo"],
+        future=db_config["sqlalchemy.future"],
+        connect_args=db_config.get("sqlalchemy.connect_args", {}),
+        pool_size=1,
+        max_overflow=0,
+    )
+
+    try:
+        celery_sessionmaker = sessionmaker(
+            engine, class_=AsyncSession, expire_on_commit=False
+        )
+        async with celery_sessionmaker() as session:
+            await db_maintain_pipeline_execution_closure_table(
+                session, execution_id, parent_id
+            )
+        return {"status": "success", "message": "Execution closure table maintained"}
     finally:
         await engine.dispose()

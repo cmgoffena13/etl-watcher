@@ -2,7 +2,7 @@ from typing import List
 
 from fastapi import APIRouter, Response, status
 
-from src.celery_tasks import rebuild_closure_table_task
+from src.celery_tasks import address_lineage_closure_rebuild_task
 from src.database.address_lineage_utils import (
     db_create_address_lineage,
     db_get_address_lineage_for_address,
@@ -32,7 +32,7 @@ async def create_address_lineage(
     )
 
     if affected_address_ids:
-        rebuild_closure_table_task.delay(
+        address_lineage_closure_rebuild_task.delay(
             connected_addresses=list(affected_address_ids),
             pipeline_id=pipeline_id,
         )
