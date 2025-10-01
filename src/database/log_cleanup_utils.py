@@ -80,6 +80,18 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
             "total_anomaly_detection_results_deleted": 0,
             "id_column": "pipeline_execution_id",
         },
+        {
+            "table_name": "pipeline_execution_closure",
+            "filter_column": "parent_execution_id",
+            "total_pipeline_execution_closure_parent_deleted": 0,
+            "id_column": "parent_execution_id",
+        },
+        {
+            "table_name": "pipeline_execution_closure",
+            "filter_column": "child_execution_id",
+            "total_pipeline_execution_closure_child_deleted": 0,
+            "id_column": "child_execution_id",
+        },
         {  # Make sure this is last because foreign key constraints
             "table_name": "pipeline_execution",
             "filter_column": "id",
@@ -116,7 +128,13 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
         "total_anomaly_detection_results_deleted": table_infos[1][
             "total_anomaly_detection_results_deleted"
         ],
-        "total_pipeline_executions_deleted": table_infos[2][
+        "total_pipeline_execution_closure_parent_deleted": table_infos[2][
+            "total_pipeline_execution_closure_parent_deleted"
+        ],
+        "total_pipeline_execution_closure_child_deleted": table_infos[3][
+            "total_pipeline_execution_closure_child_deleted"
+        ],
+        "total_pipeline_executions_deleted": table_infos[4][
             "total_pipeline_executions_deleted"
         ],
         "total_freshness_pipeline_logs_deleted": total_freshness_pipeline_logs_deleted,

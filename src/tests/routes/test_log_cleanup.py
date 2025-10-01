@@ -26,5 +26,7 @@ async def test_log_cleanup(async_client: AsyncClient):
         "total_pipeline_executions_deleted": 1,
         "total_timeliness_pipeline_execution_logs_deleted": 0,
         "total_anomaly_detection_results_deleted": 0,
+        "total_pipeline_execution_closure_parent_deleted": 0,
+        "total_pipeline_execution_closure_child_deleted": 0,
         "total_freshness_pipeline_logs_deleted": 0,
     }

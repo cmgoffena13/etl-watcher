@@ -174,6 +174,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **`pipeline`** - Pipeline definitions with configuration and metadata
 - **`pipeline_type`** - Pipeline type definitions and broad timeliness & freshness rules
 - **`pipeline_execution`** - Individual pipeline execution records and metrics
+- **`pipeline_execution_closure`** - Closure table for efficient hierarchical pipeline execution queries
 - **`address`** - Data address definitions (databases, files, APIs, etc.)
 - **`address_type`** - Address type categorization
 - **`address_lineage`** - Source-to-target data lineage relationships
