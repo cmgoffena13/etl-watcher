@@ -56,7 +56,7 @@ class AnomalyDetectionRule(SQLModel, table=True):
             "pipeline_id",
             "metric_field",
             unique=True,
-            postgresql_include=["active", "id"],
+            postgresql_include=["id"],
         ),
     )
 
