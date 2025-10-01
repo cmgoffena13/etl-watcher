@@ -19,6 +19,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 6. [Celery Background Processing](#-celery-background-processing)
 7. [Recommended Organization](#-recommended-organization)
 8. [Nested Pipeline Executions](#-nested-pipeline-executions)
+   - [Querying Nested Executions](#querying-nested-executions)
 9. [Timeliness & Freshness](#-timeliness--freshness)
 10. [Anomaly Checks](#-anomaly-checks)
     - [Adjusting Thresholds](#adjusting-thresholds)
@@ -448,6 +449,57 @@ sub_response = await client.post("/start_pipeline_execution", json={
     "pipeline_id": 2,
     "parent_id": master_execution_id
 })
+```
+
+### Querying Nested Executions
+
+The system automatically maintains a closure table (`pipeline_execution_closure`) that enables efficient querying of hierarchical relationships without recursive queries. This table stores all ancestor-descendant relationships with their depths.
+
+**Closure Table Structure:**
+- `parent_execution_id`: The ancestor execution ID
+- `child_execution_id`: The descendant execution ID  
+- `depth`: The relationship depth (0 = self-reference, 1 = direct child, 2 = grandchild, etc.)
+
+**Example Queries:**
+
+```sql
+-- Get all direct children of an execution
+SELECT pe.* 
+FROM pipeline_execution pe
+JOIN pipeline_execution_closure pec 
+    ON pe.id = pec.child_execution_id
+WHERE pec.parent_execution_id = 123 
+    AND pec.depth = 1;
+
+-- Get all downstream dependencies of an execution
+SELECT pe.* 
+FROM pipeline_execution pe
+JOIN pipeline_execution_closure pec 
+    ON pe.id = pec.child_execution_id
+WHERE pec.parent_execution_id = 123 
+    AND pec.depth > 0;
+
+-- Get all upstream dependencies of an execution
+SELECT pe.* 
+FROM pipeline_execution pe
+JOIN pipeline_execution_closure pec 
+    ON pe.id = pec.parent_execution_id
+WHERE pec.child_execution_id = 456 
+    AND pec.depth > 0;
+
+-- Get execution family tree (root + all descendants) - NO RECURSION NEEDED!
+SELECT pe.*, pec.depth as level 
+FROM pipeline_execution pe
+JOIN pipeline_execution_closure pec 
+    ON pe.id = pec.child_execution_id
+WHERE pec.parent_execution_id = (
+    -- Get root execution ID
+    SELECT pec2.parent_execution_id 
+    FROM pipeline_execution_closure pec2
+    WHERE pec2.child_execution_id = 456
+    ORDER BY pec2.depth DESC LIMIT 1
+)
+ORDER BY pec.depth, pe.id;
 ```
 
 **Benefits:**
