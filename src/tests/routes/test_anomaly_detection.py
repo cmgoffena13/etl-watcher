@@ -219,7 +219,7 @@ async def test_anomaly_detection_duration_seconds_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
@@ -277,7 +277,7 @@ async def test_anomaly_detection_inserts_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
@@ -335,7 +335,7 @@ async def test_anomaly_detection_updates_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
@@ -393,7 +393,7 @@ async def test_anomaly_detection_soft_deletes_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
@@ -451,7 +451,7 @@ async def test_anomaly_detection_total_rows_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
@@ -518,7 +518,7 @@ async def test_anomaly_detection_throughput_result_failure(
 
     mock_anomaly_alert.assert_called_once()
     call_args = mock_anomaly_alert.call_args
-    assert "Anomalies detected in Pipeline" in call_args[1]["message"]
+    assert "Anomalies Detected for Pipeline" in call_args[1]["message"]
     assert "flagged" in call_args[1]["message"]
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]

@@ -442,7 +442,7 @@ async def _send_anomaly_alert(
         await send_slack_message(
             level=AlertLevel.WARNING,
             title="Anomaly Detection",
-            message=f"Anomalies detected in Pipeline {pipeline_display} - Pipeline Execution ID {pipeline_execution_id} flagged",
+            message=f"Anomalies Detected for Pipeline {pipeline_display} (ID: {pipeline_id}) - Execution ID {pipeline_execution_id} flagged",
             details={
                 "Total Anomalies": len(anomaly_results),
                 "Metrics": anomaly_metrics,
