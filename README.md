@@ -770,7 +770,7 @@ This gives you information around how close the `violation_value` was to the thr
 When an anomaly is detected, it's automatically flagged in the `pipeline_execution.anomaly_flags` JSONB field and excluded from future baseline calculations. If you determine that a flagged execution is not actually an anomaly, you can unflag it using the `/unflag_anomaly` endpoint:
 
 ```json
-# All this info can be found in the alert
+--All this info can be found in the alert
 {
   "pipeline_id": 123,
   "pipeline_execution_id": 456,
