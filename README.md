@@ -878,9 +878,22 @@ response = await client.post("http://localhost:8000/log_cleanup", json=cleanup_d
 result = response.json()
 ```
 
+#### Example Response
+
+```json
+{
+    "total_pipeline_executions_deleted": 150,
+    "total_timeliness_pipeline_execution_logs_deleted": 23,
+    "total_anomaly_detection_results_deleted": 8,
+    "total_pipeline_execution_closure_parent_deleted": 45,
+    "total_pipeline_execution_closure_child_deleted": 45,
+    "total_freshness_pipeline_logs_deleted": 12
+}
+```
+
 ### Cleanup Process
 
-The system cleans up data from four main log tables in a specific order to maintain referential integrity:
+The system cleans up data from five main log tables in a specific order to maintain referential integrity:
 
 #### 1. Freshness Pipeline Logs
 - **Table**: `freshness_pipeline_log`
@@ -897,7 +910,17 @@ The system cleans up data from four main log tables in a specific order to maint
 - **Filter**: Records with `pipeline_execution_id <= max_pipeline_execution_id`
 - **Purpose**: Removes old anomaly detection results
 
-#### 4. Pipeline Executions (Last)
+#### 4. Pipeline Execution Closure Table (Parent Side)
+- **Table**: `pipeline_execution_closure`
+- **Filter**: Records with `parent_execution_id <= max_pipeline_execution_id`
+- **Purpose**: Removes closure table relationships where the execution is a parent
+
+#### 5. Pipeline Execution Closure Table (Child Side)
+- **Table**: `pipeline_execution_closure`
+- **Filter**: Records with `child_execution_id <= max_pipeline_execution_id`
+- **Purpose**: Removes closure table relationships where the execution is a child
+
+#### 6. Pipeline Executions (Last)
 - **Table**: `pipeline_execution`
 - **Filter**: Records with `id <= max_pipeline_execution_id`
 - **Purpose**: Removes old pipeline execution records (must be last due to foreign key constraints)
