@@ -3,6 +3,7 @@ from sqlalchemy import select
 
 from src.database.anomaly_detection_utils import (
     db_get_or_create_anomaly_detection_rule,
+    db_unflag_anomaly,
     db_update_anomaly_detection_rule,
 )
 from src.database.models.anomaly_detection import AnomalyDetectionRule
@@ -11,6 +12,7 @@ from src.models.anomaly_detection import (
     AnomalyDetectionRulePatchInput,
     AnomalyDetectionRulePostInput,
     AnomalyDetectionRulePostOutput,
+    UnflagAnomalyInput,
 )
 
 router = APIRouter()
@@ -60,3 +62,8 @@ async def update_anomaly_detection_rule(
     rule: AnomalyDetectionRulePatchInput, session: SessionDep
 ):
     return await db_update_anomaly_detection_rule(session=session, patch=rule)
+
+
+@router.post("/unflag_anomaly", status_code=status.HTTP_204_NO_CONTENT)
+async def unflag_anomaly(input: UnflagAnomalyInput, session: SessionDep):
+    return await db_unflag_anomaly(session=session, input=input)

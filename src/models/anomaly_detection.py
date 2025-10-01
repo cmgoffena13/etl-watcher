@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import List, Optional
 
 from pydantic import Field
 from pydantic_extra_types.pendulum_dt import DateTime
@@ -57,6 +57,12 @@ class AnomalyDetectionRulePatchInput(ValidatorModel):
 
 class AnomalyDetectionRulePostOutput(ValidatorModel):
     id: int
+
+
+class UnflagAnomalyInput(ValidatorModel):
+    pipeline_id: int
+    pipeline_execution_id: int
+    metric_field: List[AnomalyMetricFieldEnum]
 
 
 class AnomalyDetectionResultGetOutput(ValidatorModel):

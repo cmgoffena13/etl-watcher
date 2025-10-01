@@ -4,7 +4,7 @@ from typing import Optional
 
 import pendulum
 from fastapi import HTTPException, Response, status
-from sqlalchemy import func, select, update
+from sqlalchemy import delete, func, select, update
 from sqlmodel import Session
 
 from src.database.models.anomaly_detection import (
@@ -17,8 +17,10 @@ from src.models.anomaly_detection import (
     AnomalyDetectionRulePatchInput,
     AnomalyDetectionRulePostInput,
     AnomalyDetectionRulePostOutput,
+    UnflagAnomalyInput,
 )
 from src.notifier import AlertLevel, send_slack_message
+from src.types import AnomalyMetricFieldEnum
 
 logger = logging.getLogger(__name__)
 
@@ -81,6 +83,90 @@ async def db_update_anomaly_detection_rule(
     await session.commit()
     await session.refresh(rule)
     return rule
+
+
+async def db_unflag_anomaly(session: Session, input: UnflagAnomalyInput):
+    pipeline_execution = await session.get(
+        PipelineExecution, input.pipeline_execution_id
+    )
+    if not pipeline_execution:
+        raise HTTPException(
+            status_code=404,
+            detail=f"Pipeline execution {input.pipeline_execution_id} not found",
+        )
+    if not pipeline_execution.anomaly_flags:
+        raise HTTPException(
+            status_code=404,
+            detail=f"No anomaly flags found for execution {input.pipeline_execution_id}",
+        )
+
+    # Check which requested metrics are actually flagged (true)
+    requested_metrics = [metric.value for metric in input.metric_field]
+    actually_flagged_metrics = [
+        metric
+        for metric in requested_metrics
+        if metric in pipeline_execution.anomaly_flags
+        and pipeline_execution.anomaly_flags.get(metric, False) is True
+    ]
+
+    if not actually_flagged_metrics:
+        raise HTTPException(
+            status_code=404,
+            detail=f"None of the requested metrics {requested_metrics} are currently flagged",
+        )
+
+    # Get rule IDs for the metrics that are actually flagged as True
+    actually_flagged_metric_enums = [
+        AnomalyMetricFieldEnum(metric) for metric in actually_flagged_metrics
+    ]
+    rule_ids = (
+        (
+            await session.exec(
+                select(AnomalyDetectionRule.id).where(
+                    AnomalyDetectionRule.pipeline_id == input.pipeline_id,
+                    AnomalyDetectionRule.metric_field.in_(
+                        actually_flagged_metric_enums
+                    ),
+                )
+            )
+        )
+        .scalars()
+        .all()
+    )
+
+    # Update flags
+    anomaly_flags_new = pipeline_execution.anomaly_flags.copy()
+    for metric in actually_flagged_metrics:
+        anomaly_flags_new[metric] = False
+
+    savepoint = await session.begin_nested()
+    try:
+        # Delete anomaly results
+        await session.exec(
+            delete(AnomalyDetectionResult).where(
+                AnomalyDetectionResult.pipeline_execution_id
+                == input.pipeline_execution_id,
+                AnomalyDetectionResult.rule_id.in_(rule_ids),
+            )
+        )
+
+        # Update flags
+        await session.exec(
+            update(PipelineExecution)
+            .where(PipelineExecution.id == input.pipeline_execution_id)
+            .values(anomaly_flags=anomaly_flags_new)
+        )
+
+        await savepoint.commit()
+        await session.commit()
+
+    except Exception as e:
+        await savepoint.rollback()
+        raise
+
+    logger.info(
+        f"Unflagged anomalies for pipeline execution {input.pipeline_execution_id}"
+    )
 
 
 async def db_detect_anomalies_for_pipeline_execution(
@@ -198,10 +284,9 @@ async def db_detect_anomalies_for_pipeline_execution(
             raise
 
         try:
-            for a_metric in anomaly_metrics:
-                logger.info(
-                    f"Anomaly detected: {a_metric} for pipeline {pipeline_id} for execution {pipeline_execution_id}"
-                )
+            logger.info(
+                f"Anomalies detected: {', '.join(anomaly_metrics)} for pipeline {pipeline_id} for execution {pipeline_execution_id}"
+            )
 
             await _send_anomaly_alert(
                 session,

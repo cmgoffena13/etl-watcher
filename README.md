@@ -123,6 +123,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - `POST /anomaly_detection_rule` - Create or get anomaly detection rule
 - `GET /anomaly_detection_rule` - List all anomaly detection rules
 - `PATCH /anomaly_detection_rule` - Update anomaly detection rule
+- `POST /unflag_anomaly` - Unflag anomalies for a pipeline execution
 - `POST /anomaly_detection/detect/{pipeline_id}` - Run anomaly detection for a pipeline
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
@@ -763,6 +764,25 @@ WHERE pipeline_execution_id = 12  /* Grab from Alert */
 ```
 
 This gives you information around how close the `violation_value` was to the threshold and what a new threshold would look like if adjusted to the violation value and its z_score. This gives you an idea of how to adjust the `z_threshold` to mitigate false positives.
+
+#### Unflagging Anomalies
+
+When an anomaly is detected, it's automatically flagged in the `pipeline_execution.anomaly_flags` JSONB field and excluded from future baseline calculations. If you determine that a flagged execution is not actually an anomaly, you can unflag it using the `/unflag_anomaly` endpoint:
+
+```json
+{
+  "pipeline_id": 123,
+  "pipeline_execution_id": 456,
+  "metric_field": ["duration_seconds", "inserts"]
+}
+```
+
+**Key Features:**
+- **Multiple Metrics**: Unflag multiple anomaly metrics for a single execution
+- **Surgical Updates**: Only updates the specified metrics, leaving other flagged metrics unchanged
+- **Validation**: Returns 404 if the execution doesn't exist, has no flags, or the specified metrics aren't currently flagged
+
+Once unflagged, the execution will be included in future baseline calculations for those specific metrics.
 
 ### Best Practices
 

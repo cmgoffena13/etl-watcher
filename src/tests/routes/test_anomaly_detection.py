@@ -1,11 +1,16 @@
 import pendulum
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import select
 
 from src.database.anomaly_detection_utils import (
     db_detect_anomalies_for_pipeline_execution,
 )
-from src.database.models.anomaly_detection import AnomalyDetectionRule
+from src.database.models.anomaly_detection import (
+    AnomalyDetectionResult,
+    AnomalyDetectionRule,
+)
+from src.database.models.pipeline_execution import PipelineExecution
 from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.anomaly_detection import (
     TEST_ANOMALY_DETECTION_RULE_DURATION_SECONDS_POST_DATA,
@@ -22,6 +27,7 @@ from src.tests.fixtures.pipeline_execution import (
     TEST_PIPELINE_EXECUTION_END_DATA,
     TEST_PIPELINE_EXECUTION_START_DATA,
 )
+from src.types import AnomalyMetricFieldEnum
 
 
 @pytest.mark.anyio
@@ -517,3 +523,97 @@ async def test_anomaly_detection_throughput_result_failure(
     assert "Total Anomalies" in call_args[1]["details"]
     assert "Metrics" in call_args[1]["details"]
     assert "Anomalies" in call_args[1]["details"]
+
+
+@pytest.mark.anyio
+async def test_unflag_anomaly(async_client: AsyncClient, mock_anomaly_alert):
+    """Test unflagging an anomaly and verify the pipeline execution record is updated"""
+    # Create a pipeline and anomaly detection rule
+    response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    assert response.status_code == 201
+    pipeline_id = response.json()["id"]
+
+    response = await async_client.post(
+        "/anomaly_detection_rule",
+        json=TEST_ANOMALY_DETECTION_RULE_DURATION_SECONDS_POST_DATA,
+    )
+    assert response.status_code == 201
+
+    # Create baseline executions (5 normal executions)
+    for i in range(1, 6):
+        response = await async_client.post(
+            "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
+        )
+        execution_id = response.json()["id"]
+
+        post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+        post_data.update(
+            {
+                "id": execution_id,
+                "end_date": pendulum.now("UTC")
+                .add(minutes=30 + (i * 10))
+                .isoformat(),  # 40, 50, 60, 70, 80 minutes
+            }
+        )
+        response = await async_client.post("/end_pipeline_execution", json=post_data)
+        assert response.status_code == 204
+
+        # Call anomaly detection directly
+        async with AsyncSessionLocal() as session:
+            await db_detect_anomalies_for_pipeline_execution(
+                session, pipeline_id, execution_id
+            )
+
+    # Create an anomalous execution (6th execution with very high duration)
+    response = await async_client.post(
+        "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
+    )
+    anomalous_execution_id = response.json()["id"]
+
+    post_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+    ridiculous_end_date = pendulum.now("UTC").add(seconds=999999)
+    post_data.update(
+        {
+            "id": anomalous_execution_id,
+            "end_date": ridiculous_end_date.isoformat(),
+        }
+    )
+    response = await async_client.post("/end_pipeline_execution", json=post_data)
+    assert response.status_code == 204
+
+    # Call anomaly detection to create the anomaly
+    async with AsyncSessionLocal() as session:
+        await db_detect_anomalies_for_pipeline_execution(
+            session, pipeline_id, anomalous_execution_id
+        )
+
+    # Verify the anomaly was created and flagged
+    async with AsyncSessionLocal() as session:
+        execution = await session.get(PipelineExecution, anomalous_execution_id)
+        assert execution.anomaly_flags is not None
+        assert execution.anomaly_flags.get("duration_seconds", False) is True
+
+    # Now test unflagging the anomaly
+    unflag_data = {
+        "pipeline_id": pipeline_id,
+        "pipeline_execution_id": anomalous_execution_id,
+        "metric_field": [AnomalyMetricFieldEnum.DURATION_SECONDS],
+    }
+
+    response = await async_client.post("/unflag_anomaly", json=unflag_data)
+    assert response.status_code == 204
+
+    # Verify the anomaly was unflagged in the pipeline execution record
+    async with AsyncSessionLocal() as session:
+        execution = await session.get(PipelineExecution, anomalous_execution_id)
+        assert execution.anomaly_flags is not None
+        assert execution.anomaly_flags.get("duration_seconds", False) is False
+
+    # Verify the anomaly detection result was deleted
+    async with AsyncSessionLocal() as session:
+        results = await session.exec(
+            select(AnomalyDetectionResult).where(
+                AnomalyDetectionResult.pipeline_execution_id == anomalous_execution_id
+            )
+        )
+        assert results.scalars().all() == []
