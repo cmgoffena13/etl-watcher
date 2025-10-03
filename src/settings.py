@@ -1,3 +1,4 @@
+import uuid
 from functools import lru_cache
 from typing import Optional
 
@@ -73,8 +74,16 @@ def get_database_config():
         "sqlalchemy.pool_timeout": 30,
     }
 
-    # Add SQLite-specific settings if using SQLite
+    # Add database-specific connect args
     if db_config.DATABASE_URL.startswith("sqlite"):
         config_dict["sqlalchemy.connect_args"] = {"check_same_thread": False}
+    elif isinstance(db_config, TestConfig):
+        # PostgreSQL settings for pgbouncer compatibility in test environment
+
+        config_dict["sqlalchemy.connect_args"] = {
+            "statement_cache_size": 0,
+            "prepared_statement_cache_size": 0,
+            "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4()}__",
+        }
 
     return config_dict
