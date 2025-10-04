@@ -59,7 +59,13 @@ async def db_end_pipeline_execution(
                 **pipeline_execution.model_dump(exclude={"id"}, exclude_unset=True),
                 duration_seconds=duration_seconds,
                 throughput=func.round(
-                    pipeline_execution.total_rows / duration_seconds,
+                    case(
+                        (
+                            duration_seconds > 0,
+                            pipeline_execution.total_rows / duration_seconds,
+                        ),
+                        else_=0,
+                    ),
                     4,
                 ),
             )

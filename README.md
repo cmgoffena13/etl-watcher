@@ -987,14 +987,14 @@ async def run_pipeline_workflow():
                     "pipeline_id": pipeline_result['id'],
                     "source_addresses": [
                         {
-                            "address_name": "source_db.stock_prices",
+                            "name": "source_db.stock_prices",
                             "address_type_name": "postgresql",
                             "address_type_group_name": "database"
                         }
                     ],
                     "target_addresses": [
                         {
-                            "address_name": "warehouse.stock_prices",
+                            "name": "warehouse.stock_prices",
                             "address_type_name": "postgresql",
                             "address_type_group_name": "database"
                         }

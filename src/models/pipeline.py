@@ -1,7 +1,7 @@
 from typing import Optional, Union
 
 from pydantic import Field
-from pydantic_extra_types.pendulum_dt import DateTime
+from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from src.types import DatePartEnum, ValidatorModel
 
@@ -9,7 +9,7 @@ from src.types import DatePartEnum, ValidatorModel
 class PipelinePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
-    next_watermark: Optional[Union[str, int, DateTime]] = None
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
@@ -31,7 +31,7 @@ class PipelinePatchInput(ValidatorModel):
     id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_type_id: Optional[int] = None
-    next_watermark: Optional[Union[str, int, DateTime]] = None
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None

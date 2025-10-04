@@ -33,7 +33,7 @@ async def _process_address_lists(
     # Process source addresses
     for source_address in source_addresses:
         source_address_input = AddressPostInput(
-            name=source_address.address_name,
+            name=source_address.name,
             address_type_name=source_address.address_type_name,
             address_type_group_name=source_address.address_type_group_name,
         )
@@ -47,7 +47,7 @@ async def _process_address_lists(
     # Process target addresses
     for target_address in target_addresses:
         target_address_input = AddressPostInput(
-            name=target_address.address_name,
+            name=target_address.name,
             address_type_name=target_address.address_type_name,
             address_type_group_name=target_address.address_type_group_name,
         )

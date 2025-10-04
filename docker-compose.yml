@@ -1,6 +1,6 @@
 services:
   redis:
-    image: redis:7-alpine
+    image: redis:8-alpine
     container_name: watcher-redis
     ports:
       - "6379:6379"
@@ -9,7 +9,7 @@ services:
       - watcher_redis_data:/data
 
   postgres:
-    image: postgres:15
+    image: postgres:18
     container_name: watcher-postgres
     environment:
       POSTGRES_DB: watcher

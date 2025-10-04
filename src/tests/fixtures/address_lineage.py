@@ -2,14 +2,14 @@ TEST_ADDRESS_LINEAGE_POST_DATA = {
     "pipeline_id": 1,
     "source_addresses": [
         {
-            "address_name": "Source Address 1",
+            "name": "Source Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
     ],
     "target_addresses": [
         {
-            "address_name": "Target Address 1",
+            "name": "Target Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
@@ -36,19 +36,19 @@ TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_DATA = {
     "pipeline_id": 1,
     "source_addresses": [
         {
-            "address_name": "Source Address 1",
+            "name": "Source Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
         {
-            "address_name": "Source Address 2",
+            "name": "Source Address 2",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
     ],
     "target_addresses": [
         {
-            "address_name": "Target Address 1",
+            "name": "Target Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
@@ -59,19 +59,19 @@ TEST_ADDRESS_LINEAGE_MULTIPLE_TARGETS_DATA = {
     "pipeline_id": 1,
     "source_addresses": [
         {
-            "address_name": "Source Address 1",
+            "name": "Source Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
     ],
     "target_addresses": [
         {
-            "address_name": "Target Address 1",
+            "name": "Target Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
         {
-            "address_name": "Target Address 2",
+            "name": "Target Address 2",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
@@ -82,24 +82,24 @@ TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_AND_TARGETS_DATA = {
     "pipeline_id": 1,
     "source_addresses": [
         {
-            "address_name": "Source Address 1",
+            "name": "Source Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
         {
-            "address_name": "Source Address 2",
+            "name": "Source Address 2",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
     ],
     "target_addresses": [
         {
-            "address_name": "Target Address 1",
+            "name": "Target Address 1",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
         {
-            "address_name": "Target Address 2",
+            "name": "Target Address 2",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         },
@@ -110,14 +110,14 @@ TEST_ADDRESS_LINEAGE_UPDATE_DATA = {
     "pipeline_id": 1,
     "source_addresses": [
         {
-            "address_name": "New Source Address",
+            "name": "New Source Address",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
     ],
     "target_addresses": [
         {
-            "address_name": "New Target Address",
+            "name": "New Target Address",
             "address_type_name": "databricks",
             "address_type_group_name": "database",
         }
