@@ -24,7 +24,7 @@ class PipelinePostOutput(ValidatorModel):
     id: int
     active: bool
     load_lineage: bool
-    watermark: Optional[Union[str, int, DateTime]] = None
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 
 class PipelinePatchInput(ValidatorModel):
