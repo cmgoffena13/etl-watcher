@@ -25,10 +25,10 @@ class AnomalyDetectionRule(SQLModel, table=True):
     pipeline_id: int = Field(foreign_key="pipeline.id")
     metric_field: AnomalyMetricFieldEnum = Field(max_length=50)
     z_threshold: float = Field(
-        sa_column=Column(DECIMAL(precision=4, scale=2), default=2.0)
+        sa_column=Column(DECIMAL(precision=4, scale=2), default=3.0)
     )
     lookback_days: int = Field(default=30)
-    minimum_executions: int = Field(default=10)
+    minimum_executions: int = Field(default=30)
     active: bool = Field(
         sa_column=Column(Boolean, server_default=text("TRUE"), nullable=False)
     )

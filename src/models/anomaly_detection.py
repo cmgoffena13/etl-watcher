@@ -12,7 +12,7 @@ class AnomalyDetectionRulePostInput(ValidatorModel):
     z_threshold: float = Field(
         ge=1.0,
         le=10.0,
-        default=2.0,
+        default=3.0,
         description="How many standard deviations above mean to trigger anomaly",
     )
     lookback_days: int = Field(
@@ -24,7 +24,7 @@ class AnomalyDetectionRulePostInput(ValidatorModel):
     minimum_executions: int = Field(
         ge=5,
         le=1000,
-        default=10,
+        default=30,
         description="Minimum executions needed for baseline calculation",
     )
     active: bool = Field(default=True)
