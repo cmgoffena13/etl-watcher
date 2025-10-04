@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Optional, Union
 
 import pendulum
 from pydantic import Field
-from pydantic_extra_types.pendulum_dt import DateTime
+from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from src.types import ValidatorModel
 
@@ -11,8 +11,8 @@ class PipelineExecutionStartInput(ValidatorModel):
     pipeline_id: int
     start_date: DateTime
     full_load: bool
-    watermark: Optional[str] = None
-    next_watermark: Optional[str] = None
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
+    next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     parent_id: Optional[int] = None
     execution_metadata: Optional[dict] = None
 

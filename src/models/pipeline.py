@@ -9,6 +9,7 @@ from src.types import DatePartEnum, ValidatorModel
 class PipelinePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
@@ -31,6 +32,7 @@ class PipelinePatchInput(ValidatorModel):
     id: int
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_type_id: Optional[int] = None
+    watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
