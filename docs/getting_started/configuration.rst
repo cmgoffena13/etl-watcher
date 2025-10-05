@@ -194,7 +194,7 @@ Redis Optimization
 - **Monitoring** Monitor Redis performance metrics
 
 Celery Optimization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 - **Workers** Scale workers based on task volume
 - **Rate Limits** Configure appropriate rate limits

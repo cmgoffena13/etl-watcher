@@ -170,141 +170,610 @@
 <h2>Pipeline Management<a class="headerlink" href="#pipeline-management" title="Link to this heading"></a></h2>
 <section id="create-or-get-pipeline">
 <h3>Create or Get Pipeline<a class="headerlink" href="#create-or-get-pipeline" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--pipeline">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/pipeline</span></span><a class="headerlink" href="#post--pipeline" title="Link to this definition"></a></dt>
+<dd><p>Create a new pipeline or get existing one.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My Data Pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daily data extraction pipeline&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="list-pipelines">
 <h3>List Pipelines<a class="headerlink" href="#list-pipelines" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pipeline">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline</span></span><a class="headerlink" href="#get--pipeline" title="Link to this definition"></a></dt>
+<dd><p>Get all pipelines.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my data pipeline&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="get-pipeline-by-id">
 <h3>Get Pipeline by ID<a class="headerlink" href="#get-pipeline-by-id" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pipeline-pipeline_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline/{pipeline_id}</span></span><a class="headerlink" href="#get--pipeline-pipeline_id" title="Link to this definition"></a></dt>
+<dd><p>Get a specific pipeline by ID.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my data pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="update-pipeline">
 <h3>Update Pipeline<a class="headerlink" href="#update-pipeline" title="Link to this heading"></a></h3>
+<dl class="http patch">
+<dt class="sig sig-object http" id="patch--pipeline">
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/pipeline</span></span><a class="headerlink" href="#patch--pipeline" title="Link to this definition"></a></dt>
+<dd><p>Update pipeline configuration.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Updated Pipeline Name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="pipeline-execution">
 <h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>
 <section id="start-pipeline-execution">
 <h3>Start Pipeline Execution<a class="headerlink" href="#start-pipeline-execution" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--start_pipeline_execution">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/start_pipeline_execution</span></span><a class="headerlink" href="#post--start_pipeline_execution" title="Link to this definition"></a></dt>
+<dd><p>Start a new pipeline execution.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;parent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;execution_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;trigger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scheduled&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="end-pipeline-execution">
 <h3>End Pipeline Execution<a class="headerlink" href="#end-pipeline-execution" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--end_pipeline_execution">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/end_pipeline_execution</span></span><a class="headerlink" href="#post--end_pipeline_execution" title="Link to this definition"></a></dt>
+<dd><p>End a pipeline execution with metrics.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;completed_successfully&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;inserts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;soft_deletes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="pipeline-types">
 <h2>Pipeline Types<a class="headerlink" href="#pipeline-types" title="Link to this heading"></a></h2>
 <section id="create-or-get-pipeline-type">
 <h3>Create or Get Pipeline Type<a class="headerlink" href="#create-or-get-pipeline-type" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--pipeline_type">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type</span></span><a class="headerlink" href="#post--pipeline_type" title="Link to this definition"></a></dt>
+<dd><p>Create a new pipeline type or get existing one.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="list-pipeline-types">
 <h3>List Pipeline Types<a class="headerlink" href="#list-pipeline-types" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pipeline_type">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type</span></span><a class="headerlink" href="#get--pipeline_type" title="Link to this definition"></a></dt>
+<dd><p>Get all pipeline types.</p>
+</dd></dl>
+
 </section>
 <section id="get-pipeline-type-by-id">
 <h3>Get Pipeline Type by ID<a class="headerlink" href="#get-pipeline-type-by-id" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--pipeline_type-pipeline_type_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type/{pipeline_type_id}</span></span><a class="headerlink" href="#get--pipeline_type-pipeline_type_id" title="Link to this definition"></a></dt>
+<dd><p>Get a specific pipeline type by ID.</p>
+</dd></dl>
+
 </section>
 </section>
 <section id="address-management">
 <h2>Address Management<a class="headerlink" href="#address-management" title="Link to this heading"></a></h2>
 <section id="create-or-get-address">
 <h3>Create or Get Address<a class="headerlink" href="#create-or-get-address" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--address">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#post--address" title="Link to this definition"></a></dt>
+<dd><p>Create a new address or get existing one.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="list-addresses">
 <h3>List Addresses<a class="headerlink" href="#list-addresses" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--address">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#get--address" title="Link to this definition"></a></dt>
+<dd><p>Get all addresses.</p>
+</dd></dl>
+
 </section>
 <section id="get-address-by-id">
 <h3>Get Address by ID<a class="headerlink" href="#get-address-by-id" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--address-address_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address/{address_id}</span></span><a class="headerlink" href="#get--address-address_id" title="Link to this definition"></a></dt>
+<dd><p>Get a specific address by ID.</p>
+</dd></dl>
+
 </section>
 <section id="update-address">
 <h3>Update Address<a class="headerlink" href="#update-address" title="Link to this heading"></a></h3>
+<dl class="http patch">
+<dt class="sig sig-object http" id="patch--address">
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#patch--address" title="Link to this definition"></a></dt>
+<dd><p>Update address information.</p>
+</dd></dl>
+
 </section>
 </section>
 <section id="address-types">
 <h2>Address Types<a class="headerlink" href="#address-types" title="Link to this heading"></a></h2>
 <section id="create-or-get-address-type">
 <h3>Create or Get Address Type<a class="headerlink" href="#create-or-get-address-type" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--address_type">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address_type</span></span><a class="headerlink" href="#post--address_type" title="Link to this definition"></a></dt>
+<dd><p>Create a new address type or get existing one.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="list-address-types">
 <h3>List Address Types<a class="headerlink" href="#list-address-types" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--address_type">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_type</span></span><a class="headerlink" href="#get--address_type" title="Link to this definition"></a></dt>
+<dd><p>Get all address types.</p>
+</dd></dl>
+
 </section>
 <section id="get-address-type-by-id">
 <h3>Get Address Type by ID<a class="headerlink" href="#get-address-type-by-id" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--address_type-address_type_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_type/{address_type_id}</span></span><a class="headerlink" href="#get--address_type-address_type_id" title="Link to this definition"></a></dt>
+<dd><p>Get a specific address type by ID.</p>
+</dd></dl>
+
 </section>
 </section>
 <section id="data-lineage">
 <h2>Data Lineage<a class="headerlink" href="#data-lineage" title="Link to this heading"></a></h2>
 <section id="create-address-lineage">
 <h3>Create Address Lineage<a class="headerlink" href="#create-address-lineage" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--address_lineage">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address_lineage</span></span><a class="headerlink" href="#post--address_lineage" title="Link to this definition"></a></dt>
+<dd><p>Create lineage relationships between addresses.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source_addresses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;target_addresses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lineage_relationships_created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lineage relationships created successfully&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="get-address-lineage">
 <h3>Get Address Lineage<a class="headerlink" href="#get-address-lineage" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--address_lineage-address_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_lineage/{address_id}</span></span><a class="headerlink" href="#get--address_lineage-address_id" title="Link to this definition"></a></dt>
+<dd><p>Get lineage for specific address.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;source_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;depth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;source_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="anomaly-detection">
 <h2>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h2>
 <section id="create-anomaly-detection-rule">
 <h3>Create Anomaly Detection Rule<a class="headerlink" href="#create-anomaly-detection-rule" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--anomaly_detection_rule">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#post--anomaly_detection_rule" title="Link to this definition"></a></dt>
+<dd><p>Create or get anomaly detection rule.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="list-anomaly-detection-rules">
 <h3>List Anomaly Detection Rules<a class="headerlink" href="#list-anomaly-detection-rules" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--anomaly_detection_rule">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#get--anomaly_detection_rule" title="Link to this definition"></a></dt>
+<dd><p>Get all anomaly detection rules.</p>
+</dd></dl>
+
 </section>
 <section id="get-anomaly-detection-rule-by-id">
 <h3>Get Anomaly Detection Rule by ID<a class="headerlink" href="#get-anomaly-detection-rule-by-id" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--anomaly_detection_rule-anomaly_detection_rule_id">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule/{anomaly_detection_rule_id}</span></span><a class="headerlink" href="#get--anomaly_detection_rule-anomaly_detection_rule_id" title="Link to this definition"></a></dt>
+<dd><p>Get a specific anomaly detection rule by ID.</p>
+</dd></dl>
+
 </section>
 <section id="update-anomaly-detection-rule">
 <h3>Update Anomaly Detection Rule<a class="headerlink" href="#update-anomaly-detection-rule" title="Link to this heading"></a></h3>
+<dl class="http patch">
+<dt class="sig sig-object http" id="patch--anomaly_detection_rule">
+<span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#patch--anomaly_detection_rule" title="Link to this definition"></a></dt>
+<dd><p>Update anomaly detection rule.</p>
+</dd></dl>
+
 </section>
 <section id="unflag-anomalies">
 <h3>Unflag Anomalies<a class="headerlink" href="#unflag-anomalies" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--unflag_anomaly">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/unflag_anomaly</span></span><a class="headerlink" href="#post--unflag_anomaly" title="Link to this definition"></a></dt>
+<dd><p>Unflag anomalies for a pipeline execution.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_execution_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;duration_seconds&quot;</span><span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="monitoring-health">
 <h2>Monitoring &amp; Health<a class="headerlink" href="#monitoring-health" title="Link to this heading"></a></h2>
 <section id="check-timeliness">
 <h3>Check Timeliness<a class="headerlink" href="#check-timeliness" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--timeliness">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/timeliness</span></span><a class="headerlink" href="#post--timeliness" title="Link to this definition"></a></dt>
+<dd><p>Check pipeline execution timeliness.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;lookback_minutes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">60</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="check-freshness">
 <h3>Check Freshness<a class="headerlink" href="#check-freshness" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--freshness">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/freshness</span></span><a class="headerlink" href="#post--freshness" title="Link to this definition"></a></dt>
+<dd><p>Check DML operation freshness.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="log-cleanup">
 <h3>Log Cleanup<a class="headerlink" href="#log-cleanup" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--log_cleanup">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/log_cleanup</span></span><a class="headerlink" href="#post--log_cleanup" title="Link to this definition"></a></dt>
+<dd><p>Clean up old log data.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;total_pipeline_executions_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_timeliness_pipeline_execution_logs_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_anomaly_detection_results_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">50</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_pipeline_execution_closure_parent_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_pipeline_execution_closure_child_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_freshness_pipeline_logs_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">300</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 <section id="celery-queue-monitoring">
 <h3>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h3>
+<dl class="http post">
+<dt class="sig sig-object http" id="post--celery-monitor-queue">
+<span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/celery/monitor-queue</span></span><a class="headerlink" href="#post--celery-monitor-queue" title="Link to this definition"></a></dt>
+<dd><p>Trigger Celery queue monitoring and alerting.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Queue monitoring completed&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;queues_checked&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;total_messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</dd></dl>
+
 </section>
 </section>
 <section id="diagnostics">
 <h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Link to this heading"></a></h2>
 <section id="system-diagnostics">
 <h3>System Diagnostics<a class="headerlink" href="#system-diagnostics" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--diagnostics">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics</span></span><a class="headerlink" href="#get--diagnostics" title="Link to this definition"></a></dt>
+<dd><p>Get comprehensive system diagnostics.</p>
+<p><strong>Response:</strong> HTML page with system health information</p>
+</dd></dl>
+
 </section>
 <section id="connection-performance">
 <h3>Connection Performance<a class="headerlink" href="#connection-performance" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--diagnostics-connection-performance">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/connection-performance</span></span><a class="headerlink" href="#get--diagnostics-connection-performance" title="Link to this definition"></a></dt>
+<dd><p>Get database connection performance metrics.</p>
+</dd></dl>
+
 </section>
 <section id="schema-health">
 <h3>Schema Health<a class="headerlink" href="#schema-health" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--diagnostics-schema-health">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/schema-health</span></span><a class="headerlink" href="#get--diagnostics-schema-health" title="Link to this definition"></a></dt>
+<dd><p>Get database schema health information.</p>
+</dd></dl>
+
 </section>
 <section id="performance-metrics">
 <h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--diagnostics-performance">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/performance</span></span><a class="headerlink" href="#get--diagnostics-performance" title="Link to this definition"></a></dt>
+<dd><p>Get application performance metrics.</p>
+</dd></dl>
+
 </section>
 <section id="celery-diagnostics">
 <h3>Celery Diagnostics<a class="headerlink" href="#celery-diagnostics" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--diagnostics-celery">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/celery</span></span><a class="headerlink" href="#get--diagnostics-celery" title="Link to this definition"></a></dt>
+<dd><p>Get Celery worker and queue diagnostics.</p>
+</dd></dl>
+
 </section>
 </section>
 <section id="reporting">
 <h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading"></a></h2>
 <section id="daily-pipeline-metrics">
 <h3>Daily Pipeline Metrics<a class="headerlink" href="#daily-pipeline-metrics" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--reporting-daily-pipeline-metrics">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/daily-pipeline-metrics</span></span><a class="headerlink" href="#get--reporting-daily-pipeline-metrics" title="Link to this definition"></a></dt>
+<dd><p>Get daily pipeline metrics with pagination and filtering.</p>
+<p><strong>Query Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">page</span></code> (int): Page number (default: 1)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">page_size</span></code> (int): Items per page (default: 50)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Filter by pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (str): Start date filter</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (str): End date filter</p></li>
+</ul>
+</dd></dl>
+
 </section>
 <section id="pipeline-names">
 <h3>Pipeline Names<a class="headerlink" href="#pipeline-names" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--reporting-pipeline-names">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/pipeline-names</span></span><a class="headerlink" href="#get--reporting-pipeline-names" title="Link to this definition"></a></dt>
+<dd><p>Get list of pipeline names for dropdown.</p>
+</dd></dl>
+
 </section>
 <section id="pipeline-type-names">
 <h3>Pipeline Type Names<a class="headerlink" href="#pipeline-type-names" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--reporting-pipeline-type-names">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/pipeline-type-names</span></span><a class="headerlink" href="#get--reporting-pipeline-type-names" title="Link to this definition"></a></dt>
+<dd><p>Get list of pipeline type names for dropdown.</p>
+</dd></dl>
+
 </section>
 </section>
 <section id="interactive-documentation">
 <h2>Interactive Documentation<a class="headerlink" href="#interactive-documentation" title="Link to this heading"></a></h2>
 <section id="scalar-api-documentation">
 <h3>Scalar API Documentation<a class="headerlink" href="#scalar-api-documentation" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--scalar">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/scalar</span></span><a class="headerlink" href="#get--scalar" title="Link to this definition"></a></dt>
+<dd><p>Interactive API documentation using Scalar for an intuitive interface to explore and test all available endpoints.</p>
+</dd></dl>
+
 </section>
 </section>
 </section>

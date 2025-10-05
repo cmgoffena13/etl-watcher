@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HTTP Routing Table &mdash; Watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+ 
+
+    <script>
+      DOCUMENTATION_OPTIONS.COLLAPSE_INDEX = true;
+    </script>
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">HTTP Routing Table</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+
+   <h1>HTTP Routing Table</h1>
+
+   <div class="modindex-jumpbox">
+   <a href="#cap-/address"><strong>/address</strong></a> | 
+   <a href="#cap-/address_lineage"><strong>/address_lineage</strong></a> | 
+   <a href="#cap-/address_type"><strong>/address_type</strong></a> | 
+   <a href="#cap-/anomaly_detection_rule"><strong>/anomaly_detection_rule</strong></a> | 
+   <a href="#cap-/celery"><strong>/celery</strong></a> | 
+   <a href="#cap-/diagnostics"><strong>/diagnostics</strong></a> | 
+   <a href="#cap-/end_pipeline_execution"><strong>/end_pipeline_execution</strong></a> | 
+   <a href="#cap-/freshness"><strong>/freshness</strong></a> | 
+   <a href="#cap-/log_cleanup"><strong>/log_cleanup</strong></a> | 
+   <a href="#cap-/pipeline"><strong>/pipeline</strong></a> | 
+   <a href="#cap-/pipeline_type"><strong>/pipeline_type</strong></a> | 
+   <a href="#cap-/reporting"><strong>/reporting</strong></a> | 
+   <a href="#cap-/scalar"><strong>/scalar</strong></a> | 
+   <a href="#cap-/start_pipeline_execution"><strong>/start_pipeline_execution</strong></a> | 
+   <a href="#cap-/timeliness"><strong>/timeliness</strong></a> | 
+   <a href="#cap-/unflag_anomaly"><strong>/unflag_anomaly</strong></a>
+   </div>
+
+   <table class="indextable modindextable">
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/address"><td></td><td>
+       <strong>/address</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--address"><code class="xref">GET /address</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--address-address_id"><code class="xref">GET /address/{address_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--address"><code class="xref">POST /address</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#patch--address"><code class="xref">PATCH /address</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/address_lineage"><td></td><td>
+       <strong>/address_lineage</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--address_lineage-address_id"><code class="xref">GET /address_lineage/{address_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--address_lineage"><code class="xref">POST /address_lineage</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/address_type"><td></td><td>
+       <strong>/address_type</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--address_type"><code class="xref">GET /address_type</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--address_type-address_type_id"><code class="xref">GET /address_type/{address_type_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--address_type"><code class="xref">POST /address_type</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/anomaly_detection_rule"><td></td><td>
+       <strong>/anomaly_detection_rule</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--anomaly_detection_rule"><code class="xref">GET /anomaly_detection_rule</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--anomaly_detection_rule-anomaly_detection_rule_id"><code class="xref">GET /anomaly_detection_rule/{anomaly_detection_rule_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--anomaly_detection_rule"><code class="xref">POST /anomaly_detection_rule</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#patch--anomaly_detection_rule"><code class="xref">PATCH /anomaly_detection_rule</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/celery"><td></td><td>
+       <strong>/celery</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--celery-monitor-queue"><code class="xref">POST /celery/monitor-queue</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/diagnostics"><td></td><td>
+       <strong>/diagnostics</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--diagnostics"><code class="xref">GET /diagnostics</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--diagnostics-celery"><code class="xref">GET /diagnostics/celery</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--diagnostics-connection-performance"><code class="xref">GET /diagnostics/connection-performance</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--diagnostics-performance"><code class="xref">GET /diagnostics/performance</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--diagnostics-schema-health"><code class="xref">GET /diagnostics/schema-health</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/end_pipeline_execution"><td></td><td>
+       <strong>/end_pipeline_execution</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--end_pipeline_execution"><code class="xref">POST /end_pipeline_execution</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/freshness"><td></td><td>
+       <strong>/freshness</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--freshness"><code class="xref">POST /freshness</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/log_cleanup"><td></td><td>
+       <strong>/log_cleanup</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--log_cleanup"><code class="xref">POST /log_cleanup</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/pipeline"><td></td><td>
+       <strong>/pipeline</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--pipeline"><code class="xref">GET /pipeline</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--pipeline-pipeline_id"><code class="xref">GET /pipeline/{pipeline_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--pipeline"><code class="xref">POST /pipeline</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#patch--pipeline"><code class="xref">PATCH /pipeline</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/pipeline_type"><td></td><td>
+       <strong>/pipeline_type</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--pipeline_type"><code class="xref">GET /pipeline_type</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--pipeline_type-pipeline_type_id"><code class="xref">GET /pipeline_type/{pipeline_type_id}</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--pipeline_type"><code class="xref">POST /pipeline_type</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/reporting"><td></td><td>
+       <strong>/reporting</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--reporting-daily-pipeline-metrics"><code class="xref">GET /reporting/daily-pipeline-metrics</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--reporting-pipeline-names"><code class="xref">GET /reporting/pipeline-names</code></a></td><td>
+       <em></em></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--reporting-pipeline-type-names"><code class="xref">GET /reporting/pipeline-type-names</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/scalar"><td></td><td>
+       <strong>/scalar</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#get--scalar"><code class="xref">GET /scalar</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/start_pipeline_execution"><td></td><td>
+       <strong>/start_pipeline_execution</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--start_pipeline_execution"><code class="xref">POST /start_pipeline_execution</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/timeliness"><td></td><td>
+       <strong>/timeliness</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--timeliness"><code class="xref">POST /timeliness</code></a></td><td>
+       <em></em></td></tr>
+     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
+     <tr class="cap" id="cap-/unflag_anomaly"><td></td><td>
+       <strong>/unflag_anomaly</strong></td><td></td></tr>
+     <tr>
+       <td></td>
+       <td>
+       <a href="api/endpoints.html#post--unflag_anomaly"><code class="xref">POST /unflag_anomaly</code></a></td><td>
+       <em></em></td></tr>
+   </table>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

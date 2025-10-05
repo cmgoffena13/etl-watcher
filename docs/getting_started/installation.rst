@@ -50,25 +50,13 @@ Installation Steps
 
       docker-compose up -d
 
-5. **Run database migrations**
-
-   .. code-block:: bash
-
-      alembic upgrade head
-
-6. **Start the application**
-
-   .. code-block:: bash
-
-      uv run python src/app.py
-
 Verification
 -----------
 
 Once running, you can verify the installation:
 
 - **API Documentation** http://localhost:8000/scalar
-- **Health Check** http://localhost:8000/health
+- **Health Check** http://localhost:8000/
 - **Diagnostics** http://localhost:8000/diagnostics
 
 Environment Variables

@@ -21,6 +21,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.todo",
     "myst_parser",
+    "sphinxcontrib.httpdomain",
 ]
 
 # Set the master document
