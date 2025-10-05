@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture &mdash; Watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Database Migrations" href="migrations.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/address_lineage.html">Address Lineage</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#high-level-architecture">High-Level Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fastapi-framework">FastAPI Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#postgresql-database">PostgreSQL Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery-background-processing">Celery Background Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#redis-message-broker">Redis Message Broker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker-containerization">Docker Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-design-goals">Performance Design Goals</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Architecture</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/architecture.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="architecture">
+<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
+<p>Watcher is an Open Source ETL Metadata Framework designed for high-performance data pipeline monitoring and observability. Built with FastAPI and optimized for speed, it provides fast response times to ensure minimal impact on your data pipelines.</p>
+<section id="high-level-architecture">
+<h2>High-Level Architecture<a class="headerlink" href="#high-level-architecture" title="Link to this heading"></a></h2>
+<p>Watcher is built on a modern, high-performance stack designed for scalability and reliability:</p>
+<p><strong>Core Components:</strong></p>
+<ul class="simple">
+<li><p><strong>FastAPI</strong> - High-performance web framework with async support</p></li>
+<li><p><strong>PostgreSQL</strong> - Reliable, open-source database with advanced features</p></li>
+<li><p><strong>Celery</strong> - Distributed task queue for background processing</p></li>
+<li><p><strong>Redis</strong> - Message broker and caching layer</p></li>
+<li><p><strong>Docker</strong> - Containerization for deployment and scaling</p></li>
+</ul>
+<p><strong>Design Philosophy:</strong></p>
+<ul class="simple">
+<li><p><strong>High Performance</strong> - Optimized for fast response times and minimal pipeline impact</p></li>
+<li><p><strong>Scalability</strong> - Designed to handle large-scale data operations</p></li>
+<li><p><strong>Reliability</strong> - Built with production-grade components and error handling</p></li>
+<li><p><strong>Observability</strong> - Comprehensive monitoring and alerting capabilities</p></li>
+</ul>
+</section>
+<section id="fastapi-framework">
+<h2>FastAPI Framework<a class="headerlink" href="#fastapi-framework" title="Link to this heading"></a></h2>
+<p>FastAPI was chosen for its simplicity, speed, and modern async capabilities:</p>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p><strong>orjson Integration</strong> - Fast JSON serialization/deserialization for optimal performance</p></li>
+<li><p><strong>Gunicorn + Uvicorn</strong> - Production-ready ASGI server with worker management</p></li>
+<li><p><strong>asyncpg Integration</strong> - Fastest asynchronous PostgreSQL driver</p></li>
+<li><p><strong>Connection Pooling</strong> - Efficient database connection management</p></li>
+<li><p><strong>Pydantic Validation</strong> - Automatic request/response validation with database constraint enforcement</p></li>
+<li><p><strong>Full Async Support</strong> - Asynchronous operations throughout the application</p></li>
+</ul>
+<p><strong>Performance Benefits:</strong></p>
+<ul class="simple">
+<li><p>Sub-second response times for all API endpoints</p></li>
+<li><p>Minimal overhead on pipeline execution</p></li>
+<li><p>High concurrency support for multiple simultaneous requests</p></li>
+</ul>
+</section>
+<section id="postgresql-database">
+<h2>PostgreSQL Database<a class="headerlink" href="#postgresql-database" title="Link to this heading"></a></h2>
+<p>PostgreSQL provides the robust, scalable foundation for Watcher’s metadata storage:</p>
+<p><strong>Optimizations:</strong></p>
+<ul class="simple">
+<li><p><strong>RETURNING Clauses</strong> - Combines INSERT/UPDATE and SELECT operations to minimize database trips</p></li>
+<li><p><strong>Strategic Indexing</strong> - Comprehensive indexing strategy designed for large table growth</p></li>
+<li><p><strong>BIGINT Support</strong> - Handles massive scale (beyond 2 billion records)</p></li>
+<li><p><strong>Check Constraints</strong> - Data quality enforcement at the database level</p></li>
+<li><p><strong>JSONB Support</strong> - Flexible metadata storage with efficient querying</p></li>
+</ul>
+<p><strong>Database Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Closure Tables</strong> - Efficient hierarchical relationship queries for pipeline executions and address lineage</p></li>
+<li><p><strong>Custom Enums</strong> - Type-safe enumeration support for data validation</p></li>
+<li><p><strong>Timezone Awareness</strong> - Proper handling of temporal data across time zones</p></li>
+<li><p><strong>Foreign Key Constraints</strong> - Referential integrity enforcement</p></li>
+</ul>
+</section>
+<section id="celery-background-processing">
+<h2>Celery Background Processing<a class="headerlink" href="#celery-background-processing" title="Link to this heading"></a></h2>
+<p>Celery handles time-consuming operations to keep the main API responsive:</p>
+<p><strong>Performance Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Rate Limiting</strong> - Protects database from overwhelming requests</p></li>
+<li><p><strong>Task Duration Logging</strong> - Performance monitoring and analysis</p></li>
+<li><p><strong>Scalable Workers</strong> - Horizontal scaling for increased throughput</p></li>
+<li><p><strong>Retry Logic</strong> - Automatic failure recovery with exponential backoff</p></li>
+</ul>
+</section>
+<section id="redis-message-broker">
+<h2>Redis Message Broker<a class="headerlink" href="#redis-message-broker" title="Link to this heading"></a></h2>
+<p>Redis serves as the message broker and provides additional functionality:</p>
+<p><strong>Primary Functions:</strong></p>
+<ul class="simple">
+<li><p><strong>Celery Queue</strong> - Task distribution and management</p></li>
+<li><p><strong>Persistence</strong> - Queue durability for reliability</p></li>
+<li><p><strong>Task Duration Storage</strong> - Performance metrics collection</p></li>
+<li><p><strong>Queue Monitoring</strong> - Real-time queue status and health checks</p></li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>High Performance</strong> - Fast message passing and caching</p></li>
+<li><p><strong>Reliability</strong> - Persistent queues prevent task loss</p></li>
+<li><p><strong>Monitoring</strong> - Built-in queue health and performance metrics</p></li>
+</ul>
+</section>
+<section id="docker-containerization">
+<h2>Docker Containerization<a class="headerlink" href="#docker-containerization" title="Link to this heading"></a></h2>
+<p>Docker provides standardized deployment and development environments:</p>
+<p><strong>Container Strategy:</strong></p>
+<ul class="simple">
+<li><p><strong>FastAPI Application</strong> - Web API container with Gunicorn workers</p></li>
+<li><p><strong>Celery Workers</strong> - Background task processing containers</p></li>
+<li><p><strong>Development Environment</strong> - Docker Compose for local development</p></li>
+<li><p><strong>Production Deployment</strong> - Kubernetes-ready container images</p></li>
+</ul>
+</section>
+<section id="logfire-integration">
+<h2>Logfire Integration<a class="headerlink" href="#logfire-integration" title="Link to this heading"></a></h2>
+<p>Logfire provides comprehensive logging and monitoring capabilities:</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Centralized Logging</strong> - Aggregates logs from FastAPI and Celery workers</p></li>
+<li><p><strong>Error Rate Monitoring</strong> - Automatic alerting for error rate spikes</p></li>
+<li><p><strong>Performance Tracking</strong> - Request/response time monitoring</p></li>
+<li><p><strong>Debugging Support</strong> - Detailed request tracing and error analysis</p></li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Observability</strong> - Complete visibility into system behavior</p></li>
+<li><p><strong>Alerting</strong> - Proactive issue detection and notification</p></li>
+<li><p><strong>Debugging</strong> - Easy troubleshooting with detailed logs</p></li>
+<li><p><strong>Performance Analysis</strong> - Identify bottlenecks and optimization opportunities</p></li>
+</ul>
+</section>
+<section id="performance-design-goals">
+<h2>Performance Design Goals<a class="headerlink" href="#performance-design-goals" title="Link to this heading"></a></h2>
+<p>Watcher was designed with one primary goal: <strong>minimal impact on your data pipelines</strong>.</p>
+<p><strong>Key Principles:</strong></p>
+<ul class="simple">
+<li><p><strong>Fast Response Times</strong> - Every API call optimized for speed</p></li>
+<li><p><strong>Efficient Database Queries</strong> - Minimal database round trips</p></li>
+<li><p><strong>Background Processing</strong> - Heavy operations don’t block API responses</p></li>
+<li><p><strong>Resource Optimization</strong> - Efficient memory and CPU usage</p></li>
+<li><p><strong>Scalable Architecture</strong> - Grows with your data infrastructure</p></li>
+</ul>
+<p><strong>Result:</strong>
+The Watcher framework provides comprehensive metadata management and monitoring capabilities while maintaining negligible performance impact on your data pipelines. This ensures that adding observability doesn’t slow down your data processing workflows.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="migrations.html" class="btn btn-neutral float-left" title="Database Migrations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

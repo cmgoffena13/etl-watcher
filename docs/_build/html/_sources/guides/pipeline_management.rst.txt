@@ -1,7 +1,8 @@
 Pipeline Management
 ====================
 
-This guide covers how to effectively manage data pipelines in Watcher.
+This guide covers how to effectively manage data pipelines in Watcher, 
+including execution tracking, hierarchical workflows, and organizational best practices.
 
 Creating Pipelines
 ------------------
@@ -9,33 +10,79 @@ Creating Pipelines
 Basic Pipeline Creation
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Create a pipeline type first**
+Create a pipeline (pipeline_type is automatically created if it doesn't exist):
 
-   .. code-block:: bash
+.. tabs::
 
-      curl -X POST "http://localhost:8000/pipeline_type" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "name": "extraction",
-             "group_name": "databricks"
-           }'
+   .. tab:: Python - requests
 
-2. **Create the pipeline**
+      .. code-block:: python
 
-   .. code-block:: bash
+         import requests
 
-      curl -X POST "http://localhost:8000/pipeline" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "name": "Daily Sales Pipeline",
+         pipeline_data = {
+             "name": "daily sales pipeline",
              "pipeline_type_name": "extraction",
-             "next_watermark": "2024-01-01T00:00:00Z",
              "pipeline_metadata": {
-               "description": "Daily extraction of sales data",
-               "owner": "data-team",
-               "schedule": "0 2 * * *"
+                 "description": "Daily extraction of sales data",
+                 "owner": "data-team",
+                 "schedule": "0 2 * * *"
              }
-           }'
+         }
+
+         response = requests.post(
+             "http://localhost:8000/pipeline",
+             json=pipeline_data
+         )
+         print(response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         pipeline_data = {
+             "name": "daily sales pipeline",
+             "pipeline_type_name": "extraction",
+             "pipeline_metadata": {
+                 "description": "Daily extraction of sales data",
+                 "owner": "data-team",
+                 "schedule": "0 2 * * *"
+             }
+         }
+
+         with httpx.Client() as client:
+             response = client.post(
+                 "http://localhost:8000/pipeline",
+                 json=pipeline_data
+             )
+             print(response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         curl -X POST "http://localhost:8000/pipeline" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "name": "daily sales pipeline",
+                "pipeline_type_name": "extraction",
+                "pipeline_metadata": {
+                  "description": "Daily extraction of sales data",
+                  "owner": "data-team",
+                  "schedule": "0 2 * * *"
+                }
+              }'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         http POST localhost:8000/pipeline \
+              name="daily sales pipeline" \
+              pipeline_type_name=extraction \
+              pipeline_metadata:='{"description": "Daily extraction of sales data", "owner": "data-team", "schedule": "0 2 * * *"}'
 
 Pipeline Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,38 +107,163 @@ Configure monitoring settings during pipeline creation:
 Pipeline Execution
 ------------------
 
-Starting Executions
+Starting and Ending Executions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Start a pipeline execution**
+.. tabs::
 
-   .. code-block:: bash
+   .. tab:: Python - requests
 
-      curl -X POST "http://localhost:8000/start_pipeline_execution" \
-           -H "Content-Type: application/json" \
-           -d '{
+      .. code-block:: python
+
+         import requests
+
+         # Start execution
+         start_data = {
              "pipeline_id": 1,
              "start_date": "2024-01-01T10:00:00Z",
-             "full_load": true,
-             "watermark": "2024-01-01T00:00:00Z",
-             "next_watermark": "2024-01-01T23:59:59Z"
-           }'
+             "full_load": True
+         }
 
-2. **End the execution with metrics**
+         start_response = requests.post(
+             "http://localhost:8000/start_pipeline_execution",
+             json=start_data
+         )
+         execution_id = start_response.json()["id"]
+         print(f"Execution started: {execution_id}")
 
-   .. code-block:: bash
+         # Your pipeline code executes here
+         # - Data extraction/transformation logic
+         # - Database operations
+         # - File processing
+         # - API calls
+         # - Any other business logic
 
-      curl -X POST "http://localhost:8000/end_pipeline_execution" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "id": 1,
+         # End execution
+         end_data = {
+             "id": execution_id,
+             "pipeline_id": 1,
              "end_date": "2024-01-01T10:05:00Z",
-             "completed_successfully": true,
+             "completed_successfully": True,
              "total_rows": 10000,
              "inserts": 8000,
              "updates": 2000,
              "soft_deletes": 0
-           }'
+         }
+
+         end_response = requests.post(
+             "http://localhost:8000/end_pipeline_execution",
+             json=end_data
+         )
+         print(end_response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         with httpx.Client() as client:
+             # Start execution
+             start_data = {
+                 "pipeline_id": 1,
+                 "start_date": "2024-01-01T10:00:00Z",
+                 "full_load": True
+             }
+
+             start_response = client.post(
+                 "http://localhost:8000/start_pipeline_execution",
+                 json=start_data
+             )
+             execution_id = start_response.json()["id"]
+             print(f"Execution started: {execution_id}")
+
+             # Your pipeline code executes here
+             # - Data extraction/transformation logic
+             # - Database operations
+             # - File processing
+             # - API calls
+             # - Any other business logic
+
+             # End execution
+             end_data = {
+                 "id": execution_id,
+                 "pipeline_id": 1,
+                 "end_date": "2024-01-01T10:05:00Z",
+                 "completed_successfully": True,
+                 "total_rows": 10000,
+                 "inserts": 8000,
+                 "updates": 2000,
+                 "soft_deletes": 0
+             }
+
+             end_response = client.post(
+                 "http://localhost:8000/end_pipeline_execution",
+                 json=end_data
+             )
+             print(end_response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         # Start execution
+         curl -X POST "http://localhost:8000/start_pipeline_execution" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "pipeline_id": 1,
+                "start_date": "2024-01-01T10:00:00Z",
+                "full_load": true
+              }'
+
+         # Your pipeline code executes here
+         # - Data extraction/transformation logic
+         # - Database operations
+         # - File processing
+         # - API calls
+         # - Any other business logic
+
+         # End execution
+         curl -X POST "http://localhost:8000/end_pipeline_execution" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "id": 1,
+                "pipeline_id": 1,
+                "end_date": "2024-01-01T10:05:00Z",
+                "completed_successfully": true,
+                "total_rows": 10000,
+                "inserts": 8000,
+                "updates": 2000,
+                "soft_deletes": 0
+              }'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         # Start execution
+         http POST localhost:8000/start_pipeline_execution \
+              pipeline_id=1 \
+              start_date="2024-01-01T10:00:00Z" \
+              full_load=true
+
+         # Your pipeline code executes here
+         # - Data extraction/transformation logic
+         # - Database operations
+         # - File processing
+         # - API calls
+         # - Any other business logic
+
+         # End execution
+         http POST localhost:8000/end_pipeline_execution \
+              id=1 \
+              pipeline_id=1 \
+              end_date="2024-01-01T10:05:00Z" \
+              completed_successfully=true \
+              total_rows=10000 \
+              inserts=8000 \
+              updates=2000 \
+              soft_deletes=0
 
 Execution Patterns
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -103,9 +275,7 @@ Execution Patterns
    {
      "pipeline_id": 1,
      "start_date": "2024-01-01T10:00:00Z",
-     "full_load": true,
-     "watermark": "2024-01-01T00:00:00Z",
-     "next_watermark": "2024-01-01T23:59:59Z"
+     "full_load": true
    }
 
 **Incremental Load Pattern**
@@ -116,7 +286,6 @@ Execution Patterns
      "pipeline_id": 1,
      "start_date": "2024-01-02T10:00:00Z",
      "full_load": false,
-     "watermark": "2024-01-01T23:59:59Z",
      "next_watermark": "2024-01-02T23:59:59Z"
    }
 
@@ -128,141 +297,11 @@ Execution Patterns
      "pipeline_id": 1,
      "start_date": "2024-01-01T10:00:00Z",
      "full_load": true,
-     "watermark": "2024-01-01T00:00:00Z",
-     "next_watermark": "2024-01-01T23:59:59Z",
-     "parent_id": null,
-     "execution_metadata": {
-       "trigger": "scheduled",
-       "batch_id": "batch_001"
-     }
+     "parent_id": 5
    }
-
-Watermark Management
--------------------
-
-Understanding Watermarks
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Watermarks track the progress of data processing:
-
-- **watermark** Current position (where processing has reached)
-- **next_watermark** Target position (where processing should go to)
-
-Watermark Patterns
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Daily Processing**
-
-.. code-block:: json
-
-   {
-     "watermark": "2024-01-01T00:00:00Z",
-     "next_watermark": "2024-01-01T23:59:59Z"
-   }
-
-**Hourly Processing**
-
-.. code-block:: json
-
-   {
-     "watermark": "2024-01-01T10:00:00Z",
-     "next_watermark": "2024-01-01T11:00:00Z"
-   }
-
-**Numeric Watermarks**
-
-.. code-block:: json
-
-   {
-     "watermark": "1000",
-     "next_watermark": "2000"
-   }
-
-Watermark Increment Logic
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-After successful execution, the watermark is automatically updated:
-
-1. **Execution completes successfully**
-2. **Pipeline watermark becomes next_watermark**
-3. **Next execution starts from the new watermark**
-
-Example Flow:
-
-.. code-block:: text
-
-   Execution 1: watermark=0, next_watermark=1000 → Success → watermark=1000
-   Execution 2: watermark=1000, next_watermark=2000 → Success → watermark=2000
-   Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
-
-Address Lineage
-------------
-
-Creating Lineage Relationships
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Track relationships between data sources:
-
-.. code-block:: bash
-
-      curl -X POST "http://localhost:8000/address_lineage" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "pipeline_id": 1,
-             "source_addresses": [
-               {
-                 "name": "raw_sales_data",
-                 "address_type_name": "databricks",
-                 "address_type_group_name": "database"
-               }
-             ],
-             "target_addresses": [
-               {
-                 "name": "processed_sales_data",
-                 "address_type_name": "databricks",
-                 "address_type_group_name": "database"
-               }
-             ]
-           }'
-
-Querying Lineage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Get lineage information for an address:
-
-.. code-block:: bash
-
-   curl -X GET "http://localhost:8000/address_lineage/1"
-   
-   # Response
-   [
-     {
-       "source_address_id": 1,
-       "target_address_id": 2,
-       "depth": 1,
-       "source_address_name": "raw_sales_data",
-       "target_address_name": "processed_sales_data"
-     }
-   ]
 
 Pipeline Updates
 ----------------
-
-Updating Pipeline Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Update pipeline settings:
-
-.. code-block:: bash
-
-   curl -X PATCH "http://localhost:8000/pipeline" \
-        -H "Content-Type: application/json" \
-        -d '{
-          "id": 1,
-          "name": "Updated Pipeline Name",
-          "next_watermark": "2024-01-02T00:00:00Z",
-          "mute_freshness_check": true
-        }'
 
 Common Update Scenarios
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -298,29 +337,224 @@ Common Update Scenarios
      "next_watermark": "2024-01-02T00:00:00Z"
    }
 
-Best Practices
---------------
+Nested Pipeline Executions
+--------------------------
 
-Pipeline Design
+Watcher supports hierarchical pipeline execution tracking through the `parent_id` field, enabling you to model complex workflows with sub-pipelines and dependencies.
+
+**Use Cases:**
+
+- **Main Pipeline**: A main orchestration pipeline that coordinates multiple sub-pipelines
+- **Sub-Pipeline Tracking**: Individual components or steps within a larger workflow
+- **Dependency Management**: Track which sub-pipelines depend on others
+- **Performance Analysis**: Analyze execution times at both main and sub-pipeline levels
+- **Error Isolation**: Identify which specific sub-pipeline failed within a complex workflow
+
+**Example Workflow:**
+
+.. code-block:: text
+
+   Main Pipeline: data_processing_main
+   ├── Sub-Pipeline: extract_sales_data (parent_id: main_execution_id)
+   ├── Sub-Pipeline: extract_marketing_data (parent_id: main_execution_id)
+   ├── Sub-Pipeline: transform_combined_data (parent_id: main_execution_id)
+   └── Sub-Pipeline: load_to_warehouse (parent_id: main_execution_id)
+
+**API Usage:**
+
+.. tabs::
+
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+
+         # Start main pipeline execution
+         main_response = requests.post(
+             "http://localhost:8000/start_pipeline_execution",
+             json={
+                 "pipeline_id": 1,
+                 "start_date": "2024-01-01T10:00:00Z",
+                 "full_load": True
+             }
+         )
+         main_execution_id = main_response.json()["id"]
+
+         # Start sub-pipeline with parent reference
+         sub_response = requests.post(
+             "http://localhost:8000/start_pipeline_execution",
+             json={
+                 "pipeline_id": 2,
+                 "start_date": "2024-01-01T10:00:00Z",
+                 "full_load": True,
+                 "parent_id": main_execution_id
+             }
+         )
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         with httpx.Client() as client:
+             # Start main pipeline execution
+             main_response = client.post(
+                 "http://localhost:8000/start_pipeline_execution",
+                 json={
+                     "pipeline_id": 1,
+                     "start_date": "2024-01-01T10:00:00Z",
+                     "full_load": True
+                 }
+             )
+             main_execution_id = main_response.json()["id"]
+
+             # Start sub-pipeline with parent reference
+             sub_response = client.post(
+                 "http://localhost:8000/start_pipeline_execution",
+                 json={
+                     "pipeline_id": 2,
+                     "start_date": "2024-01-01T10:00:00Z",
+                     "full_load": True,
+                     "parent_id": main_execution_id
+                 }
+             )
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         # Start main pipeline execution
+         curl -X POST "http://localhost:8000/start_pipeline_execution" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "pipeline_id": 1,
+                "start_date": "2024-01-01T10:00:00Z",
+                "full_load": true
+              }'
+
+         # Start sub-pipeline with parent reference
+         curl -X POST "http://localhost:8000/start_pipeline_execution" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "pipeline_id": 2,
+                "start_date": "2024-01-01T10:00:00Z",
+                "full_load": true,
+                "parent_id": 123
+              }'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         # Start main pipeline execution
+         http POST localhost:8000/start_pipeline_execution \
+              pipeline_id=1 \
+              start_date="2024-01-01T10:00:00Z" \
+              full_load=true
+
+         # Start sub-pipeline with parent reference
+         http POST localhost:8000/start_pipeline_execution \
+              pipeline_id=2 \
+              start_date="2024-01-01T10:00:00Z" \
+              full_load=true \
+              parent_id=123
+
+Querying Nested Executions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Clear Naming** Use descriptive names for pipelines
-- **Consistent Watermarks** Use consistent watermark formats
-- **Metadata** Include relevant metadata for context
-- **Monitoring** Configure appropriate monitoring thresholds
+The system automatically maintains a closure table (`pipeline_execution_closure`) that enables efficient querying of hierarchical relationships without recursive queries.
 
-Execution Management
+**Closure Table Structure:**
+
+- `parent_execution_id`: The ancestor execution ID
+- `child_execution_id`: The descendant execution ID  
+- `depth`: The relationship depth (0 = self-reference, 1 = direct child, 2 = grandchild, etc.)
+
+**Example Queries:**
+
+.. code-block:: sql
+
+   -- Get all direct children of an execution
+   SELECT pe.* 
+   FROM pipeline_execution pe
+   JOIN pipeline_execution_closure pec 
+       ON pe.id = pec.child_execution_id
+   WHERE pec.parent_execution_id = 123 
+       AND pec.depth = 1;
+
+   -- Get all downstream dependencies of an execution
+   SELECT pe.* 
+   FROM pipeline_execution pe
+   JOIN pipeline_execution_closure pec 
+       ON pe.id = pec.child_execution_id
+   WHERE pec.parent_execution_id = 123 
+       AND pec.depth > 0;
+
+   -- Get all upstream dependencies of an execution
+   SELECT pe.* 
+   FROM pipeline_execution pe
+   JOIN pipeline_execution_closure pec 
+       ON pe.id = pec.parent_execution_id
+   WHERE pec.child_execution_id = 456 
+       AND pec.depth > 0;
+
+**Benefits:**
+
+- **Hierarchical Monitoring**: Track both overall workflow progress and individual component performance
+- **Dependency Tracking**: Understand which sub-pipelines are blocking others
+- **Root Cause Analysis**: Quickly identify which specific component caused a failure
+- **Resource Optimization**: Analyze which sub-pipelines consume the most time/resources
+- **Audit Trail**: Complete visibility into complex multi-step data processes
+
+Pipeline Organization
+-----------------------
+
+Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration.
+
+**Best Practices:**
+
+1. **Consistency**: Use the same naming patterns across all teams and projects
+2. **Descriptiveness**: Names should clearly indicate purpose and scope
+3. **Hierarchy**: Use underscores to create logical hierarchies
+4. **Future-Proofing**: Choose names that will remain relevant as systems evolve
+5. **Documentation**: Document your naming conventions and share with all teams
+6. **Validation**: Implement naming validation in your CI/CD pipeline or code reviews
+
+Pipeline Type Organization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Regular Executions** Run pipelines on consistent schedules
-- **Proper Metrics** Always provide accurate execution metrics
-- **Error Handling** Handle failures gracefully
-- **Documentation** Document pipeline behavior and dependencies
+Organize pipeline types by data processing patterns or business domains or a combination of both:
 
-Monitoring Strategy
+**Data Processing Pattern:**
+
+- `extraction` - Data extraction pipelines
+- `transformation` - Data transformation and processing
+- `loading` - Data loading and materialization
+- `audit` - Data quality and validation
+- `monitoring` - System monitoring and health checks  
+
+**Business Domain:**
+
+- `sales`
+- `marketing`
+- `finance` 
+
+**Combination:**
+
+- `sales_extraction`
+- `marketing_audit`
+- `finance_monitoring`
+
+Pipeline Naming Convention
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Appropriate Thresholds** Set realistic monitoring thresholds
-- **Regular Checks** Run monitoring checks regularly
-- **Alert Configuration** Configure appropriate alerting
-- **Performance Tracking** Monitor execution performance trends
+Use a clear naming structure that matches back to the pipeline code (e.g., DAG name, job name, or workflow identifier).
+
+**Best Practices:**
+
+- Match your DAG/job/workflow names exactly
+- Use consistent abbreviations across your organization
+- Keep names descriptive but concise
+- Use underscores for separation, avoid special characters

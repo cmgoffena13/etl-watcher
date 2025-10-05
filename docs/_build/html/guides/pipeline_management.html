@@ -9,6 +9,7 @@
   <title>Pipeline Management &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -16,6 +17,7 @@
       <script src="../_static/documentation_options.js?v=8d563738"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -63,36 +65,29 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#starting-executions">Starting Executions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#execution-patterns">Execution Patterns</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#watermark-management">Watermark Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#understanding-watermarks">Understanding Watermarks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#watermark-patterns">Watermark Patterns</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#watermark-increment-logic">Watermark Increment Logic</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#address-lineage">Address Lineage</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#creating-lineage-relationships">Creating Lineage Relationships</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#querying-lineage">Querying Lineage</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-updates">Pipeline Updates</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#updating-pipeline-configuration">Updating Pipeline Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#common-update-scenarios">Common Update Scenarios</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pipeline-design">Pipeline Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#execution-management">Execution Management</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nested-pipeline-executions">Nested Pipeline Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#querying-nested-executions">Querying Nested Executions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-organization">Pipeline Organization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-type-organization">Pipeline Type Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-naming-convention">Pipeline Naming Convention</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -126,29 +121,58 @@
              
   <section id="pipeline-management">
 <h1>Pipeline Management<a class="headerlink" href="#pipeline-management" title="Link to this heading"></a></h1>
-<p>This guide covers how to effectively manage data pipelines in Watcher.</p>
+<p>This guide covers how to effectively manage data pipelines in Watcher,
+including execution tracking, hierarchical workflows, and organizational best practices.</p>
 <section id="creating-pipelines">
 <h2>Creating Pipelines<a class="headerlink" href="#creating-pipelines" title="Link to this heading"></a></h2>
 <section id="basic-pipeline-creation">
 <h3>Basic Pipeline Creation<a class="headerlink" href="#basic-pipeline-creation" title="Link to this heading"></a></h3>
-<ol class="arabic">
-<li><p><strong>Create a pipeline type first</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline_type&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;name&quot;: &quot;extraction&quot;,</span>
-<span class="s1">       &quot;group_name&quot;: &quot;databricks&quot;</span>
-<span class="s1">     }&#39;</span>
+<p>Create a pipeline (pipeline_type is automatically created if it doesn’t exist):</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">pipeline_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;daily sales pipeline&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily extraction of sales data&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="s2">&quot;0 2 * * *&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">pipeline_data</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</li>
-<li><p><strong>Create the pipeline</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="n">pipeline_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;daily sales pipeline&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily extraction of sales data&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="s2">&quot;0 2 * * *&quot;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">pipeline_data</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;name&quot;: &quot;Daily Sales Pipeline&quot;,</span>
+<span class="s1">       &quot;name&quot;: &quot;daily sales pipeline&quot;,</span>
 <span class="s1">       &quot;pipeline_type_name&quot;: &quot;extraction&quot;,</span>
-<span class="s1">       &quot;next_watermark&quot;: &quot;2024-01-01T00:00:00Z&quot;,</span>
 <span class="s1">       &quot;pipeline_metadata&quot;: {</span>
 <span class="s1">         &quot;description&quot;: &quot;Daily extraction of sales data&quot;,</span>
 <span class="s1">         &quot;owner&quot;: &quot;data-team&quot;,</span>
@@ -157,8 +181,13 @@
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</li>
-</ol>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">name</span><span class="o">=</span><span class="s2">&quot;daily sales pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_type_name</span><span class="o">=</span>extraction<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>pipeline_metadata:<span class="o">=</span><span class="s1">&#39;{&quot;description&quot;: &quot;Daily extraction of sales data&quot;, &quot;owner&quot;: &quot;data-team&quot;, &quot;schedule&quot;: &quot;0 2 * * *&quot;}&#39;</span>
+</pre></div>
+</div>
+</div></div>
 </section>
 <section id="pipeline-configuration">
 <h3>Pipeline Configuration<a class="headerlink" href="#pipeline-configuration" title="Link to this heading"></a></h3>
@@ -181,27 +210,116 @@
 </section>
 <section id="pipeline-execution">
 <h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>
-<section id="starting-executions">
-<h3>Starting Executions<a class="headerlink" href="#starting-executions" title="Link to this heading"></a></h3>
-<ol class="arabic">
-<li><p><strong>Start a pipeline execution</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+<section id="starting-and-ending-executions">
+<h3>Starting and Ending Executions<a class="headerlink" href="#starting-and-ending-executions" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Start execution</span>
+<span class="n">start_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="n">start_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">start_data</span>
+<span class="p">)</span>
+<span class="n">execution_id</span> <span class="o">=</span> <span class="n">start_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution started: </span><span class="si">{</span><span class="n">execution_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Your pipeline code executes here</span>
+<span class="c1"># - Data extraction/transformation logic</span>
+<span class="c1"># - Database operations</span>
+<span class="c1"># - File processing</span>
+<span class="c1"># - API calls</span>
+<span class="c1"># - Any other business logic</span>
+
+<span class="c1"># End execution</span>
+<span class="n">end_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">execution_id</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+    <span class="s2">&quot;inserts&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+    <span class="s2">&quot;updates&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+    <span class="s2">&quot;soft_deletes&quot;</span><span class="p">:</span> <span class="mi">0</span>
+<span class="p">}</span>
+
+<span class="n">end_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">end_data</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">end_response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Start execution</span>
+    <span class="n">start_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">}</span>
+
+    <span class="n">start_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">start_data</span>
+    <span class="p">)</span>
+    <span class="n">execution_id</span> <span class="o">=</span> <span class="n">start_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Execution started: </span><span class="si">{</span><span class="n">execution_id</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Your pipeline code executes here</span>
+    <span class="c1"># - Data extraction/transformation logic</span>
+    <span class="c1"># - Database operations</span>
+    <span class="c1"># - File processing</span>
+    <span class="c1"># - API calls</span>
+    <span class="c1"># - Any other business logic</span>
+
+    <span class="c1"># End execution</span>
+    <span class="n">end_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">execution_id</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
+        <span class="s2">&quot;inserts&quot;</span><span class="p">:</span> <span class="mi">8000</span><span class="p">,</span>
+        <span class="s2">&quot;updates&quot;</span><span class="p">:</span> <span class="mi">2000</span><span class="p">,</span>
+        <span class="s2">&quot;soft_deletes&quot;</span><span class="p">:</span> <span class="mi">0</span>
+    <span class="p">}</span>
+
+    <span class="n">end_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">end_data</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">end_response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
-<span class="s1">       &quot;full_load&quot;: true,</span>
-<span class="s1">       &quot;watermark&quot;: &quot;2024-01-01T00:00:00Z&quot;,</span>
-<span class="s1">       &quot;next_watermark&quot;: &quot;2024-01-01T23:59:59Z&quot;</span>
+<span class="s1">       &quot;full_load&quot;: true</span>
 <span class="s1">     }&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>End the execution with metrics</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+
+<span class="c1"># Your pipeline code executes here</span>
+<span class="c1"># - Data extraction/transformation logic</span>
+<span class="c1"># - Database operations</span>
+<span class="c1"># - File processing</span>
+<span class="c1"># - API calls</span>
+<span class="c1"># - Any other business logic</span>
+
+<span class="c1"># End execution</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;id&quot;: 1,</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;end_date&quot;: &quot;2024-01-01T10:05:00Z&quot;,</span>
 <span class="s1">       &quot;completed_successfully&quot;: true,</span>
 <span class="s1">       &quot;total_rows&quot;: 10000,</span>
@@ -211,8 +329,32 @@
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</li>
-</ol>
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pipeline_execution<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">full_load</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c1"># Your pipeline code executes here</span>
+<span class="c1"># - Data extraction/transformation logic</span>
+<span class="c1"># - Database operations</span>
+<span class="c1"># - File processing</span>
+<span class="c1"># - API calls</span>
+<span class="c1"># - Any other business logic</span>
+
+<span class="c1"># End execution</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/end_pipeline_execution<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">end_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">completed_successfully</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">total_rows</span><span class="o">=</span><span class="m">10000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">inserts</span><span class="o">=</span><span class="m">8000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">updates</span><span class="o">=</span><span class="m">2000</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">soft_deletes</span><span class="o">=</span><span class="m">0</span>
+</pre></div>
+</div>
+</div></div>
 </section>
 <section id="execution-patterns">
 <h3>Execution Patterns<a class="headerlink" href="#execution-patterns" title="Link to this heading"></a></h3>
@@ -220,9 +362,7 @@
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span>
+<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -231,7 +371,6 @@
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T10:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T23:59:59Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -241,130 +380,14 @@
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;parent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;execution_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;trigger&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;scheduled&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;batch_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;batch_001&quot;</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="nt">&quot;parent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
 <span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="watermark-management">
-<h2>Watermark Management<a class="headerlink" href="#watermark-management" title="Link to this heading"></a></h2>
-<section id="understanding-watermarks">
-<h3>Understanding Watermarks<a class="headerlink" href="#understanding-watermarks" title="Link to this heading"></a></h3>
-<p>Watermarks track the progress of data processing:</p>
-<ul class="simple">
-<li><p><strong>watermark</strong> Current position (where processing has reached)</p></li>
-<li><p><strong>next_watermark</strong> Target position (where processing should go to)</p></li>
-</ul>
-</section>
-<section id="watermark-patterns">
-<h3>Watermark Patterns<a class="headerlink" href="#watermark-patterns" title="Link to this heading"></a></h3>
-<p><strong>Daily Processing</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Hourly Processing</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T11:00:00Z&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Numeric Watermarks</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1000&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2000&quot;</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-<section id="watermark-increment-logic">
-<h3>Watermark Increment Logic<a class="headerlink" href="#watermark-increment-logic" title="Link to this heading"></a></h3>
-<p>After successful execution, the watermark is automatically updated:</p>
-<ol class="arabic simple">
-<li><p><strong>Execution completes successfully</strong></p></li>
-<li><p><strong>Pipeline watermark becomes next_watermark</strong></p></li>
-<li><p><strong>Next execution starts from the new watermark</strong></p></li>
-</ol>
-<p>Example Flow:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Execution 1: watermark=0, next_watermark=1000 → Success → watermark=1000
-Execution 2: watermark=1000, next_watermark=2000 → Success → watermark=2000
-Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
-</pre></div>
-</div>
-</section>
-</section>
-<section id="address-lineage">
-<h2>Address Lineage<a class="headerlink" href="#address-lineage" title="Link to this heading"></a></h2>
-<section id="creating-lineage-relationships">
-<h3>Creating Lineage Relationships<a class="headerlink" href="#creating-lineage-relationships" title="Link to this heading"></a></h3>
-<p>Track relationships between data sources:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
-<span class="s1">       &quot;source_addresses&quot;: [</span>
-<span class="s1">         {</span>
-<span class="s1">           &quot;name&quot;: &quot;raw_sales_data&quot;,</span>
-<span class="s1">           &quot;address_type_name&quot;: &quot;databricks&quot;,</span>
-<span class="s1">           &quot;address_type_group_name&quot;: &quot;database&quot;</span>
-<span class="s1">         }</span>
-<span class="s1">       ],</span>
-<span class="s1">       &quot;target_addresses&quot;: [</span>
-<span class="s1">         {</span>
-<span class="s1">           &quot;name&quot;: &quot;processed_sales_data&quot;,</span>
-<span class="s1">           &quot;address_type_name&quot;: &quot;databricks&quot;,</span>
-<span class="s1">           &quot;address_type_group_name&quot;: &quot;database&quot;</span>
-<span class="s1">         }</span>
-<span class="s1">       ]</span>
-<span class="s1">     }&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="querying-lineage">
-<h3>Querying Lineage<a class="headerlink" href="#querying-lineage" title="Link to this heading"></a></h3>
-<p>Get lineage information for an address:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span>
-
-<span class="c1"># Response</span>
-<span class="o">[</span>
-<span class="w">  </span><span class="o">{</span>
-<span class="w">    </span><span class="s2">&quot;source_address_id&quot;</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="w">    </span><span class="s2">&quot;target_address_id&quot;</span>:<span class="w"> </span><span class="m">2</span>,
-<span class="w">    </span><span class="s2">&quot;depth&quot;</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="w">    </span><span class="s2">&quot;source_address_name&quot;</span>:<span class="w"> </span><span class="s2">&quot;raw_sales_data&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;target_address_name&quot;</span>:<span class="w"> </span><span class="s2">&quot;processed_sales_data&quot;</span>
-<span class="w">  </span><span class="o">}</span>
-<span class="o">]</span>
 </pre></div>
 </div>
 </section>
 </section>
 <section id="pipeline-updates">
 <h2>Pipeline Updates<a class="headerlink" href="#pipeline-updates" title="Link to this heading"></a></h2>
-<section id="updating-pipeline-configuration">
-<h3>Updating Pipeline Configuration<a class="headerlink" href="#updating-pipeline-configuration" title="Link to this heading"></a></h3>
-<p>Update pipeline settings:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;id&quot;: 1,</span>
-<span class="s1">       &quot;name&quot;: &quot;Updated Pipeline Name&quot;,</span>
-<span class="s1">       &quot;next_watermark&quot;: &quot;2024-01-02T00:00:00Z&quot;,</span>
-<span class="s1">       &quot;mute_freshness_check&quot;: true</span>
-<span class="s1">     }&#39;</span>
-</pre></div>
-</div>
-</section>
 <section id="common-update-scenarios">
 <h3>Common Update Scenarios<a class="headerlink" href="#common-update-scenarios" title="Link to this heading"></a></h3>
 <p><strong>Change Monitoring Thresholds</strong></p>
@@ -394,33 +417,203 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 </div>
 </section>
 </section>
-<section id="best-practices">
-<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
-<section id="pipeline-design">
-<h3>Pipeline Design<a class="headerlink" href="#pipeline-design" title="Link to this heading"></a></h3>
+<section id="nested-pipeline-executions">
+<h2>Nested Pipeline Executions<a class="headerlink" href="#nested-pipeline-executions" title="Link to this heading"></a></h2>
+<p>Watcher supports hierarchical pipeline execution tracking through the <cite>parent_id</cite> field, enabling you to model complex workflows with sub-pipelines and dependencies.</p>
+<p><strong>Use Cases:</strong></p>
 <ul class="simple">
-<li><p><strong>Clear Naming</strong> Use descriptive names for pipelines</p></li>
-<li><p><strong>Consistent Watermarks</strong> Use consistent watermark formats</p></li>
-<li><p><strong>Metadata</strong> Include relevant metadata for context</p></li>
-<li><p><strong>Monitoring</strong> Configure appropriate monitoring thresholds</p></li>
+<li><p><strong>Main Pipeline</strong>: A main orchestration pipeline that coordinates multiple sub-pipelines</p></li>
+<li><p><strong>Sub-Pipeline Tracking</strong>: Individual components or steps within a larger workflow</p></li>
+<li><p><strong>Dependency Management</strong>: Track which sub-pipelines depend on others</p></li>
+<li><p><strong>Performance Analysis</strong>: Analyze execution times at both main and sub-pipeline levels</p></li>
+<li><p><strong>Error Isolation</strong>: Identify which specific sub-pipeline failed within a complex workflow</p></li>
+</ul>
+<p><strong>Example Workflow:</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>Main Pipeline: data_processing_main
+├── Sub-Pipeline: extract_sales_data (parent_id: main_execution_id)
+├── Sub-Pipeline: extract_marketing_data (parent_id: main_execution_id)
+├── Sub-Pipeline: transform_combined_data (parent_id: main_execution_id)
+└── Sub-Pipeline: load_to_warehouse (parent_id: main_execution_id)
+</pre></div>
+</div>
+<p><strong>API Usage:</strong></p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Start main pipeline execution</span>
+<span class="n">main_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="n">main_execution_id</span> <span class="o">=</span> <span class="n">main_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+<span class="c1"># Start sub-pipeline with parent reference</span>
+<span class="n">sub_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+        <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;parent_id&quot;</span><span class="p">:</span> <span class="n">main_execution_id</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="c1"># Start main pipeline execution</span>
+    <span class="n">main_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="n">main_execution_id</span> <span class="o">=</span> <span class="n">main_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+    <span class="c1"># Start sub-pipeline with parent reference</span>
+    <span class="n">sub_response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
+            <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+            <span class="s2">&quot;parent_id&quot;</span><span class="p">:</span> <span class="n">main_execution_id</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
+<span class="s1">       &quot;full_load&quot;: true</span>
+<span class="s1">     }&#39;</span>
+
+<span class="c1"># Start sub-pipeline with parent reference</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 2,</span>
+<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
+<span class="s1">       &quot;full_load&quot;: true,</span>
+<span class="s1">       &quot;parent_id&quot;: 123</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pipeline_execution<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">full_load</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c1"># Start sub-pipeline with parent reference</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pipeline_execution<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">2</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">full_load</span><span class="o">=</span><span class="nb">true</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">parent_id</span><span class="o">=</span><span class="m">123</span>
+</pre></div>
+</div>
+</div></div>
+<section id="querying-nested-executions">
+<h3>Querying Nested Executions<a class="headerlink" href="#querying-nested-executions" title="Link to this heading"></a></h3>
+<p>The system automatically maintains a closure table (<cite>pipeline_execution_closure</cite>) that enables efficient querying of hierarchical relationships without recursive queries.</p>
+<p><strong>Closure Table Structure:</strong></p>
+<ul class="simple">
+<li><p><cite>parent_execution_id</cite>: The ancestor execution ID</p></li>
+<li><p><cite>child_execution_id</cite>: The descendant execution ID</p></li>
+<li><p><cite>depth</cite>: The relationship depth (0 = self-reference, 1 = direct child, 2 = grandchild, etc.)</p></li>
+</ul>
+<p><strong>Example Queries:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Get all direct children of an execution</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">-- Get all downstream dependencies of an execution</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">-- Get all upstream dependencies of an execution</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">456</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Hierarchical Monitoring</strong>: Track both overall workflow progress and individual component performance</p></li>
+<li><p><strong>Dependency Tracking</strong>: Understand which sub-pipelines are blocking others</p></li>
+<li><p><strong>Root Cause Analysis</strong>: Quickly identify which specific component caused a failure</p></li>
+<li><p><strong>Resource Optimization</strong>: Analyze which sub-pipelines consume the most time/resources</p></li>
+<li><p><strong>Audit Trail</strong>: Complete visibility into complex multi-step data processes</p></li>
 </ul>
 </section>
-<section id="execution-management">
-<h3>Execution Management<a class="headerlink" href="#execution-management" title="Link to this heading"></a></h3>
+</section>
+<section id="pipeline-organization">
+<h2>Pipeline Organization<a class="headerlink" href="#pipeline-organization" title="Link to this heading"></a></h2>
+<p>Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration.</p>
+<p><strong>Best Practices:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Consistency</strong>: Use the same naming patterns across all teams and projects</p></li>
+<li><p><strong>Descriptiveness</strong>: Names should clearly indicate purpose and scope</p></li>
+<li><p><strong>Hierarchy</strong>: Use underscores to create logical hierarchies</p></li>
+<li><p><strong>Future-Proofing</strong>: Choose names that will remain relevant as systems evolve</p></li>
+<li><p><strong>Documentation</strong>: Document your naming conventions and share with all teams</p></li>
+<li><p><strong>Validation</strong>: Implement naming validation in your CI/CD pipeline or code reviews</p></li>
+</ol>
+<section id="pipeline-type-organization">
+<h3>Pipeline Type Organization<a class="headerlink" href="#pipeline-type-organization" title="Link to this heading"></a></h3>
+<p>Organize pipeline types by data processing patterns or business domains or a combination of both:</p>
+<p><strong>Data Processing Pattern:</strong></p>
 <ul class="simple">
-<li><p><strong>Regular Executions</strong> Run pipelines on consistent schedules</p></li>
-<li><p><strong>Proper Metrics</strong> Always provide accurate execution metrics</p></li>
-<li><p><strong>Error Handling</strong> Handle failures gracefully</p></li>
-<li><p><strong>Documentation</strong> Document pipeline behavior and dependencies</p></li>
+<li><p><cite>extraction</cite> - Data extraction pipelines</p></li>
+<li><p><cite>transformation</cite> - Data transformation and processing</p></li>
+<li><p><cite>loading</cite> - Data loading and materialization</p></li>
+<li><p><cite>audit</cite> - Data quality and validation</p></li>
+<li><p><cite>monitoring</cite> - System monitoring and health checks</p></li>
+</ul>
+<p><strong>Business Domain:</strong></p>
+<ul class="simple">
+<li><p><cite>sales</cite></p></li>
+<li><p><cite>marketing</cite></p></li>
+<li><p><cite>finance</cite></p></li>
+</ul>
+<p><strong>Combination:</strong></p>
+<ul class="simple">
+<li><p><cite>sales_extraction</cite></p></li>
+<li><p><cite>marketing_audit</cite></p></li>
+<li><p><cite>finance_monitoring</cite></p></li>
 </ul>
 </section>
-<section id="monitoring-strategy">
-<h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
+<section id="pipeline-naming-convention">
+<h3>Pipeline Naming Convention<a class="headerlink" href="#pipeline-naming-convention" title="Link to this heading"></a></h3>
+<p>Use a clear naming structure that matches back to the pipeline code (e.g., DAG name, job name, or workflow identifier).</p>
+<p><strong>Best Practices:</strong></p>
 <ul class="simple">
-<li><p><strong>Appropriate Thresholds</strong> Set realistic monitoring thresholds</p></li>
-<li><p><strong>Regular Checks</strong> Run monitoring checks regularly</p></li>
-<li><p><strong>Alert Configuration</strong> Configure appropriate alerting</p></li>
-<li><p><strong>Performance Tracking</strong> Monitor execution performance trends</p></li>
+<li><p>Match your DAG/job/workflow names exactly</p></li>
+<li><p>Use consistent abbreviations across your organization</p></li>
+<li><p>Keep names descriptive but concise</p></li>
+<li><p>Use underscores for separation, avoid special characters</p></li>
 </ul>
 </section>
 </section>

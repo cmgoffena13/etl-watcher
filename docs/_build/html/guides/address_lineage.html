@@ -1,0 +1,523 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Address Lineage &mdash; Watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
+    <link rel="prev" title="Watermark Management" href="watermark_management.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Address Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-address-lineage">Understanding Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source-controlled-lineage">Source-Controlled Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-lineage-relationships">Creating Lineage Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#querying-lineage">Querying Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#closure-table-pattern">Closure Table Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#managing-load-lineage-flag">Managing Load Lineage Flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#address-naming-convention">Address Naming Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#address-type-organization">Address Type Organization</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Address Lineage</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/address_lineage.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="address-lineage">
+<h1>Address Lineage<a class="headerlink" href="#address-lineage" title="Link to this heading"></a></h1>
+<p>This guide covers how to effectively manage address lineage in Watcher.</p>
+<section id="understanding-address-lineage">
+<h2>Understanding Address Lineage<a class="headerlink" href="#understanding-address-lineage" title="Link to this heading"></a></h2>
+<p>Address lineage tracks data flow relationships between sources and targets:</p>
+<ul class="simple">
+<li><p><strong>Address Management</strong>: Track source and target data addresses with type classification</p></li>
+<li><p><strong>Lineage Relationships</strong>: Create and maintain data flow relationships between sources and targets</p></li>
+<li><p><strong>Closure Table Pattern</strong>: Efficient querying of complex lineage hierarchies with depth tracking</p></li>
+<li><p><strong>Source Control Integration</strong>: Store lineage definitions in version control for reproducibility</p></li>
+</ul>
+</section>
+<section id="source-controlled-lineage">
+<h2>Source-Controlled Lineage<a class="headerlink" href="#source-controlled-lineage" title="Link to this heading"></a></h2>
+<p><strong>Recommended Approach</strong>: Store address lineage definitions directly in your pipeline code for version control and reproducibility.</p>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Version Control</strong>: Lineage definitions are tracked with your code changes</p></li>
+<li><p><strong>Reproducibility</strong>: Lineage is automatically recreated when pipelines are deployed</p></li>
+<li><p><strong>Code Review</strong>: Lineage changes are reviewed alongside code changes</p></li>
+<li><p><strong>Consistency</strong>: Ensures lineage matches the actual data flow in your code</p></li>
+</ul>
+<p><strong>Implementation Pattern:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your pipeline code</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">():</span>
+    <span class="c1"># Your data processing logic here</span>
+
+    <span class="c1"># Define lineage relationships</span>
+    <span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
+        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.source_schema.source_raw_events&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.schema.processed_events&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="c1"># Create lineage relationships</span>
+    <span class="k">if</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;load_lineage&#39;</span><span class="p">]:</span>
+        <span class="n">lineage_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lineage created: </span><span class="si">{</span><span class="n">lineage_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Best Practices:</strong></p>
+<ul class="simple">
+<li><p><strong>Store in Pipeline</strong>: Keep lineage definitions in the same file as your pipeline logic</p></li>
+<li><p><strong>Use Variables</strong>: Reference pipeline_id and other dynamic values</p></li>
+<li><p><strong>Check load_lineage</strong>: Only create lineage when the flag is enabled</p></li>
+<li><p><strong>Document Changes</strong>: Include lineage changes in your commit messages</p></li>
+</ul>
+</section>
+<section id="creating-lineage-relationships">
+<h2>Creating Lineage Relationships<a class="headerlink" href="#creating-lineage-relationships" title="Link to this heading"></a></h2>
+<p>Track relationships between data sources:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;source_addresses&quot;: [</span>
+<span class="s1">         {</span>
+<span class="s1">           &quot;name&quot;: &quot;source_db.stock_prices&quot;,</span>
+<span class="s1">           &quot;address_type_name&quot;: &quot;postgresql&quot;,</span>
+<span class="s1">           &quot;address_type_group_name&quot;: &quot;database&quot;</span>
+<span class="s1">         }</span>
+<span class="s1">       ],</span>
+<span class="s1">       &quot;target_addresses&quot;: [</span>
+<span class="s1">         {</span>
+<span class="s1">           &quot;name&quot;: &quot;warehouse.stock_prices&quot;,</span>
+<span class="s1">           &quot;address_type_name&quot;: &quot;postgresql&quot;,</span>
+<span class="s1">           &quot;address_type_group_name&quot;: &quot;database&quot;</span>
+<span class="s1">         }</span>
+<span class="s1">       ]</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/address_lineage<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>source_addresses:<span class="o">=</span><span class="s1">&#39;[{&quot;name&quot;: &quot;source_db.stock_prices&quot;, &quot;address_type_name&quot;: &quot;postgresql&quot;, &quot;address_type_group_name&quot;: &quot;database&quot;}]&#39;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>target_addresses:<span class="o">=</span><span class="s1">&#39;[{&quot;name&quot;: &quot;warehouse.stock_prices&quot;, &quot;address_type_name&quot;: &quot;postgresql&quot;, &quot;address_type_group_name&quot;: &quot;database&quot;}]&#39;</span>
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="querying-lineage">
+<h2>Querying Lineage<a class="headerlink" href="#querying-lineage" title="Link to this heading"></a></h2>
+<p>Get lineage information for an address:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>GET<span class="w"> </span>localhost:8000/address_lineage/1
+</pre></div>
+</div>
+</div></div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;source_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;depth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;source_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;raw_sales_data&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;target_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;processed_sales_data&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="closure-table-pattern">
+<h2>Closure Table Pattern<a class="headerlink" href="#closure-table-pattern" title="Link to this heading"></a></h2>
+<p>Address lineage uses a closure table pattern for efficient querying of complex lineage hierarchies:</p>
+<p><strong>How It Works:</strong></p>
+<ul class="simple">
+<li><p><strong>Direct Relationships</strong>: Stores immediate parent-child relationships in <cite>address_lineage</cite></p></li>
+<li><p><strong>Closure Table</strong>: Maintains all ancestor-descendant relationships in <cite>address_lineage_closure</cite></p></li>
+<li><p><strong>Depth Tracking</strong>: Records the depth of each relationship for hierarchical queries</p></li>
+<li><p><strong>Automatic Maintenance</strong>: Background Celery task keeps closure table synchronized</p></li>
+</ul>
+<p><strong>Background Task:</strong></p>
+<p>The <cite>address_lineage_closure_rebuild_task</cite> automatically maintains the closure table:</p>
+<ul class="simple">
+<li><p><strong>Rate Limit</strong>: 1 request per second</p></li>
+<li><p><strong>Trigger</strong>: Runs when new lineage relationships are created</p></li>
+<li><p><strong>Purpose</strong>: Rebuilds all ancestor-descendant relationships</p></li>
+<li><p><strong>Performance</strong>: Enables efficient queries across complex lineage hierarchies</p></li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Fast Queries</strong>: O(1) lookup for any ancestor-descendant relationship</p></li>
+<li><p><strong>Depth Support</strong>: Easy querying by relationship depth</p></li>
+<li><p><strong>Hierarchical Views</strong>: Complete lineage trees in single queries</p></li>
+<li><p><strong>Automatic Updates</strong>: No manual maintenance required</p></li>
+</ul>
+<p><strong>Example Query:</strong></p>
+<p>Find all descendants of a source address at any depth:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span><span class="w"> </span><span class="n">target_address_id</span><span class="p">,</span><span class="w"> </span><span class="n">depth</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">address_lineage_closure</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">source_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">depth</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="pipeline-integration">
+<h2>Pipeline Integration<a class="headerlink" href="#pipeline-integration" title="Link to this heading"></a></h2>
+<p>Address lineage is commonly used in pipeline workflows. Here’s how to integrate it:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if pipeline has load_lineage enabled</span>
+<span class="k">if</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;load_lineage&#39;</span><span class="p">]:</span>
+    <span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
+    <span class="p">}</span>
+
+    <span class="n">lineage_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
+    <span class="p">)</span>
+    <span class="n">lineage_result</span> <span class="o">=</span> <span class="n">lineage_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lineage relationships created: </span><span class="si">{</span><span class="n">lineage_result</span><span class="p">[</span><span class="s1">&#39;lineage_relationships_created&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Key Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Automatic Reset</strong>: <cite>load_lineage</cite> automatically resets to <cite>False</cite> after execution</p></li>
+<li><p><strong>Source Control</strong>: Lineage definitions can be stored in version control</p></li>
+<li><p><strong>Efficient Queries</strong>: Uses closure table pattern for complex lineage hierarchies</p></li>
+<li><p><strong>Depth Tracking</strong>: Tracks relationship depth for hierarchical data flows</p></li>
+</ul>
+</section>
+<section id="managing-load-lineage-flag">
+<h2>Managing Load Lineage Flag<a class="headerlink" href="#managing-load-lineage-flag" title="Link to this heading"></a></h2>
+<p>The <cite>load_lineage</cite> flag controls when lineage relationships are created:</p>
+<ul class="simple">
+<li><p><strong>Default Behavior</strong>: <cite>load_lineage</cite> is <cite>True</cite> when a pipeline is first created</p></li>
+<li><p><strong>Automatic Reset</strong>: After successful execution, <cite>load_lineage</cite> automatically resets to <cite>False</cite></p></li>
+<li><p><strong>Manual Control</strong>: You can manually set <cite>load_lineage</cite> to <cite>True</cite> to force lineage creation</p></li>
+</ul>
+<p>Update a pipeline’s load_lineage flag:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Update pipeline to enable lineage loading</span>
+<span class="n">pipeline_update</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;load_lineage&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">pipeline_update</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="c1"># Update pipeline to enable lineage loading</span>
+<span class="n">pipeline_update</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;load_lineage&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">pipeline_update</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;id&quot;: 1,</span>
+<span class="s1">       &quot;load_lineage&quot;: true</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>PATCH<span class="w"> </span>localhost:8000/pipeline<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">load_lineage</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</div></div>
+<p><strong>Use Cases:</strong></p>
+<ul class="simple">
+<li><p><strong>Initial Setup</strong>: Set <cite>load_lineage=True</cite> when first creating lineage relationships</p></li>
+<li><p><strong>Schema Changes</strong>: Re-enable when data sources or targets change</p></li>
+<li><p><strong>Reprocessing</strong>: Force lineage recreation for data quality or compliance</p></li>
+<li><p><strong>Development</strong>: Enable for testing lineage relationships</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember that <cite>load_lineage</cite> will automatically reset to <cite>False</cite> after the next successful pipeline execution, so you’ll need to set it to <cite>True</cite> again if you want to recreate lineage relationships in subsequent runs.</p>
+</div>
+</section>
+<section id="naming-conventions">
+<h2>Naming Conventions<a class="headerlink" href="#naming-conventions" title="Link to this heading"></a></h2>
+<p>Effective organization of your Watcher metadata is crucial for maintainability, monitoring, and team collaboration.</p>
+<p><strong>General Best Practices:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Consistency</strong>: Use the same naming patterns across all teams and projects</p></li>
+<li><p><strong>Descriptiveness</strong>: Names should clearly indicate purpose and scope</p></li>
+<li><p><strong>Hierarchy</strong>: Use underscores to create logical hierarchies</p></li>
+<li><p><strong>Future-Proofing</strong>: Choose names that will remain relevant as systems evolve</p></li>
+<li><p><strong>Documentation</strong>: Document your naming conventions and share with all teams</p></li>
+<li><p><strong>Validation</strong>: Implement naming validation in your CI/CD pipeline or code reviews</p></li>
+</ol>
+</section>
+<section id="address-naming-convention">
+<h2>Address Naming Convention<a class="headerlink" href="#address-naming-convention" title="Link to this heading"></a></h2>
+<p>Addresses should be the actual, usable path/URL that you would use to access the data:</p>
+<p><strong>Examples:</strong></p>
+<ul class="simple">
+<li><p><cite>gs://my-bucket/raw/events/2024/01/09/</cite> - GCS bucket path for raw events</p></li>
+<li><p><cite>https://api.example.com/v1/customers</cite> - REST API endpoint for customers</p></li>
+<li><p><cite>analytics.public.users</cite> - database table</p></li>
+<li><p><cite>topic-name</cite> - Kafka topic with broker info</p></li>
+</ul>
+<p><strong>Best Practices:</strong></p>
+<ul class="simple">
+<li><p>Use the URL format for the system</p></li>
+<li><p>Be specific enough that someone could use the address to access the data given the address type context</p></li>
+<li><p>Use standard formats for each system type (Bucket URLs, HTTP endpoints, database.schema.table)</p></li>
+</ul>
+</section>
+<section id="address-type-organization">
+<h2>Address Type Organization<a class="headerlink" href="#address-type-organization" title="Link to this heading"></a></h2>
+<p>Categorize addresses by their technical characteristics:</p>
+<p><strong>Group Names:</strong></p>
+<ul class="simple">
+<li><p><cite>database</cite> - Database systems (PostgreSQL, MySQL, etc.)</p></li>
+<li><p><cite>warehouse</cite> - Data warehouses (Snowflake, BigQuery, etc.)</p></li>
+<li><p><cite>bucket</cite> - Data lakes (S3, ADLS, etc.)</p></li>
+<li><p><cite>api</cite> - API endpoints and services</p></li>
+<li><p><cite>file</cite> - File systems and storage</p></li>
+<li><p><cite>stream</cite> - Streaming data sources</p></li>
+<li><p><cite>dashboard</cite> - Dashboard targets</p></li>
+</ul>
+<p><strong>Type Names:</strong></p>
+<ul class="simple">
+<li><p><cite>postgresql</cite> - PostgreSQL databases</p></li>
+<li><p><cite>snowflake</cite> - Snowflake data warehouse</p></li>
+<li><p><cite>s3</cite> - Amazon S3 buckets</p></li>
+<li><p><cite>kafka</cite> - Kafka topics</p></li>
+<li><p><cite>looker</cite> - Looker dashboard</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="watermark_management.html" class="btn btn-neutral float-left" title="Watermark Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

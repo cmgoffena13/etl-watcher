@@ -31,6 +31,8 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
    guides/pipeline_management
    guides/anomaly_detection
    guides/monitoring
+   guides/watermark_management
+   guides/address_lineage
 
 .. toctree::
    :maxdepth: 2
@@ -38,6 +40,7 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
 
    reference/database_schema
    reference/migrations
+   reference/architecture
 
 Key Features
 ============
