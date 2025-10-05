@@ -65,43 +65,33 @@
 <li class="toctree-l1"><a class="reference internal" href="database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Deployment Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#kubernetes">Kubernetes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#namespace-setup">Namespace Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#configmap">ConfigMap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#secrets">Secrets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#deployment">Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#service">Service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#ingress">Ingress</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#environment-configuration">Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#kubernetes">Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#namespace">Namespace</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configmap">ConfigMap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#secrets">Secrets</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#watcher-application">Watcher Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-workers">Celery Workers</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#production">Production</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database-setup">Database Setup</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deployment-configuration">Deployment Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#postgresql-configuration">PostgreSQL Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alerting-setup">Alerting Setup</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#postgresql-configuration">PostgreSQL Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#redis-configuration">Redis Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#migration-strategy">Migration Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deployment-strategy">Deployment Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pre-deployment">Pre-Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-deployment">Post-Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rollback-strategy">Rollback Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#recovery-procedures">Recovery Procedures</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#health-checks">Health Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#pre-deployment">Pre-Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#post-deployment">Post-Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#rollback-strategy">Rollback Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring-alerting">Monitoring &amp; Alerting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#production-maintenance">Production Maintenance</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-optimization">Database Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis-optimization">Redis Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#backup-strategy">Backup Strategy</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#health-checks">Health Checks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#alerting-setup">Alerting Setup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#database-optimization">Database Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#redis-optimization">Redis Optimization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#disaster-recovery">Disaster Recovery</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#backup-strategy">Backup Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#recovery-procedures">Recovery Procedures</a></li>
 </ul>
 </li>
 </ul>
@@ -135,9 +125,8 @@
 <p>This section covers deployment strategies for Watcher.</p>
 <section id="kubernetes">
 <h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading"></a></h2>
-</section>
-<section id="namespace-setup">
-<h2>Namespace Setup<a class="headerlink" href="#namespace-setup" title="Link to this heading"></a></h2>
+<section id="namespace">
+<h3>Namespace<a class="headerlink" href="#namespace" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Namespace</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -146,20 +135,22 @@
 </div>
 </section>
 <section id="configmap">
-<h2>ConfigMap<a class="headerlink" href="#configmap" title="Link to this heading"></a></h2>
+<h3>ConfigMap<a class="headerlink" href="#configmap" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ConfigMap</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-config</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher</span>
 <span class="nt">data</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">DATABASE_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;postgresql+asyncpg://user:password@postgres:5432/watcher&quot;</span>
-<span class="w">  </span><span class="nt">REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;redis://redis:6379/1&quot;</span>
+<span class="w">  </span><span class="nt">PROD_DATABASE_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;postgresql+asyncpg://user:password@your-db-host:5432/watcher&quot;</span>
+<span class="w">  </span><span class="nt">PROD_REDIS_URL</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;redis://your-redis-host:6379/1&quot;</span>
+<span class="w">  </span><span class="nt">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;true&quot;</span>
+<span class="w">  </span><span class="nt">PROD_PROFILING_ENABLED</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;false&quot;</span>
 </pre></div>
 </div>
 </section>
 <section id="secrets">
-<h2>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h2>
+<h3>Secrets<a class="headerlink" href="#secrets" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Secret</span>
 <span class="nt">metadata</span><span class="p">:</span>
@@ -167,20 +158,20 @@
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher</span>
 <span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Opaque</span>
 <span class="nt">data</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">LOGFIRE_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64-encoded-token&gt;</span>
-<span class="w">  </span><span class="nt">SLACK_WEBHOOK_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64-encoded-webhook&gt;</span>
+<span class="w">  </span><span class="nt">PROD_LOGFIRE_TOKEN</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64-encoded-token&gt;</span>
+<span class="w">  </span><span class="nt">PROD_SLACK_WEBHOOK_URL</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">&lt;base64-encoded-webhook&gt;</span>
 </pre></div>
 </div>
 </section>
-<section id="deployment">
-<h2>Deployment<a class="headerlink" href="#deployment" title="Link to this heading"></a></h2>
+<section id="watcher-application">
+<h3>Watcher Application<a class="headerlink" href="#watcher-application" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-app</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">3</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
 <span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
 <span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
 <span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-app</span>
@@ -199,12 +190,28 @@
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-config</span>
 <span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretRef</span><span class="p">:</span>
 <span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-secrets</span>
-</pre></div>
-</div>
-</section>
-<section id="service">
-<h2>Service<a class="headerlink" href="#service" title="Link to this heading"></a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
+<span class="w">        </span><span class="nt">livenessProbe</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">httpGet</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
+<span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<span class="w">          </span><span class="nt">initialDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">30</span>
+<span class="w">          </span><span class="nt">periodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">10</span>
+<span class="w">        </span><span class="nt">readinessProbe</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">httpGet</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
+<span class="w">            </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
+<span class="w">          </span><span class="nt">initialDelaySeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">          </span><span class="nt">periodSeconds</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">5</span>
+<span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">requests</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;512Mi&quot;</span>
+<span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;250m&quot;</span>
+<span class="w">          </span><span class="nt">limits</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1Gi&quot;</span>
+<span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;500m&quot;</span>
+
+<span class="nn">---</span>
+<span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
 <span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Service</span>
 <span class="nt">metadata</span><span class="p">:</span>
 <span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-service</span>
@@ -215,165 +222,62 @@
 <span class="w">  </span><span class="nt">ports</span><span class="p">:</span>
 <span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">port</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
 <span class="w">    </span><span class="nt">targetPort</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">8000</span>
-<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">LoadBalancer</span>
+<span class="w">  </span><span class="nt">type</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">ClusterIP</span>
 </pre></div>
 </div>
 </section>
-<section id="ingress">
-<h2>Ingress<a class="headerlink" href="#ingress" title="Link to this heading"></a></h2>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">networking.k8s.io/v1</span>
-<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Ingress</span>
+<section id="celery-workers">
+<h3>Celery Workers<a class="headerlink" href="#celery-workers" title="Link to this heading"></a></h3>
+<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">apps/v1</span>
+<span class="nt">kind</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Deployment</span>
 <span class="nt">metadata</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-ingress</span>
+<span class="w">  </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-celery</span>
 <span class="w">  </span><span class="nt">namespace</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher</span>
 <span class="nt">spec</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">rules</span><span class="p">:</span>
-<span class="w">  </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">host</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher.example.com</span>
-<span class="w">    </span><span class="nt">http</span><span class="p">:</span>
-<span class="w">      </span><span class="nt">paths</span><span class="p">:</span>
-<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">path</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">/</span>
-<span class="w">        </span><span class="nt">pathType</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Prefix</span>
-<span class="w">        </span><span class="nt">backend</span><span class="p">:</span>
-<span class="w">          </span><span class="nt">service</span><span class="p">:</span>
-<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-service</span>
-<span class="w">            </span><span class="nt">port</span><span class="p">:</span>
-<span class="w">              </span><span class="nt">number</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">80</span>
+<span class="w">  </span><span class="nt">replicas</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">2</span>
+<span class="w">  </span><span class="nt">selector</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">matchLabels</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-celery</span>
+<span class="w">  </span><span class="nt">template</span><span class="p">:</span>
+<span class="w">    </span><span class="nt">metadata</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">labels</span><span class="p">:</span>
+<span class="w">        </span><span class="nt">app</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-celery</span>
+<span class="w">    </span><span class="nt">spec</span><span class="p">:</span>
+<span class="w">      </span><span class="nt">containers</span><span class="p">:</span>
+<span class="w">      </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">celery</span>
+<span class="w">        </span><span class="nt">image</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher:latest</span>
+<span class="w">        </span><span class="nt">command</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">[</span><span class="s">&quot;celery&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;-A&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;src.celery_app&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;worker&quot;</span><span class="p p-Indicator">,</span><span class="w"> </span><span class="s">&quot;--loglevel=info&quot;</span><span class="p p-Indicator">]</span>
+<span class="w">        </span><span class="nt">envFrom</span><span class="p">:</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">configMapRef</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-config</span>
+<span class="w">        </span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">secretRef</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">watcher-secrets</span>
+<span class="w">        </span><span class="nt">resources</span><span class="p">:</span>
+<span class="w">          </span><span class="nt">requests</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;256Mi&quot;</span>
+<span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;100m&quot;</span>
+<span class="w">          </span><span class="nt">limits</span><span class="p">:</span>
+<span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;512Mi&quot;</span>
+<span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;250m&quot;</span>
 </pre></div>
 </div>
-<section id="environment-configuration">
-<h3>Environment Configuration<a class="headerlink" href="#environment-configuration" title="Link to this heading"></a></h3>
 </section>
 </section>
-<section id="production">
-<h2>Production<a class="headerlink" href="#production" title="Link to this heading"></a></h2>
-<p><strong>Environment Variables</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:password@prod-db:5432/watcher_prod&quot;</span>
-
-<span class="c1"># Redis</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_REDIS_URL</span><span class="o">=</span><span class="s2">&quot;redis://prod-redis:6379/1&quot;</span>
-
-<span class="c1"># Monitoring</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_LOGFIRE_TOKEN</span><span class="o">=</span><span class="s2">&quot;your_production_token&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_LOGFIRE_CONSOLE</span><span class="o">=</span><span class="s2">&quot;false&quot;</span>
-
-<span class="c1"># Notifications</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;your_production_webhook&quot;</span>
-
-<span class="c1"># Features</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="s2">&quot;true&quot;</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">PROD_PROFILING_ENABLED</span><span class="o">=</span><span class="s2">&quot;false&quot;</span>
-</pre></div>
-</div>
-<section id="database-setup">
-<h3>Database Setup<a class="headerlink" href="#database-setup" title="Link to this heading"></a></h3>
-</section>
-</section>
+<section id="deployment-configuration">
+<h2>Deployment Configuration<a class="headerlink" href="#deployment-configuration" title="Link to this heading"></a></h2>
 <section id="postgresql-configuration">
-<h2>PostgreSQL Configuration<a class="headerlink" href="#postgresql-configuration" title="Link to this heading"></a></h2>
-<p><strong>Index Optimization</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Analyze tables regularly</span>
-<span class="k">ANALYZE</span><span class="p">;</span>
-
-<span class="c1">-- Update statistics</span>
-<span class="k">UPDATE</span><span class="w"> </span><span class="n">pg_stat_user_tables</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">n_tup_ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_upd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-
-<span class="c1">-- Vacuum tables</span>
-<span class="k">VACUUM</span><span class="w"> </span><span class="k">ANALYZE</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-<section id="redis-configuration">
-<h2>Redis Configuration<a class="headerlink" href="#redis-configuration" title="Link to this heading"></a></h2>
-<p><strong>Performance Tuning</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Redis performance</span>
-redis-cli<span class="w"> </span>--latency
-
-<span class="c1"># Monitor memory usage</span>
-redis-cli<span class="w"> </span>info<span class="w"> </span>memory
-
-<span class="c1"># Check key count</span>
-redis-cli<span class="w"> </span>dbsize
-</pre></div>
-</div>
-<section id="migration-strategy">
-<h3>Migration Strategy<a class="headerlink" href="#migration-strategy" title="Link to this heading"></a></h3>
-</section>
-</section>
-<section id="pre-deployment">
-<h2>Pre-Deployment<a class="headerlink" href="#pre-deployment" title="Link to this heading"></a></h2>
-<p><strong>Database Backup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup database</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>.sql
-
-<span class="c1"># Verify backup</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="post-deployment">
-<h2>Post-Deployment<a class="headerlink" href="#post-deployment" title="Link to this heading"></a></h2>
-<p><strong>Verification</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check application health</span>
-curl<span class="w"> </span>http://localhost:8000
-
-<span class="c1"># Check database connectivity</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1;&quot;</span>
-
-<span class="c1"># Check Redis connectivity</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
-</pre></div>
-</div>
-</section>
-<section id="rollback-strategy">
-<h2>Rollback Strategy<a class="headerlink" href="#rollback-strategy" title="Link to this heading"></a></h2>
-<p><strong>Database Rollback</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rollback migrations</span>
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-
-<span class="c1"># Verify rollback</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Check application</span>
-curl<span class="w"> </span>http://localhost:8000
-</pre></div>
-</div>
-<p><strong>Data Rollback</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore from backup</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Verify data</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-</pre></div>
-</div>
-<section id="monitoring-alerting">
-<h3>Monitoring &amp; Alerting<a class="headerlink" href="#monitoring-alerting" title="Link to this heading"></a></h3>
-</section>
-</section>
-<section id="health-checks">
-<h2>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h2>
-<p><strong>Application Health</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Health check endpoint</span>
-curl<span class="w"> </span>http://localhost:8000
-
-<span class="c1"># Diagnostics page</span>
-curl<span class="w"> </span>http://localhost:8000/diagnostics
-</pre></div>
-</div>
-<p><strong>Redis Health</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redis connectivity</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
-
-<span class="c1"># Redis performance</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
-
-<span class="c1"># Redis memory</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>info<span class="w"> </span>memory
+<h3>PostgreSQL Configuration<a class="headerlink" href="#postgresql-configuration" title="Link to this heading"></a></h3>
+<p><strong>Connection Pooling</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default connection pool settings</span>
+<span class="n">pool_size</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">max_overflow</span> <span class="o">=</span> <span class="mi">10</span>
+<span class="n">pool_timeout</span> <span class="o">=</span> <span class="mi">30</span>
+<span class="n">pool_recycle</span> <span class="o">=</span> <span class="mi">3600</span>
 </pre></div>
 </div>
 </section>
 <section id="alerting-setup">
-<h2>Alerting Setup<a class="headerlink" href="#alerting-setup" title="Link to this heading"></a></h2>
+<h3>Alerting Setup<a class="headerlink" href="#alerting-setup" title="Link to this heading"></a></h3>
 <p><strong>Monitoring Checks</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Freshness monitoring</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/freshness
@@ -396,16 +300,99 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="c1"># Monitor Celery queue every 5 minutes</span>
 */5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/celery/monitor-queue
 
-<span class="c1"># Clean up logs daily</span>
-<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/log_cleanup
+<span class="c1"># Clean up logs daily (365 days retention)</span>
+<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/log_cleanup<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 365}&#39;</span>
 </pre></div>
 </div>
-<section id="performance-optimization">
-<h3>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h3>
 </section>
 </section>
+<section id="deployment-strategy">
+<h2>Deployment Strategy<a class="headerlink" href="#deployment-strategy" title="Link to this heading"></a></h2>
+<section id="pre-deployment">
+<h3>Pre-Deployment<a class="headerlink" href="#pre-deployment" title="Link to this heading"></a></h3>
+<p><strong>Database Backup</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup database</span>
+pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>.sql
+
+<span class="c1"># Verify backup</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="post-deployment">
+<h3>Post-Deployment<a class="headerlink" href="#post-deployment" title="Link to this heading"></a></h3>
+<p><strong>Verification</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check application health</span>
+curl<span class="w"> </span>http://localhost:8000
+
+<span class="c1"># Check database connectivity</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1;&quot;</span>
+
+<span class="c1"># Check Redis connectivity</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
+</pre></div>
+</div>
+</section>
+<section id="rollback-strategy">
+<h3>Rollback Strategy<a class="headerlink" href="#rollback-strategy" title="Link to this heading"></a></h3>
+<p><strong>Database Rollback</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rollback migrations</span>
+alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
+
+<span class="c1"># Verify rollback</span>
+alembic<span class="w"> </span>current
+
+<span class="c1"># Check application</span>
+curl<span class="w"> </span>http://localhost:8000
+</pre></div>
+</div>
+<p><strong>Data Rollback</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore from backup</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
+
+<span class="c1"># Verify data</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="recovery-procedures">
+<h3>Recovery Procedures<a class="headerlink" href="#recovery-procedures" title="Link to this heading"></a></h3>
+<p><strong>Database Recovery</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore database</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
+
+<span class="c1"># Verify data</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
+
+<span class="c1"># Run migrations</span>
+alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+</pre></div>
+</div>
+</section>
+<section id="health-checks">
+<h3>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h3>
+<p><strong>Application Health</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Health check endpoint</span>
+curl<span class="w"> </span>http://localhost:8000
+</pre></div>
+</div>
+<p><strong>Redis Health</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redis connectivity</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
+
+<span class="c1"># Redis performance</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
+
+<span class="c1"># Redis memory</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>info<span class="w"> </span>memory
+</pre></div>
+</div>
+</section>
+</section>
+<section id="production-maintenance">
+<h2>Production Maintenance<a class="headerlink" href="#production-maintenance" title="Link to this heading"></a></h2>
 <section id="database-optimization">
-<h2>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h2>
+<h3>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h3>
 <p><strong>Query Optimization</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Check slow queries</span>
 <span class="k">SELECT</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">mean_time</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_statements</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">mean_time</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
@@ -417,17 +404,20 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="k">ANALYZE</span><span class="p">;</span>
 </pre></div>
 </div>
-<p><strong>Connection Pooling</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default connection pool settings</span>
-<span class="n">pool_size</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">max_overflow</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">pool_timeout</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">pool_recycle</span> <span class="o">=</span> <span class="mi">3600</span>
+<p><strong>Index Optimization</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Analyze tables regularly</span>
+<span class="k">ANALYZE</span><span class="p">;</span>
+
+<span class="c1">-- Update statistics</span>
+<span class="k">UPDATE</span><span class="w"> </span><span class="n">pg_stat_user_tables</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">n_tup_ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_upd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">-- Vacuum tables</span>
+<span class="k">VACUUM</span><span class="w"> </span><span class="k">ANALYZE</span><span class="p">;</span>
 </pre></div>
 </div>
 </section>
 <section id="redis-optimization">
-<h2>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h2>
+<h3>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h3>
 <p><strong>Performance Monitoring</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor Redis performance</span>
 redis-cli<span class="w"> </span>--latency
@@ -439,12 +429,20 @@ redis-cli<span class="w"> </span>info<span class="w"> </span>memory
 redis-cli<span class="w"> </span>monitor
 </pre></div>
 </div>
-<section id="disaster-recovery">
-<h3>Disaster Recovery<a class="headerlink" href="#disaster-recovery" title="Link to this heading"></a></h3>
-</section>
+<p><strong>Performance Tuning</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Redis performance</span>
+redis-cli<span class="w"> </span>--latency
+
+<span class="c1"># Monitor memory usage</span>
+redis-cli<span class="w"> </span>info<span class="w"> </span>memory
+
+<span class="c1"># Check key count</span>
+redis-cli<span class="w"> </span>dbsize
+</pre></div>
+</div>
 </section>
 <section id="backup-strategy">
-<h2>Backup Strategy<a class="headerlink" href="#backup-strategy" title="Link to this heading"></a></h2>
+<h3>Backup Strategy<a class="headerlink" href="#backup-strategy" title="Link to this heading"></a></h3>
 <p><strong>Database Backup</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Daily backup</span>
 pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d<span class="k">)</span>.sql
@@ -457,19 +455,6 @@ pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class=
 </pre></div>
 </div>
 </section>
-<section id="recovery-procedures">
-<h2>Recovery Procedures<a class="headerlink" href="#recovery-procedures" title="Link to this heading"></a></h2>
-<p><strong>Database Recovery</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore database</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Verify data</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-
-<span class="c1"># Run migrations</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
 </section>
 </section>
 

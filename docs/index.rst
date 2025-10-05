@@ -39,7 +39,6 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
 
    reference/database_schema
    reference/migrations
-   reference/deployment
 
 Key Features
 ============
@@ -58,11 +57,5 @@ Quick Start
    # Installation
    uv sync
    docker-compose up -d
-
-   # Run migrations
-   alembic upgrade head
-
-   # Start the application
-   uv run python src/app.py
 
 The application will be available at `http://localhost:8000` with interactive API documentation at `http://localhost:8000/scalar`.

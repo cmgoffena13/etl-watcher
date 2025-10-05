@@ -64,7 +64,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="reference/deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -181,7 +180,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guides/anomaly_detection.html">Anomaly Detection</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guides/anomaly_detection.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/anomaly_detection.html#how-it-works">How It Works</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/anomaly_detection.html#setting-up-anomaly-detection">Setting Up Anomaly Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/anomaly_detection.html#automatic-execution">Automatic Execution</a></li>
@@ -241,28 +239,6 @@
 <li class="toctree-l2"><a class="reference internal" href="reference/migrations.html#best-practices-summary">Best Practices Summary</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="reference/deployment.html">Deployment Guide</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#kubernetes">Kubernetes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#namespace-setup">Namespace Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#configmap">ConfigMap</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#secrets">Secrets</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#deployment">Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#service">Service</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#ingress">Ingress</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#production">Production</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#postgresql-configuration">PostgreSQL Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#redis-configuration">Redis Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#pre-deployment">Pre-Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#post-deployment">Post-Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#rollback-strategy">Rollback Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#health-checks">Health Checks</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#alerting-setup">Alerting Setup</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#database-optimization">Database Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#redis-optimization">Redis Optimization</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#backup-strategy">Backup Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="reference/deployment.html#recovery-procedures">Recovery Procedures</a></li>
-</ul>
-</li>
 </ul>
 </div>
 </section>
@@ -281,12 +257,6 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Installation</span>
 uv<span class="w"> </span>sync
 docker-compose<span class="w"> </span>up<span class="w"> </span>-d
-
-<span class="c1"># Run migrations</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-
-<span class="c1"># Start the application</span>
-uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
 </pre></div>
 </div>
 <p>The application will be available at <cite>http://localhost:8000</cite> with interactive API documentation at <cite>http://localhost:8000/scalar</cite>.</p>

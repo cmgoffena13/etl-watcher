@@ -9,6 +9,7 @@
   <title>Anomaly Detection &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -16,6 +17,7 @@
       <script src="../_static/documentation_options.js?v=8d563738"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -58,7 +60,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Anomaly Detection</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#how-it-works">How It Works</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#statistical-analysis">Statistical Analysis</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#supported-metrics">Supported Metrics</a></li>
@@ -106,12 +107,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auto-creation-rules">Auto-Creation Rules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#custom-thresholds">Custom Thresholds</a></li>
 </ul>
 </li>
 </ul>
@@ -123,7 +122,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -152,11 +150,10 @@
              
   <section id="anomaly-detection">
 <h1>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h1>
-<p>This guide covers how to set up and use anomaly detection in Watcher.</p>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>Watcher’s anomaly detection system uses statistical analysis to identify unusual patterns in pipeline execution metrics. It automatically runs after each successful pipeline execution and can detect anomalies in various metrics like execution time, row counts, and throughput.</p>
-</section>
+<p>This guide covers how to set up and use anomaly detection in Watcher.
+Watcher’s anomaly detection system uses statistical analysis to identify unusual patterns
+in pipeline execution metrics. It automatically runs after each successful pipeline execution
+and can detect anomalies in various metrics like execution time, row counts, and throughput.</p>
 <section id="how-it-works">
 <h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
 <section id="statistical-analysis">
@@ -169,6 +166,12 @@
 <li><p><strong>Threshold Comparison</strong> Compares z-score against configured threshold</p></li>
 <li><p><strong>Anomaly Detection</strong> Flags values that exceed the threshold</p></li>
 </ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The system only compares executions that occurred during the same hour of day (e.g., 2 PM vs 2 PM)
+to account for daily patterns, business hours, and data processing cycles.
+This ensures more accurate anomaly detection by comparing like-with-like time periods.</p>
+</div>
 </section>
 <section id="supported-metrics">
 <h3>Supported Metrics<a class="headerlink" href="#supported-metrics" title="Link to this heading"></a></h3>
@@ -187,18 +190,62 @@
 <h2>Setting Up Anomaly Detection<a class="headerlink" href="#setting-up-anomaly-detection" title="Link to this heading"></a></h2>
 <section id="creating-detection-rules">
 <h3>Creating Detection Rules<a class="headerlink" href="#creating-detection-rules" title="Link to this heading"></a></h3>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can enable automatic creation of anomaly detection rules
+by setting the <code class="docutils literal notranslate"><span class="pre">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span></code> environment variable to
+<code class="docutils literal notranslate"><span class="pre">true</span></code>. This will automatically create all rules for a pipeline when it is created.</p>
+</div>
 <ol class="arabic">
 <li><p><strong>Create an anomaly detection rule</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">30</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+            <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">30</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;metric_field&quot;: &quot;total_rows&quot;,</span>
-<span class="s1">       &quot;z_threshold&quot;: 2.0,</span>
-<span class="s1">       &quot;minimum_executions&quot;: 5</span>
+<span class="s1">       &quot;z_threshold&quot;: 3.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 30</span>
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/anomaly_detection_rule<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">metric_field</span><span class="o">=</span>total_rows<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">z_threshold</span><span class="o">=</span><span class="m">3</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">minimum_executions</span><span class="o">=</span><span class="m">30</span>
+</pre></div>
+</div>
+</div></div>
 </li>
 <li><p><strong>Response</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
@@ -218,34 +265,108 @@
 <section id="rule-configuration">
 <h3>Rule Configuration<a class="headerlink" href="#rule-configuration" title="Link to this heading"></a></h3>
 <p><strong>Pipeline ID</strong> The pipeline to monitor for anomalies</p>
-<p><strong>Metric Field</strong> The specific metric to analyze:
-- <code class="docutils literal notranslate"><span class="pre">total_rows</span></code>: Monitor row count variations
-- <code class="docutils literal notranslate"><span class="pre">duration_seconds</span></code>: Monitor execution time variations
-- <code class="docutils literal notranslate"><span class="pre">throughput</span></code>: Monitor processing speed variations
-- <code class="docutils literal notranslate"><span class="pre">inserts</span></code>: Monitor insert operation variations
-- <code class="docutils literal notranslate"><span class="pre">updates</span></code>: Monitor update operation variations
-- <code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code>: Monitor soft delete variations</p>
-<p><strong>Z-Threshold</strong> Sensitivity of anomaly detection:
-- <code class="docutils literal notranslate"><span class="pre">1.5</span></code>: Very sensitive (catches minor variations)
-- <code class="docutils literal notranslate"><span class="pre">2.0</span></code>: Standard sensitivity (recommended)
-- <code class="docutils literal notranslate"><span class="pre">2.5</span></code>: Less sensitive (catches major variations)
-- <code class="docutils literal notranslate"><span class="pre">3.0</span></code>: Very conservative (catches only extreme anomalies)</p>
-<p><strong>Minimum Executions</strong> Number of historical executions needed before analysis:
-- <code class="docutils literal notranslate"><span class="pre">5</span></code>: Minimum for basic analysis
-- <code class="docutils literal notranslate"><span class="pre">10</span></code>: Recommended for stable baselines
-- <code class="docutils literal notranslate"><span class="pre">20</span></code>: For highly variable pipelines</p>
+<p><strong>Metric Field</strong> The specific metric to analyze:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">total_rows</span></code>: Monitor row count variations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">duration_seconds</span></code>: Monitor execution time variations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">throughput</span></code>: Monitor processing speed variations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inserts</span></code>: Monitor insert operation variations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updates</span></code>: Monitor update operation variations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code>: Monitor soft delete variations</p></li>
+</ul>
+<p><strong>Z-Threshold</strong> Sensitivity of anomaly detection:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">1.5</span></code>: Very sensitive (catches minor variations)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2.0</span></code>: Standard sensitivity (recommended)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">2.5</span></code>: Less sensitive (catches major variations)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">3.0</span></code>: Very conservative (catches only extreme anomalies)</p></li>
+</ul>
+<p><strong>Minimum Executions</strong> Number of historical executions needed before analysis:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">5</span></code>: Minimum for basic analysis (would not recommend this)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">30</span></code>: Recommended for stable baselines</p></li>
+</ul>
 </section>
 <section id="multiple-rules">
 <h3>Multiple Rules<a class="headerlink" href="#multiple-rules" title="Link to this heading"></a></h3>
 <p>Create multiple rules for comprehensive monitoring:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor row count anomalies</span>
+<blockquote>
+<div><div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Define rules to create</span>
+<span class="n">rules</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">2.0</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">5</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;duration_seconds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;throughput&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">1.8</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">8</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="c1"># Create all rules</span>
+<span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">rule</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rule</span><span class="p">[</span><span class="s1">&#39;metric_field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> rule:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="c1"># Define rules to create</span>
+<span class="n">rules</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">30</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;duration_seconds&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">30</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="s2">&quot;throughput&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">3.0</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">30</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+
+<span class="c1"># Create all rules</span>
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="k">for</span> <span class="n">rule</span> <span class="ow">in</span> <span class="n">rules</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="n">rule</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">rule</span><span class="p">[</span><span class="s1">&#39;metric_field&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2"> rule:&quot;</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor row count anomalies</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;metric_field&quot;: &quot;total_rows&quot;,</span>
-<span class="s1">       &quot;z_threshold&quot;: 2.0,</span>
-<span class="s1">       &quot;minimum_executions&quot;: 5</span>
+<span class="s1">       &quot;z_threshold&quot;: 3.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 30</span>
 <span class="s1">     }&#39;</span>
 
 <span class="c1"># Monitor execution time anomalies</span>
@@ -254,8 +375,8 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;metric_field&quot;: &quot;duration_seconds&quot;,</span>
-<span class="s1">       &quot;z_threshold&quot;: 2.5,</span>
-<span class="s1">       &quot;minimum_executions&quot;: 10</span>
+<span class="s1">       &quot;z_threshold&quot;: 3.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 30</span>
 <span class="s1">     }&#39;</span>
 
 <span class="c1"># Monitor throughput anomalies</span>
@@ -264,11 +385,35 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;metric_field&quot;: &quot;throughput&quot;,</span>
-<span class="s1">       &quot;z_threshold&quot;: 1.8,</span>
-<span class="s1">       &quot;minimum_executions&quot;: 8</span>
+<span class="s1">       &quot;z_threshold&quot;: 3.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 30</span>
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor row count anomalies</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/anomaly_detection_rule<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">metric_field</span><span class="o">=</span>total_rows<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">z_threshold</span><span class="o">=</span><span class="m">2</span>.0<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">minimum_executions</span><span class="o">=</span><span class="m">5</span>
+
+<span class="c1"># Monitor execution time anomalies</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/anomaly_detection_rule<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">metric_field</span><span class="o">=</span>duration_seconds<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">z_threshold</span><span class="o">=</span><span class="m">2</span>.5<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">minimum_executions</span><span class="o">=</span><span class="m">10</span>
+
+<span class="c1"># Monitor throughput anomalies</span>
+http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/anomaly_detection_rule<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">metric_field</span><span class="o">=</span>throughput<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">z_threshold</span><span class="o">=</span><span class="m">1</span>.8<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">minimum_executions</span><span class="o">=</span><span class="m">8</span>
+</pre></div>
+</div>
+</div></div>
+</div></blockquote>
 </section>
 </section>
 <section id="automatic-execution">
@@ -302,18 +447,19 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <h3>Understanding Results<a class="headerlink" href="#understanding-results" title="Link to this heading"></a></h3>
 <p>When an anomaly is detected, the system stores detailed information:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;rule_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_execution_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;violation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.8</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;historical_mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;std_deviation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;threshold_min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;threshold_max_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">13000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;rule_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;violation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">15000.0000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.8000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;historical_mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">8000.0000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;std_deviation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2500.0000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold_min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3000.0000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold_max_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">13000.0000</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;context&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;pipeline_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daily Sales Pipeline&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;execution_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">    </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;execution_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">45</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;detected_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span>
 <span class="p">}</span>
@@ -338,17 +484,17 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <section id="slack-alerts">
 <h3>Slack Alerts<a class="headerlink" href="#slack-alerts" title="Link to this heading"></a></h3>
 <p>When anomalies are detected, Slack alerts are sent automatically:</p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 Anomalies Detected for Pipeline &#39;Daily Sales Pipeline&#39; (ID: 1) - Execution ID 123 flagged
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>⚠️ WARNING
+Anomaly Detection
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Anomalies Detected for Pipeline &#39;analytics_pipeline&#39; (ID: 123) - Execution ID 21 flagged
 
-Total Anomalies: 2
-
-Metrics:
-• total_rows: 15000 (z-score: 2.8, threshold: 2.0)
-• duration_seconds: 1800 (z-score: 2.3, threshold: 2.0)
-
-Anomalies:
-• total_rows: 15000 rows (expected: ~8000, z-score: 2.8)
-• duration_seconds: 1800 seconds (expected: ~1200, z-score: 2.3)
+Details:
+• Total Anomalies: 2
+• Metrics: [&#39;duration_seconds&#39;, &#39;throughput&#39;]
+• Anomalies:
+     • duration_seconds: 4914 (Range: 0 - 4767)
+     • throughput: 271.96 (Range: 0 - 250)
 </pre></div>
 </div>
 </section>
@@ -356,10 +502,7 @@ Anomalies:
 <h3>Alert Configuration<a class="headerlink" href="#alert-configuration" title="Link to this heading"></a></h3>
 <p>Configure Slack webhooks for alerts:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set Slack webhook URL</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&quot;</span>
-
-<span class="c1"># Restart application</span>
-uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
+<span class="nv">SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&quot;</span>
 </pre></div>
 </div>
 </section>
@@ -369,31 +512,101 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <section id="viewing-anomalies">
 <h3>Viewing Anomalies<a class="headerlink" href="#viewing-anomalies" title="Link to this heading"></a></h3>
 <p>List all anomaly detection rules:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span>
+<blockquote>
+<div><div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
-<span class="c1"># Response</span>
-<span class="o">[</span>
-<span class="w">  </span><span class="o">{</span>
-<span class="w">    </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="w">    </span><span class="s2">&quot;pipeline_id&quot;</span>:<span class="w"> </span><span class="m">1</span>,
-<span class="w">    </span><span class="s2">&quot;metric_field&quot;</span>:<span class="w"> </span><span class="s2">&quot;total_rows&quot;</span>,
-<span class="w">    </span><span class="s2">&quot;z_threshold&quot;</span>:<span class="w"> </span><span class="m">2</span>.0,
-<span class="w">    </span><span class="s2">&quot;minimum_executions&quot;</span>:<span class="w"> </span><span class="m">5</span>,
-<span class="w">    </span><span class="s2">&quot;active&quot;</span>:<span class="w"> </span>true,
-<span class="w">    </span><span class="s2">&quot;created_at&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
-<span class="w">  </span><span class="o">}</span>
-<span class="o">]</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>GET<span class="w"> </span>localhost:8000/anomaly_detection_rule
+</pre></div>
+</div>
+</div></div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div></blockquote>
 <p>Get specific rule details:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule/1&quot;</span>
+<blockquote>
+<div><div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-3-3-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-2" name="3-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-3-3-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-3" name="3-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule/1&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule/1&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-3-2" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-2" name="3-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule/1&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-3-3-3" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-3" name="3-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>GET<span class="w"> </span>localhost:8000/anomaly_detection_rule/1
+</pre></div>
+</div>
+</div></div>
+</div></blockquote>
 </section>
 <section id="updating-rules">
 <h3>Updating Rules<a class="headerlink" href="#updating-rules" title="Link to this heading"></a></h3>
 <p>Update anomaly detection rules:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<blockquote>
+<div><div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-4-4-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-4-4-0" name="4-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-4-4-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-4-4-1" name="4-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-4-4-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-4-4-2" name="4-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-4-4-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-4-4-3" name="4-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-4-4-0" class="sphinx-tabs-panel" id="panel-4-4-0" name="4-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+        <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">10</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-4-1" class="sphinx-tabs-panel" hidden="true" id="panel-4-4-1" name="4-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;z_threshold&quot;</span><span class="p">:</span> <span class="mf">2.5</span><span class="p">,</span>
+            <span class="s2">&quot;minimum_executions&quot;</span><span class="p">:</span> <span class="mi">10</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-4-4-2" class="sphinx-tabs-panel" hidden="true" id="panel-4-4-2" name="4-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;id&quot;: 1,</span>
@@ -402,11 +615,48 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-4-4-3" class="sphinx-tabs-panel" hidden="true" id="panel-4-4-3" name="4-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>PATCH<span class="w"> </span>localhost:8000/anomaly_detection_rule<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">z_threshold</span><span class="o">=</span><span class="m">2</span>.5<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">minimum_executions</span><span class="o">=</span><span class="m">10</span>
+</pre></div>
+</div>
+</div></div>
+</div></blockquote>
 </section>
 <section id="unflagging-anomalies">
 <h3>Unflagging Anomalies<a class="headerlink" href="#unflagging-anomalies" title="Link to this heading"></a></h3>
 <p>Unflag anomalies that are false positives:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/unflag_anomaly&quot;</span><span class="w"> </span><span class="se">\</span>
+<blockquote>
+<div><div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-5-5-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-5-5-0" name="5-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-5-5-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-5-5-1" name="5-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-5-5-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-5-5-2" name="5-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-5-5-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-5-5-3" name="5-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-5-5-0" class="sphinx-tabs-panel" id="panel-5-5-0" name="5-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/unflag_anomaly&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_execution_id&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+        <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span> <span class="s2">&quot;duration_seconds&quot;</span><span class="p">]</span>
+    <span class="p">}</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-5-1" class="sphinx-tabs-panel" hidden="true" id="panel-5-5-1" name="5-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/unflag_anomaly&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+            <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="s2">&quot;pipeline_execution_id&quot;</span><span class="p">:</span> <span class="mi">123</span><span class="p">,</span>
+            <span class="s2">&quot;metric_field&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span> <span class="s2">&quot;duration_seconds&quot;</span><span class="p">]</span>
+        <span class="p">}</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-5-5-2" class="sphinx-tabs-panel" hidden="true" id="panel-5-5-2" name="5-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/unflag_anomaly&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
@@ -415,6 +665,14 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
+</div><div aria-labelledby="tab-5-5-3" class="sphinx-tabs-panel" hidden="true" id="panel-5-5-3" name="5-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/unflag_anomaly<span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span><span class="nv">pipeline_execution_id</span><span class="o">=</span><span class="m">123</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>metric_field:<span class="o">=</span><span class="s1">&#39;[&quot;total_rows&quot;, &quot;duration_seconds&quot;]&#39;</span>
+</pre></div>
+</div>
+</div></div>
+</div></blockquote>
 <p>This removes the anomaly flags and allows the execution to be included in future baseline calculations.</p>
 </section>
 </section>
@@ -431,15 +689,8 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 </section>
 <section id="threshold-selection">
 <h3>Threshold Selection<a class="headerlink" href="#threshold-selection" title="Link to this heading"></a></h3>
-<p><strong>For Stable Pipelines</strong>
-- Z-threshold: 2.0-2.5
-- Minimum executions: 10-15</p>
-<p><strong>For Variable Pipelines</strong>
-- Z-threshold: 2.5-3.0
-- Minimum executions: 15-20</p>
-<p><strong>For Critical Pipelines</strong>
-- Z-threshold: 1.5-2.0
-- Minimum executions: 5-10</p>
+<p>A good rule of thumb is to start with a z-threshold of 3.0 and a minimum executions of 30.
+According to the Central Limit Theorem, 30 executions is enough to get a stable baseline for normal distrbution.</p>
 </section>
 <section id="monitoring-strategy">
 <h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
@@ -459,8 +710,8 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -471,8 +722,8 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;duration_seconds&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -483,8 +734,8 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;throughput&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.8</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -495,8 +746,8 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;inserts&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -506,30 +757,29 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>No Anomalies Detected</strong>
-- Check if rules are active
-- Verify minimum executions requirement
-- Check if z-threshold is too high</p>
-<p><strong>Too Many False Positives</strong>
-- Increase z-threshold
-- Increase minimum executions
-- Review historical data quality</p>
-<p><strong>Missing Alerts</strong>
-- Verify Slack webhook configuration
-- Check Celery worker status
-- Review alert delivery logs</p>
-<p><strong>Baseline Issues</strong>
-- Ensure sufficient historical data
-- Check for data quality issues
-- Verify metric field selection</p>
-</section>
-<section id="performance-considerations">
-<h3>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h3>
+<p><strong>No Anomalies Detected</strong></p>
 <ul class="simple">
-<li><p><strong>Historical Data</strong> More data = better baselines</p></li>
-<li><p><strong>Rule Complexity</strong> Multiple rules increase processing time</p></li>
-<li><p><strong>Alert Volume</strong> Too many alerts can cause fatigue</p></li>
-<li><p><strong>Storage</strong> Anomaly results are stored in database</p></li>
+<li><p>Check if rules are active</p></li>
+<li><p>Verify minimum executions requirement</p></li>
+<li><p>Check if z-threshold is too high</p></li>
+</ul>
+<p><strong>Too Many False Positives</strong></p>
+<ul class="simple">
+<li><p>Increase z-threshold</p></li>
+<li><p>Increase minimum executions</p></li>
+<li><p>Review historical data quality</p></li>
+</ul>
+<p><strong>Missing Alerts</strong></p>
+<ul class="simple">
+<li><p>Verify Slack webhook configuration</p></li>
+<li><p>Check Celery worker status</p></li>
+<li><p>Review alert delivery logs</p></li>
+</ul>
+<p><strong>Baseline Issues</strong></p>
+<ul class="simple">
+<li><p>Ensure sufficient historical data</p></li>
+<li><p>Check for data quality issues</p></li>
+<li><p>Verify metric field selection</p></li>
 </ul>
 </section>
 </section>
@@ -538,25 +788,10 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <section id="auto-creation-rules">
 <h3>Auto-Creation Rules<a class="headerlink" href="#auto-creation-rules" title="Link to this heading"></a></h3>
 <p>Enable automatic rule creation for new pipelines:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">true</span>
-
-<span class="c1"># Restart application</span>
-uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">true</span>
 </pre></div>
 </div>
 <p>This automatically creates default anomaly detection rules for new pipelines.</p>
-</section>
-<section id="custom-thresholds">
-<h3>Custom Thresholds<a class="headerlink" href="#custom-thresholds" title="Link to this heading"></a></h3>
-<p>For pipelines with known patterns, use custom thresholds:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span>
-<span class="p">}</span>
-</pre></div>
-</div>
 </section>
 </section>
 </section>

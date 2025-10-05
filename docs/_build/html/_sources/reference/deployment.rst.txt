@@ -4,10 +4,10 @@ Deployment Guide
 This section covers deployment strategies for Watcher.
    
 Kubernetes
-~~~~~~~~~~
+----------
 
-Namespace Setup
-~~~~~~~~~~~~~~~
+Namespace
+~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -16,8 +16,9 @@ Namespace Setup
    metadata:
      name: watcher
 
+
 ConfigMap
-~~~~~~~~~~
+~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -27,8 +28,10 @@ ConfigMap
      name: watcher-config
      namespace: watcher
    data:
-     DATABASE_URL: "postgresql+asyncpg://user:password@postgres:5432/watcher"
-     REDIS_URL: "redis://redis:6379/1"
+     PROD_DATABASE_URL: "postgresql+asyncpg://user:password@your-db-host:5432/watcher"
+     PROD_REDIS_URL: "redis://your-redis-host:6379/1"
+     PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: "true"
+     PROD_PROFILING_ENABLED: "false"
 
 Secrets
 ~~~~~~~
@@ -42,11 +45,11 @@ Secrets
      namespace: watcher
    type: Opaque
    data:
-     LOGFIRE_TOKEN: <base64-encoded-token>
-     SLACK_WEBHOOK_URL: <base64-encoded-webhook>
+     PROD_LOGFIRE_TOKEN: <base64-encoded-token>
+     PROD_SLACK_WEBHOOK_URL: <base64-encoded-webhook>
 
-Deployment
-~~~~~~~~~~
+Watcher Application
+~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
@@ -56,7 +59,7 @@ Deployment
      name: watcher-app
      namespace: watcher
    spec:
-     replicas: 3
+     replicas: 2
      selector:
        matchLabels:
          app: watcher-app
@@ -75,12 +78,27 @@ Deployment
                name: watcher-config
            - secretRef:
                name: watcher-secrets
+           livenessProbe:
+             httpGet:
+               path: /
+               port: 8000
+             initialDelaySeconds: 30
+             periodSeconds: 10
+           readinessProbe:
+             httpGet:
+               path: /
+               port: 8000
+             initialDelaySeconds: 5
+             periodSeconds: 5
+           resources:
+             requests:
+               memory: "512Mi"
+               cpu: "250m"
+             limits:
+               memory: "1Gi"
+               cpu: "500m"
 
-Service
-~~~~~~~~~~
-
-.. code-block:: yaml
-
+   ---
    apiVersion: v1
    kind: Service
    metadata:
@@ -92,95 +110,97 @@ Service
      ports:
      - port: 80
        targetPort: 8000
-     type: LoadBalancer
+     type: ClusterIP
 
-Ingress
-~~~~~~~~~~
+Celery Workers
+~~~~~~~~~~~~~~
 
 .. code-block:: yaml
 
-   apiVersion: networking.k8s.io/v1
-   kind: Ingress
+   apiVersion: apps/v1
+   kind: Deployment
    metadata:
-     name: watcher-ingress
+     name: watcher-celery
      namespace: watcher
    spec:
-     rules:
-     - host: watcher.example.com
-       http:
-         paths:
-         - path: /
-           pathType: Prefix
-           backend:
-             service:
-               name: watcher-service
-               port:
-                 number: 80
+     replicas: 2
+     selector:
+       matchLabels:
+         app: watcher-celery
+     template:
+       metadata:
+         labels:
+           app: watcher-celery
+       spec:
+         containers:
+         - name: celery
+           image: watcher:latest
+           command: ["celery", "-A", "src.celery_app", "worker", "--loglevel=info"]
+           envFrom:
+           - configMapRef:
+               name: watcher-config
+           - secretRef:
+               name: watcher-secrets
+           resources:
+             requests:
+               memory: "256Mi"
+               cpu: "100m"
+             limits:
+               memory: "512Mi"
+               cpu: "250m"
 
-Environment Configuration
--------------------------
 
-Production
-~~~~~~~~~~
-
-**Environment Variables**
-
-.. code-block:: bash
-
-   # Database
-   export PROD_DATABASE_URL="postgresql+asyncpg://user:password@prod-db:5432/watcher_prod"
-   
-   # Redis
-   export PROD_REDIS_URL="redis://prod-redis:6379/1"
-   
-   # Monitoring
-   export PROD_LOGFIRE_TOKEN="your_production_token"
-   export PROD_LOGFIRE_CONSOLE="false"
-   
-   # Notifications
-   export PROD_SLACK_WEBHOOK_URL="your_production_webhook"
-   
-   # Features
-   export PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES="true"
-   export PROD_PROFILING_ENABLED="false"
-
-Database Setup
----------------
+Deployment Configuration
+------------------------
 
 PostgreSQL Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~
 
-**Index Optimization**
+**Connection Pooling**
 
-.. code-block:: sql
+.. code-block:: python
 
-   -- Analyze tables regularly
-   ANALYZE;
-   
-   -- Update statistics
-   UPDATE pg_stat_user_tables SET n_tup_ins = 0, n_tup_upd = 0, n_tup_del = 0;
-   
-   -- Vacuum tables
-   VACUUM ANALYZE;
+   # Default connection pool settings
+   pool_size = 20
+   max_overflow = 10
+   pool_timeout = 30
+   pool_recycle = 3600
 
-Redis Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Alerting Setup
+~~~~~~~~~~~~~~
 
-**Performance Tuning**
+**Monitoring Checks**
 
 .. code-block:: bash
 
-   # Check Redis performance
-   redis-cli --latency
+   # Freshness monitoring
+   curl -X POST http://localhost:8000/freshness
    
-   # Monitor memory usage
-   redis-cli info memory
+   # Timeliness monitoring
+   curl -X POST http://localhost:8000/timeliness -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
    
-   # Check key count
-   redis-cli dbsize
+   # Queue monitoring
+   curl -X POST http://localhost:8000/celery/monitor-queue
 
-Migration Strategy
-------------------
+**Scheduled Monitoring**
+
+.. code-block:: bash
+
+   # Add to crontab
+   # Check freshness every hour
+   0 * * * * curl -X POST http://localhost:8000/freshness
+   
+   # Check timeliness every 30 minutes
+   */30 * * * * curl -X POST http://localhost:8000/timeliness -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
+   
+   # Monitor Celery queue every 5 minutes
+   */5 * * * * curl -X POST http://localhost:8000/celery/monitor-queue
+   
+   # Clean up logs daily (365 days retention)
+   0 2 * * * curl -X POST http://localhost:8000/log_cleanup -H "Content-Type: application/json" -d '{"retention_days": 365}'
+
+Deployment Strategy
+-------------------
 
 Pre-Deployment
 ~~~~~~~~~~~~~~
@@ -238,8 +258,21 @@ Rollback Strategy
    # Verify data
    psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
 
-Monitoring & Alerting
----------------------
+Recovery Procedures
+~~~~~~~~~~~~~~~~~~~
+
+**Database Recovery**
+
+.. code-block:: bash
+
+   # Restore database
+   psql $DATABASE_URL < backup.sql
+   
+   # Verify data
+   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
+   
+   # Run migrations
+   alembic upgrade head
 
 Health Checks
 ~~~~~~~~~~~~~~
@@ -250,9 +283,6 @@ Health Checks
 
    # Health check endpoint
    curl http://localhost:8000
-   
-   # Diagnostics page
-   curl http://localhost:8000/diagnostics
 
 **Redis Health**
 
@@ -267,41 +297,8 @@ Health Checks
    # Redis memory
    redis-cli -u $REDIS_URL info memory
 
-Alerting Setup
-~~~~~~~~~~~~~~
-
-**Monitoring Checks**
-
-.. code-block:: bash
-
-   # Freshness monitoring
-   curl -X POST http://localhost:8000/freshness
-   
-   # Timeliness monitoring
-   curl -X POST http://localhost:8000/timeliness -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
-   
-   # Queue monitoring
-   curl -X POST http://localhost:8000/celery/monitor-queue
-
-**Scheduled Monitoring**
-
-.. code-block:: bash
-
-   # Add to crontab
-   # Check freshness every hour
-   0 * * * * curl -X POST http://localhost:8000/freshness
-   
-   # Check timeliness every 30 minutes
-   */30 * * * * curl -X POST http://localhost:8000/timeliness -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
-   
-   # Monitor Celery queue every 5 minutes
-   */5 * * * * curl -X POST http://localhost:8000/celery/monitor-queue
-   
-   # Clean up logs daily
-   0 2 * * * curl -X POST http://localhost:8000/log_cleanup
-
-Performance Optimization
-------------------------
+Production Maintenance
+----------------------
 
 Database Optimization
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -319,15 +316,18 @@ Database Optimization
    -- Analyze tables
    ANALYZE;
 
-**Connection Pooling**
+**Index Optimization**
 
-.. code-block:: python
+.. code-block:: sql
 
-   # Default connection pool settings
-   pool_size = 20
-   max_overflow = 10
-   pool_timeout = 30
-   pool_recycle = 3600
+   -- Analyze tables regularly
+   ANALYZE;
+   
+   -- Update statistics
+   UPDATE pg_stat_user_tables SET n_tup_ins = 0, n_tup_upd = 0, n_tup_del = 0;
+   
+   -- Vacuum tables
+   VACUUM ANALYZE;
 
 Redis Optimization
 ~~~~~~~~~~~~~~~~~~
@@ -345,8 +345,18 @@ Redis Optimization
    # Monitor operations
    redis-cli monitor
 
-Disaster Recovery
------------------
+**Performance Tuning**
+
+.. code-block:: bash
+
+   # Check Redis performance
+   redis-cli --latency
+   
+   # Monitor memory usage
+   redis-cli info memory
+   
+   # Check key count
+   redis-cli dbsize
 
 Backup Strategy
 ~~~~~~~~~~~~~~
@@ -363,19 +373,3 @@ Backup Strategy
    
    # Monthly backup
    pg_dump $DATABASE_URL | gzip > backup_$(date +%Y%m).sql.gz
-
-Recovery Procedures
-~~~~~~~~~~~~~~~~~~~
-
-**Database Recovery**
-
-.. code-block:: bash
-
-   # Restore database
-   psql $DATABASE_URL < backup.sql
-   
-   # Verify data
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
-   
-   # Run migrations
-   alembic upgrade head
