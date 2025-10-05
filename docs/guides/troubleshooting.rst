@@ -474,7 +474,7 @@ Debugging Techniques
    .. code-block:: bash
 
       # Test API endpoints
-      curl -v http://localhost:8000/health
+      curl -v http://localhost:8000
       
       # Check API documentation
       curl http://localhost:8000/scalar
@@ -576,7 +576,7 @@ Debugging Techniques
    .. code-block:: bash
 
       # Check API health
-      curl -v http://localhost:8000/health
+      curl -v http://localhost:8000
       
       # Check API documentation
       curl http://localhost:8000/scalar
@@ -631,7 +631,7 @@ Debugging Techniques
       redis-cli -u $REDIS_URL --latency
       
       # Check application performance
-      curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8000/health
+      curl -w "@curl-format.txt" -o /dev/null -s http://localhost:8000
 
 **Load Testing Debugging**
    **Solution**:
@@ -656,7 +656,7 @@ Debugging Techniques
       openssl s_client -connect localhost:8000
       
       # Check authentication
-      curl -v http://localhost:8000/health
+      curl -v http://localhost:8000
       
       # Check authorization
       curl -X GET "http://localhost:8000/pipeline"
@@ -693,4 +693,4 @@ Debugging Techniques
       docker-compose logs
       
       # Verify functionality
-      curl http://localhost:8000/health
+      curl http://localhost:8000

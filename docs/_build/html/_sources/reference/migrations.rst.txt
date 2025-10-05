@@ -1,17 +1,11 @@
 Database Migrations
 ====================
 
-This section covers database migration management in Watcher.
-
-Migration Overview
-------------------
-
-Watcher uses Alembic for database migration management:
+Watcher uses Alembic for database migration management for these features:
 
 - **Version Control** Track schema changes over time
 - **Rollback Support** Revert schema changes when needed
 - **Data Preservation** Maintain data integrity during changes
-- **Environment Management** Handle different environments
 
 Migration Files
 ---------------
@@ -19,10 +13,51 @@ Migration Files
 Current Migrations
 ~~~~~~~~~~~~~~~~~~
 
-**Initial Migration** (20250909185058_initial.py):
-- Creates all core tables
-- Sets up indexes and constraints
-- Establishes basic schema structure
+**Initial Migration** (20251005124405_initial.py):
+
+- Creates all core tables and relationships
+- Establishes complete database schema for Watcher
+- Sets up indexes, constraints, and foreign keys
+- Creates custom PostgreSQL enums (DatePartEnum, AnomalyMetricFieldEnum)
+- Establishes closure tables for hierarchical relationships
+- Sets up anomaly detection and monitoring infrastructure
+
+What the Initial Migration Establishes
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The initial migration creates the complete Watcher database schema:
+
+**Core Tables:**
+
+- ``address_type`` - Address type definitions (database, table, etc.)
+- ``pipeline_type`` - Pipeline type definitions with monitoring configuration
+- ``address`` - Data source and target addresses
+- ``pipeline`` - Pipeline definitions with lineage and monitoring settings
+- ``pipeline_execution`` - Pipeline execution records with performance metrics
+- ``address_lineage`` - Data lineage relationships between addresses
+- ``anomaly_detection_rule`` - Anomaly detection configuration
+- ``anomaly_detection_result`` - Anomaly detection results
+- ``freshness_pipeline_log`` - Freshness monitoring logs
+- ``timeliness_pipeline_execution_log`` - Timeliness monitoring logs
+
+**Closure Tables:**
+
+- ``address_lineage_closure`` - Hierarchical address lineage relationships
+- ``pipeline_execution_closure`` - Hierarchical pipeline execution relationships
+
+**Custom Enums:**
+
+- ``DatePartEnum`` - Time period enums (MINUTE, HOUR, DAY, WEEK, MONTH, YEAR)
+- ``AnomalyMetricFieldEnum`` - Anomaly detection metric fields
+
+**Key Features Established:**
+
+- Complete data lineage tracking system
+- Anomaly detection infrastructure
+- Freshness and timeliness monitoring
+- Hierarchical execution relationships
+- Performance metrics collection
+- Comprehensive indexing for query optimization
 
 Migration Structure
 ~~~~~~~~~~~~~~~~~~
@@ -184,13 +219,10 @@ Post-deployment
    alembic current
    
    # Check application
-   curl http://localhost:8000/health
+   curl http://localhost:8000
 
 Migration Safety
 ----------------
-
-Data Preservation
-~~~~~~~~~~~~~~~~
 
 Safe Operations
 ~~~~~~~~~~~~~~~
@@ -245,135 +277,8 @@ Rollback Testing
    # Verify data integrity
    psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
 
-Migration Examples
-------------------
-
-Adding a New Column
-~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   def upgrade() -> None:
-       op.add_column('pipeline', sa.Column('new_field', sa.String(255), nullable=True))
-
-   def downgrade() -> None:
-       op.drop_column('pipeline', 'new_field')
-
-Adding a New Table
-~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   def upgrade() -> None:
-       op.create_table('new_table',
-           sa.Column('id', sa.Integer(), nullable=False),
-           sa.Column('name', sa.String(255), nullable=False),
-           sa.PrimaryKeyConstraint('id')
-       )
-
-   def downgrade() -> None:
-       op.drop_table('new_table')
-
-Adding an Index
-~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   def upgrade() -> None:
-       op.create_index('ix_new_table_name', 'new_table', ['name'])
-
-   def downgrade() -> None:
-       op.drop_index('ix_new_table_name', table_name='new_table')
-
-Adding a Constraint
-~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   def upgrade() -> None:
-       op.create_check_constraint('ck_new_table_name', 'new_table', 'name IS NOT NULL')
-
-   def downgrade() -> None:
-       op.drop_constraint('ck_new_table_name', 'new_table', type_='check')
-
-Data Migration
-~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   def upgrade() -> None:
-       # Add new column
-       op.add_column('pipeline', sa.Column('new_field', sa.String(255), nullable=True))
-       
-       # Migrate data
-       connection = op.get_bind()
-       connection.execute(
-           "UPDATE pipeline SET new_field = 'default_value' WHERE new_field IS NULL"
-       )
-       
-       # Make column not null
-       op.alter_column('pipeline', 'new_field', nullable=False)
-
-   def downgrade() -> None:
-       op.drop_column('pipeline', 'new_field')
-
-Environment Management
+Production Management
 ----------------------
-
-Development Environment
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-Local Development
-~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Set development database
-   export DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/watcher_dev"
-   
-   # Run migrations
-   alembic upgrade head
-
-Docker Development
-~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Use Docker database
-   export DATABASE_URL="postgresql+asyncpg://user:password@postgres:5432/watcher_dev"
-   
-   # Run migrations
-   alembic upgrade head
-
-Testing Environment
-~~~~~~~~~~~~~~~~~~~~
-
-Test Database
-~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Set test database
-   export DATABASE_URL="postgresql+asyncpg://user:password@localhost:5432/watcher_test"
-   
-   # Run migrations
-   alembic upgrade head
-   
-   # Run tests
-   uv run pytest
-
-Test Isolation
-~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Reset test database
-   dropdb watcher_test
-   createdb watcher_test
-   alembic upgrade head
-
-Production Environment
-~~~~~~~~~~~~~~~~~~~~~~~
 
 Production Deployment
 ~~~~~~~~~~~~~~~~~~~~
@@ -404,7 +309,7 @@ Rollback Production
    alembic current
    
    # Check application
-   curl http://localhost:8000/health
+   curl http://localhost:8000
 
 Migration Troubleshooting
 -------------------------
@@ -467,81 +372,6 @@ Schema Drift
    # Run migration
    alembic upgrade head
 
-Migration Validation
---------------------
-
-Pre-Migration Checks
-~~~~~~~~~~~~~~~~~~~~
-
-Schema Validation
-~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Check current schema
-   psql $DATABASE_URL -c "\d"
-   
-   # Check migration status
-   alembic current
-   
-   # Check for pending migrations
-   alembic check
-
-Data Validation
-~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Check data integrity
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline_execution;"
-   
-   # Check for orphaned records
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline_execution WHERE pipeline_id NOT IN (SELECT id FROM pipeline);"
-
-Post-Migration Checks
-~~~~~~~~~~~~~~~~~~~~~
-
-Schema Verification
-~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Check new schema
-   psql $DATABASE_URL -c "\d"
-   
-   # Check indexes
-   psql $DATABASE_URL -c "SELECT indexname FROM pg_indexes WHERE tablename = 'pipeline';"
-   
-   # Check constraints
-   psql $DATABASE_URL -c "SELECT conname FROM pg_constraint WHERE conrelid = 'pipeline'::regclass;"
-
-Data Verification
-~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Check data integrity
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline_execution;"
-   
-   # Check new data
-   psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline WHERE new_field IS NOT NULL;"
-
-Application Verification
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: bash
-
-   # Check application health
-   curl http://localhost:8000/health
-   
-   # Check API endpoints
-   curl http://localhost:8000/pipeline
-   
-   # Check diagnostics
-   curl http://localhost:8000/diagnostics
-
 Migration Automation
 --------------------
 
@@ -562,9 +392,6 @@ Docker Integration
 
    # Run migrations in Docker
    RUN alembic upgrade head
-
-Migration Monitoring
-~~~~~~~~~~~~~~~~~~~~
 
 Migration Logging
 ~~~~~~~~~~~~~~~~~

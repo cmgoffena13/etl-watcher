@@ -511,7 +511,7 @@ celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span clas
 </dd>
 <dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test API endpoints</span>
-curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000
 
 <span class="c1"># Check API documentation</span>
 curl<span class="w"> </span>http://localhost:8000/scalar
@@ -599,7 +599,7 @@ docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w
 </dd>
 <dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check API health</span>
-curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000
 
 <span class="c1"># Check API documentation</span>
 curl<span class="w"> </span>http://localhost:8000/scalar
@@ -648,7 +648,7 @@ psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"
 redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
 
 <span class="c1"># Check application performance</span>
-curl<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;@curl-format.txt&quot;</span><span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health
+curl<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;@curl-format.txt&quot;</span><span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000
 </pre></div>
 </div>
 </dd>
@@ -669,7 +669,7 @@ docker<span class="w"> </span>stats
 openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>localhost:8000
 
 <span class="c1"># Check authentication</span>
-curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000
 
 <span class="c1"># Check authorization</span>
 curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span>
@@ -702,7 +702,7 @@ docker-compose<span class="w"> </span>restart
 docker-compose<span class="w"> </span>logs
 
 <span class="c1"># Verify functionality</span>
-curl<span class="w"> </span>http://localhost:8000/health
+curl<span class="w"> </span>http://localhost:8000
 </pre></div>
 </div>
 </dd>
