@@ -302,10 +302,11 @@ PROD_LOGFIRE_TOKEN=12345/kjoi3rjasdfaeon
 Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks to make sure the main framework performs optimally. I recommend setting up a scheduled ping for the `celery/monitor-queue` endpoint every 5 minutes to have proper alerting on the Celery queue.
 
 ### Task Types
-- **Anomaly Detection** - Statistical analysis of pipeline execution patterns
-- **Freshness Checks** - DML operation monitoring and data staleness detection  
-- **Timeliness Checks** - Pipeline execution timing validation
-- **Log Cleanup** - Automated maintenance of historical data
+- **`detect_anomalies_task`** - Statistical analysis of pipeline execution patterns (rate limit: 15/s)
+- **`freshness_check_task`** - DML operation monitoring and data staleness detection (rate limit: 1/s)
+- **`timeliness_check_task`** - Pipeline execution timing validation (rate limit: 1/s)
+- **`address_lineage_closure_rebuild_task`** - Rebuild address lineage closure table relationships (rate limit: 1/s)
+- **`pipeline_execution_closure_maintain_task`** - Maintain pipeline execution hierarchy closure table (rate limit: 10/s)
 
 ### Queue Management
 - **Default Queue** - All tasks are processed through the main queue
