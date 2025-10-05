@@ -24,11 +24,6 @@ Current Migrations
 - Sets up indexes and constraints
 - Establishes basic schema structure
 
-**Anomaly Flags Migration** (20250128000000_add_anomaly_flags_to_pipeline_execution.py):
-- Adds `anomaly_flags` JSONB column to `pipeline_execution`
-- Enables per-metric anomaly tracking
-- Supports surgical anomaly flagging
-
 Migration Structure
 ~~~~~~~~~~~~~~~~~~
 

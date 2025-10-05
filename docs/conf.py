@@ -23,6 +23,9 @@ extensions = [
     "myst_parser",
 ]
 
+# Set the master document
+master_doc = "index"
+
 templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
