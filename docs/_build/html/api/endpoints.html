@@ -1,0 +1,343 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Endpoints &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Data Models" href="models.html" />
+    <link rel="prev" title="Configuration" href="../getting_started/configuration.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Endpoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-management">Pipeline Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-or-get-pipeline">Create or Get Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-pipelines">List Pipelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-pipeline-by-id">Get Pipeline by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-pipeline">Update Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#start-pipeline-execution">Start Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#end-pipeline-execution">End Pipeline Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-types">Pipeline Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-or-get-pipeline-type">Create or Get Pipeline Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-pipeline-types">List Pipeline Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-pipeline-type-by-id">Get Pipeline Type by ID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#address-management">Address Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-or-get-address">Create or Get Address</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-addresses">List Addresses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-address-by-id">Get Address by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-address">Update Address</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#address-types">Address Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-or-get-address-type">Create or Get Address Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-address-types">List Address Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-address-type-by-id">Get Address Type by ID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#data-lineage">Data Lineage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-address-lineage">Create Address Lineage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-address-lineage">Get Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#create-anomaly-detection-rule">Create Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#list-anomaly-detection-rules">List Anomaly Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#get-anomaly-detection-rule-by-id">Get Anomaly Detection Rule by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#update-anomaly-detection-rule">Update Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unflag-anomalies">Unflag Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitoring-health">Monitoring &amp; Health</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#check-timeliness">Check Timeliness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#check-freshness">Check Freshness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#log-cleanup">Log Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#diagnostics">Diagnostics</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-performance">Connection Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#schema-health">Schema Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-metrics">Performance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-diagnostics">Celery Diagnostics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#reporting">Reporting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#daily-pipeline-metrics">Daily Pipeline Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-names">Pipeline Names</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-type-names">Pipeline Type Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-documentation">Interactive Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scalar-api-documentation">Scalar API Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Endpoints</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/endpoints.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-endpoints">
+<h1>API Endpoints<a class="headerlink" href="#api-endpoints" title="Link to this heading"></a></h1>
+<p>This section documents all available API endpoints in Watcher.</p>
+<section id="pipeline-management">
+<h2>Pipeline Management<a class="headerlink" href="#pipeline-management" title="Link to this heading"></a></h2>
+<section id="create-or-get-pipeline">
+<h3>Create or Get Pipeline<a class="headerlink" href="#create-or-get-pipeline" title="Link to this heading"></a></h3>
+</section>
+<section id="list-pipelines">
+<h3>List Pipelines<a class="headerlink" href="#list-pipelines" title="Link to this heading"></a></h3>
+</section>
+<section id="get-pipeline-by-id">
+<h3>Get Pipeline by ID<a class="headerlink" href="#get-pipeline-by-id" title="Link to this heading"></a></h3>
+</section>
+<section id="update-pipeline">
+<h3>Update Pipeline<a class="headerlink" href="#update-pipeline" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="pipeline-execution">
+<h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>
+<section id="start-pipeline-execution">
+<h3>Start Pipeline Execution<a class="headerlink" href="#start-pipeline-execution" title="Link to this heading"></a></h3>
+</section>
+<section id="end-pipeline-execution">
+<h3>End Pipeline Execution<a class="headerlink" href="#end-pipeline-execution" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="pipeline-types">
+<h2>Pipeline Types<a class="headerlink" href="#pipeline-types" title="Link to this heading"></a></h2>
+<section id="create-or-get-pipeline-type">
+<h3>Create or Get Pipeline Type<a class="headerlink" href="#create-or-get-pipeline-type" title="Link to this heading"></a></h3>
+</section>
+<section id="list-pipeline-types">
+<h3>List Pipeline Types<a class="headerlink" href="#list-pipeline-types" title="Link to this heading"></a></h3>
+</section>
+<section id="get-pipeline-type-by-id">
+<h3>Get Pipeline Type by ID<a class="headerlink" href="#get-pipeline-type-by-id" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="address-management">
+<h2>Address Management<a class="headerlink" href="#address-management" title="Link to this heading"></a></h2>
+<section id="create-or-get-address">
+<h3>Create or Get Address<a class="headerlink" href="#create-or-get-address" title="Link to this heading"></a></h3>
+</section>
+<section id="list-addresses">
+<h3>List Addresses<a class="headerlink" href="#list-addresses" title="Link to this heading"></a></h3>
+</section>
+<section id="get-address-by-id">
+<h3>Get Address by ID<a class="headerlink" href="#get-address-by-id" title="Link to this heading"></a></h3>
+</section>
+<section id="update-address">
+<h3>Update Address<a class="headerlink" href="#update-address" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="address-types">
+<h2>Address Types<a class="headerlink" href="#address-types" title="Link to this heading"></a></h2>
+<section id="create-or-get-address-type">
+<h3>Create or Get Address Type<a class="headerlink" href="#create-or-get-address-type" title="Link to this heading"></a></h3>
+</section>
+<section id="list-address-types">
+<h3>List Address Types<a class="headerlink" href="#list-address-types" title="Link to this heading"></a></h3>
+</section>
+<section id="get-address-type-by-id">
+<h3>Get Address Type by ID<a class="headerlink" href="#get-address-type-by-id" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="data-lineage">
+<h2>Data Lineage<a class="headerlink" href="#data-lineage" title="Link to this heading"></a></h2>
+<section id="create-address-lineage">
+<h3>Create Address Lineage<a class="headerlink" href="#create-address-lineage" title="Link to this heading"></a></h3>
+</section>
+<section id="get-address-lineage">
+<h3>Get Address Lineage<a class="headerlink" href="#get-address-lineage" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="anomaly-detection">
+<h2>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h2>
+<section id="create-anomaly-detection-rule">
+<h3>Create Anomaly Detection Rule<a class="headerlink" href="#create-anomaly-detection-rule" title="Link to this heading"></a></h3>
+</section>
+<section id="list-anomaly-detection-rules">
+<h3>List Anomaly Detection Rules<a class="headerlink" href="#list-anomaly-detection-rules" title="Link to this heading"></a></h3>
+</section>
+<section id="get-anomaly-detection-rule-by-id">
+<h3>Get Anomaly Detection Rule by ID<a class="headerlink" href="#get-anomaly-detection-rule-by-id" title="Link to this heading"></a></h3>
+</section>
+<section id="update-anomaly-detection-rule">
+<h3>Update Anomaly Detection Rule<a class="headerlink" href="#update-anomaly-detection-rule" title="Link to this heading"></a></h3>
+</section>
+<section id="unflag-anomalies">
+<h3>Unflag Anomalies<a class="headerlink" href="#unflag-anomalies" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="monitoring-health">
+<h2>Monitoring &amp; Health<a class="headerlink" href="#monitoring-health" title="Link to this heading"></a></h2>
+<section id="check-timeliness">
+<h3>Check Timeliness<a class="headerlink" href="#check-timeliness" title="Link to this heading"></a></h3>
+</section>
+<section id="check-freshness">
+<h3>Check Freshness<a class="headerlink" href="#check-freshness" title="Link to this heading"></a></h3>
+</section>
+<section id="log-cleanup">
+<h3>Log Cleanup<a class="headerlink" href="#log-cleanup" title="Link to this heading"></a></h3>
+</section>
+<section id="celery-queue-monitoring">
+<h3>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="diagnostics">
+<h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Link to this heading"></a></h2>
+<section id="system-diagnostics">
+<h3>System Diagnostics<a class="headerlink" href="#system-diagnostics" title="Link to this heading"></a></h3>
+</section>
+<section id="connection-performance">
+<h3>Connection Performance<a class="headerlink" href="#connection-performance" title="Link to this heading"></a></h3>
+</section>
+<section id="schema-health">
+<h3>Schema Health<a class="headerlink" href="#schema-health" title="Link to this heading"></a></h3>
+</section>
+<section id="performance-metrics">
+<h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
+</section>
+<section id="celery-diagnostics">
+<h3>Celery Diagnostics<a class="headerlink" href="#celery-diagnostics" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="reporting">
+<h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading"></a></h2>
+<section id="daily-pipeline-metrics">
+<h3>Daily Pipeline Metrics<a class="headerlink" href="#daily-pipeline-metrics" title="Link to this heading"></a></h3>
+</section>
+<section id="pipeline-names">
+<h3>Pipeline Names<a class="headerlink" href="#pipeline-names" title="Link to this heading"></a></h3>
+</section>
+<section id="pipeline-type-names">
+<h3>Pipeline Type Names<a class="headerlink" href="#pipeline-type-names" title="Link to this heading"></a></h3>
+</section>
+</section>
+<section id="interactive-documentation">
+<h2>Interactive Documentation<a class="headerlink" href="#interactive-documentation" title="Link to this heading"></a></h2>
+<section id="scalar-api-documentation">
+<h3>Scalar API Documentation<a class="headerlink" href="#scalar-api-documentation" title="Link to this heading"></a></h3>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../getting_started/configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="models.html" class="btn btn-neutral float-right" title="Data Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

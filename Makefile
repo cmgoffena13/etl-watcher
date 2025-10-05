@@ -1,3 +1,5 @@
+.PHONY: dev-compose format lint test add-migration trigger-migration load-test docs
+
 dev-compose:
 	docker compose up --build --remove-orphans
 
@@ -19,3 +21,6 @@ trigger-migration:
 
 load-test:
 	uv run -- locust -f src/diagnostics/locustfile.py --host=http://localhost:8000 --users=1000 --spawn-rate=10
+
+docs:
+	uv run sphinx-build -b html docs docs/_build/html

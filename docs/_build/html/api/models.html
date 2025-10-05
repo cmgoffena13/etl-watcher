@@ -1,0 +1,554 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Models &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Celery Tasks" href="celery_tasks.html" />
+    <link rel="prev" title="API Endpoints" href="endpoints.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipelinepostinput">PipelinePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipelinepostoutput">PipelinePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipelinepatchinput">PipelinePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution-models">Pipeline Execution Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipelineexecutionendinput">PipelineExecutionEndInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#address-models">Address Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#addresspostinput">AddressPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresspostoutput">AddressPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresspatchinput">AddressPatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#address-type-models">Address Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#addresstypepostinput">AddressTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresstypepostoutput">AddressTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresstypepatchinput">AddressTypePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#address-lineage-models">Address Lineage Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#addresslineagepostinput">AddressLineagePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sourceaddress">SourceAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#targetaddress">TargetAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresslineagepostoutput">AddressLineagePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresslineagegetoutput">AddressLineageGetOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anomaly-detection-models">Anomaly Detection Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionrulepostinput">AnomalyDetectionRulePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionrulepostoutput">AnomalyDetectionRulePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionrulepatchinput">AnomalyDetectionRulePatchInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unflaganomalyinput">UnflagAnomalyInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionresultgetoutput">AnomalyDetectionResultGetOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionsummarygetoutput">AnomalyDetectionSummaryGetOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitoring-models">Monitoring Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#freshnesspostoutput">FreshnessPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timelinesspostinput">TimelinessPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timelinesspostoutput">TimelinessPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#logcleanuppostoutput">LogCleanupPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#enums">Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#anomalymetricfieldenum">AnomalyMetricFieldEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#datepartenum">DatePartEnum</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Data Models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/models.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="data-models">
+<h1>Data Models<a class="headerlink" href="#data-models" title="Link to this heading"></a></h1>
+<p>This section documents the data models used in Watcher’s API.</p>
+<section id="pipeline-models">
+<h2>Pipeline Models<a class="headerlink" href="#pipeline-models" title="Link to this heading"></a></h2>
+<section id="pipelinepostinput">
+<h3>PipelinePostInput<a class="headerlink" href="#pipelinepostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelinePostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pipeline_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pipeline_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">freshness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">freshness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mute_freshness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">timeliness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">timeliness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mute_timeliness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">load_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelinepostoutput">
+<h3>PipelinePostOutput<a class="headerlink" href="#pipelinepostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelinePostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">load_lineage</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelinepatchinput">
+<h3>PipelinePatchInput<a class="headerlink" href="#pipelinepatchinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelinePatchInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">pipeline_type_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">pipeline_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">freshness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">freshness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mute_freshness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">timeliness_number</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">timeliness_datepart</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DatePartEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">mute_timeliness_check</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">load_lineage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="pipeline-execution-models">
+<h2>Pipeline Execution Models<a class="headerlink" href="#pipeline-execution-models" title="Link to this heading"></a></h2>
+<section id="pipelineexecutionstartinput">
+<h3>PipelineExecutionStartInput<a class="headerlink" href="#pipelineexecutionstartinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineExecutionStartInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">start_date</span><span class="p">:</span> <span class="n">DateTime</span>
+    <span class="n">full_load</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">parent_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">execution_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelineexecutionstartoutput">
+<h3>PipelineExecutionStartOutput<a class="headerlink" href="#pipelineexecutionstartoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineExecutionStartOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+</div>
+</section>
+<section id="pipelineexecutionendinput">
+<h3>PipelineExecutionEndInput<a class="headerlink" href="#pipelineexecutionendinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">PipelineExecutionEndInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">end_date</span><span class="p">:</span> <span class="n">DateTime</span>
+    <span class="n">completed_successfully</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">total_rows</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">soft_deletes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="address-models">
+<h2>Address Models<a class="headerlink" href="#address-models" title="Link to this heading"></a></h2>
+<section id="addresspostinput">
+<h3>AddressPostInput<a class="headerlink" href="#addresspostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressPostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="addresspostoutput">
+<h3>AddressPostOutput<a class="headerlink" href="#addresspostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressPostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">load_lineage</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="addresspatchinput">
+<h3>AddressPatchInput<a class="headerlink" href="#addresspatchinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressPatchInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="address-type-models">
+<h2>Address Type Models<a class="headerlink" href="#address-type-models" title="Link to this heading"></a></h2>
+<section id="addresstypepostinput">
+<h3>AddressTypePostInput<a class="headerlink" href="#addresstypepostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressTypePostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="addresstypepostoutput">
+<h3>AddressTypePostOutput<a class="headerlink" href="#addresstypepostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressTypePostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+</div>
+</section>
+<section id="addresstypepatchinput">
+<h3>AddressTypePatchInput<a class="headerlink" href="#addresstypepatchinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressTypePatchInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">group_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="address-lineage-models">
+<h2>Address Lineage Models<a class="headerlink" href="#address-lineage-models" title="Link to this heading"></a></h2>
+<section id="addresslineagepostinput">
+<h3>AddressLineagePostInput<a class="headerlink" href="#addresslineagepostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineagePostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SourceAddress</span><span class="p">]</span>
+    <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TargetAddress</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="sourceaddress">
+<h3>SourceAddress<a class="headerlink" href="#sourceaddress" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SourceAddress</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="targetaddress">
+<h3>TargetAddress<a class="headerlink" href="#targetaddress" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TargetAddress</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="addresslineagepostoutput">
+<h3>AddressLineagePostOutput<a class="headerlink" href="#addresslineagepostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineagePostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">lineage_relationships_created</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">message</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="addresslineagegetoutput">
+<h3>AddressLineageGetOutput<a class="headerlink" href="#addresslineagegetoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineageGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">source_address_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">target_address_id</span><span class="p">:</span> <span class="nb">int</span>
+</pre></div>
+</div>
+</section>
+<section id="addresslineageclosuregetoutput">
+<h3>AddressLineageClosureGetOutput<a class="headerlink" href="#addresslineageclosuregetoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineageClosureGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">source_address_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">target_address_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">depth</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">source_address_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">target_address_name</span><span class="p">:</span> <span class="nb">str</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="anomaly-detection-models">
+<h2>Anomaly Detection Models<a class="headerlink" href="#anomaly-detection-models" title="Link to this heading"></a></h2>
+<section id="anomalydetectionrulepostinput">
+<h3>AnomalyDetectionRulePostInput<a class="headerlink" href="#anomalydetectionrulepostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionRulePostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">metric_field</span><span class="p">:</span> <span class="n">AnomalyMetricFieldEnum</span>
+    <span class="n">z_threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">minimum_executions</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="anomalydetectionrulepostoutput">
+<h3>AnomalyDetectionRulePostOutput<a class="headerlink" href="#anomalydetectionrulepostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionRulePostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">metric_field</span><span class="p">:</span> <span class="n">AnomalyMetricFieldEnum</span>
+    <span class="n">z_threshold</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">minimum_executions</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">active</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">DateTime</span>
+</pre></div>
+</div>
+</section>
+<section id="anomalydetectionrulepatchinput">
+<h3>AnomalyDetectionRulePatchInput<a class="headerlink" href="#anomalydetectionrulepatchinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionRulePatchInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">metric_field</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnomalyMetricFieldEnum</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">z_threshold</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">minimum_executions</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+    <span class="n">active</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+<section id="unflaganomalyinput">
+<h3>UnflagAnomalyInput<a class="headerlink" href="#unflaganomalyinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">UnflagAnomalyInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pipeline_execution_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">metric_field</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AnomalyMetricFieldEnum</span><span class="p">]</span>
+</pre></div>
+</div>
+</section>
+<section id="anomalydetectionresultgetoutput">
+<h3>AnomalyDetectionResultGetOutput<a class="headerlink" href="#anomalydetectionresultgetoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionResultGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">rule_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">pipeline_execution_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">violation_value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">z_score</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">historical_mean</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">std_deviation_value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">z_threshold</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">threshold_min_value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">threshold_max_value</span><span class="p">:</span> <span class="nb">float</span>
+    <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">detected_at</span><span class="p">:</span> <span class="n">DateTime</span>
+</pre></div>
+</div>
+</section>
+<section id="anomalydetectionsummarygetoutput">
+<h3>AnomalyDetectionSummaryGetOutput<a class="headerlink" href="#anomalydetectionsummarygetoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionSummaryGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">rule_id</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">rule_name</span><span class="p">:</span> <span class="nb">str</span>
+    <span class="n">anomaly_count</span><span class="p">:</span> <span class="nb">int</span>
+    <span class="n">latest_anomaly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnomalyDetectionResultGetOutput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="monitoring-models">
+<h2>Monitoring Models<a class="headerlink" href="#monitoring-models" title="Link to this heading"></a></h2>
+<section id="freshnesspostoutput">
+<h3>FreshnessPostOutput<a class="headerlink" href="#freshnesspostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">FreshnessPostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+</pre></div>
+</div>
+</section>
+<section id="timelinesspostinput">
+<h3>TimelinessPostInput<a class="headerlink" href="#timelinesspostinput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TimelinessPostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">lookback_minutes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">gt</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="timelinesspostoutput">
+<h3>TimelinessPostOutput<a class="headerlink" href="#timelinesspostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TimelinessPostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">status</span><span class="p">:</span> <span class="nb">str</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="log-cleanup-models">
+<h2>Log Cleanup Models<a class="headerlink" href="#log-cleanup-models" title="Link to this heading"></a></h2>
+<section id="logcleanuppostoutput">
+<h3>LogCleanupPostOutput<a class="headerlink" href="#logcleanuppostoutput" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">LogCleanupPostOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">total_pipeline_executions_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_timeliness_pipeline_execution_logs_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_anomaly_detection_results_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_pipeline_execution_closure_parent_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_pipeline_execution_closure_child_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">total_freshness_pipeline_logs_deleted</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="enums">
+<h2>Enums<a class="headerlink" href="#enums" title="Link to this heading"></a></h2>
+<section id="anomalymetricfieldenum">
+<h3>AnomalyMetricFieldEnum<a class="headerlink" href="#anomalymetricfieldenum" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyMetricFieldEnum</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">TOTAL_ROWS</span> <span class="o">=</span> <span class="s2">&quot;total_rows&quot;</span>
+    <span class="n">DURATION_SECONDS</span> <span class="o">=</span> <span class="s2">&quot;duration_seconds&quot;</span>
+    <span class="n">THROUGHPUT</span> <span class="o">=</span> <span class="s2">&quot;throughput&quot;</span>
+    <span class="n">INSERTS</span> <span class="o">=</span> <span class="s2">&quot;inserts&quot;</span>
+    <span class="n">UPDATES</span> <span class="o">=</span> <span class="s2">&quot;updates&quot;</span>
+    <span class="n">SOFT_DELETES</span> <span class="o">=</span> <span class="s2">&quot;soft_deletes&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="datepartenum">
+<h3>DatePartEnum<a class="headerlink" href="#datepartenum" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">DatePartEnum</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">Enum</span><span class="p">):</span>
+    <span class="n">HOUR</span> <span class="o">=</span> <span class="s2">&quot;hour&quot;</span>
+    <span class="n">DAY</span> <span class="o">=</span> <span class="s2">&quot;day&quot;</span>
+    <span class="n">WEEK</span> <span class="o">=</span> <span class="s2">&quot;week&quot;</span>
+    <span class="n">MONTH</span> <span class="o">=</span> <span class="s2">&quot;month&quot;</span>
+    <span class="n">QUARTER</span> <span class="o">=</span> <span class="s2">&quot;quarter&quot;</span>
+    <span class="n">YEAR</span> <span class="o">=</span> <span class="s2">&quot;year&quot;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="validatormodel">
+<h2>ValidatorModel<a class="headerlink" href="#validatormodel" title="Link to this heading"></a></h2>
+<p>All models inherit from <code class="docutils literal notranslate"><span class="pre">ValidatorModel</span></code> which provides:</p>
+<ul class="simple">
+<li><p><strong>Pydantic validation</strong>: Automatic data validation and type checking</p></li>
+<li><p><strong>String coercion</strong>: Automatic conversion of various types to strings for database storage</p></li>
+<li><p><strong>Case normalization</strong>: Automatic lowercase conversion for string fields</p></li>
+<li><p><strong>Field validation</strong>: Built-in validation for field constraints (length, ranges, etc.)</p></li>
+</ul>
+<p>Example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.types</span><span class="w"> </span><span class="kn">import</span> <span class="n">ValidatorModel</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">Field</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">MyModel</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
+    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">created_at</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">DateTime</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="endpoints.html" class="btn btn-neutral float-left" title="API Endpoints" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="celery_tasks.html" class="btn btn-neutral float-right" title="Celery Tasks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

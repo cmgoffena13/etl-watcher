@@ -1,0 +1,373 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Configuration &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="API Endpoints" href="../api/endpoints.html" />
+    <link rel="prev" title="Quick Start Guide" href="quick_start.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#development-environment">Development Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#production-environment">Production Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#database-configuration">Database Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#connection-settings">Connection Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-pool-settings">Connection Pool Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#redis-configuration">Redis Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Connection Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-configuration">Celery Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitoring-configuration">Monitoring Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#slack-notifications">Slack Notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-flags">Feature Flags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auto-create-anomaly-detection-rules">Auto-Create Anomaly Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#profiling">Profiling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#security-configuration">Security Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-security">Database Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis-security">Redis Security</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#api-security">API Security</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-tuning">Performance Tuning</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#database-optimization">Database Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis-optimization">Redis Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-optimization">Celery Optimization</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Configuration</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/getting_started/configuration.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="configuration">
+<h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
+<section id="environment-variables">
+<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<section id="development-environment">
+<h3>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database</span>
+<span class="nv">DEV_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@localhost:5432/watcher_dev
+
+<span class="c1"># Redis</span>
+<span class="nv">DEV_REDIS_URL</span><span class="o">=</span>redis://localhost:6379/1
+
+<span class="c1"># Monitoring</span>
+<span class="nv">DEV_LOGFIRE_TOKEN</span><span class="o">=</span>your_logfire_token_here
+<span class="nv">DEV_LOGFIRE_CONSOLE</span><span class="o">=</span><span class="nb">false</span>
+
+<span class="c1"># Notifications</span>
+<span class="nv">DEV_SLACK_WEBHOOK_URL</span><span class="o">=</span>your_slack_webhook_url_here
+
+<span class="c1"># Features</span>
+<span class="nv">DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">false</span>
+<span class="nv">DEV_PROFILING_ENABLED</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="production-environment">
+<h3>Production Environment<a class="headerlink" href="#production-environment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database</span>
+<span class="nv">PROD_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@prod-db:5432/watcher_prod
+
+<span class="c1"># Redis</span>
+<span class="nv">PROD_REDIS_URL</span><span class="o">=</span>redis://prod-redis:6379/1
+
+<span class="c1"># Monitoring</span>
+<span class="nv">PROD_LOGFIRE_TOKEN</span><span class="o">=</span>your_production_logfire_token
+<span class="nv">PROD_LOGFIRE_CONSOLE</span><span class="o">=</span><span class="nb">false</span>
+
+<span class="c1"># Notifications</span>
+<span class="nv">PROD_SLACK_WEBHOOK_URL</span><span class="o">=</span>your_production_slack_webhook
+
+<span class="c1"># Features</span>
+<span class="nv">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">true</span>
+<span class="nv">PROD_PROFILING_ENABLED</span><span class="o">=</span><span class="nb">false</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="database-configuration">
+<h2>Database Configuration<a class="headerlink" href="#database-configuration" title="Link to this heading"></a></h2>
+<section id="connection-settings">
+<h3>Connection Settings<a class="headerlink" href="#connection-settings" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Host</strong>: Database server hostname</p></li>
+<li><p><strong>Port</strong>: Database port (default: 5432)</p></li>
+<li><p><strong>Database</strong>: Database name</p></li>
+<li><p><strong>Username</strong>: Database username</p></li>
+<li><p><strong>Password</strong>: Database password</p></li>
+<li><p><strong>SSL</strong>: SSL connection settings</p></li>
+</ul>
+</section>
+<section id="connection-pool-settings">
+<h3>Connection Pool Settings<a class="headerlink" href="#connection-pool-settings" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Pool Size</strong>: 20 connections</p></li>
+<li><p><strong>Max Overflow</strong>: 10 additional connections</p></li>
+<li><p><strong>Pool Timeout</strong>: 30 seconds</p></li>
+<li><p><strong>Pool Recycle</strong>: 3600 seconds</p></li>
+</ul>
+</section>
+</section>
+<section id="redis-configuration">
+<h2>Redis Configuration<a class="headerlink" href="#redis-configuration" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Connection Settings<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Host</strong>: Redis server hostname</p></li>
+<li><p><strong>Port</strong>: Redis port (default: 6379)</p></li>
+<li><p><strong>Database</strong>: Redis database number (default: 1)</p></li>
+<li><p><strong>Password</strong>: Redis password (if required)</p></li>
+</ul>
+</section>
+<section id="celery-configuration">
+<h3>Celery Configuration<a class="headerlink" href="#celery-configuration" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Broker</strong>: Redis URL for message broker</p></li>
+<li><p><strong>Backend</strong>: Redis URL for result backend</p></li>
+<li><p><strong>Task Serializer</strong>: JSON</p></li>
+<li><p><strong>Result Serializer</strong>: JSON</p></li>
+<li><p><strong>Accept Content</strong>: JSON</p></li>
+<li><p><strong>Time Zone</strong>: UTC</p></li>
+</ul>
+</section>
+</section>
+<section id="monitoring-configuration">
+<h2>Monitoring Configuration<a class="headerlink" href="#monitoring-configuration" title="Link to this heading"></a></h2>
+<section id="logfire-integration">
+<h3>Logfire Integration<a class="headerlink" href="#logfire-integration" title="Link to this heading"></a></h3>
+<p>Logfire provides comprehensive observability for your Watcher instance:</p>
+<ul class="simple">
+<li><p><strong>Application Metrics</strong>: Request/response times, error rates</p></li>
+<li><p><strong>Database Queries</strong>: Query performance and slow query detection</p></li>
+<li><p><strong>Background Tasks</strong>: Celery worker execution logging and task tracking</p></li>
+<li><p><strong>Custom Events</strong>: Pipeline execution tracking and anomaly detection</p></li>
+</ul>
+<p>Setup:</p>
+<ol class="arabic simple">
+<li><p>Create a Logfire account at <a class="reference external" href="https://logfire.pydantic.dev">https://logfire.pydantic.dev</a></p></li>
+<li><p>Get your token from the Logfire dashboard</p></li>
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">LOGFIRE_TOKEN</span></code> environment variable</p></li>
+<li><p>Restart your application</p></li>
+</ol>
+</section>
+<section id="slack-notifications">
+<h3>Slack Notifications<a class="headerlink" href="#slack-notifications" title="Link to this heading"></a></h3>
+<p>Configure Slack webhooks for real-time alerts:</p>
+<ol class="arabic simple">
+<li><p>Create a Slack app in your workspace</p></li>
+<li><p>Add an Incoming Webhook to your app</p></li>
+<li><p>Copy the webhook URL</p></li>
+<li><p>Set the <code class="docutils literal notranslate"><span class="pre">SLACK_WEBHOOK_URL</span></code> environment variable</p></li>
+</ol>
+<p>Alert Types:</p>
+<ul class="simple">
+<li><p><strong>Queue Monitoring</strong>: Celery queue depth alerts</p></li>
+<li><p><strong>Anomaly Detection</strong>: Statistical anomaly alerts</p></li>
+<li><p><strong>System Health</strong>: Database and Redis connectivity issues</p></li>
+</ul>
+</section>
+</section>
+<section id="feature-flags">
+<h2>Feature Flags<a class="headerlink" href="#feature-flags" title="Link to this heading"></a></h2>
+<section id="auto-create-anomaly-detection-rules">
+<h3>Auto-Create Anomaly Detection Rules<a class="headerlink" href="#auto-create-anomaly-detection-rules" title="Link to this heading"></a></h3>
+<p>When enabled, Watcher automatically creates anomaly detection rules for new pipelines:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+<section id="profiling">
+<h3>Profiling<a class="headerlink" href="#profiling" title="Link to this heading"></a></h3>
+<p>Enable application profiling for performance analysis:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PROFILING_ENABLED</span><span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="security-configuration">
+<h2>Security Configuration<a class="headerlink" href="#security-configuration" title="Link to this heading"></a></h2>
+<section id="database-security">
+<h3>Database Security<a class="headerlink" href="#database-security" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use strong passwords</p></li>
+<li><p>Enable SSL connections in production</p></li>
+<li><p>Restrict database access to application servers only</p></li>
+<li><p>Regular security updates</p></li>
+</ul>
+</section>
+<section id="redis-security">
+<h3>Redis Security<a class="headerlink" href="#redis-security" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use authentication if Redis is exposed</p></li>
+<li><p>Enable TLS in production</p></li>
+<li><p>Restrict network access</p></li>
+<li><p>Regular security updates</p></li>
+</ul>
+</section>
+<section id="api-security">
+<h3>API Security<a class="headerlink" href="#api-security" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p>Use HTTPS in production</p></li>
+<li><p>Implement API rate limiting</p></li>
+<li><p>Validate all input data</p></li>
+<li><p>Regular security audits</p></li>
+</ul>
+</section>
+</section>
+<section id="performance-tuning">
+<h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
+<section id="database-optimization">
+<h3>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Indexes</strong>: Ensure proper indexing on frequently queried columns</p></li>
+<li><p><strong>Connection Pooling</strong>: Tune pool size based on load</p></li>
+<li><p><strong>Query Optimization</strong>: Monitor and optimize slow queries</p></li>
+<li><p><strong>Vacuum</strong>: Regular database maintenance</p></li>
+</ul>
+</section>
+<section id="redis-optimization">
+<h3>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Memory</strong>: Monitor Redis memory usage</p></li>
+<li><p><strong>Persistence</strong>: Configure appropriate persistence settings</p></li>
+<li><p><strong>Eviction</strong>: Set appropriate eviction policies</p></li>
+<li><p><strong>Monitoring</strong>: Monitor Redis performance metrics</p></li>
+</ul>
+</section>
+<section id="celery-optimization">
+<h3>Celery Optimization<a class="headerlink" href="#celery-optimization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Workers</strong>: Scale workers based on task volume</p></li>
+<li><p><strong>Rate Limits</strong>: Configure appropriate rate limits</p></li>
+<li><p><strong>Retries</strong>: Tune retry policies</p></li>
+<li><p><strong>Monitoring</strong>: Monitor worker performance and queue depth</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="quick_start.html" class="btn btn-neutral float-left" title="Quick Start Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../api/endpoints.html" class="btn btn-neutral float-right" title="API Endpoints" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

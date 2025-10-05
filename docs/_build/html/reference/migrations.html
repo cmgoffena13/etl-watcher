@@ -1,0 +1,727 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Database Migrations &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Deployment Guide" href="deployment.html" />
+    <link rel="prev" title="Database Schema" href="database_schema.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="database_schema.html">Database Schema</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Database Migrations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#migration-overview">Migration Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-files">Migration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#current-migrations">Current Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migration-structure">Migration Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-commands">Migration Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#basic-commands">Basic Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-commands">Advanced Commands</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-best-practices">Migration Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#production-deployment">Production Deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-safety">Migration Safety</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-preservation">Data Preservation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rollback-strategy">Rollback Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-examples">Migration Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-new-column">Adding a New Column</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-new-table">Adding a New Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-an-index">Adding an Index</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adding-a-constraint">Adding a Constraint</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-migration">Data Migration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#environment-management">Environment Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#development-environment">Development Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#testing-environment">Testing Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#production-environment">Production Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-troubleshooting">Migration Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-validation">Migration Validation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pre-migration-checks">Pre-Migration Checks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#post-migration-checks">Post-Migration Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#migration-automation">Migration Automation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ci-cd-integration">CI/CD Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migration-monitoring">Migration Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices-summary">Best Practices Summary</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#migration-development">Migration Development</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migration-deployment">Migration Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#migration-maintenance">Migration Maintenance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Database Migrations</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/reference/migrations.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="database-migrations">
+<h1>Database Migrations<a class="headerlink" href="#database-migrations" title="Link to this heading"></a></h1>
+<p>This section covers database migration management in Watcher.</p>
+<section id="migration-overview">
+<h2>Migration Overview<a class="headerlink" href="#migration-overview" title="Link to this heading"></a></h2>
+<p>Watcher uses Alembic for database migration management:</p>
+<ul class="simple">
+<li><p><strong>Version Control</strong>: Track schema changes over time</p></li>
+<li><p><strong>Rollback Support</strong>: Revert schema changes when needed</p></li>
+<li><p><strong>Data Preservation</strong>: Maintain data integrity during changes</p></li>
+<li><p><strong>Environment Management</strong>: Handle different environments</p></li>
+</ul>
+</section>
+<section id="migration-files">
+<h2>Migration Files<a class="headerlink" href="#migration-files" title="Link to this heading"></a></h2>
+<section id="current-migrations">
+<h3>Current Migrations<a class="headerlink" href="#current-migrations" title="Link to this heading"></a></h3>
+<p><strong>Initial Migration</strong> (20250909185058_initial.py):
+- Creates all core tables
+- Sets up indexes and constraints
+- Establishes basic schema structure</p>
+<p><strong>Anomaly Flags Migration</strong> (20250128000000_add_anomaly_flags_to_pipeline_execution.py):
+- Adds <cite>anomaly_flags</cite> JSONB column to <cite>pipeline_execution</cite>
+- Enables per-metric anomaly tracking
+- Supports surgical anomaly flagging</p>
+</section>
+<section id="migration-structure">
+<h3>Migration Structure<a class="headerlink" href="#migration-structure" title="Link to this heading"></a></h3>
+<p>Each migration file contains:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sa</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">alembic</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.dialects</span><span class="w"> </span><span class="kn">import</span> <span class="n">postgresql</span>
+
+<span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;20250128000000&quot;</span>
+<span class="n">down_revision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;20250927222116&quot;</span>
+<span class="n">branch_labels</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="n">depends_on</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Migration logic here</span>
+    <span class="k">pass</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Rollback logic here</span>
+    <span class="k">pass</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="migration-commands">
+<h2>Migration Commands<a class="headerlink" href="#migration-commands" title="Link to this heading"></a></h2>
+<section id="basic-commands">
+<h3>Basic Commands<a class="headerlink" href="#basic-commands" title="Link to this heading"></a></h3>
+<p><strong>Check Current Status</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic current</p>
+</div></blockquote>
+<p><strong>View Migration History</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic history</p>
+</div></blockquote>
+<p><strong>Run Migrations</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Rollback Migrations</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic downgrade -1</p>
+</div></blockquote>
+<p><strong>Create New Migration</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic revision -m “Description of changes”</p>
+</div></blockquote>
+</section>
+<section id="advanced-commands">
+<h3>Advanced Commands<a class="headerlink" href="#advanced-commands" title="Link to this heading"></a></h3>
+<p><strong>Upgrade to Specific Version</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic upgrade 20250128000000</p>
+</div></blockquote>
+<p><strong>Downgrade to Specific Version</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic downgrade 20250909185058</p>
+</div></blockquote>
+<p><strong>Show SQL for Migration</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic upgrade head –sql</p>
+</div></blockquote>
+<p><strong>Check for Pending Migrations</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic check</p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-best-practices">
+<h2>Migration Best Practices<a class="headerlink" href="#migration-best-practices" title="Link to this heading"></a></h2>
+<section id="development-workflow">
+<h3>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Create Migration</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic revision -m “Add new table”</p>
+</div></blockquote>
+</li>
+<li><p><strong>Edit Migration File</strong>:
+- Add upgrade logic
+- Add downgrade logic
+- Test migration locally</p></li>
+<li><p><strong>Test Migration</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>alembic upgrade head
+alembic downgrade -1
+alembic upgrade head</p>
+</div></blockquote>
+</li>
+<li><p><strong>Commit Changes</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>git add migrations/
+git commit -m “Add new table migration”</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="production-deployment">
+<h3>Production Deployment<a class="headerlink" href="#production-deployment" title="Link to this heading"></a></h3>
+<p><strong>Pre-deployment</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Backup database
+pg_dump $DATABASE_URL &gt; backup.sql</p>
+<p># Test migration
+alembic upgrade head –sql</p>
+<p># Run migration
+alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Post-deployment</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Verify migration
+alembic current</p>
+<p># Check application
+curl <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-safety">
+<h2>Migration Safety<a class="headerlink" href="#migration-safety" title="Link to this heading"></a></h2>
+<section id="data-preservation">
+<h3>Data Preservation<a class="headerlink" href="#data-preservation" title="Link to this heading"></a></h3>
+<p><strong>Safe Operations</strong>:
+- Adding new columns with defaults
+- Adding new tables
+- Adding indexes
+- Adding constraints (with validation)</p>
+<p><strong>Risky Operations</strong>:
+- Dropping columns
+- Changing column types
+- Dropping tables
+- Modifying constraints</p>
+<p><strong>Best Practices</strong>:
+- Always backup before migrations
+- Test migrations in development
+- Use transactions for complex changes
+- Validate data after migrations</p>
+</section>
+<section id="rollback-strategy">
+<h3>Rollback Strategy<a class="headerlink" href="#rollback-strategy" title="Link to this heading"></a></h3>
+<p><strong>Simple Rollbacks</strong>:
+- Column additions
+- Table additions
+- Index additions</p>
+<p><strong>Complex Rollbacks</strong>:
+- Data transformations
+- Constraint changes
+- Schema restructuring</p>
+<p><strong>Rollback Testing</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Test rollback
+alembic downgrade -1
+alembic upgrade head</p>
+<p># Verify data integrity
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline;”</p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-examples">
+<h2>Migration Examples<a class="headerlink" href="#migration-examples" title="Link to this heading"></a></h2>
+<section id="adding-a-new-column">
+<h3>Adding a New Column<a class="headerlink" href="#adding-a-new-column" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;new_field&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;new_field&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-a-new-table">
+<h3>Adding a New Table<a class="headerlink" href="#adding-a-new-table" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_table</span><span class="p">(</span><span class="s1">&#39;new_table&#39;</span><span class="p">,</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;name&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span>
+        <span class="n">sa</span><span class="o">.</span><span class="n">PrimaryKeyConstraint</span><span class="p">(</span><span class="s1">&#39;id&#39;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_table</span><span class="p">(</span><span class="s1">&#39;new_table&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-an-index">
+<h3>Adding an Index<a class="headerlink" href="#adding-an-index" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_index</span><span class="p">(</span><span class="s1">&#39;ix_new_table_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_table&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;name&#39;</span><span class="p">])</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_index</span><span class="p">(</span><span class="s1">&#39;ix_new_table_name&#39;</span><span class="p">,</span> <span class="n">table_name</span><span class="o">=</span><span class="s1">&#39;new_table&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-a-constraint">
+<h3>Adding a Constraint<a class="headerlink" href="#adding-a-constraint" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">create_check_constraint</span><span class="p">(</span><span class="s1">&#39;ck_new_table_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_table&#39;</span><span class="p">,</span> <span class="s1">&#39;name IS NOT NULL&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_constraint</span><span class="p">(</span><span class="s1">&#39;ck_new_table_name&#39;</span><span class="p">,</span> <span class="s1">&#39;new_table&#39;</span><span class="p">,</span> <span class="n">type_</span><span class="o">=</span><span class="s1">&#39;check&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="data-migration">
+<h3>Data Migration<a class="headerlink" href="#data-migration" title="Link to this heading"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="c1"># Add new column</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">add_column</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">Column</span><span class="p">(</span><span class="s1">&#39;new_field&#39;</span><span class="p">,</span> <span class="n">sa</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="mi">255</span><span class="p">),</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+    <span class="c1"># Migrate data</span>
+    <span class="n">connection</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">get_bind</span><span class="p">()</span>
+    <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span>
+        <span class="s2">&quot;UPDATE pipeline SET new_field = &#39;default_value&#39; WHERE new_field IS NULL&quot;</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Make column not null</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;new_field&#39;</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">op</span><span class="o">.</span><span class="n">drop_column</span><span class="p">(</span><span class="s1">&#39;pipeline&#39;</span><span class="p">,</span> <span class="s1">&#39;new_field&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="environment-management">
+<h2>Environment Management<a class="headerlink" href="#environment-management" title="Link to this heading"></a></h2>
+<section id="development-environment">
+<h3>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading"></a></h3>
+<p><strong>Local Development</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Set development database
+export DATABASE_URL=”postgresql+asyncpg://user:password&#64;localhost:5432/watcher_dev”</p>
+<p># Run migrations
+alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Docker Development</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Use Docker database
+export DATABASE_URL=”postgresql+asyncpg://user:password&#64;postgres:5432/watcher_dev”</p>
+<p># Run migrations
+alembic upgrade head</p>
+</div></blockquote>
+</section>
+<section id="testing-environment">
+<h3>Testing Environment<a class="headerlink" href="#testing-environment" title="Link to this heading"></a></h3>
+<p><strong>Test Database</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Set test database
+export DATABASE_URL=”postgresql+asyncpg://user:password&#64;localhost:5432/watcher_test”</p>
+<p># Run migrations
+alembic upgrade head</p>
+<p># Run tests
+uv run pytest</p>
+</div></blockquote>
+<p><strong>Test Isolation</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Reset test database
+dropdb watcher_test
+createdb watcher_test
+alembic upgrade head</p>
+</div></blockquote>
+</section>
+<section id="production-environment">
+<h3>Production Environment<a class="headerlink" href="#production-environment" title="Link to this heading"></a></h3>
+<p><strong>Production Deployment</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Set production database
+export DATABASE_URL=”postgresql+asyncpg://user:password&#64;prod-db:5432/watcher_prod”</p>
+<p># Backup database
+pg_dump $DATABASE_URL &gt; backup_$(date +%Y%m%d_%H%M%S).sql</p>
+<p># Run migrations
+alembic upgrade head</p>
+<p># Verify migration
+alembic current</p>
+</div></blockquote>
+<p><strong>Rollback Production</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Rollback migration
+alembic downgrade -1</p>
+<p># Verify rollback
+alembic current</p>
+<p># Check application
+curl <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-troubleshooting">
+<h2>Migration Troubleshooting<a class="headerlink" href="#migration-troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>Migration Conflicts</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check for conflicts
+alembic check</p>
+<p># Resolve conflicts
+alembic merge -m “Resolve conflicts”</p>
+</div></blockquote>
+<p><strong>Failed Migrations</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check migration status
+alembic current</p>
+<p># Check migration history
+alembic history</p>
+<p># Rollback failed migration
+alembic downgrade -1</p>
+<p># Fix migration file
+# Re-run migration
+alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Data Corruption</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Restore from backup
+psql $DATABASE_URL &lt; backup.sql</p>
+<p># Re-run migrations
+alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Schema Drift</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check schema drift
+alembic check</p>
+<p># Generate new migration
+alembic revision –autogenerate -m “Fix schema drift”</p>
+<p># Review generated migration
+# Run migration
+alembic upgrade head</p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-validation">
+<h2>Migration Validation<a class="headerlink" href="#migration-validation" title="Link to this heading"></a></h2>
+<section id="pre-migration-checks">
+<h3>Pre-Migration Checks<a class="headerlink" href="#pre-migration-checks" title="Link to this heading"></a></h3>
+<p><strong>Schema Validation</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check current schema
+psql $DATABASE_URL -c “d”</p>
+<p># Check migration status
+alembic current</p>
+<p># Check for pending migrations
+alembic check</p>
+</div></blockquote>
+<p><strong>Data Validation</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check data integrity
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline;”
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline_execution;”</p>
+<p># Check for orphaned records
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline_execution WHERE pipeline_id NOT IN (SELECT id FROM pipeline);”</p>
+</div></blockquote>
+</section>
+<section id="post-migration-checks">
+<h3>Post-Migration Checks<a class="headerlink" href="#post-migration-checks" title="Link to this heading"></a></h3>
+<p><strong>Schema Verification</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check new schema
+psql $DATABASE_URL -c “d”</p>
+<p># Check indexes
+psql $DATABASE_URL -c “SELECT indexname FROM pg_indexes WHERE tablename = ‘pipeline’;”</p>
+<p># Check constraints
+psql $DATABASE_URL -c “SELECT conname FROM pg_constraint WHERE conrelid = ‘pipeline’::regclass;”</p>
+</div></blockquote>
+<p><strong>Data Verification</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check data integrity
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline;”
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline_execution;”</p>
+<p># Check new data
+psql $DATABASE_URL -c “SELECT COUNT(*) FROM pipeline WHERE new_field IS NOT NULL;”</p>
+</div></blockquote>
+<p><strong>Application Verification</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check application health
+curl <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+<p># Check API endpoints
+curl <a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a></p>
+<p># Check diagnostics
+curl <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p>
+</div></blockquote>
+</section>
+</section>
+<section id="migration-automation">
+<h2>Migration Automation<a class="headerlink" href="#migration-automation" title="Link to this heading"></a></h2>
+<section id="ci-cd-integration">
+<h3>CI/CD Integration<a class="headerlink" href="#ci-cd-integration" title="Link to this heading"></a></h3>
+<p><strong>GitHub Actions</strong>:
+.. code-block:: yaml</p>
+<blockquote>
+<div><ul>
+<li><p>name: Run Database Migrations
+run: |</p>
+<blockquote>
+<div><p>alembic upgrade head
+alembic current</p>
+</div></blockquote>
+</li>
+</ul>
+</div></blockquote>
+<p><strong>Docker Integration</strong>:
+.. code-block:: dockerfile</p>
+<blockquote>
+<div><p># Run migrations in Docker
+RUN alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Kubernetes Integration</strong>:
+.. code-block:: yaml</p>
+<blockquote>
+<div><p># Run migrations as init container
+initContainers:
+- name: migrate</p>
+<blockquote>
+<div><p>image: watcher:latest
+command: [“alembic”, “upgrade”, “head”]</p>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="migration-monitoring">
+<h3>Migration Monitoring<a class="headerlink" href="#migration-monitoring" title="Link to this heading"></a></h3>
+<p><strong>Migration Logging</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Enable migration logging
+export ALEMBIC_LOG_LEVEL=INFO</p>
+<p># Run migrations with logging
+alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Migration Tracking</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Track migration history
+alembic history</p>
+<p># Check migration status
+alembic current</p>
+<p># Monitor migration performance
+time alembic upgrade head</p>
+</div></blockquote>
+<p><strong>Alerting</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check for failed migrations
+if ! alembic upgrade head; then</p>
+<blockquote>
+<div><p>echo “Migration failed”
+exit 1</p>
+</div></blockquote>
+<p>fi</p>
+<p># Check for pending migrations
+if alembic check; then</p>
+<blockquote>
+<div><p>echo “Pending migrations found”
+exit 1</p>
+</div></blockquote>
+<p>fi</p>
+</div></blockquote>
+</section>
+</section>
+<section id="best-practices-summary">
+<h2>Best Practices Summary<a class="headerlink" href="#best-practices-summary" title="Link to this heading"></a></h2>
+<section id="migration-development">
+<h3>Migration Development<a class="headerlink" href="#migration-development" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Small Changes</strong>: Keep migrations focused and small</p></li>
+<li><p><strong>Test Thoroughly</strong>: Test migrations in development</p></li>
+<li><p><strong>Document Changes</strong>: Document migration purpose</p></li>
+<li><p><strong>Review Code</strong>: Review migration code before deployment</p></li>
+</ul>
+</section>
+<section id="migration-deployment">
+<h3>Migration Deployment<a class="headerlink" href="#migration-deployment" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Backup First</strong>: Always backup before migrations</p></li>
+<li><p><strong>Test Environment</strong>: Test in staging first</p></li>
+<li><p><strong>Rollback Plan</strong>: Have rollback strategy ready</p></li>
+<li><p><strong>Monitor Closely</strong>: Monitor during deployment</p></li>
+</ul>
+</section>
+<section id="migration-maintenance">
+<h3>Migration Maintenance<a class="headerlink" href="#migration-maintenance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Regular Cleanup</strong>: Remove old migration files</p></li>
+<li><p><strong>Performance Monitoring</strong>: Monitor migration performance</p></li>
+<li><p><strong>Documentation</strong>: Keep migration documentation current</p></li>
+<li><p><strong>Training</strong>: Train team on migration procedures</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database_schema.html" class="btn btn-neutral float-left" title="Database Schema" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="deployment.html" class="btn btn-neutral float-right" title="Deployment Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

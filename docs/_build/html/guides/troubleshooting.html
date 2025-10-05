@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Troubleshooting &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
+    <link rel="prev" title="Monitoring &amp; Health Checks" href="monitoring.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Troubleshooting</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#installation-issues">Installation Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#application-issues">Application Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-issues">Database Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery-issues">Celery Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#monitoring-issues">Monitoring Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-issues">Performance Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#debugging-techniques">Debugging Techniques</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Troubleshooting</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/troubleshooting.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="troubleshooting">
+<h1>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h1>
+<p>This guide helps you diagnose and resolve common issues with Watcher.</p>
+<section id="common-issues">
+<h2>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h2>
+<section id="installation-issues">
+<h3>Installation Issues<a class="headerlink" href="#installation-issues" title="Link to this heading"></a></h3>
+<dl>
+<dt><strong>Port Already in Use</strong></dt><dd><p><strong>Problem</strong>: Ports 8000, 5432, or 6379 are already in use</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check what’s using the ports
+lsof -i :8000
+lsof -i :5432
+lsof -i :6379</p>
+<p># Kill processes if needed
+kill -9 &lt;PID&gt;</p>
+<p># Or use different ports
+docker-compose -f docker-compose.yml up -d –scale app=0
+docker-compose -f docker-compose.yml up -d -p 8001:8000</p>
+</div></blockquote>
+</dd>
+<dt><strong>Database Connection Failed</strong></dt><dd><p><strong>Problem</strong>: Cannot connect to PostgreSQL</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check if PostgreSQL is running
+docker ps | grep postgres</p>
+<p># Check connection string
+echo $DATABASE_URL</p>
+<p># Test connection
+psql $DATABASE_URL -c “SELECT 1;”</p>
+<p># Restart PostgreSQL if needed
+docker-compose restart postgres</p>
+</div></blockquote>
+</dd>
+<dt><strong>Redis Connection Failed</strong></dt><dd><p><strong>Problem</strong>: Cannot connect to Redis</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check if Redis is running
+docker ps | grep redis</p>
+<p># Test Redis connection
+redis-cli -u $REDIS_URL ping</p>
+<p># Restart Redis if needed
+docker-compose restart redis</p>
+</div></blockquote>
+</dd>
+<dt><strong>Migration Errors</strong></dt><dd><p><strong>Problem</strong>: Database migrations fail</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check database exists
+psql $DATABASE_URL -c “SELECT 1;”</p>
+<p># Check migration status
+alembic current</p>
+<p># Run migrations
+alembic upgrade head</p>
+<p># Check for conflicts
+alembic heads</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+</section>
+<section id="application-issues">
+<h2>Application Issues<a class="headerlink" href="#application-issues" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Application Won’t Start</strong></dt><dd><p><strong>Problem</strong>: FastAPI application fails to start</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check logs
+docker-compose logs app</p>
+<p># Check environment variables
+docker-compose exec app env | grep -E “(DATABASE|REDIS|LOGFIRE)”</p>
+<p># Check dependencies
+uv run python -c “import src.app”</p>
+<p># Restart application
+docker-compose restart app</p>
+</div></blockquote>
+</dd>
+<dt><strong>Import Errors</strong></dt><dd><p><strong>Problem</strong>: Module import errors</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Python path
+uv run python -c “import sys; print(sys.path)”</p>
+<p># Reinstall dependencies
+uv sync</p>
+<p># Check for circular imports
+uv run python -c “import src.app”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Configuration Errors</strong></dt><dd><p><strong>Problem</strong>: Configuration validation errors</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check environment variables
+env | grep -E “(DEV|PROD|TEST)”</p>
+<p># Validate configuration
+uv run python -c “from src.settings import config; print(config)”</p>
+<p># Check .env file
+cat .env</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+<section id="database-issues">
+<h2>Database Issues<a class="headerlink" href="#database-issues" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Connection Timeouts</strong></dt><dd><p><strong>Problem</strong>: Database connection timeouts</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check connection pool settings
+grep -r “pool_size” src/</p>
+<p># Check database performance
+psql $DATABASE_URL -c “SELECT * FROM pg_stat_activity;”</p>
+<p># Restart database
+docker-compose restart postgres</p>
+</div></blockquote>
+</dd>
+<dt><strong>Query Performance</strong></dt><dd><p><strong>Problem</strong>: Slow database queries</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check slow queries
+psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;”</p>
+<p># Check indexes
+psql $DATABASE_URL -c “SELECT schemaname, tablename, indexname FROM pg_indexes;”</p>
+<p># Analyze tables
+psql $DATABASE_URL -c “ANALYZE;”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Schema Issues</strong></dt><dd><p><strong>Problem</strong>: Database schema problems</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check schema
+psql $DATABASE_URL -c “d”</p>
+<p># Check migrations
+alembic current
+alembic history</p>
+<p># Reset schema if needed
+alembic downgrade base
+alembic upgrade head</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+<section id="celery-issues">
+<h2>Celery Issues<a class="headerlink" href="#celery-issues" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Workers Not Starting</strong></dt><dd><p><strong>Problem</strong>: Celery workers fail to start</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check worker logs
+docker-compose logs celery</p>
+<p># Check Redis connection
+redis-cli -u $REDIS_URL ping</p>
+<p># Start worker manually
+celery -A src.celery_app worker –loglevel=info</p>
+<p># Check worker status
+celery -A src.celery_app inspect active</p>
+</div></blockquote>
+</dd>
+<dt><strong>Tasks Not Processing</strong></dt><dd><p><strong>Problem</strong>: Tasks stuck in queue</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check queue depth
+redis-cli -u $REDIS_URL llen celery</p>
+<p># Check worker status
+celery -A src.celery_app inspect active</p>
+<p># Purge queue if needed
+celery -A src.celery_app purge</p>
+<p># Restart workers
+docker-compose restart celery</p>
+</div></blockquote>
+</dd>
+<dt><strong>Task Failures</strong></dt><dd><p><strong>Problem</strong>: Tasks failing repeatedly</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check task results
+celery -A src.celery_app inspect stats</p>
+<p># Check error logs
+docker-compose logs celery | grep ERROR</p>
+<p># Test task manually
+celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
+</div></blockquote>
+</dd>
+<dt><strong>Queue Backlog</strong></dt><dd><p><strong>Problem</strong>: Queue building up with tasks</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check queue depth
+redis-cli -u $REDIS_URL llen celery</p>
+<p># Scale workers
+docker-compose up -d –scale celery=3</p>
+<p># Check worker performance
+celery -A src.celery_app inspect stats</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+<section id="monitoring-issues">
+<h2>Monitoring Issues<a class="headerlink" href="#monitoring-issues" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Freshness Checks Failing</strong></dt><dd><p><strong>Problem</strong>: Freshness monitoring not working</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check freshness task
+curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”</p>
+<p># Check task queue
+redis-cli -u $REDIS_URL llen celery</p>
+<p># Check worker logs
+docker-compose logs celery | grep freshness</p>
+<p># Test manually
+celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
+</div></blockquote>
+</dd>
+<dt><strong>Timeliness Checks Failing</strong></dt><dd><p><strong>Problem</strong>: Timeliness monitoring not working</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check timeliness task
+curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’</p>
+<p># Check task queue
+redis-cli -u $REDIS_URL llen celery</p>
+<p># Check worker logs
+docker-compose logs celery | grep timeliness</p>
+<p># Test manually
+celery -A src.celery_app call src.celery_tasks.timeliness_check_task</p>
+</div></blockquote>
+</dd>
+<dt><strong>Anomaly Detection Not Working</strong></dt><dd><p><strong>Problem</strong>: Anomaly detection not running</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check anomaly detection rules
+curl -X GET “<a class="reference external" href="http://localhost:8000/anomaly_detection_rule">http://localhost:8000/anomaly_detection_rule</a>”</p>
+<p># Check pipeline executions
+curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
+<p># Check task queue
+redis-cli -u $REDIS_URL llen celery</p>
+<p># Test manually
+celery -A src.celery_app call src.celery_tasks.detect_anomalies_task –args=’[1, 123]’</p>
+</div></blockquote>
+</dd>
+<dt><strong>Alerts Not Sending</strong></dt><dd><p><strong>Problem</strong>: Slack alerts not being sent</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Slack webhook
+echo $SLACK_WEBHOOK_URL</p>
+<p># Test webhook
+curl -X POST $SLACK_WEBHOOK_URL -H “Content-Type: application/json” -d ‘{“text”: “Test message”}’</p>
+<p># Check alert logs
+docker-compose logs app | grep -i slack</p>
+<p># Check environment variables
+docker-compose exec app env | grep SLACK</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+<section id="performance-issues">
+<h2>Performance Issues<a class="headerlink" href="#performance-issues" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Slow API Responses</strong></dt><dd><p><strong>Problem</strong>: API endpoints responding slowly</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check database performance
+psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;”</p>
+<p># Check connection pool
+grep -r “pool_size” src/</p>
+<p># Check Redis performance
+redis-cli -u $REDIS_URL –latency</p>
+<p># Monitor system resources
+docker stats</p>
+</div></blockquote>
+</dd>
+<dt><strong>High Memory Usage</strong></dt><dd><p><strong>Problem</strong>: Application using too much memory</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check memory usage
+docker stats</p>
+<p># Check for memory leaks
+docker-compose logs app | grep -i memory</p>
+<p># Restart application
+docker-compose restart app</p>
+<p># Check worker memory
+docker-compose logs celery | grep -i memory</p>
+</div></blockquote>
+</dd>
+<dt><strong>Database Performance</strong></dt><dd><p><strong>Problem</strong>: Database queries running slowly</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check slow queries
+psql $DATABASE_URL -c “SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;”</p>
+<p># Check indexes
+psql $DATABASE_URL -c “SELECT schemaname, tablename, indexname FROM pg_indexes WHERE tablename LIKE ‘%pipeline%’;”</p>
+<p># Analyze tables
+psql $DATABASE_URL -c “ANALYZE;”</p>
+<p># Check database size
+psql $DATABASE_URL -c “SELECT pg_size_pretty(pg_database_size(current_database()));”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Redis Performance</strong></dt><dd><p><strong>Problem</strong>: Redis operations running slowly</p>
+<p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Redis performance
+redis-cli -u $REDIS_URL –latency</p>
+<p># Check Redis memory
+redis-cli -u $REDIS_URL info memory</p>
+<p># Check Redis keys
+redis-cli -u $REDIS_URL keys “*” | wc -l</p>
+<p># Clear Redis if needed
+redis-cli -u $REDIS_URL flushdb</p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+<section id="debugging-techniques">
+<h2>Debugging Techniques<a class="headerlink" href="#debugging-techniques" title="Link to this heading"></a></h2>
+<dl>
+<dt><strong>Enable Debug Logging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Set debug logging
+export LOG_LEVEL=DEBUG</p>
+<p># Restart application
+docker-compose restart app</p>
+<p># Check logs
+docker-compose logs -f app</p>
+</div></blockquote>
+</dd>
+<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Enable query logging
+export DATABASE_ECHO=true</p>
+<p># Check database logs
+docker-compose logs postgres</p>
+<p># Test queries manually
+psql $DATABASE_URL -c “SELECT * FROM pipeline LIMIT 5;”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Enable Celery debug logging
+celery -A src.celery_app worker –loglevel=debug</p>
+<p># Check task results
+celery -A src.celery_app inspect stats</p>
+<p># Test tasks manually
+celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
+</div></blockquote>
+</dd>
+<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Test API endpoints
+curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+<p># Check API documentation
+curl <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p>
+<p># Test specific endpoints
+curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Network Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check network connectivity
+docker-compose exec app ping postgres
+docker-compose exec app ping redis</p>
+<p># Check port accessibility
+telnet localhost 8000
+telnet localhost 5432
+telnet localhost 6379</p>
+</div></blockquote>
+</dd>
+<dt><strong>Container Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check container status
+docker-compose ps</p>
+<p># Check container logs
+docker-compose logs app
+docker-compose logs postgres
+docker-compose logs redis
+docker-compose logs celery</p>
+<p># Execute commands in containers
+docker-compose exec app bash
+docker-compose exec postgres psql -U user -d watcher_dev</p>
+</div></blockquote>
+</dd>
+<dt><strong>Environment Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check environment variables
+docker-compose exec app env</p>
+<p># Check configuration
+docker-compose exec app python -c “from src.settings import config; print(config)”</p>
+<p># Check dependencies
+docker-compose exec app uv run python -c “import src.app”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check database connection
+docker-compose exec app python -c “from src.database.session import engine; print(engine)”</p>
+<p># Check migrations
+docker-compose exec app alembic current</p>
+<p># Check database schema
+docker-compose exec postgres psql -U user -d watcher_dev -c “d”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Redis Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Redis connection
+docker-compose exec app python -c “import redis; r = redis.from_url(‘redis://redis:6379/1’); print(r.ping())”</p>
+<p># Check Redis keys
+docker-compose exec redis redis-cli keys “*”</p>
+<p># Check Redis memory
+docker-compose exec redis redis-cli info memory</p>
+</div></blockquote>
+</dd>
+<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Celery connection
+docker-compose exec app python -c “from src.celery_app import celery; print(celery.control.inspect().active())”</p>
+<p># Check task queue
+docker-compose exec redis redis-cli llen celery</p>
+<p># Check worker status
+docker-compose exec app celery -A src.celery_app inspect active</p>
+</div></blockquote>
+</dd>
+<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check API health
+curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+<p># Check API documentation
+curl <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p>
+<p># Test specific endpoints
+curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”
+curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”
+curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’</p>
+</div></blockquote>
+</dd>
+<dt><strong>Monitoring Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check diagnostics
+curl <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p>
+<p># Check monitoring endpoints
+curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”
+curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’
+curl -X POST “<a class="reference external" href="http://localhost:8000/celery/monitor-queue">http://localhost:8000/celery/monitor-queue</a>”</p>
+<p># Check monitoring logs
+docker-compose logs app | grep -i “freshness|timeliness|anomaly”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Alerting Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check Slack webhook
+curl -X POST $SLACK_WEBHOOK_URL -H “Content-Type: application/json” -d ‘{“text”: “Test message”}’</p>
+<p># Check alert logs
+docker-compose logs app | grep -i slack</p>
+<p># Check environment variables
+docker-compose exec app env | grep SLACK</p>
+</div></blockquote>
+</dd>
+<dt><strong>Performance Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check system resources
+docker stats</p>
+<p># Check database performance
+psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;”</p>
+<p># Check Redis performance
+redis-cli -u $REDIS_URL –latency</p>
+<p># Check application performance
+curl -w “&#64;curl-format.txt” -o /dev/null -s <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+</div></blockquote>
+</dd>
+<dt><strong>Load Testing Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Run load tests
+locust -f src/diagnostics/locustfile.py –host=http://localhost:8000</p>
+<p># Check load test results
+curl <a class="reference external" href="http://localhost:8089">http://localhost:8089</a></p>
+<p># Check system performance under load
+docker stats</p>
+</div></blockquote>
+</dd>
+<dt><strong>Security Debugging</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check SSL certificates
+openssl s_client -connect localhost:8000</p>
+<p># Check authentication
+curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+<p># Check authorization
+curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
+</div></blockquote>
+</dd>
+<dt><strong>Backup and Recovery</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Backup database
+pg_dump $DATABASE_URL &gt; backup.sql</p>
+<p># Backup Redis
+redis-cli -u $REDIS_URL –rdb backup.rdb</p>
+<p># Restore database
+psql $DATABASE_URL &lt; backup.sql</p>
+<p># Restore Redis
+redis-cli -u $REDIS_URL –pipe &lt; backup.rdb</p>
+</div></blockquote>
+</dd>
+<dt><strong>Disaster Recovery</strong></dt><dd><p><strong>Solution</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p># Check system status
+docker-compose ps</p>
+<p># Restart all services
+docker-compose restart</p>
+<p># Check logs
+docker-compose logs</p>
+<p># Verify functionality
+curl <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
+</div></blockquote>
+</dd>
+</dl>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="monitoring.html" class="btn btn-neutral float-left" title="Monitoring &amp; Health Checks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

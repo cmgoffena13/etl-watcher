@@ -1,0 +1,500 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Celery Tasks &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Pipeline Management" href="../guides/pipeline_management.html" />
+    <link rel="prev" title="Data Models" href="models.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#task-overview">Task Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-details">Error Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#queue-management">Queue Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#default-queue">Default Queue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#worker-scaling">Worker Scaling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-alert">Example Alert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-optimization">Performance Optimization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-optimization">Task Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#worker-optimization">Worker Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monitoring-integration">Monitoring Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-design">Task Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Error Handling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling">Scaling</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Celery Tasks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/celery_tasks.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="celery-tasks">
+<h1>Celery Tasks<a class="headerlink" href="#celery-tasks" title="Link to this heading"></a></h1>
+<p>This section documents all Celery background tasks in Watcher.</p>
+<section id="task-overview">
+<h2>Task Overview<a class="headerlink" href="#task-overview" title="Link to this heading"></a></h2>
+<p>Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.</p>
+</section>
+<section id="task-types">
+<h2>Task Types<a class="headerlink" href="#task-types" title="Link to this heading"></a></h2>
+<section id="detect-anomalies-task">
+<h3>detect_anomalies_task<a class="headerlink" href="#detect-anomalies-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong>: Statistical analysis of pipeline execution patterns</p>
+<p><strong>Rate Limit</strong>: 15/s</p>
+<p><strong>Parameters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID to analyze
+- <code class="docutils literal notranslate"><span class="pre">pipeline_execution_id</span></code> (int): Execution ID to analyze</p>
+<p><strong>Description</strong>:
+Automatically triggered after each successful pipeline execution. Performs statistical analysis on pipeline metrics to detect anomalies using z-score analysis.</p>
+<p><strong>Retry Policy</strong>:
+- Max retries: 3
+- Retry delay: 60 seconds
+- Exponential backoff</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_anomalies_task</span>
+
+<span class="c1"># Trigger anomaly detection</span>
+<span class="n">detect_anomalies_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pipeline_execution_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="freshness-check-task">
+<h3>freshness_check_task<a class="headerlink" href="#freshness-check-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong>: DML operation monitoring and data staleness detection</p>
+<p><strong>Rate Limit</strong>: 1/s</p>
+<p><strong>Parameters</strong>: None</p>
+<p><strong>Description</strong>:
+Monitors data modification operations (inserts, updates, soft deletes) to detect stale data. Checks when data was last modified and alerts if it’s older than expected.</p>
+<p><strong>Retry Policy</strong>:
+- Max retries: 3
+- Retry delay: 60 seconds
+- Exponential backoff</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">freshness_check_task</span>
+
+<span class="c1"># Trigger freshness check</span>
+<span class="n">freshness_check_task</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="timeliness-check-task">
+<h3>timeliness_check_task<a class="headerlink" href="#timeliness-check-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong>: Pipeline execution timing validation</p>
+<p><strong>Rate Limit</strong>: 1/s</p>
+<p><strong>Parameters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">lookback_minutes</span></code> (int): How far back to look for executions (default: 60)</p>
+<p><strong>Description</strong>:
+Validates that pipeline executions are completing within expected timeframes. Compares actual execution times against configured timeliness thresholds.</p>
+<p><strong>Retry Policy</strong>:
+- Max retries: 3
+- Retry delay: 60 seconds
+- Exponential backoff</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeliness_check_task</span>
+
+<span class="c1"># Trigger timeliness check</span>
+<span class="n">timeliness_check_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">lookback_minutes</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="address-lineage-closure-rebuild-task">
+<h3>address_lineage_closure_rebuild_task<a class="headerlink" href="#address-lineage-closure-rebuild-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong>: Rebuild address lineage closure table relationships</p>
+<p><strong>Rate Limit</strong>: 1/s</p>
+<p><strong>Parameters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">connected_addresses</span></code> (List[int]): List of address IDs to rebuild
+- <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID for context</p>
+<p><strong>Description</strong>:
+Maintains the closure table for address lineage relationships. Rebuilds the transitive closure when new lineage relationships are created.</p>
+<p><strong>Retry Policy</strong>:
+- Max retries: 3
+- Retry delay: 60 seconds
+- Exponential backoff</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">address_lineage_closure_rebuild_task</span>
+
+<span class="c1"># Rebuild closure table</span>
+<span class="n">address_lineage_closure_rebuild_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span>
+    <span class="n">connected_addresses</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="pipeline-execution-closure-maintain-task">
+<h3>pipeline_execution_closure_maintain_task<a class="headerlink" href="#pipeline-execution-closure-maintain-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong>: Maintain pipeline execution hierarchy closure table</p>
+<p><strong>Rate Limit</strong>: 10/s</p>
+<p><strong>Parameters</strong>:
+- <code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int): Execution ID to maintain
+- <code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int, optional): Parent execution ID</p>
+<p><strong>Description</strong>:
+Maintains the closure table for pipeline execution hierarchies. Automatically triggered when new pipeline executions are created to track parent-child relationships.</p>
+<p><strong>Retry Policy</strong>:
+- Max retries: 3
+- Retry delay: 30 seconds
+- Exponential backoff</p>
+<p><strong>Example</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipeline_execution_closure_maintain_task</span>
+
+<span class="c1"># Maintain execution hierarchy</span>
+<span class="n">pipeline_execution_closure_maintain_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span>
+    <span class="n">execution_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">parent_id</span><span class="o">=</span><span class="mi">122</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="task-configuration">
+<h2>Task Configuration<a class="headerlink" href="#task-configuration" title="Link to this heading"></a></h2>
+<section id="rate-limiting">
+<h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
+<p>All tasks have configurable rate limits to prevent system overload:</p>
+<ul class="simple">
+<li><p><strong>detect_anomalies_task</strong>: 15/s (high frequency for real-time analysis)</p></li>
+<li><p><strong>freshness_check_task</strong>: 1/s (low frequency for periodic checks)</p></li>
+<li><p><strong>timeliness_check_task</strong>: 1/s (low frequency for periodic checks)</p></li>
+<li><p><strong>address_lineage_closure_rebuild_task</strong>: 1/s (low frequency for maintenance)</p></li>
+<li><p><strong>pipeline_execution_closure_maintain_task</strong>: 10/s (medium frequency for hierarchy maintenance)</p></li>
+</ul>
+</section>
+<section id="retry-policies">
+<h3>Retry Policies<a class="headerlink" href="#retry-policies" title="Link to this heading"></a></h3>
+<p>All tasks implement retry policies with exponential backoff:</p>
+<ul class="simple">
+<li><p><strong>Max Retries</strong>: 3 attempts</p></li>
+<li><p><strong>Base Delay</strong>: 30-60 seconds depending on task type</p></li>
+<li><p><strong>Exponential Backoff</strong>: Delay increases with each retry</p></li>
+<li><p><strong>Final Failure</strong>: Task marked as failed after max retries</p></li>
+</ul>
+</section>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<p>Tasks include comprehensive error handling:</p>
+<ul class="simple">
+<li><p><strong>Database Errors</strong>: Connection issues, constraint violations</p></li>
+<li><p><strong>Validation Errors</strong>: Invalid input parameters</p></li>
+<li><p><strong>Timeout Errors</strong>: Long-running operations</p></li>
+<li><p><strong>System Errors</strong>: Memory, disk, or network issues</p></li>
+</ul>
+</section>
+</section>
+<section id="task-monitoring">
+<h2>Task Monitoring<a class="headerlink" href="#task-monitoring" title="Link to this heading"></a></h2>
+<section id="task-status-tracking">
+<h3>Task Status Tracking<a class="headerlink" href="#task-status-tracking" title="Link to this heading"></a></h3>
+<p>Each task provides status updates during execution:</p>
+<ul class="simple">
+<li><p><strong>PENDING</strong>: Task queued, waiting for worker</p></li>
+<li><p><strong>PROGRESS</strong>: Task running, with progress updates</p></li>
+<li><p><strong>SUCCESS</strong>: Task completed successfully</p></li>
+<li><p><strong>FAILURE</strong>: Task failed with error details</p></li>
+<li><p><strong>RETRY</strong>: Task failed, will retry</p></li>
+</ul>
+</section>
+<section id="progress-updates">
+<h3>Progress Updates<a class="headerlink" href="#progress-updates" title="Link to this heading"></a></h3>
+<p>Tasks provide detailed progress information:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing anomaly detection...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;current_step&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Calculating z-scores&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="error-details">
+<h3>Error Details<a class="headerlink" href="#error-details" title="Link to this heading"></a></h3>
+<p>Failed tasks include detailed error information:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAILURE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exc_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DatabaseError&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;exc_message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Connection timeout&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;retry_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_retries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="queue-management">
+<h2>Queue Management<a class="headerlink" href="#queue-management" title="Link to this heading"></a></h2>
+<section id="default-queue">
+<h3>Default Queue<a class="headerlink" href="#default-queue" title="Link to this heading"></a></h3>
+<p>All tasks are processed through the main <code class="docutils literal notranslate"><span class="pre">celery</span></code> queue:</p>
+<ul class="simple">
+<li><p><strong>Queue Name</strong>: <code class="docutils literal notranslate"><span class="pre">celery</span></code></p></li>
+<li><p><strong>Worker Scaling</strong>: Multiple workers can handle the same queue</p></li>
+<li><p><strong>Load Distribution</strong>: Tasks distributed across available workers</p></li>
+<li><p><strong>Priority</strong>: First-in, first-out (FIFO) processing</p></li>
+</ul>
+</section>
+<section id="worker-scaling">
+<h3>Worker Scaling<a class="headerlink" href="#worker-scaling" title="Link to this heading"></a></h3>
+<p>Workers can be scaled horizontally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start multiple workers</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
+</pre></div>
+</div>
+</section>
+<section id="queue-monitoring">
+<h3>Queue Monitoring<a class="headerlink" href="#queue-monitoring" title="Link to this heading"></a></h3>
+<p>Monitor queue health and performance:</p>
+<ul class="simple">
+<li><p><strong>Queue Depth</strong>: Number of pending tasks</p></li>
+<li><p><strong>Worker Status</strong>: Active workers and their status</p></li>
+<li><p><strong>Task Throughput</strong>: Tasks processed per minute</p></li>
+<li><p><strong>Error Rates</strong>: Failed task percentages</p></li>
+</ul>
+</section>
+<section id="alert-thresholds">
+<h3>Alert Thresholds<a class="headerlink" href="#alert-thresholds" title="Link to this heading"></a></h3>
+<p>Configure alerts for queue issues:</p>
+<ul class="simple">
+<li><p><strong>INFO</strong> (20+ messages): Queue building up</p></li>
+<li><p><strong>WARNING</strong> (50+ messages): Queue getting backed up</p></li>
+<li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
+</ul>
+</section>
+<section id="example-alert">
+<h3>Example Alert<a class="headerlink" href="#example-alert" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
+Celery Queue Alert
+Timestamp: 2025-09-28 06:04:26 UTC
+Message: Queue has 2367 pending tasks
+
+Details:
+• Messages in queue: 2367
+• Scheduled tasks: 0
+• Workers active: 2
+• Queue: celery
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-optimization">
+<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
+<section id="task-optimization">
+<h3>Task Optimization<a class="headerlink" href="#task-optimization" title="Link to this heading"></a></h3>
+<p>Optimize task performance:</p>
+<ul class="simple">
+<li><p><strong>Batch Processing</strong>: Process multiple items in single task</p></li>
+<li><p><strong>Async Operations</strong>: Use async/await for I/O operations</p></li>
+<li><p><strong>Connection Pooling</strong>: Reuse database connections</p></li>
+<li><p><strong>Caching</strong>: Cache frequently accessed data</p></li>
+</ul>
+</section>
+<section id="worker-optimization">
+<h3>Worker Optimization<a class="headerlink" href="#worker-optimization" title="Link to this heading"></a></h3>
+<p>Optimize worker performance:</p>
+<ul class="simple">
+<li><p><strong>Concurrency</strong>: Adjust worker concurrency based on CPU cores</p></li>
+<li><p><strong>Memory</strong>: Monitor memory usage and adjust accordingly</p></li>
+<li><p><strong>Resource Limits</strong>: Set appropriate resource limits</p></li>
+<li><p><strong>Health Checks</strong>: Implement worker health monitoring</p></li>
+</ul>
+</section>
+<section id="monitoring-integration">
+<h3>Monitoring Integration<a class="headerlink" href="#monitoring-integration" title="Link to this heading"></a></h3>
+<p>Integrate with monitoring systems:</p>
+<ul class="simple">
+<li><p><strong>Logfire</strong>: Automatic task tracking and performance metrics</p></li>
+<li><p><strong>Prometheus</strong>: Custom metrics for task performance</p></li>
+<li><p><strong>Grafana</strong>: Dashboards for task monitoring</p></li>
+<li><p><strong>Slack</strong>: Real-time alerts for task failures</p></li>
+</ul>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="task-design">
+<h3>Task Design<a class="headerlink" href="#task-design" title="Link to this heading"></a></h3>
+<p>Design tasks for reliability:</p>
+<ul class="simple">
+<li><p><strong>Idempotent</strong>: Tasks should be safe to retry</p></li>
+<li><p><strong>Atomic</strong>: Tasks should complete or fail completely</p></li>
+<li><p><strong>Stateless</strong>: Tasks should not depend on external state</p></li>
+<li><p><strong>Timeout</strong>: Set appropriate timeouts for long-running tasks</p></li>
+</ul>
+</section>
+<section id="id1">
+<h3>Error Handling<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Implement robust error handling:</p>
+<ul class="simple">
+<li><p><strong>Validation</strong>: Validate all input parameters</p></li>
+<li><p><strong>Graceful Degradation</strong>: Handle partial failures gracefully</p></li>
+<li><p><strong>Logging</strong>: Log all errors with context</p></li>
+<li><p><strong>Alerting</strong>: Alert on critical failures</p></li>
+</ul>
+</section>
+<section id="monitoring">
+<h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading"></a></h3>
+<p>Monitor task health:</p>
+<ul class="simple">
+<li><p><strong>Success Rates</strong>: Track task success percentages</p></li>
+<li><p><strong>Execution Times</strong>: Monitor task duration trends</p></li>
+<li><p><strong>Queue Depth</strong>: Monitor queue backlog</p></li>
+<li><p><strong>Worker Health</strong>: Monitor worker status and performance</p></li>
+</ul>
+</section>
+<section id="scaling">
+<h3>Scaling<a class="headerlink" href="#scaling" title="Link to this heading"></a></h3>
+<p>Scale tasks appropriately:</p>
+<ul class="simple">
+<li><p><strong>Horizontal Scaling</strong>: Add more workers as needed</p></li>
+<li><p><strong>Vertical Scaling</strong>: Increase worker resources</p></li>
+<li><p><strong>Load Balancing</strong>: Distribute tasks across workers</p></li>
+<li><p><strong>Auto-scaling</strong>: Implement automatic scaling based on queue depth</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="models.html" class="btn btn-neutral float-left" title="Data Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../guides/pipeline_management.html" class="btn btn-neutral float-right" title="Pipeline Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

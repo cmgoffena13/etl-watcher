@@ -1,0 +1,612 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Monitoring &amp; Health Checks &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Troubleshooting" href="troubleshooting.html" />
+    <link rel="prev" title="Anomaly Detection" href="anomaly_detection.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Monitoring &amp; Health Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#freshness-monitoring">Freshness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-time-units">Supported Time Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-freshness-checks">Running Freshness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#timeliness-monitoring">Timeliness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#running-timeliness-checks">Running Timeliness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#system-health-monitoring">System Health Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#diagnostics-page">Diagnostics Page</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-health">Database Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#redis-health">Redis Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-health">Celery Health</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#example-alert">Example Alert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#performance-monitoring">Performance Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#connection-performance">Connection Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#schema-health">Schema Health</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-metrics">Performance Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-diagnostics">Celery Diagnostics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#alerting-configuration">Alerting Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#slack-integration">Slack Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alert-types">Alert Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-monitoring">Scheduled Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-testing">Load Testing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#load-test-scenarios">Load Test Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-targets">Performance Targets</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-issues">Performance Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#monitoring-setup">Monitoring Setup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-optimization">Performance Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alert-management">Alert Management</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#maintenance">Maintenance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Monitoring &amp; Health Checks</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/monitoring.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="monitoring-health-checks">
+<h1>Monitoring &amp; Health Checks<a class="headerlink" href="#monitoring-health-checks" title="Link to this heading"></a></h1>
+<p>This guide covers how to set up comprehensive monitoring for your Watcher instance.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Watcher provides multiple monitoring capabilities to ensure your data pipelines are running optimally:</p>
+<ul class="simple">
+<li><p><strong>Freshness Monitoring</strong>: Track data staleness and DML operations</p></li>
+<li><p><strong>Timeliness Monitoring</strong>: Validate pipeline execution timing</p></li>
+<li><p><strong>System Health</strong>: Monitor database, Redis, and Celery health</p></li>
+<li><p><strong>Queue Monitoring</strong>: Track Celery task queue depth and performance</p></li>
+</ul>
+</section>
+<section id="freshness-monitoring">
+<h2>Freshness Monitoring<a class="headerlink" href="#freshness-monitoring" title="Link to this heading"></a></h2>
+<section id="purpose">
+<h3>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h3>
+<p>Freshness monitoring tracks when data was last modified to detect stale data:</p>
+<ul class="simple">
+<li><p><strong>DML Operations</strong>: Monitors inserts, updates, and soft deletes</p></li>
+<li><p><strong>Staleness Detection</strong>: Identifies data that hasn’t been updated recently</p></li>
+<li><p><strong>Alerting</strong>: Notifies when data becomes stale</p></li>
+</ul>
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h3>
+<p>Configure freshness monitoring in pipeline creation:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Customer Data Pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Freshness Settings</strong>:</p>
+<ul class="simple">
+<li><p><strong>freshness_number</strong>: Time threshold (e.g., 24)</p></li>
+<li><p><strong>freshness_datepart</strong>: Time unit (hour, day, week, month, quarter, year)</p></li>
+<li><p><strong>mute_freshness_check</strong>: Disable freshness monitoring</p></li>
+</ul>
+</section>
+<section id="supported-time-units">
+<h3>Supported Time Units<a class="headerlink" href="#supported-time-units" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>hour</strong>: Monitor hourly freshness</p></li>
+<li><p><strong>day</strong>: Monitor daily freshness</p></li>
+<li><p><strong>week</strong>: Monitor weekly freshness</p></li>
+<li><p><strong>month</strong>: Monitor monthly freshness</p></li>
+<li><p><strong>quarter</strong>: Monitor quarterly freshness</p></li>
+<li><p><strong>year</strong>: Monitor yearly freshness</p></li>
+</ul>
+</section>
+<section id="running-freshness-checks">
+<h3>Running Freshness Checks<a class="headerlink" href="#running-freshness-checks" title="Link to this heading"></a></h3>
+<p>Trigger freshness checks manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+
+<span class="c1"># Response</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;status&quot;</span>:<span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p>The check runs as a background Celery task and monitors all configured pipelines.</p>
+</section>
+</section>
+<section id="timeliness-monitoring">
+<h2>Timeliness Monitoring<a class="headerlink" href="#timeliness-monitoring" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Purpose<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>Timeliness monitoring validates that pipeline executions complete within expected timeframes:</p>
+<ul class="simple">
+<li><p><strong>Execution Timing</strong>: Tracks how long pipelines take to complete</p></li>
+<li><p><strong>Threshold Validation</strong>: Compares against configured timeliness thresholds</p></li>
+<li><p><strong>Performance Issues</strong>: Identifies slow or stuck pipelines</p></li>
+</ul>
+</section>
+<section id="id2">
+<h3>Configuration<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>Configure timeliness monitoring in pipeline creation:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Critical Data Pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Timeliness Settings</strong>:</p>
+<ul class="simple">
+<li><p><strong>timeliness_number</strong>: Time threshold (e.g., 2)</p></li>
+<li><p><strong>timeliness_datepart</strong>: Time unit (hour, day, week, month, quarter, year)</p></li>
+<li><p><strong>mute_timeliness_check</strong>: Disable timeliness monitoring</p></li>
+</ul>
+</section>
+<section id="running-timeliness-checks">
+<h3>Running Timeliness Checks<a class="headerlink" href="#running-timeliness-checks" title="Link to this heading"></a></h3>
+<p>Trigger timeliness checks with lookback period:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;lookback_minutes&quot;: 60</span>
+<span class="s1">     }&#39;</span>
+
+<span class="c1"># Response</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;status&quot;</span>:<span class="w"> </span><span class="s2">&quot;queued&quot;</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+<p><strong>Lookback Period</strong>: How far back to look for executions (in minutes)</p>
+</section>
+</section>
+<section id="system-health-monitoring">
+<h2>System Health Monitoring<a class="headerlink" href="#system-health-monitoring" title="Link to this heading"></a></h2>
+<section id="diagnostics-page">
+<h3>Diagnostics Page<a class="headerlink" href="#diagnostics-page" title="Link to this heading"></a></h3>
+<p>Access comprehensive system diagnostics:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
+<li><p><strong>Features</strong>: Real-time system health information</p></li>
+<li><p><strong>Sections</strong>: Database, Redis, Celery, Performance metrics</p></li>
+</ul>
+</section>
+<section id="database-health">
+<h3>Database Health<a class="headerlink" href="#database-health" title="Link to this heading"></a></h3>
+<p>Monitor database connectivity and performance:</p>
+<ul class="simple">
+<li><p><strong>Connection Status</strong>: Database connectivity</p></li>
+<li><p><strong>Query Performance</strong>: Slow query detection</p></li>
+<li><p><strong>Schema Health</strong>: Database schema validation</p></li>
+<li><p><strong>Index Usage</strong>: Index utilization metrics</p></li>
+</ul>
+</section>
+<section id="redis-health">
+<h3>Redis Health<a class="headerlink" href="#redis-health" title="Link to this heading"></a></h3>
+<p>Monitor Redis connectivity and performance:</p>
+<ul class="simple">
+<li><p><strong>Connection Status</strong>: Redis connectivity</p></li>
+<li><p><strong>Memory Usage</strong>: Redis memory consumption</p></li>
+<li><p><strong>Key Count</strong>: Number of keys in Redis</p></li>
+<li><p><strong>Performance</strong>: Redis operation latency</p></li>
+</ul>
+</section>
+<section id="celery-health">
+<h3>Celery Health<a class="headerlink" href="#celery-health" title="Link to this heading"></a></h3>
+<p>Monitor Celery workers and queues:</p>
+<ul class="simple">
+<li><p><strong>Worker Status</strong>: Active workers and their status</p></li>
+<li><p><strong>Queue Depth</strong>: Number of pending tasks</p></li>
+<li><p><strong>Task Performance</strong>: Task execution metrics</p></li>
+<li><p><strong>Error Rates</strong>: Failed task percentages</p></li>
+</ul>
+</section>
+</section>
+<section id="queue-monitoring">
+<h2>Queue Monitoring<a class="headerlink" href="#queue-monitoring" title="Link to this heading"></a></h2>
+<section id="celery-queue-monitoring">
+<h3>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h3>
+<p>Monitor Celery queue health and performance:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/celery/monitor-queue&quot;</span>
+
+<span class="c1"># Response</span>
+<span class="o">{</span>
+<span class="w">  </span><span class="s2">&quot;status&quot;</span>:<span class="w"> </span><span class="s2">&quot;success&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;message&quot;</span>:<span class="w"> </span><span class="s2">&quot;Queue monitoring completed&quot;</span>,
+<span class="w">  </span><span class="s2">&quot;queues_checked&quot;</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="w">  </span><span class="s2">&quot;total_messages&quot;</span>:<span class="w"> </span><span class="m">0</span>
+<span class="o">}</span>
+</pre></div>
+</div>
+</section>
+<section id="alert-thresholds">
+<h3>Alert Thresholds<a class="headerlink" href="#alert-thresholds" title="Link to this heading"></a></h3>
+<p>Configure alert thresholds for queue monitoring:</p>
+<ul class="simple">
+<li><p><strong>INFO</strong> (20+ messages): Queue building up</p></li>
+<li><p><strong>WARNING</strong> (50+ messages): Queue getting backed up</p></li>
+<li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
+</ul>
+</section>
+<section id="example-alert">
+<h3>Example Alert<a class="headerlink" href="#example-alert" title="Link to this heading"></a></h3>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
+Celery Queue Alert
+Timestamp: 2025-09-28 06:04:26 UTC
+Message: Queue has 2367 pending tasks
+
+Details:
+• Messages in queue: 2367
+• Scheduled tasks: 0
+• Workers active: 2
+• Queue: celery
+</pre></div>
+</div>
+</section>
+</section>
+<section id="performance-monitoring">
+<h2>Performance Monitoring<a class="headerlink" href="#performance-monitoring" title="Link to this heading"></a></h2>
+<section id="connection-performance">
+<h3>Connection Performance<a class="headerlink" href="#connection-performance" title="Link to this heading"></a></h3>
+<p>Monitor database connection performance:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/connection-performance">http://localhost:8000/diagnostics/connection-performance</a></p></li>
+<li><p><strong>Metrics</strong>: Connection times, query performance</p></li>
+<li><p><strong>Alerts</strong>: Slow query detection</p></li>
+</ul>
+</section>
+<section id="schema-health">
+<h3>Schema Health<a class="headerlink" href="#schema-health" title="Link to this heading"></a></h3>
+<p>Monitor database schema health:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/schema-health">http://localhost:8000/diagnostics/schema-health</a></p></li>
+<li><p><strong>Validation</strong>: Schema integrity checks</p></li>
+<li><p><strong>Indexes</strong>: Index usage and performance</p></li>
+</ul>
+</section>
+<section id="performance-metrics">
+<h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
+<p>Monitor application performance:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/performance">http://localhost:8000/diagnostics/performance</a></p></li>
+<li><p><strong>Metrics</strong>: Request/response times, error rates</p></li>
+<li><p><strong>Trends</strong>: Performance over time</p></li>
+</ul>
+</section>
+<section id="celery-diagnostics">
+<h3>Celery Diagnostics<a class="headerlink" href="#celery-diagnostics" title="Link to this heading"></a></h3>
+<p>Monitor Celery performance:</p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/celery">http://localhost:8000/diagnostics/celery</a></p></li>
+<li><p><strong>Workers</strong>: Worker status and activity</p></li>
+<li><p><strong>Tasks</strong>: Task performance and execution times</p></li>
+<li><p><strong>Queues</strong>: Queue depth and processing rates</p></li>
+</ul>
+</section>
+</section>
+<section id="alerting-configuration">
+<h2>Alerting Configuration<a class="headerlink" href="#alerting-configuration" title="Link to this heading"></a></h2>
+<section id="slack-integration">
+<h3>Slack Integration<a class="headerlink" href="#slack-integration" title="Link to this heading"></a></h3>
+<p>Configure Slack alerts for monitoring:</p>
+<ol class="arabic">
+<li><p><strong>Create Slack App</strong>:
+- Go to <a class="reference external" href="https://api.slack.com/apps">https://api.slack.com/apps</a>
+- Create new app for your workspace
+- Add Incoming Webhooks feature</p></li>
+<li><p><strong>Get Webhook URL</strong>:
+- Create webhook for your channel
+- Copy the webhook URL</p></li>
+<li><p><strong>Configure Environment</strong>:
+.. code-block:: bash</p>
+<blockquote>
+<div><p>export SLACK_WEBHOOK_URL=”<a class="reference external" href="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK">https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK</a>”</p>
+<p># Restart application
+uv run python src/app.py</p>
+</div></blockquote>
+</li>
+</ol>
+</section>
+<section id="alert-types">
+<h3>Alert Types<a class="headerlink" href="#alert-types" title="Link to this heading"></a></h3>
+<p><strong>Queue Alerts</strong>:
+- Queue depth exceeds thresholds
+- Worker status issues
+- Task processing delays</p>
+<p><strong>Anomaly Alerts</strong>:
+- Statistical anomalies detected
+- Metric threshold violations
+- Performance degradation</p>
+<p><strong>System Alerts</strong>:
+- Database connectivity issues
+- Redis connectivity issues
+- Application errors</p>
+</section>
+</section>
+<section id="monitoring-strategy">
+<h2>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h2>
+<section id="scheduled-monitoring">
+<h3>Scheduled Monitoring<a class="headerlink" href="#scheduled-monitoring" title="Link to this heading"></a></h3>
+<p>Set up regular monitoring checks:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to crontab</span>
+<span class="c1"># Check freshness every hour</span>
+<span class="m">0</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+
+<span class="c1"># Check timeliness every 30 minutes</span>
+*/30<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
+
+<span class="c1"># Monitor Celery queue every 5 minutes</span>
+*/5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/celery/monitor-queue&quot;</span>
+
+<span class="c1"># Clean up logs daily</span>
+<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/log_cleanup&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="monitoring-frequency">
+<h3>Monitoring Frequency<a class="headerlink" href="#monitoring-frequency" title="Link to this heading"></a></h3>
+<p>Recommended monitoring frequencies:</p>
+<ul class="simple">
+<li><p><strong>Freshness</strong>: Every hour</p></li>
+<li><p><strong>Timeliness</strong>: Every 30 minutes</p></li>
+<li><p><strong>Queue Monitoring</strong>: Every 5 minutes</p></li>
+<li><p><strong>Log Cleanup</strong>: Daily</p></li>
+<li><p><strong>System Diagnostics</strong>: As needed</p></li>
+</ul>
+</section>
+<section id="load-testing">
+<h3>Load Testing<a class="headerlink" href="#load-testing" title="Link to this heading"></a></h3>
+<p>Use Locust for load testing:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Install Locust</span>
+pip<span class="w"> </span>install<span class="w"> </span>locust
+
+<span class="c1"># Run load tests</span>
+locust<span class="w"> </span>-f<span class="w"> </span>src/diagnostics/locustfile.py<span class="w"> </span>--host<span class="o">=</span>http://localhost:8000
+
+<span class="c1"># Web interface: http://localhost:8089</span>
+</pre></div>
+</div>
+</section>
+<section id="load-test-scenarios">
+<h3>Load Test Scenarios<a class="headerlink" href="#load-test-scenarios" title="Link to this heading"></a></h3>
+<p><strong>Pipeline Execution Users</strong> (998 users):
+- Create and execute pipelines
+- 5-minute execution times
+- 1% anomaly generation rate</p>
+<p><strong>Monitoring Users</strong> (1 user):
+- Run freshness and timeliness checks
+- 5-minute monitoring intervals</p>
+<p><strong>Heartbeat Users</strong> (1 user):
+- Health check endpoints
+- 1-minute intervals</p>
+</section>
+<section id="performance-targets">
+<h3>Performance Targets<a class="headerlink" href="#performance-targets" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Response Time</strong>: &lt; 200ms for API endpoints</p></li>
+<li><p><strong>Throughput</strong>: &gt; 1000 requests/second</p></li>
+<li><p><strong>Error Rate</strong>: &lt; 0.1%</p></li>
+<li><p><strong>Queue Depth</strong>: &lt; 50 messages</p></li>
+<li><p><strong>Worker Utilization</strong>: 70-80%</p></li>
+</ul>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>Freshness Alerts</strong>:
+- Check data modification timestamps
+- Verify freshness thresholds
+- Review data pipeline schedules</p>
+<p><strong>Timeliness Alerts</strong>:
+- Check pipeline execution times
+- Verify timeliness thresholds
+- Review system performance</p>
+<p><strong>Queue Alerts</strong>:
+- Check Celery worker status
+- Verify Redis connectivity
+- Review task processing rates</p>
+<p><strong>System Alerts</strong>:
+- Check database connectivity
+- Verify Redis connectivity
+- Review application logs</p>
+</section>
+<section id="performance-issues">
+<h3>Performance Issues<a class="headerlink" href="#performance-issues" title="Link to this heading"></a></h3>
+<p><strong>Slow Responses</strong>:
+- Check database performance
+- Review query optimization
+- Verify connection pooling</p>
+<p><strong>High Queue Depth</strong>:
+- Scale Celery workers
+- Check task processing rates
+- Review rate limiting</p>
+<p><strong>Memory Issues</strong>:
+- Monitor memory usage
+- Check for memory leaks
+- Review worker configuration</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="monitoring-setup">
+<h3>Monitoring Setup<a class="headerlink" href="#monitoring-setup" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Comprehensive Coverage</strong>: Monitor all critical components</p></li>
+<li><p><strong>Appropriate Thresholds</strong>: Set realistic alert thresholds</p></li>
+<li><p><strong>Regular Review</strong>: Review monitoring results regularly</p></li>
+<li><p><strong>Alert Fatigue</strong>: Avoid overly sensitive alerts</p></li>
+</ul>
+</section>
+<section id="performance-optimization">
+<h3>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Database Optimization</strong>: Optimize queries and indexes</p></li>
+<li><p><strong>Connection Pooling</strong>: Tune connection pool settings</p></li>
+<li><p><strong>Worker Scaling</strong>: Scale workers based on load</p></li>
+<li><p><strong>Caching</strong>: Implement appropriate caching strategies</p></li>
+</ul>
+</section>
+<section id="alert-management">
+<h3>Alert Management<a class="headerlink" href="#alert-management" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Clear Alerts</strong>: Use descriptive alert messages</p></li>
+<li><p><strong>Actionable Alerts</strong>: Include remediation steps</p></li>
+<li><p><strong>Alert Escalation</strong>: Implement alert escalation procedures</p></li>
+<li><p><strong>Alert History</strong>: Track alert trends and patterns</p></li>
+</ul>
+</section>
+<section id="maintenance">
+<h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Regular Cleanup</strong>: Clean up old logs and data</p></li>
+<li><p><strong>Performance Tuning</strong>: Regular performance optimization</p></li>
+<li><p><strong>Security Updates</strong>: Keep dependencies updated</p></li>
+<li><p><strong>Backup Strategy</strong>: Implement data backup procedures</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="anomaly_detection.html" class="btn btn-neutral float-left" title="Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="troubleshooting.html" class="btn btn-neutral float-right" title="Troubleshooting" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

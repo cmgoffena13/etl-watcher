@@ -1,0 +1,606 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Anomaly Detection &mdash; watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Monitoring &amp; Health Checks" href="monitoring.html" />
+    <link rel="prev" title="Pipeline Management" href="pipeline_management.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Anomaly Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#how-it-works">How It Works</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#statistical-analysis">Statistical Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#supported-metrics">Supported Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#setting-up-anomaly-detection">Setting Up Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-detection-rules">Creating Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#rule-configuration">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multiple-rules">Multiple Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#automatic-execution">Automatic Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#triggered-execution">Triggered Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#no-manual-triggering-required">No Manual Triggering Required</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#anomaly-results">Anomaly Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-results">Understanding Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#result-fields">Result Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#alert-notifications">Alert Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#slack-alerts">Slack Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alert-configuration">Alert Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#managing-anomalies">Managing Anomalies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#viewing-anomalies">Viewing Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-rules">Updating Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#unflagging-anomalies">Unflagging Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#threshold-selection">Threshold Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-scenarios">Common Scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#data-volume-anomalies">Data Volume Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-anomalies">Performance Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#throughput-anomalies">Throughput Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dml-operation-anomalies">DML Operation Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#auto-creation-rules">Auto-Creation Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-thresholds">Custom Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#batch-anomaly-detection">Batch Anomaly Detection</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Anomaly Detection</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/anomaly_detection.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="anomaly-detection">
+<h1>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h1>
+<p>This guide covers how to set up and use anomaly detection in Watcher.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>Watcher’s anomaly detection system uses statistical analysis to identify unusual patterns in pipeline execution metrics. It automatically runs after each successful pipeline execution and can detect anomalies in various metrics like execution time, row counts, and throughput.</p>
+</section>
+<section id="how-it-works">
+<h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading"></a></h2>
+<section id="statistical-analysis">
+<h3>Statistical Analysis<a class="headerlink" href="#statistical-analysis" title="Link to this heading"></a></h3>
+<p>The anomaly detection system uses z-score analysis:</p>
+<ol class="arabic simple">
+<li><p><strong>Baseline Calculation</strong>: Analyzes historical execution data</p></li>
+<li><p><strong>Statistical Metrics</strong>: Calculates mean and standard deviation</p></li>
+<li><p><strong>Z-Score Calculation</strong>: Determines how many standard deviations a value is from the mean</p></li>
+<li><p><strong>Threshold Comparison</strong>: Compares z-score against configured threshold</p></li>
+<li><p><strong>Anomaly Detection</strong>: Flags values that exceed the threshold</p></li>
+</ol>
+</section>
+<section id="supported-metrics">
+<h3>Supported Metrics<a class="headerlink" href="#supported-metrics" title="Link to this heading"></a></h3>
+<p>Monitor various pipeline execution metrics:</p>
+<ul class="simple">
+<li><p><strong>total_rows</strong>: Total number of rows processed</p></li>
+<li><p><strong>duration_seconds</strong>: Execution duration in seconds</p></li>
+<li><p><strong>throughput</strong>: Rows processed per second</p></li>
+<li><p><strong>inserts</strong>: Number of insert operations</p></li>
+<li><p><strong>updates</strong>: Number of update operations</p></li>
+<li><p><strong>soft_deletes</strong>: Number of soft delete operations</p></li>
+</ul>
+</section>
+</section>
+<section id="setting-up-anomaly-detection">
+<h2>Setting Up Anomaly Detection<a class="headerlink" href="#setting-up-anomaly-detection" title="Link to this heading"></a></h2>
+<section id="creating-detection-rules">
+<h3>Creating Detection Rules<a class="headerlink" href="#creating-detection-rules" title="Link to this heading"></a></h3>
+<ol class="arabic">
+<li><p><strong>Create an anomaly detection rule</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;metric_field&quot;: &quot;total_rows&quot;,</span>
+<span class="s1">       &quot;z_threshold&quot;: 2.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 5</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Response</strong>:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</li>
+</ol>
+</section>
+<section id="rule-configuration">
+<h3>Rule Configuration<a class="headerlink" href="#rule-configuration" title="Link to this heading"></a></h3>
+<p><strong>Pipeline ID</strong>: The pipeline to monitor for anomalies</p>
+<p><strong>Metric Field</strong>: The specific metric to analyze:
+- <code class="docutils literal notranslate"><span class="pre">total_rows</span></code>: Monitor row count variations
+- <code class="docutils literal notranslate"><span class="pre">duration_seconds</span></code>: Monitor execution time variations
+- <code class="docutils literal notranslate"><span class="pre">throughput</span></code>: Monitor processing speed variations
+- <code class="docutils literal notranslate"><span class="pre">inserts</span></code>: Monitor insert operation variations
+- <code class="docutils literal notranslate"><span class="pre">updates</span></code>: Monitor update operation variations
+- <code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code>: Monitor soft delete variations</p>
+<p><strong>Z-Threshold</strong>: Sensitivity of anomaly detection:
+- <code class="docutils literal notranslate"><span class="pre">1.5</span></code>: Very sensitive (catches minor variations)
+- <code class="docutils literal notranslate"><span class="pre">2.0</span></code>: Standard sensitivity (recommended)
+- <code class="docutils literal notranslate"><span class="pre">2.5</span></code>: Less sensitive (catches major variations)
+- <code class="docutils literal notranslate"><span class="pre">3.0</span></code>: Very conservative (catches only extreme anomalies)</p>
+<p><strong>Minimum Executions</strong>: Number of historical executions needed before analysis:
+- <code class="docutils literal notranslate"><span class="pre">5</span></code>: Minimum for basic analysis
+- <code class="docutils literal notranslate"><span class="pre">10</span></code>: Recommended for stable baselines
+- <code class="docutils literal notranslate"><span class="pre">20</span></code>: For highly variable pipelines</p>
+</section>
+<section id="multiple-rules">
+<h3>Multiple Rules<a class="headerlink" href="#multiple-rules" title="Link to this heading"></a></h3>
+<p>Create multiple rules for comprehensive monitoring:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor row count anomalies</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;metric_field&quot;: &quot;total_rows&quot;,</span>
+<span class="s1">       &quot;z_threshold&quot;: 2.0,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 5</span>
+<span class="s1">     }&#39;</span>
+
+<span class="c1"># Monitor execution time anomalies</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;metric_field&quot;: &quot;duration_seconds&quot;,</span>
+<span class="s1">       &quot;z_threshold&quot;: 2.5,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 10</span>
+<span class="s1">     }&#39;</span>
+
+<span class="c1"># Monitor throughput anomalies</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;metric_field&quot;: &quot;throughput&quot;,</span>
+<span class="s1">       &quot;z_threshold&quot;: 1.8,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 8</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="automatic-execution">
+<h2>Automatic Execution<a class="headerlink" href="#automatic-execution" title="Link to this heading"></a></h2>
+<section id="triggered-execution">
+<h3>Triggered Execution<a class="headerlink" href="#triggered-execution" title="Link to this heading"></a></h3>
+<p>Anomaly detection runs automatically after each successful pipeline execution:</p>
+<ol class="arabic simple">
+<li><p><strong>Pipeline execution completes successfully</strong></p></li>
+<li><p><strong>System checks for active anomaly detection rules</strong></p></li>
+<li><p><strong>For each rule, analyzes the execution metrics</strong></p></li>
+<li><p><strong>Compares against historical baseline</strong></p></li>
+<li><p><strong>Flags anomalies if detected</strong></p></li>
+<li><p><strong>Sends alerts if anomalies are found</strong></p></li>
+</ol>
+</section>
+<section id="no-manual-triggering-required">
+<h3>No Manual Triggering Required<a class="headerlink" href="#no-manual-triggering-required" title="Link to this heading"></a></h3>
+<p>Unlike monitoring checks, anomaly detection doesn’t require manual triggering:</p>
+<ul class="simple">
+<li><p><strong>Automatic</strong>: Runs after every successful execution</p></li>
+<li><p><strong>Background</strong>: Processed by Celery workers</p></li>
+<li><p><strong>Real-time</strong>: Results available immediately</p></li>
+<li><p><strong>Persistent</strong>: Anomaly results stored in database</p></li>
+</ul>
+</section>
+</section>
+<section id="anomaly-results">
+<h2>Anomaly Results<a class="headerlink" href="#anomaly-results" title="Link to this heading"></a></h2>
+<section id="understanding-results">
+<h3>Understanding Results<a class="headerlink" href="#understanding-results" title="Link to this heading"></a></h3>
+<p>When an anomaly is detected, the system stores detailed information:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;rule_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_execution_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">123</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;violation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">15000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_score&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.8</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;historical_mean&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;std_deviation_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2500</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold_min_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;threshold_max_value&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">13000</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;context&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daily Sales Pipeline&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;execution_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;detected_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="result-fields">
+<h3>Result Fields<a class="headerlink" href="#result-fields" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>violation_value</strong>: The actual metric value that triggered the anomaly</p></li>
+<li><p><strong>z_score</strong>: How many standard deviations from the mean</p></li>
+<li><p><strong>historical_mean</strong>: Average value from historical data</p></li>
+<li><p><strong>std_deviation_value</strong>: Standard deviation from historical data</p></li>
+<li><p><strong>z_threshold</strong>: Configured threshold for this rule</p></li>
+<li><p><strong>threshold_min_value</strong>: Minimum expected value</p></li>
+<li><p><strong>threshold_max_value</strong>: Maximum expected value</p></li>
+</ul>
+</section>
+</section>
+<section id="alert-notifications">
+<h2>Alert Notifications<a class="headerlink" href="#alert-notifications" title="Link to this heading"></a></h2>
+<section id="slack-alerts">
+<h3>Slack Alerts<a class="headerlink" href="#slack-alerts" title="Link to this heading"></a></h3>
+<p>When anomalies are detected, Slack alerts are sent automatically:</p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 Anomalies Detected for Pipeline &#39;Daily Sales Pipeline&#39; (ID: 1) - Execution ID 123 flagged
+
+Total Anomalies: 2
+
+Metrics:
+• total_rows: 15000 (z-score: 2.8, threshold: 2.0)
+• duration_seconds: 1800 (z-score: 2.3, threshold: 2.0)
+
+Anomalies:
+• total_rows: 15000 rows (expected: ~8000, z-score: 2.8)
+• duration_seconds: 1800 seconds (expected: ~1200, z-score: 2.3)
+</pre></div>
+</div>
+</section>
+<section id="alert-configuration">
+<h3>Alert Configuration<a class="headerlink" href="#alert-configuration" title="Link to this heading"></a></h3>
+<p>Configure Slack webhooks for alerts:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set Slack webhook URL</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&quot;</span>
+
+<span class="c1"># Restart application</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
+</pre></div>
+</div>
+</section>
+</section>
+<section id="managing-anomalies">
+<h2>Managing Anomalies<a class="headerlink" href="#managing-anomalies" title="Link to this heading"></a></h2>
+<section id="viewing-anomalies">
+<h3>Viewing Anomalies<a class="headerlink" href="#viewing-anomalies" title="Link to this heading"></a></h3>
+<p>List all anomaly detection rules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span>
+
+<span class="c1"># Response</span>
+<span class="o">[</span>
+<span class="w">  </span><span class="o">{</span>
+<span class="w">    </span><span class="s2">&quot;id&quot;</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="w">    </span><span class="s2">&quot;pipeline_id&quot;</span>:<span class="w"> </span><span class="m">1</span>,
+<span class="w">    </span><span class="s2">&quot;metric_field&quot;</span>:<span class="w"> </span><span class="s2">&quot;total_rows&quot;</span>,
+<span class="w">    </span><span class="s2">&quot;z_threshold&quot;</span>:<span class="w"> </span><span class="m">2</span>.0,
+<span class="w">    </span><span class="s2">&quot;minimum_executions&quot;</span>:<span class="w"> </span><span class="m">5</span>,
+<span class="w">    </span><span class="s2">&quot;active&quot;</span>:<span class="w"> </span>true,
+<span class="w">    </span><span class="s2">&quot;created_at&quot;</span>:<span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="o">}</span>
+<span class="o">]</span>
+</pre></div>
+</div>
+<p>Get specific rule details:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule/1&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="updating-rules">
+<h3>Updating Rules<a class="headerlink" href="#updating-rules" title="Link to this heading"></a></h3>
+<p>Update anomaly detection rules:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;id&quot;: 1,</span>
+<span class="s1">       &quot;z_threshold&quot;: 2.5,</span>
+<span class="s1">       &quot;minimum_executions&quot;: 10</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="unflagging-anomalies">
+<h3>Unflagging Anomalies<a class="headerlink" href="#unflagging-anomalies" title="Link to this heading"></a></h3>
+<p>Unflag anomalies that are false positives:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/unflag_anomaly&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
+<span class="s1">       &quot;pipeline_execution_id&quot;: 123,</span>
+<span class="s1">       &quot;metric_field&quot;: [&quot;total_rows&quot;, &quot;duration_seconds&quot;]</span>
+<span class="s1">     }&#39;</span>
+</pre></div>
+</div>
+<p>This removes the anomaly flags and allows the execution to be included in future baseline calculations.</p>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="id1">
+<h3>Rule Configuration<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Start Conservative</strong>: Begin with higher z-thresholds (2.5-3.0)</p></li>
+<li><p><strong>Adjust Based on Data</strong>: Lower thresholds as you understand your data patterns</p></li>
+<li><p><strong>Multiple Metrics</strong>: Monitor different aspects of pipeline performance</p></li>
+<li><p><strong>Sufficient History</strong>: Ensure enough historical data for stable baselines</p></li>
+</ul>
+</section>
+<section id="threshold-selection">
+<h3>Threshold Selection<a class="headerlink" href="#threshold-selection" title="Link to this heading"></a></h3>
+<p><strong>For Stable Pipelines</strong>:
+- Z-threshold: 2.0-2.5
+- Minimum executions: 10-15</p>
+<p><strong>For Variable Pipelines</strong>:
+- Z-threshold: 2.5-3.0
+- Minimum executions: 15-20</p>
+<p><strong>For Critical Pipelines</strong>:
+- Z-threshold: 1.5-2.0
+- Minimum executions: 5-10</p>
+</section>
+<section id="monitoring-strategy">
+<h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Regular Review</strong>: Review anomaly results regularly</p></li>
+<li><p><strong>False Positive Management</strong>: Unflag false positives promptly</p></li>
+<li><p><strong>Threshold Tuning</strong>: Adjust thresholds based on results</p></li>
+<li><p><strong>Alert Fatigue</strong>: Avoid overly sensitive thresholds</p></li>
+</ul>
+</section>
+</section>
+<section id="common-scenarios">
+<h2>Common Scenarios<a class="headerlink" href="#common-scenarios" title="Link to this heading"></a></h2>
+<section id="data-volume-anomalies">
+<h3>Data Volume Anomalies<a class="headerlink" href="#data-volume-anomalies" title="Link to this heading"></a></h3>
+<p>Detect unusual data volumes:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="performance-anomalies">
+<h3>Performance Anomalies<a class="headerlink" href="#performance-anomalies" title="Link to this heading"></a></h3>
+<p>Detect execution time issues:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;duration_seconds&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="throughput-anomalies">
+<h3>Throughput Anomalies<a class="headerlink" href="#throughput-anomalies" title="Link to this heading"></a></h3>
+<p>Detect processing speed issues:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;throughput&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.8</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">8</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="dml-operation-anomalies">
+<h3>DML Operation Anomalies<a class="headerlink" href="#dml-operation-anomalies" title="Link to this heading"></a></h3>
+<p>Detect unusual insert/update patterns:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;inserts&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
+<section id="common-issues">
+<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
+<p><strong>No Anomalies Detected</strong>:
+- Check if rules are active
+- Verify minimum executions requirement
+- Check if z-threshold is too high</p>
+<p><strong>Too Many False Positives</strong>:
+- Increase z-threshold
+- Increase minimum executions
+- Review historical data quality</p>
+<p><strong>Missing Alerts</strong>:
+- Verify Slack webhook configuration
+- Check Celery worker status
+- Review alert delivery logs</p>
+<p><strong>Baseline Issues</strong>:
+- Ensure sufficient historical data
+- Check for data quality issues
+- Verify metric field selection</p>
+</section>
+<section id="performance-considerations">
+<h3>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Historical Data</strong>: More data = better baselines</p></li>
+<li><p><strong>Rule Complexity</strong>: Multiple rules increase processing time</p></li>
+<li><p><strong>Alert Volume</strong>: Too many alerts can cause fatigue</p></li>
+<li><p><strong>Storage</strong>: Anomaly results are stored in database</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-configuration">
+<h2>Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Link to this heading"></a></h2>
+<section id="auto-creation-rules">
+<h3>Auto-Creation Rules<a class="headerlink" href="#auto-creation-rules" title="Link to this heading"></a></h3>
+<p>Enable automatic rule creation for new pipelines:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span><span class="w"> </span><span class="nv">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c1"># Restart application</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
+</pre></div>
+</div>
+<p>This automatically creates default anomaly detection rules for new pipelines.</p>
+</section>
+<section id="custom-thresholds">
+<h3>Custom Thresholds<a class="headerlink" href="#custom-thresholds" title="Link to this heading"></a></h3>
+<p>For pipelines with known patterns, use custom thresholds:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">1.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="batch-anomaly-detection">
+<h3>Batch Anomaly Detection<a class="headerlink" href="#batch-anomaly-detection" title="Link to this heading"></a></h3>
+<p>For high-volume pipelines, consider batch processing:</p>
+<ul class="simple">
+<li><p>Monitor multiple executions together</p></li>
+<li><p>Use rolling windows for baselines</p></li>
+<li><p>Implement custom detection logic</p></li>
+<li><p>Consider external anomaly detection systems</p></li>
+</ul>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pipeline_management.html" class="btn btn-neutral float-left" title="Pipeline Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="monitoring.html" class="btn btn-neutral float-right" title="Monitoring &amp; Health Checks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
