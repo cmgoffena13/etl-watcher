@@ -161,14 +161,6 @@ End Pipeline Execution
         "soft_deletes": 0
       }
 
-   **Response:**
-
-   .. code-block:: json
-
-      {
-        "status": "success"
-      }
-
 Pipeline Types
 --------------
 
@@ -522,41 +514,13 @@ System Diagnostics
 
    **Response:** HTML page with system health information
 
-Connection Performance
-~~~~~~~~~~~~~~~~~~~~~
-
-.. http:get:: /diagnostics/connection-performance
-
-   Get database connection performance metrics.
-
-Schema Health
-~~~~~~~~~~~~~
-
-.. http:get:: /diagnostics/schema-health
-
-   Get database schema health information.
-
-Performance Metrics
-~~~~~~~~~~~~~~~~~~
-
-.. http:get:: /diagnostics/performance
-
-   Get application performance metrics.
-
-Celery Diagnostics
-~~~~~~~~~~~~~~~~~~
-
-.. http:get:: /diagnostics/celery
-
-   Get Celery worker and queue diagnostics.
-
 Reporting
 ---------
 
 Daily Pipeline Metrics
 ~~~~~~~~~~~~~~~~~~~~~
 
-.. http:get:: /reporting/daily-pipeline-metrics
+.. http:get:: /reporting
 
    Get daily pipeline metrics with pagination and filtering.
 
@@ -567,20 +531,6 @@ Daily Pipeline Metrics
    - ``pipeline_id`` (int): Filter by pipeline ID
    - ``start_date`` (str): Start date filter
    - ``end_date`` (str): End date filter
-
-Pipeline Names
-~~~~~~~~~~~~~
-
-.. http:get:: /reporting/pipeline-names
-
-   Get list of pipeline names for dropdown.
-
-Pipeline Type Names
-~~~~~~~~~~~~~~~~~~
-
-.. http:get:: /reporting/pipeline-type-names
-
-   Get list of pipeline type names for dropdown.
 
 Interactive Documentation
 ------------------------

@@ -8,106 +8,406 @@ Step 1: Create Your First Pipeline
 
 1. **Create a pipeline type**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/pipeline_type" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "name": "extraction",
-             "group_name": "databricks"
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/pipeline_type", json={
+                "name": "extraction"
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/pipeline_type", json={
+                "name": "extraction"
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/pipeline_type" \
+                 -H "Content-Type: application/json" \
+                 -d '{"name": "extraction", "group_name": "databricks"}'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/pipeline_type \
+                 name=extraction
 
 2. **Create a pipeline**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/pipeline" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "name": "My Data Pipeline",
-             "pipeline_type_name": "extraction",
-             "next_watermark": "2024-01-01T00:00:00Z"
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/pipeline", json={
+                "name": "My Data Pipeline",
+                "pipeline_type_name": "extraction"
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/pipeline", json={
+                "name": "My Data Pipeline",
+                "pipeline_type_name": "extraction"
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/pipeline" \
+                 -H "Content-Type: application/json" \
+                 -d '{"name": "My Data Pipeline", "pipeline_type_name": "extraction"}'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/pipeline \
+                 name="My Data Pipeline" \
+                 pipeline_type_name=extraction
 
 Step 2: Start Pipeline Execution
 -------------------------------
 
 1. **Start an execution**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/start_pipeline_execution" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "pipeline_id": 1,
-             "start_date": "2024-01-01T10:00:00Z",
-             "full_load": true,
-             "watermark": "2024-01-01T00:00:00Z",
-             "next_watermark": "2024-01-01T23:59:59Z"
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/start_pipeline_execution", json={
+                "pipeline_id": 1,
+                "start_date": "2024-01-01T10:00:00Z",
+                "full_load": True,
+                "watermark": "2024-01-01T00:00:00Z",
+                "next_watermark": "2024-01-01T23:59:59Z"
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
+                "pipeline_id": 1,
+                "start_date": "2024-01-01T10:00:00Z",
+                "full_load": True,
+                "watermark": "2024-01-01T00:00:00Z",
+                "next_watermark": "2024-01-01T23:59:59Z"
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/start_pipeline_execution" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "pipeline_id": 1,
+                   "start_date": "2024-01-01T10:00:00Z",
+                   "full_load": true,
+                   "watermark": "2024-01-01T00:00:00Z",
+                   "next_watermark": "2024-01-01T23:59:59Z"
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/start_pipeline_execution \
+                 pipeline_id=1 \
+                 start_date="2024-01-01T10:00:00Z" \
+                 full_load=true \
+                 watermark="2024-01-01T00:00:00Z" \
+                 next_watermark="2024-01-01T23:59:59Z"
 
 2. **End the execution with metrics**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/end_pipeline_execution" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "id": 1,
-             "end_date": "2024-01-01T10:05:00Z",
-             "completed_successfully": true,
-             "total_rows": 1000,
-             "inserts": 800,
-             "updates": 200,
-             "soft_deletes": 0
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/end_pipeline_execution", json={
+                "id": 1,
+                "end_date": "2024-01-01T10:05:00Z",
+                "completed_successfully": True,
+                "total_rows": 1000,
+                "inserts": 800,
+                "updates": 200,
+                "soft_deletes": 0
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/end_pipeline_execution", json={
+                "id": 1,
+                "end_date": "2024-01-01T10:05:00Z",
+                "completed_successfully": True,
+                "total_rows": 1000,
+                "inserts": 800,
+                "updates": 200,
+                "soft_deletes": 0
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/end_pipeline_execution" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "id": 1,
+                   "end_date": "2024-01-01T10:05:00Z",
+                   "completed_successfully": true,
+                   "total_rows": 1000,
+                   "inserts": 800,
+                   "updates": 200,
+                   "soft_deletes": 0
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/end_pipeline_execution \
+                 id=1 \
+                 end_date="2024-01-01T10:05:00Z" \
+                 completed_successfully=true \
+                 total_rows=1000 \
+                 inserts=800 \
+                 updates=200 \
+                 soft_deletes=0
 
 Step 3: Set Up Monitoring
 -------------------------
 
 1. **Create an address for monitoring**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/address" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "name": "my_table",
-             "address_type_name": "databricks",
-             "address_type_group_name": "database"
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/address", json={
+                "name": "my_table",
+                "address_type_name": "databricks",
+                "address_type_group_name": "database"
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/address", json={
+                "name": "my_table",
+                "address_type_name": "databricks",
+                "address_type_group_name": "database"
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/address" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "name": "my_table",
+                   "address_type_name": "databricks",
+                   "address_type_group_name": "database"
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/address \
+                 name=my_table \
+                 address_type_name=databricks \
+                 address_type_group_name=database
 
 2. **Run a freshness check**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/freshness"
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/freshness")
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/freshness")
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/freshness"
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/freshness
 
 3. **Run a timeliness check**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/timeliness" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "lookback_minutes": 60
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/timeliness", json={
+                "lookback_minutes": 60
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/timeliness", json={
+                "lookback_minutes": 60
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/timeliness" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "lookback_minutes": 60
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/timeliness \
+                 lookback_minutes=60
 
 Step 4: Configure Anomaly Detection
 -----------------------------------
 
 1. **Create an anomaly detection rule**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/anomaly_detection_rule" \
-           -H "Content-Type: application/json" \
-           -d '{
-             "pipeline_id": 1,
-             "metric_field": "total_rows",
-             "z_threshold": 2.0,
-             "minimum_executions": 5
-           }'
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/anomaly_detection_rule", json={
+                "pipeline_id": 1,
+                "metric_field": "total_rows",
+                "z_threshold": 2.0,
+                "minimum_executions": 5
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/anomaly_detection_rule", json={
+                "pipeline_id": 1,
+                "metric_field": "total_rows",
+                "z_threshold": 2.0,
+                "minimum_executions": 5
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/anomaly_detection_rule" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "pipeline_id": 1,
+                   "metric_field": "total_rows",
+                   "z_threshold": 2.0,
+                   "minimum_executions": 5
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/anomaly_detection_rule \
+                 pipeline_id=1 \
+                 metric_field=total_rows \
+                 z_threshold=2.0 \
+                 minimum_executions=5
 
 2. **Anomaly detection runs automatically** after each successful pipeline execution
 
@@ -124,9 +424,37 @@ Step 5: Monitor Your System
 
 3. **Monitor Celery queue**
 
-   .. code-block:: bash
+   .. tabs::
 
-      curl -X POST "http://localhost:8000/celery/monitor-queue"
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/celery/monitor-queue")
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/celery/monitor-queue")
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/celery/monitor-queue"
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/celery/monitor-queue
 
 Next Steps
 ----------

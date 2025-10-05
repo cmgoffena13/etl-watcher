@@ -22,6 +22,7 @@ extensions = [
     "sphinx.ext.todo",
     "myst_parser",
     "sphinxcontrib.httpdomain",
+    "sphinx_tabs.tabs",
 ]
 
 # Set the master document

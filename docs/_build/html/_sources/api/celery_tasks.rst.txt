@@ -40,7 +40,7 @@ Automatically triggered after each successful pipeline execution. Performs stati
    detect_anomalies_task.delay(pipeline_id=1, pipeline_execution_id=123)
 
 freshness_check_task
-************************************~
+~~~~~~~~~~~~~~~~~~~~
 
 **Purpose** DML operation monitoring and data staleness detection
 
@@ -66,7 +66,7 @@ Monitors data modification operations (inserts, updates, soft deletes) to detect
    freshness_check_task.delay()
 
 timeliness_check_task
-****************************************~
+~~~~~~~~~~~~~~~~~~~~
 
 **Purpose** Pipeline execution timing validation
 
@@ -124,7 +124,7 @@ Maintains the closure table for address lineage relationships. Rebuilds the tran
    )
 
 pipeline_execution_closure_maintain_task
-****************************************************************************~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Purpose** Maintain pipeline execution hierarchy closure table
 
@@ -158,7 +158,7 @@ Task Configuration
 ------------------
 
 Rate Limiting
-************************~
+~~~~~~~~~~~~~~~~~~~~
 
 All tasks have configurable rate limits to prevent system overload:
 
@@ -219,7 +219,7 @@ Tasks provide detailed progress information:
    }
 
 Error Details
-************************~
+~~~~~~~~~~~~~
 
 Failed tasks include detailed error information:
 
@@ -239,7 +239,7 @@ Queue Management
 ----------------
 
 Default Queue
-************************~
+~~~~~~~~~~~~~~
 
 All tasks are processed through the main ``celery`` queue:
 
@@ -309,7 +309,7 @@ Optimize task performance:
 - **Caching** Cache frequently accessed data
 
 Worker Optimization
-************************************~
+~~~~~~~~~~~~~~~~~~~~
 
 Optimize worker performance:
 
@@ -332,7 +332,7 @@ Best Practices
 --------------
 
 Task Design
-********************~
+~~~~~~~~~~~~
 
 Design tasks for reliability:
 
@@ -342,7 +342,7 @@ Design tasks for reliability:
 - **Timeout** Set appropriate timeouts for long-running tasks
 
 Error Handling
-************************~
+~~~~~~~~~~~~~~~
 
 Implement robust error handling:
 
@@ -362,7 +362,7 @@ Monitor task health:
 - **Worker Health** Monitor worker status and performance
 
 Scaling
-************~
+~~~~~~~~
 
 Scale tasks appropriately:
 

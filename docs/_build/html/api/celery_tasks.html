@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Pipeline Management" href="../guides/pipeline_management.html" />
-    <link rel="prev" title="Data Models" href="models.html" /> 
+    <link rel="prev" title="Pydantic Data Models" href="models.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -51,15 +51,19 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="endpoints.html">API Endpoints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#task-overview">Task Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#task-types">Task Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rate-limiting">Rate Limiting</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a></li>
 </ul>
@@ -67,9 +71,11 @@
 <li class="toctree-l2"><a class="reference internal" href="#task-monitoring">Task Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#task-status-tracking">Task Status Tracking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-details">Error Details</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#queue-management">Queue Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#default-queue">Default Queue</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#worker-scaling">Worker Scaling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
@@ -78,11 +84,15 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#performance-optimization">Performance Optimization</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#task-optimization">Task Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#worker-optimization">Worker Optimization</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monitoring-integration">Monitoring Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-design">Task Design</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Error Handling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scaling">Scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -155,8 +165,9 @@ Automatically triggered after each successful pipeline execution. Performs stati
 <span class="n">detect_anomalies_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pipeline_execution_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>freshness_check_task
-<a href="#id1"><span class="problematic" id="id2">**</span></a><a href="#id3"><span class="problematic" id="id4">**</span></a><a href="#id5"><span class="problematic" id="id6">**</span></a><a href="#id7"><span class="problematic" id="id8">**</span></a><a href="#id9"><span class="problematic" id="id10">**</span></a><a href="#id11"><span class="problematic" id="id12">**</span></a><a href="#id13"><span class="problematic" id="id14">**</span></a><a href="#id15"><span class="problematic" id="id16">**</span></a><a href="#id17"><span class="problematic" id="id18">**</span></a><a href="#id19"><span class="problematic" id="id20">**</span></a><a href="#id21"><span class="problematic" id="id22">**</span></a><a href="#id23"><span class="problematic" id="id24">**</span></a><a href="#id25"><span class="problematic" id="id26">**</span></a><a href="#id27"><span class="problematic" id="id28">**</span></a><a href="#id29"><span class="problematic" id="id30">**</span></a><a href="#id31"><span class="problematic" id="id32">**</span></a><a href="#id33"><span class="problematic" id="id34">**</span></a><a href="#id35"><span class="problematic" id="id36">**</span></a>~</p>
+</section>
+<section id="freshness-check-task">
+<h3>freshness_check_task<a class="headerlink" href="#freshness-check-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> DML operation monitoring and data staleness detection</p>
 <p><strong>Rate Limit</strong> 1/s</p>
 <p><strong>Parameters</strong> None</p>
@@ -173,8 +184,9 @@ Monitors data modification operations (inserts, updates, soft deletes) to detect
 <span class="n">freshness_check_task</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>timeliness_check_task
-<a href="#id37"><span class="problematic" id="id38">**</span></a><a href="#id39"><span class="problematic" id="id40">**</span></a><a href="#id41"><span class="problematic" id="id42">**</span></a><a href="#id43"><span class="problematic" id="id44">**</span></a><a href="#id45"><span class="problematic" id="id46">**</span></a><a href="#id47"><span class="problematic" id="id48">**</span></a><a href="#id49"><span class="problematic" id="id50">**</span></a><a href="#id51"><span class="problematic" id="id52">**</span></a><a href="#id53"><span class="problematic" id="id54">**</span></a><a href="#id55"><span class="problematic" id="id56">**</span></a><a href="#id57"><span class="problematic" id="id58">**</span></a><a href="#id59"><span class="problematic" id="id60">**</span></a><a href="#id61"><span class="problematic" id="id62">**</span></a><a href="#id63"><span class="problematic" id="id64">**</span></a><a href="#id65"><span class="problematic" id="id66">**</span></a><a href="#id67"><span class="problematic" id="id68">**</span></a><a href="#id69"><span class="problematic" id="id70">**</span></a><a href="#id71"><span class="problematic" id="id72">**</span></a><a href="#id73"><span class="problematic" id="id74">**</span></a><a href="#id75"><span class="problematic" id="id76">**</span></a>~</p>
+</section>
+<section id="timeliness-check-task">
+<h3>timeliness_check_task<a class="headerlink" href="#timeliness-check-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Pipeline execution timing validation</p>
 <p><strong>Rate Limit</strong> 1/s</p>
 <p><strong>Parameters</strong>
@@ -216,8 +228,9 @@ Maintains the closure table for address lineage relationships. Rebuilds the tran
 <span class="p">)</span>
 </pre></div>
 </div>
-<p>pipeline_execution_closure_maintain_task
-<a href="#id77"><span class="problematic" id="id78">**</span></a><a href="#id79"><span class="problematic" id="id80">**</span></a><a href="#id81"><span class="problematic" id="id82">**</span></a><a href="#id83"><span class="problematic" id="id84">**</span></a><a href="#id85"><span class="problematic" id="id86">**</span></a><a href="#id87"><span class="problematic" id="id88">**</span></a><a href="#id89"><span class="problematic" id="id90">**</span></a><a href="#id91"><span class="problematic" id="id92">**</span></a><a href="#id93"><span class="problematic" id="id94">**</span></a><a href="#id95"><span class="problematic" id="id96">**</span></a><a href="#id97"><span class="problematic" id="id98">**</span></a><a href="#id99"><span class="problematic" id="id100">**</span></a><a href="#id101"><span class="problematic" id="id102">**</span></a><a href="#id103"><span class="problematic" id="id104">**</span></a><a href="#id105"><span class="problematic" id="id106">**</span></a><a href="#id107"><span class="problematic" id="id108">**</span></a><a href="#id109"><span class="problematic" id="id110">**</span></a><a href="#id111"><span class="problematic" id="id112">**</span></a><a href="#id113"><span class="problematic" id="id114">**</span></a><a href="#id115"><span class="problematic" id="id116">**</span></a><a href="#id117"><span class="problematic" id="id118">**</span></a><a href="#id119"><span class="problematic" id="id120">**</span></a><a href="#id121"><span class="problematic" id="id122">**</span></a><a href="#id123"><span class="problematic" id="id124">**</span></a><a href="#id125"><span class="problematic" id="id126">**</span></a><a href="#id127"><span class="problematic" id="id128">**</span></a><a href="#id129"><span class="problematic" id="id130">**</span></a><a href="#id131"><span class="problematic" id="id132">**</span></a><a href="#id133"><span class="problematic" id="id134">**</span></a><a href="#id135"><span class="problematic" id="id136">**</span></a><a href="#id137"><span class="problematic" id="id138">**</span></a><a href="#id139"><span class="problematic" id="id140">**</span></a><a href="#id141"><span class="problematic" id="id142">**</span></a><a href="#id143"><span class="problematic" id="id144">**</span></a><a href="#id145"><span class="problematic" id="id146">**</span></a><a href="#id147"><span class="problematic" id="id148">**</span></a><a href="#id149"><span class="problematic" id="id150">**</span></a><a href="#id151"><span class="problematic" id="id152">**</span></a>~</p>
+</section>
+<section id="pipeline-execution-closure-maintain-task">
+<h3>pipeline_execution_closure_maintain_task<a class="headerlink" href="#pipeline-execution-closure-maintain-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Maintain pipeline execution hierarchy closure table</p>
 <p><strong>Rate Limit</strong> 10/s</p>
 <p><strong>Parameters</strong>
@@ -243,8 +256,8 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="task-configuration">
 <h2>Task Configuration<a class="headerlink" href="#task-configuration" title="Link to this heading"></a></h2>
-<p>Rate Limiting
-<a href="#id153"><span class="problematic" id="id154">**</span></a><a href="#id155"><span class="problematic" id="id156">**</span></a><a href="#id157"><span class="problematic" id="id158">**</span></a><a href="#id159"><span class="problematic" id="id160">**</span></a><a href="#id161"><span class="problematic" id="id162">**</span></a><a href="#id163"><span class="problematic" id="id164">**</span></a><a href="#id165"><span class="problematic" id="id166">**</span></a><a href="#id167"><span class="problematic" id="id168">**</span></a><a href="#id169"><span class="problematic" id="id170">**</span></a><a href="#id171"><span class="problematic" id="id172">**</span></a><a href="#id173"><span class="problematic" id="id174">**</span></a><a href="#id175"><span class="problematic" id="id176">**</span></a>~</p>
+<section id="rate-limiting">
+<h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
 <p>All tasks have configurable rate limits to prevent system overload:</p>
 <ul class="simple">
 <li><p><strong>detect_anomalies_task</strong> 15/s (high frequency for real-time analysis)</p></li>
@@ -253,6 +266,7 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 <li><p><strong>address_lineage_closure_rebuild_task</strong> 1/s (low frequency for maintenance)</p></li>
 <li><p><strong>pipeline_execution_closure_maintain_task</strong> 10/s (medium frequency for hierarchy maintenance)</p></li>
 </ul>
+</section>
 <section id="retry-policies">
 <h3>Retry Policies<a class="headerlink" href="#retry-policies" title="Link to this heading"></a></h3>
 <p>All tasks implement retry policies with exponential backoff:</p>
@@ -300,8 +314,9 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 <span class="p">}</span>
 </pre></div>
 </div>
-<p>Error Details
-<a href="#id177"><span class="problematic" id="id178">**</span></a><a href="#id179"><span class="problematic" id="id180">**</span></a><a href="#id181"><span class="problematic" id="id182">**</span></a><a href="#id183"><span class="problematic" id="id184">**</span></a><a href="#id185"><span class="problematic" id="id186">**</span></a><a href="#id187"><span class="problematic" id="id188">**</span></a><a href="#id189"><span class="problematic" id="id190">**</span></a><a href="#id191"><span class="problematic" id="id192">**</span></a><a href="#id193"><span class="problematic" id="id194">**</span></a><a href="#id195"><span class="problematic" id="id196">**</span></a><a href="#id197"><span class="problematic" id="id198">**</span></a><a href="#id199"><span class="problematic" id="id200">**</span></a>~</p>
+</section>
+<section id="error-details">
+<h3>Error Details<a class="headerlink" href="#error-details" title="Link to this heading"></a></h3>
 <p>Failed tasks include detailed error information:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAILURE&quot;</span><span class="p">,</span>
@@ -318,8 +333,8 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="queue-management">
 <h2>Queue Management<a class="headerlink" href="#queue-management" title="Link to this heading"></a></h2>
-<p>Default Queue
-<a href="#id201"><span class="problematic" id="id202">**</span></a><a href="#id203"><span class="problematic" id="id204">**</span></a><a href="#id205"><span class="problematic" id="id206">**</span></a><a href="#id207"><span class="problematic" id="id208">**</span></a><a href="#id209"><span class="problematic" id="id210">**</span></a><a href="#id211"><span class="problematic" id="id212">**</span></a><a href="#id213"><span class="problematic" id="id214">**</span></a><a href="#id215"><span class="problematic" id="id216">**</span></a><a href="#id217"><span class="problematic" id="id218">**</span></a><a href="#id219"><span class="problematic" id="id220">**</span></a><a href="#id221"><span class="problematic" id="id222">**</span></a><a href="#id223"><span class="problematic" id="id224">**</span></a>~</p>
+<section id="default-queue">
+<h3>Default Queue<a class="headerlink" href="#default-queue" title="Link to this heading"></a></h3>
 <p>All tasks are processed through the main <code class="docutils literal notranslate"><span class="pre">celery</span></code> queue:</p>
 <ul class="simple">
 <li><p><strong>Queue Name</strong> <code class="docutils literal notranslate"><span class="pre">celery</span></code></p></li>
@@ -327,6 +342,7 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 <li><p><strong>Load Distribution</strong> Tasks distributed across available workers</p></li>
 <li><p><strong>Priority</strong> First-in, first-out (FIFO) processing</p></li>
 </ul>
+</section>
 <section id="worker-scaling">
 <h3>Worker Scaling<a class="headerlink" href="#worker-scaling" title="Link to this heading"></a></h3>
 <p>Workers can be scaled horizontally:</p>
@@ -383,8 +399,9 @@ Details:
 <li><p><strong>Connection Pooling</strong> Reuse database connections</p></li>
 <li><p><strong>Caching</strong> Cache frequently accessed data</p></li>
 </ul>
-<p>Worker Optimization
-<a href="#id225"><span class="problematic" id="id226">**</span></a><a href="#id227"><span class="problematic" id="id228">**</span></a><a href="#id229"><span class="problematic" id="id230">**</span></a><a href="#id231"><span class="problematic" id="id232">**</span></a><a href="#id233"><span class="problematic" id="id234">**</span></a><a href="#id235"><span class="problematic" id="id236">**</span></a><a href="#id237"><span class="problematic" id="id238">**</span></a><a href="#id239"><span class="problematic" id="id240">**</span></a><a href="#id241"><span class="problematic" id="id242">**</span></a><a href="#id243"><span class="problematic" id="id244">**</span></a><a href="#id245"><span class="problematic" id="id246">**</span></a><a href="#id247"><span class="problematic" id="id248">**</span></a><a href="#id249"><span class="problematic" id="id250">**</span></a><a href="#id251"><span class="problematic" id="id252">**</span></a><a href="#id253"><span class="problematic" id="id254">**</span></a><a href="#id255"><span class="problematic" id="id256">**</span></a><a href="#id257"><span class="problematic" id="id258">**</span></a><a href="#id259"><span class="problematic" id="id260">**</span></a>~</p>
+</section>
+<section id="worker-optimization">
+<h3>Worker Optimization<a class="headerlink" href="#worker-optimization" title="Link to this heading"></a></h3>
 <p>Optimize worker performance:</p>
 <ul class="simple">
 <li><p><strong>Concurrency</strong> Adjust worker concurrency based on CPU cores</p></li>
@@ -406,8 +423,8 @@ Details:
 </section>
 <section id="best-practices">
 <h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
-<p>Task Design
-<a href="#id261"><span class="problematic" id="id262">**</span></a><a href="#id263"><span class="problematic" id="id264">**</span></a><a href="#id265"><span class="problematic" id="id266">**</span></a><a href="#id267"><span class="problematic" id="id268">**</span></a><a href="#id269"><span class="problematic" id="id270">**</span></a><a href="#id271"><span class="problematic" id="id272">**</span></a><a href="#id273"><span class="problematic" id="id274">**</span></a><a href="#id275"><span class="problematic" id="id276">**</span></a><a href="#id277"><span class="problematic" id="id278">**</span></a><a href="#id279"><span class="problematic" id="id280">**</span></a>~</p>
+<section id="task-design">
+<h3>Task Design<a class="headerlink" href="#task-design" title="Link to this heading"></a></h3>
 <p>Design tasks for reliability:</p>
 <ul class="simple">
 <li><p><strong>Idempotent</strong> Tasks should be safe to retry</p></li>
@@ -415,8 +432,9 @@ Details:
 <li><p><strong>Stateless</strong> Tasks should not depend on external state</p></li>
 <li><p><strong>Timeout</strong> Set appropriate timeouts for long-running tasks</p></li>
 </ul>
-<p>Error Handling
-<a href="#id281"><span class="problematic" id="id282">**</span></a><a href="#id283"><span class="problematic" id="id284">**</span></a><a href="#id285"><span class="problematic" id="id286">**</span></a><a href="#id287"><span class="problematic" id="id288">**</span></a><a href="#id289"><span class="problematic" id="id290">**</span></a><a href="#id291"><span class="problematic" id="id292">**</span></a><a href="#id293"><span class="problematic" id="id294">**</span></a><a href="#id295"><span class="problematic" id="id296">**</span></a><a href="#id297"><span class="problematic" id="id298">**</span></a><a href="#id299"><span class="problematic" id="id300">**</span></a><a href="#id301"><span class="problematic" id="id302">**</span></a><a href="#id303"><span class="problematic" id="id304">**</span></a>~</p>
+</section>
+<section id="id1">
+<h3>Error Handling<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Implement robust error handling:</p>
 <ul class="simple">
 <li><p><strong>Validation</strong> Validate all input parameters</p></li>
@@ -424,6 +442,7 @@ Details:
 <li><p><strong>Logging</strong> Log all errors with context</p></li>
 <li><p><strong>Alerting</strong> Alert on critical failures</p></li>
 </ul>
+</section>
 <section id="monitoring">
 <h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading"></a></h3>
 <p>Monitor task health:</p>
@@ -433,8 +452,9 @@ Details:
 <li><p><strong>Queue Depth</strong> Monitor queue backlog</p></li>
 <li><p><strong>Worker Health</strong> Monitor worker status and performance</p></li>
 </ul>
-<p>Scaling
-<a href="#id305"><span class="problematic" id="id306">**</span></a><a href="#id307"><span class="problematic" id="id308">**</span></a><a href="#id309"><span class="problematic" id="id310">**</span></a><a href="#id311"><span class="problematic" id="id312">**</span></a><a href="#id313"><span class="problematic" id="id314">**</span></a><a href="#id315"><span class="problematic" id="id316">**</span></a>~</p>
+</section>
+<section id="scaling">
+<h3>Scaling<a class="headerlink" href="#scaling" title="Link to this heading"></a></h3>
 <p>Scale tasks appropriately:</p>
 <ul class="simple">
 <li><p><strong>Horizontal Scaling</strong> Add more workers as needed</p></li>
@@ -450,7 +470,7 @@ Details:
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="models.html" class="btn btn-neutral float-left" title="Data Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="models.html" class="btn btn-neutral float-left" title="Pydantic Data Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="../guides/pipeline_management.html" class="btn btn-neutral float-right" title="Pipeline Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

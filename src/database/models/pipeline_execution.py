@@ -73,8 +73,12 @@ class PipelineExecution(SQLModel, table=True):
             "pipeline_id",
             postgresql_include=["id"],
         ),
-        CheckConstraint("end_date IS NULL OR end_date > start_date"),
-        CheckConstraint("parent_id IS NULL OR parent_id != id"),
+        CheckConstraint(
+            "end_date IS NULL OR end_date > start_date", name="ck_check_end_after_start"
+        ),
+        CheckConstraint(
+            "parent_id IS NULL OR parent_id != id", name="ck_check_parent_not_self"
+        ),
     )
 
 
@@ -94,13 +98,13 @@ class PipelineExecutionClosure(SQLModel, table=True):
             columns=["child_execution_id"], refcolumns=["pipeline_execution.id"]
         ),
         Index(
-            "ix_pipeline_execution_closure_depth_ancestor",
+            "ix_pipeline_execution_closure_depth_parent",
             "parent_execution_id",
             "depth",
             postgresql_include=["child_execution_id"],
         ),
         Index(
-            "ix_pipeline_execution_closure_depth_descendant",
+            "ix_pipeline_execution_closure_depth_child",
             "child_execution_id",
             "depth",
             postgresql_include=["parent_execution_id"],

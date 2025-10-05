@@ -1,7 +1,7 @@
-Data Models
+Pydantic Data Models
 ============
 
-This section documents the data models used in Watcher's API.
+This section documents the pydantic data models used in Watcher's API for validation request/response bodies
 
 Pipeline Models
 ---------------
@@ -274,35 +274,6 @@ UnflagAnomalyInput
        pipeline_execution_id: int
        metric_field: List[AnomalyMetricFieldEnum]
 
-AnomalyDetectionResultGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   class AnomalyDetectionResultGetOutput(ValidatorModel):
-       rule_id: int
-       pipeline_execution_id: int
-       violation_value: float
-       z_score: float
-       historical_mean: float
-       std_deviation_value: float
-       z_threshold: float
-       threshold_min_value: float
-       threshold_max_value: float
-       context: Optional[dict] = None
-       detected_at: DateTime
-
-AnomalyDetectionSummaryGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   class AnomalyDetectionSummaryGetOutput(ValidatorModel):
-       rule_id: int
-       rule_name: str
-       anomaly_count: int
-       latest_anomaly: Optional[AnomalyDetectionResultGetOutput] = None
-
 Monitoring Models
 -----------------
 
@@ -381,7 +352,7 @@ ValidatorModel
 All models inherit from ``ValidatorModel`` which provides:
 
 - **Pydantic validation** Automatic data validation and type checking
-- **String coercion** Automatic conversion of various types to strings for database storage
+- **String coercion** Automatic conversion of various types for watermarks to strings for database storage
 - **Case normalization** Automatic lowercase conversion for string fields
 - **Field validation** Built-in validation for field constraints (length, ranges, etc.)
 

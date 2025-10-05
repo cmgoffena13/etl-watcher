@@ -62,7 +62,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
@@ -108,10 +108,8 @@
 <section id="prerequisites">
 <h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p>Python 3.12+</p></li>
 <li><p>Docker and Docker Compose</p></li>
-<li><p>PostgreSQL 13+</p></li>
-<li><p>Redis 6+</p></li>
+<li><p>Git</p></li>
 </ul>
 </section>
 <section id="system-requirements">
@@ -119,20 +117,15 @@
 <ul class="simple">
 <li><p><strong>Memory</strong> Minimum 4GB RAM, 8GB recommended</p></li>
 <li><p><strong>Storage</strong> 10GB free space for logs and data</p></li>
-<li><p><strong>Network</strong> Ports 8000 (FastAPI), 5432 (PostgreSQL), 6379 (Redis)</p></li>
+<li><p><strong>Network</strong> Port 8000 (FastAPI) - other services run in Docker</p></li>
 </ul>
 </section>
 <section id="installation-steps">
 <h2>Installation Steps<a class="headerlink" href="#installation-steps" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p><strong>Clone the repository</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/your-org/watcher.git
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/cmgoffena13/watcher.git
 <span class="nb">cd</span><span class="w"> </span>watcher
-</pre></div>
-</div>
-</li>
-<li><p><strong>Install dependencies</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>sync
 </pre></div>
 </div>
 </li>
@@ -151,24 +144,14 @@
 </pre></div>
 </div>
 </li>
-<li><p><strong>Run database migrations</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</li>
-<li><p><strong>Start the application</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>src/app.py
-</pre></div>
-</div>
-</li>
 </ol>
 </section>
 <section id="verification">
 <h2>Verification<a class="headerlink" href="#verification" title="Link to this heading"></a></h2>
-<p>Once running, you can verify the installation:</p>
+<p>Once running, you can verify the local development installation:</p>
 <ul class="simple">
 <li><p><strong>API Documentation</strong> <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
-<li><p><strong>Health Check</strong> <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p></li>
+<li><p><strong>Health Check</strong> <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a></p></li>
 <li><p><strong>Diagnostics</strong> <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
 </ul>
 </section>

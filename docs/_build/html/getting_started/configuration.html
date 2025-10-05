@@ -90,7 +90,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
@@ -233,11 +233,10 @@
 <li><p><strong>Application Metrics</strong> Request/response times, error rates</p></li>
 <li><p><strong>Database Queries</strong> Query performance and slow query detection</p></li>
 <li><p><strong>Background Tasks</strong> Celery worker execution logging and task tracking</p></li>
-<li><p><strong>Custom Events</strong> Pipeline execution tracking and anomaly detection</p></li>
 </ul>
 <p>Setup:</p>
 <ol class="arabic simple">
-<li><p>Create a Logfire account at <a class="reference external" href="https://logfire.pydantic.dev">https://logfire.pydantic.dev</a></p></li>
+<li><p>Create a Logfire account at <a class="reference external" href="https://logfire.pydantic.dev">https://logfire.pydantic.dev</a> (Free tier is 10 million calls per month)</p></li>
 <li><p>Get your token from the Logfire dashboard</p></li>
 <li><p>Set the <code class="docutils literal notranslate"><span class="pre">LOGFIRE_TOKEN</span></code> environment variable</p></li>
 <li><p>Restart your application</p></li>
@@ -256,6 +255,8 @@
 <ul class="simple">
 <li><p><strong>Queue Monitoring</strong> Celery queue depth alerts</p></li>
 <li><p><strong>Anomaly Detection</strong> Statistical anomaly alerts</p></li>
+<li><p><strong>Timeliness</strong> Pipeline execution timeliness alerts</p></li>
+<li><p><strong>Freshness</strong> DML operation freshness alerts</p></li>
 <li><p><strong>System Health</strong> Database and Redis connectivity issues</p></li>
 </ul>
 </section>
@@ -271,7 +272,7 @@
 </section>
 <section id="profiling">
 <h3>Profiling<a class="headerlink" href="#profiling" title="Link to this heading"></a></h3>
-<p>Enable application profiling for performance analysis:</p>
+<p>Enable application profiling for performance analysis. Enabling this allows you to profile any API endpoint by adding <cite>?profile=true</cite> to the URL.</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PROFILING_ENABLED</span><span class="o">=</span><span class="nb">true</span>
 </pre></div>
 </div>

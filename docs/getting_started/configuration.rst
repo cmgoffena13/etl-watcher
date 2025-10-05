@@ -5,7 +5,7 @@ Environment Variables
 ---------------------
 
 Development Environment
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -101,11 +101,10 @@ Logfire provides comprehensive observability for your Watcher instance:
 - **Application Metrics** Request/response times, error rates
 - **Database Queries** Query performance and slow query detection
 - **Background Tasks** Celery worker execution logging and task tracking
-- **Custom Events** Pipeline execution tracking and anomaly detection
 
 Setup:
 
-1. Create a Logfire account at https://logfire.pydantic.dev
+1. Create a Logfire account at https://logfire.pydantic.dev (Free tier is 10 million calls per month)
 2. Get your token from the Logfire dashboard
 3. Set the ``LOGFIRE_TOKEN`` environment variable
 4. Restart your application
@@ -124,6 +123,8 @@ Alert Types:
 
 - **Queue Monitoring** Celery queue depth alerts
 - **Anomaly Detection** Statistical anomaly alerts
+- **Timeliness** Pipeline execution timeliness alerts
+- **Freshness** DML operation freshness alerts
 - **System Health** Database and Redis connectivity issues
 
 Feature Flags
@@ -141,7 +142,7 @@ When enabled, Watcher automatically creates anomaly detection rules for new pipe
 Profiling
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Enable application profiling for performance analysis:
+Enable application profiling for performance analysis. Enabling this allows you to profile any API endpoint by adding `?profile=true` to the URL.
 
 .. code-block:: bash
 

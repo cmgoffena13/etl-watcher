@@ -19,7 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Data Models" href="models.html" />
+    <link rel="next" title="Pydantic Data Models" href="models.html" />
     <link rel="prev" title="Configuration" href="../getting_started/configuration.html" /> 
 </head>
 
@@ -104,16 +104,10 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#diagnostics">Diagnostics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#connection-performance">Connection Performance</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#schema-health">Schema Health</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#performance-metrics">Performance Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#celery-diagnostics">Celery Diagnostics</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#reporting">Reporting</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#daily-pipeline-metrics">Daily Pipeline Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pipeline-names">Pipeline Names</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pipeline-type-names">Pipeline Type Names</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interactive-documentation">Interactive Documentation</a><ul>
@@ -122,7 +116,7 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a></li>
 <li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
@@ -313,12 +307,6 @@
 <span class="w">  </span><span class="nt">&quot;inserts&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">800</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;updates&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">200</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;soft_deletes&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -689,50 +677,14 @@
 </dd></dl>
 
 </section>
-<section id="connection-performance">
-<h3>Connection Performance<a class="headerlink" href="#connection-performance" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--diagnostics-connection-performance">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/connection-performance</span></span><a class="headerlink" href="#get--diagnostics-connection-performance" title="Link to this definition"></a></dt>
-<dd><p>Get database connection performance metrics.</p>
-</dd></dl>
-
-</section>
-<section id="schema-health">
-<h3>Schema Health<a class="headerlink" href="#schema-health" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--diagnostics-schema-health">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/schema-health</span></span><a class="headerlink" href="#get--diagnostics-schema-health" title="Link to this definition"></a></dt>
-<dd><p>Get database schema health information.</p>
-</dd></dl>
-
-</section>
-<section id="performance-metrics">
-<h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--diagnostics-performance">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/performance</span></span><a class="headerlink" href="#get--diagnostics-performance" title="Link to this definition"></a></dt>
-<dd><p>Get application performance metrics.</p>
-</dd></dl>
-
-</section>
-<section id="celery-diagnostics">
-<h3>Celery Diagnostics<a class="headerlink" href="#celery-diagnostics" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--diagnostics-celery">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics/celery</span></span><a class="headerlink" href="#get--diagnostics-celery" title="Link to this definition"></a></dt>
-<dd><p>Get Celery worker and queue diagnostics.</p>
-</dd></dl>
-
-</section>
 </section>
 <section id="reporting">
 <h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading"></a></h2>
 <section id="daily-pipeline-metrics">
 <h3>Daily Pipeline Metrics<a class="headerlink" href="#daily-pipeline-metrics" title="Link to this heading"></a></h3>
 <dl class="http get">
-<dt class="sig sig-object http" id="get--reporting-daily-pipeline-metrics">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/daily-pipeline-metrics</span></span><a class="headerlink" href="#get--reporting-daily-pipeline-metrics" title="Link to this definition"></a></dt>
+<dt class="sig sig-object http" id="get--reporting">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting</span></span><a class="headerlink" href="#get--reporting" title="Link to this definition"></a></dt>
 <dd><p>Get daily pipeline metrics with pagination and filtering.</p>
 <p><strong>Query Parameters:</strong></p>
 <ul class="simple">
@@ -742,24 +694,6 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (str): Start date filter</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (str): End date filter</p></li>
 </ul>
-</dd></dl>
-
-</section>
-<section id="pipeline-names">
-<h3>Pipeline Names<a class="headerlink" href="#pipeline-names" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--reporting-pipeline-names">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/pipeline-names</span></span><a class="headerlink" href="#get--reporting-pipeline-names" title="Link to this definition"></a></dt>
-<dd><p>Get list of pipeline names for dropdown.</p>
-</dd></dl>
-
-</section>
-<section id="pipeline-type-names">
-<h3>Pipeline Type Names<a class="headerlink" href="#pipeline-type-names" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--reporting-pipeline-type-names">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting/pipeline-type-names</span></span><a class="headerlink" href="#get--reporting-pipeline-type-names" title="Link to this definition"></a></dt>
-<dd><p>Get list of pipeline type names for dropdown.</p>
 </dd></dl>
 
 </section>
@@ -783,7 +717,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="../getting_started/configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="models.html" class="btn btn-neutral float-right" title="Data Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="models.html" class="btn btn-neutral float-right" title="Pydantic Data Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

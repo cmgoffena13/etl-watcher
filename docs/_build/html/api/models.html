@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Data Models &mdash; Watcher 1.0.0 documentation</title>
+  <title>Pydantic Data Models &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -51,7 +51,7 @@
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="endpoints.html">API Endpoints</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Data Models</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Pydantic Data Models</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-models">Pipeline Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pipelinepostinput">PipelinePostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pipelinepostoutput">PipelinePostOutput</a></li>
@@ -90,8 +90,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#anomalydetectionrulepostoutput">AnomalyDetectionRulePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#anomalydetectionrulepatchinput">AnomalyDetectionRulePatchInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unflaganomalyinput">UnflagAnomalyInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionresultgetoutput">AnomalyDetectionResultGetOutput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#anomalydetectionsummarygetoutput">AnomalyDetectionSummaryGetOutput</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#monitoring-models">Monitoring Models</a><ul>
@@ -142,7 +140,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Data Models</li>
+      <li class="breadcrumb-item active">Pydantic Data Models</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/api/models.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -152,9 +150,9 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="data-models">
-<h1>Data Models<a class="headerlink" href="#data-models" title="Link to this heading"></a></h1>
-<p>This section documents the data models used in Watcher’s API.</p>
+  <section id="pydantic-data-models">
+<h1>Pydantic Data Models<a class="headerlink" href="#pydantic-data-models" title="Link to this heading"></a></h1>
+<p>This section documents the pydantic data models used in Watcher’s API for validation request/response bodies</p>
 <section id="pipeline-models">
 <h2>Pipeline Models<a class="headerlink" href="#pipeline-models" title="Link to this heading"></a></h2>
 <section id="pipelinepostinput">
@@ -403,33 +401,6 @@
 </pre></div>
 </div>
 </section>
-<section id="anomalydetectionresultgetoutput">
-<h3>AnomalyDetectionResultGetOutput<a class="headerlink" href="#anomalydetectionresultgetoutput" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionResultGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
-    <span class="n">rule_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">pipeline_execution_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">violation_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">z_score</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">historical_mean</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">std_deviation_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">z_threshold</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">threshold_min_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">threshold_max_value</span><span class="p">:</span> <span class="nb">float</span>
-    <span class="n">context</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">detected_at</span><span class="p">:</span> <span class="n">DateTime</span>
-</pre></div>
-</div>
-</section>
-<section id="anomalydetectionsummarygetoutput">
-<h3>AnomalyDetectionSummaryGetOutput<a class="headerlink" href="#anomalydetectionsummarygetoutput" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AnomalyDetectionSummaryGetOutput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
-    <span class="n">rule_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">rule_name</span><span class="p">:</span> <span class="nb">str</span>
-    <span class="n">anomaly_count</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">latest_anomaly</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnomalyDetectionResultGetOutput</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-</pre></div>
-</div>
-</section>
 </section>
 <section id="monitoring-models">
 <h2>Monitoring Models<a class="headerlink" href="#monitoring-models" title="Link to this heading"></a></h2>
@@ -502,7 +473,7 @@
 <p>All models inherit from <code class="docutils literal notranslate"><span class="pre">ValidatorModel</span></code> which provides:</p>
 <ul class="simple">
 <li><p><strong>Pydantic validation</strong> Automatic data validation and type checking</p></li>
-<li><p><strong>String coercion</strong> Automatic conversion of various types to strings for database storage</p></li>
+<li><p><strong>String coercion</strong> Automatic conversion of various types for watermarks to strings for database storage</p></li>
 <li><p><strong>Case normalization</strong> Automatic lowercase conversion for string fields</p></li>
 <li><p><strong>Field validation</strong> Built-in validation for field constraints (length, ranges, etc.)</p></li>
 </ul>
