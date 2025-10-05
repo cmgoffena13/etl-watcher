@@ -16,7 +16,7 @@ release = "1.0.0"
 
 extensions = ["sphinx.ext.autodoc"]
 
-templates_path = ["docs/_templates"]
+templates_path = ["_templates"]
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 
