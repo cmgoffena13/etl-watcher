@@ -6,7 +6,7 @@
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "watcher"
+project = "Watcher"
 copyright = "2025, Cortland Goffena"
 author = "Cortland Goffena"
 release = "1.0.0"

@@ -1,6 +1,6 @@
 [project]
-name = "watcher"
-version = "0.1.0"
+name = "Watcher"
+version = "1.0.0"
 description = "Open Source ETL Metadata Framework"
 readme = "README.md"
 requires-python = ">=3.12"
