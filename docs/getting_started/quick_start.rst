@@ -402,8 +402,8 @@ Step 5: Configure Anomaly Detection
             response = requests.post("http://localhost:8000/anomaly_detection_rule", json={
                 "pipeline_id": 1,
                 "metric_field": "total_rows",
-                "z_threshold": 2.0,
-                "minimum_executions": 5
+                "z_threshold": 3.0,
+                "minimum_executions": 30
             })
             print(response.json())
 
@@ -416,8 +416,8 @@ Step 5: Configure Anomaly Detection
             response = httpx.post("http://localhost:8000/anomaly_detection_rule", json={
                 "pipeline_id": 1,
                 "metric_field": "total_rows",
-                "z_threshold": 2.0,
-                "minimum_executions": 5
+                "z_threshold": 3.0,
+                "minimum_executions": 30
             })
             print(response.json())
 
@@ -430,8 +430,8 @@ Step 5: Configure Anomaly Detection
                  -d '{
                    "pipeline_id": 1,
                    "metric_field": "total_rows",
-                   "z_threshold": 2.0,
-                   "minimum_executions": 5
+                   "z_threshold": 3.0,
+                   "minimum_executions": 30
                  }'
 
       .. tab:: HTTPie
@@ -441,8 +441,8 @@ Step 5: Configure Anomaly Detection
             http POST localhost:8000/anomaly_detection_rule \
                  pipeline_id=1 \
                  metric_field=total_rows \
-                 z_threshold=2.0 \
-                 minimum_executions=5
+                 z_threshold=3.0 \
+                 minimum_executions=30
 
 2. **Anomaly detection runs automatically** after each successful pipeline execution
 
