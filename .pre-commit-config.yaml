@@ -16,6 +16,7 @@ repos:
         pass_filenames: false
         always_run: true
         stages: [pre-push]
+        files: ^src/.*\.py$
       
       - id: docs-build
         name: Build Sphinx Documentation
