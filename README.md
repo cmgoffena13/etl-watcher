@@ -202,7 +202,7 @@ with CTE AS (
     id
     FROM pipeline_execution
     WHERE pipeline_id = 1
-        AND date_recorded >= CURRENT_DATE - INTERVAL '8 days'
+        AND date_recorded >= CURRENT_DATE - INTERVAL '7 days'
         AND date_recorded < CURRENT_DATE  /* Stay away from current records being inserted/updated */
 )
 SELECT
