@@ -46,13 +46,13 @@ class AnomalyDetectionRule(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_anomaly_detection_rule_pipeline_id",
+            "ix_anomaly_detection_rule_pipeline_id_include",
             "pipeline_id",
             "active",
             postgresql_include=["id"],
         ),
         Index(
-            "ix_anomaly_detection_rule_composite_key",
+            "ux_anomaly_detection_rule_composite_key_include",
             "pipeline_id",
             "metric_field",
             unique=True,

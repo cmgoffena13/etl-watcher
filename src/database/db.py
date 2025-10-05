@@ -49,18 +49,17 @@ async def reset_database():
         )
         # Drop dependent tables (tables with foreign keys)
         await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_result"))
-        await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_rule"))
         await conn.execute(
             text("DROP TABLE IF EXISTS timeliness_pipeline_execution_log")
         )
         await conn.execute(text("DROP TABLE IF EXISTS freshness_pipeline_log"))
-        await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
+        await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution_closure"))
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage_closure"))
-        # Drop tables in dependency order
         await conn.execute(text("DROP TABLE IF EXISTS address_lineage"))
+        await conn.execute(text("DROP TABLE IF EXISTS pipeline_execution"))
+        await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_rule"))
         await conn.execute(text("DROP TABLE IF EXISTS pipeline"))
         await conn.execute(text("DROP TABLE IF EXISTS address"))
-        # Drop parent tables last (tables referenced by foreign keys)
         await conn.execute(text("DROP TABLE IF EXISTS pipeline_type"))
         await conn.execute(text("DROP TABLE IF EXISTS address_type"))
         # Drop alembic version table

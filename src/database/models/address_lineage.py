@@ -14,19 +14,19 @@ class AddressLineage(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_address_lineage_source_target",
+            "ux_address_lineage_source_target",
             "source_address_id",
             "target_address_id",
             unique=True,
         ),
         Index(
-            "ix_address_lineage_target_source",
+            "ux_address_lineage_target_source",
             "target_address_id",
             "source_address_id",
             unique=True,
         ),
         Index(
-            "ix_address_lineage_pipeline",
+            "ix_address_lineage_pipeline_id",
             "pipeline_id",
         ),
     )
@@ -42,13 +42,13 @@ class AddressLineageClosure(SQLModel, table=True):
     __table_args__ = (
         PrimaryKeyConstraint("source_address_id", "target_address_id"),
         Index(
-            "ix_address_lineage_closure_depth_source",
+            "ix_address_lineage_closure_depth_source_include",
             "source_address_id",
             "depth",
             postgresql_include=["target_address_id"],
         ),
         Index(
-            "ix_address_lineage_closure_depth_target",
+            "ix_address_lineage_closure_depth_target_include",
             "target_address_id",
             "depth",
             postgresql_include=["source_address_id"],

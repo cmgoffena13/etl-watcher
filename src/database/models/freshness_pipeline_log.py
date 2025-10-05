@@ -31,7 +31,7 @@ class FreshnessPipelineLog(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_freshness_pipeline_log_covering",
+            "ux_freshness_pipeline_log",
             "last_dml_timestamp",
             "pipeline_id",
             unique=True,

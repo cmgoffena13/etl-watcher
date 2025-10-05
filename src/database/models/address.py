@@ -35,7 +35,7 @@ class Address(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_address_name_includes",
+            "ux_address_name_include",
             "name",
             unique=True,
             postgresql_include=["id"],

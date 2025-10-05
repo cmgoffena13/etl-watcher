@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20250930222817
+Revision ID: 20251005124405
 Revises:
-Create Date: 2025-09-30 22:28:19.103134
+Create Date: 2025-10-05 12:44:07.178032
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20250930222817"
+revision: str = "20251005124405"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -40,7 +40,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_address_type_name_includes",
+        "ux_address_type_name_include",
         "address_type",
         ["name"],
         unique=True,
@@ -88,7 +88,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_pipeline_type_name_includes",
+        "ux_pipeline_type_name_include",
         "pipeline_type",
         ["name"],
         unique=True,
@@ -131,7 +131,7 @@ def upgrade() -> None:
         op.f("ix_address_address_type_id"), "address", ["address_type_id"], unique=False
     )
     op.create_index(
-        "ix_address_name_includes",
+        "ux_address_name_include",
         "address",
         ["name"],
         unique=True,
@@ -202,18 +202,18 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_pipeline_name_includes",
-        "pipeline",
-        ["name"],
-        unique=True,
-        postgresql_include=["load_lineage", "active", "id"],
-    )
-    op.create_index(
-        "ix_pipeline_pipeline_type_id_includes",
+        "ix_pipeline_pipeline_type_id_include",
         "pipeline",
         ["pipeline_type_id"],
         unique=False,
         postgresql_include=["id"],
+    )
+    op.create_index(
+        "ux_pipeline_name_include",
+        "pipeline",
+        ["name"],
+        unique=True,
+        postgresql_include=["load_lineage", "active", "id"],
     )
     op.create_table(
         "address_lineage",
@@ -236,16 +236,19 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_address_lineage_pipeline", "address_lineage", ["pipeline_id"], unique=False
+        "ix_address_lineage_pipeline_id",
+        "address_lineage",
+        ["pipeline_id"],
+        unique=False,
     )
     op.create_index(
-        "ix_address_lineage_source_target",
+        "ux_address_lineage_source_target",
         "address_lineage",
         ["source_address_id", "target_address_id"],
         unique=True,
     )
     op.create_index(
-        "ix_address_lineage_target_source",
+        "ux_address_lineage_target_source",
         "address_lineage",
         ["target_address_id", "source_address_id"],
         unique=True,
@@ -266,14 +269,14 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("source_address_id", "target_address_id"),
     )
     op.create_index(
-        "ix_address_lineage_closure_depth_source",
+        "ix_address_lineage_closure_depth_source_include",
         "address_lineage_closure",
         ["source_address_id", "depth"],
         unique=False,
         postgresql_include=["target_address_id"],
     )
     op.create_index(
-        "ix_address_lineage_closure_depth_target",
+        "ix_address_lineage_closure_depth_target_include",
         "address_lineage_closure",
         ["target_address_id", "depth"],
         unique=False,
@@ -316,17 +319,17 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_anomaly_detection_rule_composite_key",
-        "anomaly_detection_rule",
-        ["pipeline_id", "metric_field"],
-        unique=True,
-        postgresql_include=["id"],
-    )
-    op.create_index(
-        "ix_anomaly_detection_rule_pipeline_id",
+        "ix_anomaly_detection_rule_pipeline_id_include",
         "anomaly_detection_rule",
         ["pipeline_id", "active"],
         unique=False,
+        postgresql_include=["id"],
+    )
+    op.create_index(
+        "ux_anomaly_detection_rule_composite_key_include",
+        "anomaly_detection_rule",
+        ["pipeline_id", "metric_field"],
+        unique=True,
         postgresql_include=["id"],
     )
     op.create_table(
@@ -357,7 +360,7 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("id"),
     )
     op.create_index(
-        "ix_freshness_pipeline_log_covering",
+        "ux_freshness_pipeline_log",
         "freshness_pipeline_log",
         ["last_dml_timestamp", "pipeline_id"],
         unique=True,
@@ -391,8 +394,12 @@ def upgrade() -> None:
             "anomaly_flags", postgresql.JSONB(astext_type=sa.Text()), nullable=True
         ),
         sa.Column("throughput", sa.DECIMAL(precision=12, scale=4), nullable=True),
-        sa.CheckConstraint("end_date IS NULL OR end_date > start_date"),
-        sa.CheckConstraint("parent_id IS NULL OR parent_id != id"),
+        sa.CheckConstraint(
+            "end_date IS NULL OR end_date > start_date", name="ck_check_end_after_start"
+        ),
+        sa.CheckConstraint(
+            "parent_id IS NULL OR parent_id != id", name="ck_check_parent_not_self"
+        ),
         sa.ForeignKeyConstraint(
             ["pipeline_id"],
             ["pipeline.id"],
@@ -471,18 +478,18 @@ def upgrade() -> None:
         sa.PrimaryKeyConstraint("parent_execution_id", "child_execution_id"),
     )
     op.create_index(
-        "ix_pipeline_execution_closure_depth_ancestor",
-        "pipeline_execution_closure",
-        ["parent_execution_id", "depth"],
-        unique=False,
-        postgresql_include=["child_execution_id"],
-    )
-    op.create_index(
-        "ix_pipeline_execution_closure_depth_descendant",
+        "ix_pipeline_execution_closure_depth_child_include",
         "pipeline_execution_closure",
         ["child_execution_id", "depth"],
         unique=False,
         postgresql_include=["parent_execution_id"],
+    )
+    op.create_index(
+        "ix_pipeline_execution_closure_depth_parent_include",
+        "pipeline_execution_closure",
+        ["parent_execution_id", "depth"],
+        unique=False,
+        postgresql_include=["child_execution_id"],
     )
     op.create_table(
         "timeliness_pipeline_execution_log",
@@ -526,14 +533,14 @@ def downgrade() -> None:
     # ### commands auto generated by Alembic - please adjust! ###
     op.drop_table("timeliness_pipeline_execution_log")
     op.drop_index(
-        "ix_pipeline_execution_closure_depth_descendant",
-        table_name="pipeline_execution_closure",
-        postgresql_include=["parent_execution_id"],
-    )
-    op.drop_index(
-        "ix_pipeline_execution_closure_depth_ancestor",
+        "ix_pipeline_execution_closure_depth_parent_include",
         table_name="pipeline_execution_closure",
         postgresql_include=["child_execution_id"],
+    )
+    op.drop_index(
+        "ix_pipeline_execution_closure_depth_child_include",
+        table_name="pipeline_execution_closure",
+        postgresql_include=["parent_execution_id"],
     )
     op.drop_table("pipeline_execution_closure")
     op.drop_table("anomaly_detection_result")
@@ -554,60 +561,58 @@ def downgrade() -> None:
         postgresql_include=["id"],
     )
     op.drop_table("pipeline_execution")
-    op.drop_index(
-        "ix_freshness_pipeline_log_covering", table_name="freshness_pipeline_log"
-    )
+    op.drop_index("ux_freshness_pipeline_log", table_name="freshness_pipeline_log")
     op.drop_table("freshness_pipeline_log")
     op.drop_index(
-        "ix_anomaly_detection_rule_pipeline_id",
+        "ux_anomaly_detection_rule_composite_key_include",
         table_name="anomaly_detection_rule",
         postgresql_include=["id"],
     )
     op.drop_index(
-        "ix_anomaly_detection_rule_composite_key",
+        "ix_anomaly_detection_rule_pipeline_id_include",
         table_name="anomaly_detection_rule",
         postgresql_include=["id"],
     )
     op.drop_table("anomaly_detection_rule")
     op.drop_index(
-        "ix_address_lineage_closure_depth_target",
+        "ix_address_lineage_closure_depth_target_include",
         table_name="address_lineage_closure",
         postgresql_include=["source_address_id"],
     )
     op.drop_index(
-        "ix_address_lineage_closure_depth_source",
+        "ix_address_lineage_closure_depth_source_include",
         table_name="address_lineage_closure",
         postgresql_include=["target_address_id"],
     )
     op.drop_table("address_lineage_closure")
-    op.drop_index("ix_address_lineage_target_source", table_name="address_lineage")
-    op.drop_index("ix_address_lineage_source_target", table_name="address_lineage")
-    op.drop_index("ix_address_lineage_pipeline", table_name="address_lineage")
+    op.drop_index("ux_address_lineage_target_source", table_name="address_lineage")
+    op.drop_index("ux_address_lineage_source_target", table_name="address_lineage")
+    op.drop_index("ix_address_lineage_pipeline_id", table_name="address_lineage")
     op.drop_table("address_lineage")
     op.drop_index(
-        "ix_pipeline_pipeline_type_id_includes",
-        table_name="pipeline",
-        postgresql_include=["id"],
-    )
-    op.drop_index(
-        "ix_pipeline_name_includes",
+        "ux_pipeline_name_include",
         table_name="pipeline",
         postgresql_include=["load_lineage", "active", "id"],
     )
+    op.drop_index(
+        "ix_pipeline_pipeline_type_id_include",
+        table_name="pipeline",
+        postgresql_include=["id"],
+    )
     op.drop_table("pipeline")
     op.drop_index(
-        "ix_address_name_includes", table_name="address", postgresql_include=["id"]
+        "ux_address_name_include", table_name="address", postgresql_include=["id"]
     )
     op.drop_index(op.f("ix_address_address_type_id"), table_name="address")
     op.drop_table("address")
     op.drop_index(
-        "ix_pipeline_type_name_includes",
+        "ux_pipeline_type_name_include",
         table_name="pipeline_type",
         postgresql_include=["id"],
     )
     op.drop_table("pipeline_type")
     op.drop_index(
-        "ix_address_type_name_includes",
+        "ux_address_type_name_include",
         table_name="address_type",
         postgresql_include=["id"],
     )

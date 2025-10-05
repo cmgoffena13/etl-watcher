@@ -63,13 +63,13 @@ class Pipeline(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_pipeline_name_includes",
+            "ux_pipeline_name_include",
             "name",
             unique=True,
             postgresql_include=["load_lineage", "active", "id"],
         ),
         Index(
-            "ix_pipeline_pipeline_type_id_includes",
+            "ix_pipeline_pipeline_type_id_include",
             "pipeline_type_id",
             postgresql_include=["id"],
         ),

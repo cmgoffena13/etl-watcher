@@ -39,7 +39,7 @@ class PipelineType(SQLModel, table=True):
 
     __table_args__ = (
         Index(
-            "ix_pipeline_type_name_includes",
+            "ux_pipeline_type_name_include",
             "name",
             unique=True,
             postgresql_include=["id"],

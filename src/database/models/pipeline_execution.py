@@ -98,13 +98,13 @@ class PipelineExecutionClosure(SQLModel, table=True):
             columns=["child_execution_id"], refcolumns=["pipeline_execution.id"]
         ),
         Index(
-            "ix_pipeline_execution_closure_depth_parent",
+            "ix_pipeline_execution_closure_depth_parent_include",
             "parent_execution_id",
             "depth",
             postgresql_include=["child_execution_id"],
         ),
         Index(
-            "ix_pipeline_execution_closure_depth_child",
+            "ix_pipeline_execution_closure_depth_child_include",
             "child_execution_id",
             "depth",
             postgresql_include=["parent_execution_id"],
