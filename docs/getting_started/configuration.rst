@@ -4,6 +4,13 @@ Configuration
 Environment Variables
 ---------------------
 
+.. note::
+   All environment variables must be prefixed with the environment name:
+   
+   - **Development**: ``DEV_`` prefix (e.g., ``DEV_DATABASE_URL``)
+   - **Test**: ``TEST_`` prefix (e.g., ``TEST_DATABASE_URL``)
+   - **Production**: ``PROD_`` prefix (e.g., ``PROD_DATABASE_URL``)
+
 Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -61,7 +68,7 @@ Connection Settings
 - **Password** Database password
 - **SSL** SSL connection settings
 
-Connection Pool Settings
+Connection Pool Default Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 - **Pool Size** 20 connections

@@ -31,8 +31,9 @@ Installation Steps
    .. code-block:: bash
 
       # Development
+      ENV_STATE=dev
       DEV_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_dev
-      DEV_REDIS_URL=redis://localhost:6379/1
+      TEST_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_test
       DEV_LOGFIRE_TOKEN=your_logfire_token_here
       DEV_SLACK_WEBHOOK_URL=your_slack_webhook_url_here
 
@@ -54,16 +55,16 @@ Once running, you can verify the local development installation:
 Environment Variables
 ---------------------
 
-Required Environment Variables
+Minimum Required Production Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- ``DATABASE_URL`` - PostgreSQL connection string
-- ``REDIS_URL`` - Redis connection string
-- ``LOGFIRE_TOKEN`` - Logfire monitoring token (optional)
+- ``PROD_DATABASE_URL`` - PostgreSQL connection string
+- ``PROD_REDIS_URL`` - Redis connection string
 
 Optional Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- ``SLACK_WEBHOOK_URL`` - Slack notifications
-- ``WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES`` - Auto-create rules (default: false)
-- ``PROFILING_ENABLED`` - Enable profiling (default: false)
+- ``PROD_LOGFIRE_TOKEN`` - Logfire monitoring token
+- ``PROD_SLACK_WEBHOOK_URL`` - Slack notifications
+- ``PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES`` - Auto-create rules (default: false)
+- ``PROD_PROFILING_ENABLED`` - Enable profiling (default: false)

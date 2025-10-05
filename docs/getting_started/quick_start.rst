@@ -1,53 +1,12 @@
 Quick Start Guide
 =================
 
-This guide will get you up and running with Watcher in under 10 minutes.
+This guide will get you up and running with Watcher.
 
 Step 1: Create Your First Pipeline
 ----------------------------------
 
-1. **Create a pipeline type**
-
-   .. tabs::
-
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/pipeline_type", json={
-                "name": "extraction"
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
-
-         .. code-block:: python
-
-            import httpx
-            
-            response = httpx.post("http://localhost:8000/pipeline_type", json={
-                "name": "extraction"
-            })
-            print(response.json())
-
-      .. tab:: curl
-
-         .. code-block:: bash
-
-            curl -X POST "http://localhost:8000/pipeline_type" \
-                 -H "Content-Type: application/json" \
-                 -d '{"name": "extraction", "group_name": "databricks"}'
-
-      .. tab:: HTTPie
-
-         .. code-block:: bash
-
-            http POST localhost:8000/pipeline_type \
-                 name=extraction
-
-2. **Create a pipeline**
+1. **Create a pipeline** (automatically creates pipeline type if needed)
 
    .. tabs::
 
@@ -94,7 +53,7 @@ Step 1: Create Your First Pipeline
 Step 2: Start Pipeline Execution
 -------------------------------
 
-1. **Start an execution**
+2. **Start an execution**
 
    .. tabs::
 
@@ -153,7 +112,7 @@ Step 2: Start Pipeline Execution
                  watermark="2024-01-01T00:00:00Z" \
                  next_watermark="2024-01-01T23:59:59Z"
 
-2. **End the execution with metrics**
+3. **End the execution with metrics**
 
    .. tabs::
 
@@ -223,7 +182,10 @@ Step 2: Start Pipeline Execution
 Step 3: Set Up Monitoring
 -------------------------
 
-1. **Create an address for monitoring**
+1. **Create data lineage** (automatically creates addresses and address types if needed)
+
+   .. note::
+      Set ``WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true`` to automatically create anomaly detection rules for new pipelines.
 
    .. tabs::
 
@@ -233,10 +195,22 @@ Step 3: Set Up Monitoring
 
             import requests
             
-            response = requests.post("http://localhost:8000/address", json={
-                "name": "my_table",
-                "address_type_name": "databricks",
-                "address_type_group_name": "database"
+            response = requests.post("http://localhost:8000/address_lineage", json={
+                "pipeline_id": 1,
+                "source_addresses": [
+                    {
+                        "name": "source_table",
+                        "address_type_name": "databricks",
+                        "address_type_group_name": "database"
+                    }
+                ],
+                "target_addresses": [
+                    {
+                        "name": "target_table",
+                        "address_type_name": "databricks",
+                        "address_type_group_name": "database"
+                    }
+                ]
             })
             print(response.json())
 
@@ -246,10 +220,22 @@ Step 3: Set Up Monitoring
 
             import httpx
             
-            response = httpx.post("http://localhost:8000/address", json={
-                "name": "my_table",
-                "address_type_name": "databricks",
-                "address_type_group_name": "database"
+            response = httpx.post("http://localhost:8000/address_lineage", json={
+                "pipeline_id": 1,
+                "source_addresses": [
+                    {
+                        "name": "source_table",
+                        "address_type_name": "databricks",
+                        "address_type_group_name": "database"
+                    }
+                ],
+                "target_addresses": [
+                    {
+                        "name": "target_table",
+                        "address_type_name": "databricks",
+                        "address_type_group_name": "database"
+                    }
+                ]
             })
             print(response.json())
 
@@ -257,22 +243,34 @@ Step 3: Set Up Monitoring
 
          .. code-block:: bash
 
-            curl -X POST "http://localhost:8000/address" \
+            curl -X POST "http://localhost:8000/address_lineage" \
                  -H "Content-Type: application/json" \
                  -d '{
-                   "name": "my_table",
-                   "address_type_name": "databricks",
-                   "address_type_group_name": "database"
+                   "pipeline_id": 1,
+                   "source_addresses": [
+                     {
+                       "name": "source_table",
+                       "address_type_name": "databricks",
+                       "address_type_group_name": "database"
+                     }
+                   ],
+                   "target_addresses": [
+                     {
+                       "name": "target_table",
+                       "address_type_name": "databricks",
+                       "address_type_group_name": "database"
+                     }
+                   ]
                  }'
 
       .. tab:: HTTPie
 
          .. code-block:: bash
 
-            http POST localhost:8000/address \
-                 name=my_table \
-                 address_type_name=databricks \
-                 address_type_group_name=database
+            http POST localhost:8000/address_lineage \
+                 pipeline_id=1 \
+                 source_addresses:='[{"name": "source_table", "address_type_name": "databricks", "address_type_group_name": "database"}]' \
+                 target_addresses:='[{"name": "target_table", "address_type_name": "databricks", "address_type_group_name": "database"}]'
 
 2. **Run a freshness check**
 
@@ -351,7 +349,44 @@ Step 3: Set Up Monitoring
             http POST localhost:8000/timeliness \
                  lookback_minutes=60
 
-Step 4: Configure Anomaly Detection
+Step 4: Run a Celery Queue Check
+--------------------------------
+
+1. **Monitor Celery queue**
+
+   .. tabs::
+
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/celery/monitor-queue")
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/celery/monitor-queue")
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/celery/monitor-queue"
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/celery/monitor-queue
+
+Step 5: Configure Anomaly Detection
 -----------------------------------
 
 1. **Create an anomaly detection rule**
@@ -411,7 +446,7 @@ Step 4: Configure Anomaly Detection
 
 2. **Anomaly detection runs automatically** after each successful pipeline execution
 
-Step 5: Monitor Your System
+Step 6: Monitor Your System
 --------------------------
 
 1. **Check system health**
@@ -421,40 +456,6 @@ Step 5: Monitor Your System
 2. **View API documentation**
 
    Visit: http://localhost:8000/scalar
-
-3. **Monitor Celery queue**
-
-   .. tabs::
-
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/celery/monitor-queue")
-            print(response.json())
-
-      .. tab:: Python - httpx
-
-         .. code-block:: python
-
-            import httpx
-            
-            response = httpx.post("http://localhost:8000/celery/monitor-queue")
-            print(response.json())
-
-      .. tab:: curl
-
-         .. code-block:: bash
-
-            curl -X POST "http://localhost:8000/celery/monitor-queue"
-
-      .. tab:: HTTPie
-
-         .. code-block:: bash
-
-            http POST localhost:8000/celery/monitor-queue
 
 Next Steps
 ----------
@@ -468,13 +469,16 @@ Common Issues
 -------------
 
 **Port already in use**
-   Make sure ports 8000, 5432, and 6379 are available
+   Make sure port 8000 is available on your host machine
+
+**Docker containers not starting**
+   Check that Docker and Docker Compose are running properly
 
 **Database connection failed**
-   Ensure PostgreSQL is running and accessible
+   Ensure the PostgreSQL container is running: ``docker-compose ps``
 
 **Redis connection failed**
-   Ensure Redis is running and accessible
+   Ensure the Redis container is running: ``docker-compose ps``
 
 **Migration errors**
-   Check that the database exists and you have proper permissions
+   Try restarting the application container: ``docker-compose restart app``
