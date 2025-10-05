@@ -1,6 +1,11 @@
 Welcome to Watcher's documentation!
 =====================================
 
+.. image:: _static/images/watcher.jpg
+   :alt: Watcher Logo
+   :align: center
+   :width: 200px
+
 Watcher is a comprehensive data pipeline monitoring and anomaly detection system designed to ensure your data pipelines are running optimally and detect issues before they impact your business.
 
 .. toctree::
