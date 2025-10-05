@@ -53,7 +53,6 @@
 <li class="toctree-l1"><a class="reference internal" href="endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Celery Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#task-overview">Task Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#task-types">Task Types</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freshness-check-task">freshness_check_task</a></li>
@@ -75,24 +74,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#default-queue">Default Queue</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#worker-scaling">Worker Scaling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#example-alert">Example Alert</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#performance-optimization">Performance Optimization</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#task-optimization">Task Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#worker-optimization">Worker Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring-integration">Monitoring Integration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#task-design">Task Design</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Error Handling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring">Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#scaling">Scaling</a></li>
 </ul>
 </li>
 </ul>
@@ -138,26 +121,26 @@
              
   <section id="celery-tasks">
 <h1>Celery Tasks<a class="headerlink" href="#celery-tasks" title="Link to this heading"></a></h1>
-<p>This section documents all Celery background tasks in Watcher.</p>
-<section id="task-overview">
-<h2>Task Overview<a class="headerlink" href="#task-overview" title="Link to this heading"></a></h2>
-<p>Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.</p>
-</section>
+<p>This section documents all Celery background tasks in Watcher. Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.</p>
 <section id="task-types">
 <h2>Task Types<a class="headerlink" href="#task-types" title="Link to this heading"></a></h2>
 <section id="detect-anomalies-task">
 <h3>detect_anomalies_task<a class="headerlink" href="#detect-anomalies-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Statistical analysis of pipeline execution patterns</p>
 <p><strong>Rate Limit</strong> 15/s</p>
-<p><strong>Parameters</strong>
-- <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID to analyze
-- <code class="docutils literal notranslate"><span class="pre">pipeline_execution_id</span></code> (int): Execution ID to analyze</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID to analyze</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_execution_id</span></code> (int): Execution ID to analyze</p></li>
+</ul>
 <p><strong>Description</strong>
 Automatically triggered after each successful pipeline execution. Performs statistical analysis on pipeline metrics to detect anomalies using z-score analysis.</p>
-<p><strong>Retry Policy</strong>
-- Max retries: 3
-- Retry delay: 60 seconds
-- Exponential backoff</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_anomalies_task</span>
 
@@ -173,10 +156,12 @@ Automatically triggered after each successful pipeline execution. Performs stati
 <p><strong>Parameters</strong> None</p>
 <p><strong>Description</strong>
 Monitors data modification operations (inserts, updates, soft deletes) to detect stale data. Checks when data was last modified and alerts if it’s older than expected.</p>
-<p><strong>Retry Policy</strong>
-- Max retries: 3
-- Retry delay: 60 seconds
-- Exponential backoff</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">freshness_check_task</span>
 
@@ -189,14 +174,18 @@ Monitors data modification operations (inserts, updates, soft deletes) to detect
 <h3>timeliness_check_task<a class="headerlink" href="#timeliness-check-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Pipeline execution timing validation</p>
 <p><strong>Rate Limit</strong> 1/s</p>
-<p><strong>Parameters</strong>
-- <code class="docutils literal notranslate"><span class="pre">lookback_minutes</span></code> (int): How far back to look for executions (default: 60)</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">lookback_minutes</span></code> (int): How far back to look for executions (default: 60)</p></li>
+</ul>
 <p><strong>Description</strong>
 Validates that pipeline executions are completing within expected timeframes. Compares actual execution times against configured timeliness thresholds.</p>
-<p><strong>Retry Policy</strong>
-- Max retries: 3
-- Retry delay: 60 seconds
-- Exponential backoff</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeliness_check_task</span>
 
@@ -209,15 +198,19 @@ Validates that pipeline executions are completing within expected timeframes. Co
 <h3>address_lineage_closure_rebuild_task<a class="headerlink" href="#address-lineage-closure-rebuild-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Rebuild address lineage closure table relationships</p>
 <p><strong>Rate Limit</strong> 1/s</p>
-<p><strong>Parameters</strong>
-- <code class="docutils literal notranslate"><span class="pre">connected_addresses</span></code> (List[int]): List of address IDs to rebuild
-- <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID for context</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">connected_addresses</span></code> (List[int]): List of address IDs to rebuild</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID for context</p></li>
+</ul>
 <p><strong>Description</strong>
 Maintains the closure table for address lineage relationships. Rebuilds the transitive closure when new lineage relationships are created.</p>
-<p><strong>Retry Policy</strong>
-- Max retries: 3
-- Retry delay: 60 seconds
-- Exponential backoff</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">address_lineage_closure_rebuild_task</span>
 
@@ -233,15 +226,19 @@ Maintains the closure table for address lineage relationships. Rebuilds the tran
 <h3>pipeline_execution_closure_maintain_task<a class="headerlink" href="#pipeline-execution-closure-maintain-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Maintain pipeline execution hierarchy closure table</p>
 <p><strong>Rate Limit</strong> 10/s</p>
-<p><strong>Parameters</strong>
-- <code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int): Execution ID to maintain
-- <code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int, optional): Parent execution ID</p>
+<p><strong>Parameters</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int): Execution ID to maintain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int, optional): Parent execution ID</p></li>
+</ul>
 <p><strong>Description</strong>
 Maintains the closure table for pipeline execution hierarchies. Automatically triggered when new pipeline executions are created to track parent-child relationships.</p>
-<p><strong>Retry Policy</strong>
-- Max retries: 3
-- Retry delay: 30 seconds
-- Exponential backoff</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 30 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
 <p><strong>Example</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipeline_execution_closure_maintain_task</span>
 
@@ -333,41 +330,10 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="queue-management">
 <h2>Queue Management<a class="headerlink" href="#queue-management" title="Link to this heading"></a></h2>
-<section id="default-queue">
-<h3>Default Queue<a class="headerlink" href="#default-queue" title="Link to this heading"></a></h3>
-<p>All tasks are processed through the main <code class="docutils literal notranslate"><span class="pre">celery</span></code> queue:</p>
-<ul class="simple">
-<li><p><strong>Queue Name</strong> <code class="docutils literal notranslate"><span class="pre">celery</span></code></p></li>
-<li><p><strong>Worker Scaling</strong> Multiple workers can handle the same queue</p></li>
-<li><p><strong>Load Distribution</strong> Tasks distributed across available workers</p></li>
-<li><p><strong>Priority</strong> First-in, first-out (FIFO) processing</p></li>
-</ul>
-</section>
-<section id="worker-scaling">
-<h3>Worker Scaling<a class="headerlink" href="#worker-scaling" title="Link to this heading"></a></h3>
-<p>Workers can be scaled horizontally:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start multiple workers</span>
-celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
-celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
-celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info<span class="w"> </span>--concurrency<span class="o">=</span><span class="m">4</span>
-</pre></div>
-</div>
-</section>
-<section id="queue-monitoring">
-<h3>Queue Monitoring<a class="headerlink" href="#queue-monitoring" title="Link to this heading"></a></h3>
-<p>Monitor queue health and performance:</p>
-<ul class="simple">
-<li><p><strong>Queue Depth</strong> Number of pending tasks</p></li>
-<li><p><strong>Worker Status</strong> Active workers and their status</p></li>
-<li><p><strong>Task Throughput</strong> Tasks processed per minute</p></li>
-<li><p><strong>Error Rates</strong> Failed task percentages</p></li>
-</ul>
-</section>
 <section id="alert-thresholds">
 <h3>Alert Thresholds<a class="headerlink" href="#alert-thresholds" title="Link to this heading"></a></h3>
 <p>Configure alerts for queue issues:</p>
 <ul class="simple">
-<li><p><strong>INFO</strong> (20+ messages): Queue building up</p></li>
 <li><p><strong>WARNING</strong> (50+ messages): Queue getting backed up</p></li>
 <li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
 </ul>
@@ -386,82 +352,6 @@ Details:
 • Queue: celery
 </pre></div>
 </div>
-</section>
-</section>
-<section id="performance-optimization">
-<h2>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h2>
-<section id="task-optimization">
-<h3>Task Optimization<a class="headerlink" href="#task-optimization" title="Link to this heading"></a></h3>
-<p>Optimize task performance:</p>
-<ul class="simple">
-<li><p><strong>Batch Processing</strong> Process multiple items in single task</p></li>
-<li><p><strong>Async Operations</strong> Use async/await for I/O operations</p></li>
-<li><p><strong>Connection Pooling</strong> Reuse database connections</p></li>
-<li><p><strong>Caching</strong> Cache frequently accessed data</p></li>
-</ul>
-</section>
-<section id="worker-optimization">
-<h3>Worker Optimization<a class="headerlink" href="#worker-optimization" title="Link to this heading"></a></h3>
-<p>Optimize worker performance:</p>
-<ul class="simple">
-<li><p><strong>Concurrency</strong> Adjust worker concurrency based on CPU cores</p></li>
-<li><p><strong>Memory</strong> Monitor memory usage and adjust accordingly</p></li>
-<li><p><strong>Resource Limits</strong> Set appropriate resource limits</p></li>
-<li><p><strong>Health Checks</strong> Implement worker health monitoring</p></li>
-</ul>
-</section>
-<section id="monitoring-integration">
-<h3>Monitoring Integration<a class="headerlink" href="#monitoring-integration" title="Link to this heading"></a></h3>
-<p>Integrate with monitoring systems:</p>
-<ul class="simple">
-<li><p><strong>Logfire</strong> Automatic task tracking and performance metrics</p></li>
-<li><p><strong>Prometheus</strong> Custom metrics for task performance</p></li>
-<li><p><strong>Grafana</strong> Dashboards for task monitoring</p></li>
-<li><p><strong>Slack</strong> Real-time alerts for task failures</p></li>
-</ul>
-</section>
-</section>
-<section id="best-practices">
-<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
-<section id="task-design">
-<h3>Task Design<a class="headerlink" href="#task-design" title="Link to this heading"></a></h3>
-<p>Design tasks for reliability:</p>
-<ul class="simple">
-<li><p><strong>Idempotent</strong> Tasks should be safe to retry</p></li>
-<li><p><strong>Atomic</strong> Tasks should complete or fail completely</p></li>
-<li><p><strong>Stateless</strong> Tasks should not depend on external state</p></li>
-<li><p><strong>Timeout</strong> Set appropriate timeouts for long-running tasks</p></li>
-</ul>
-</section>
-<section id="id1">
-<h3>Error Handling<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<p>Implement robust error handling:</p>
-<ul class="simple">
-<li><p><strong>Validation</strong> Validate all input parameters</p></li>
-<li><p><strong>Graceful Degradation</strong> Handle partial failures gracefully</p></li>
-<li><p><strong>Logging</strong> Log all errors with context</p></li>
-<li><p><strong>Alerting</strong> Alert on critical failures</p></li>
-</ul>
-</section>
-<section id="monitoring">
-<h3>Monitoring<a class="headerlink" href="#monitoring" title="Link to this heading"></a></h3>
-<p>Monitor task health:</p>
-<ul class="simple">
-<li><p><strong>Success Rates</strong> Track task success percentages</p></li>
-<li><p><strong>Execution Times</strong> Monitor task duration trends</p></li>
-<li><p><strong>Queue Depth</strong> Monitor queue backlog</p></li>
-<li><p><strong>Worker Health</strong> Monitor worker status and performance</p></li>
-</ul>
-</section>
-<section id="scaling">
-<h3>Scaling<a class="headerlink" href="#scaling" title="Link to this heading"></a></h3>
-<p>Scale tasks appropriately:</p>
-<ul class="simple">
-<li><p><strong>Horizontal Scaling</strong> Add more workers as needed</p></li>
-<li><p><strong>Vertical Scaling</strong> Increase worker resources</p></li>
-<li><p><strong>Load Balancing</strong> Distribute tasks across workers</p></li>
-<li><p><strong>Auto-scaling</strong> Implement automatic scaling based on queue depth</p></li>
-</ul>
 </section>
 </section>
 </section>

@@ -1,12 +1,7 @@
 Celery Tasks
 ============
 
-This section documents all Celery background tasks in Watcher.
-
-Task Overview
--------------
-
-Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.
+This section documents all Celery background tasks in Watcher. Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.
 
 Task Types
 ----------
@@ -19,13 +14,15 @@ detect_anomalies_task
 **Rate Limit** 15/s
 
 **Parameters**
+
 - ``pipeline_id`` (int): Pipeline ID to analyze
 - ``pipeline_execution_id`` (int): Execution ID to analyze
 
 **Description** 
 Automatically triggered after each successful pipeline execution. Performs statistical analysis on pipeline metrics to detect anomalies using z-score analysis.
 
-**Retry Policy**
+**Retry Policy**  
+
 - Max retries: 3
 - Retry delay: 60 seconds
 - Exponential backoff
@@ -52,6 +49,7 @@ freshness_check_task
 Monitors data modification operations (inserts, updates, soft deletes) to detect stale data. Checks when data was last modified and alerts if it's older than expected.
 
 **Retry Policy**
+
 - Max retries: 3
 - Retry delay: 60 seconds
 - Exponential backoff
@@ -73,12 +71,14 @@ timeliness_check_task
 **Rate Limit** 1/s
 
 **Parameters**
+
 - ``lookback_minutes`` (int): How far back to look for executions (default: 60)
 
 **Description** 
 Validates that pipeline executions are completing within expected timeframes. Compares actual execution times against configured timeliness thresholds.
 
 **Retry Policy**
+
 - Max retries: 3
 - Retry delay: 60 seconds
 - Exponential backoff
@@ -100,6 +100,7 @@ address_lineage_closure_rebuild_task
 **Rate Limit** 1/s
 
 **Parameters**
+
 - ``connected_addresses`` (List[int]): List of address IDs to rebuild
 - ``pipeline_id`` (int): Pipeline ID for context
 
@@ -107,6 +108,7 @@ address_lineage_closure_rebuild_task
 Maintains the closure table for address lineage relationships. Rebuilds the transitive closure when new lineage relationships are created.
 
 **Retry Policy**
+
 - Max retries: 3
 - Retry delay: 60 seconds
 - Exponential backoff
@@ -131,6 +133,7 @@ pipeline_execution_closure_maintain_task
 **Rate Limit** 10/s
 
 **Parameters**
+
 - ``execution_id`` (int): Execution ID to maintain
 - ``parent_id`` (int, optional): Parent execution ID
 
@@ -138,6 +141,7 @@ pipeline_execution_closure_maintain_task
 Maintains the closure table for pipeline execution hierarchies. Automatically triggered when new pipeline executions are created to track parent-child relationships.
 
 **Retry Policy**
+
 - Max retries: 3
 - Retry delay: 30 seconds
 - Exponential backoff
@@ -238,44 +242,11 @@ Failed tasks include detailed error information:
 Queue Management
 ----------------
 
-Default Queue
-~~~~~~~~~~~~~~
-
-All tasks are processed through the main ``celery`` queue:
-
-- **Queue Name** ``celery``
-- **Worker Scaling** Multiple workers can handle the same queue
-- **Load Distribution** Tasks distributed across available workers
-- **Priority** First-in, first-out (FIFO) processing
-
-Worker Scaling
-~~~~~~~~~~~~~~
-
-Workers can be scaled horizontally:
-
-.. code-block:: bash
-
-   # Start multiple workers
-   celery -A src.celery_app worker --loglevel=info --concurrency=4
-   celery -A src.celery_app worker --loglevel=info --concurrency=4
-   celery -A src.celery_app worker --loglevel=info --concurrency=4
-
-Queue Monitoring
-~~~~~~~~~~~~~~~~
-
-Monitor queue health and performance:
-
-- **Queue Depth** Number of pending tasks
-- **Worker Status** Active workers and their status
-- **Task Throughput** Tasks processed per minute
-- **Error Rates** Failed task percentages
-
 Alert Thresholds
 ~~~~~~~~~~~~~~~~
 
 Configure alerts for queue issues:
 
-- **INFO** (20+ messages): Queue building up
 - **WARNING** (50+ messages): Queue getting backed up
 - **CRITICAL** (100+ messages): Queue severely backed up
 
@@ -294,79 +265,3 @@ Example Alert
    • Scheduled tasks: 0
    • Workers active: 2
    • Queue: celery
-
-Performance Optimization
------------------------
-
-Task Optimization
-~~~~~~~~~~~~~~~~
-
-Optimize task performance:
-
-- **Batch Processing** Process multiple items in single task
-- **Async Operations** Use async/await for I/O operations
-- **Connection Pooling** Reuse database connections
-- **Caching** Cache frequently accessed data
-
-Worker Optimization
-~~~~~~~~~~~~~~~~~~~~
-
-Optimize worker performance:
-
-- **Concurrency** Adjust worker concurrency based on CPU cores
-- **Memory** Monitor memory usage and adjust accordingly
-- **Resource Limits** Set appropriate resource limits
-- **Health Checks** Implement worker health monitoring
-
-Monitoring Integration
-~~~~~~~~~~~~~~~~~~~~~~
-
-Integrate with monitoring systems:
-
-- **Logfire** Automatic task tracking and performance metrics
-- **Prometheus** Custom metrics for task performance
-- **Grafana** Dashboards for task monitoring
-- **Slack** Real-time alerts for task failures
-
-Best Practices
---------------
-
-Task Design
-~~~~~~~~~~~~
-
-Design tasks for reliability:
-
-- **Idempotent** Tasks should be safe to retry
-- **Atomic** Tasks should complete or fail completely
-- **Stateless** Tasks should not depend on external state
-- **Timeout** Set appropriate timeouts for long-running tasks
-
-Error Handling
-~~~~~~~~~~~~~~~
-
-Implement robust error handling:
-
-- **Validation** Validate all input parameters
-- **Graceful Degradation** Handle partial failures gracefully
-- **Logging** Log all errors with context
-- **Alerting** Alert on critical failures
-
-Monitoring
-~~~~~~~~~~
-
-Monitor task health:
-
-- **Success Rates** Track task success percentages
-- **Execution Times** Monitor task duration trends
-- **Queue Depth** Monitor queue backlog
-- **Worker Health** Monitor worker status and performance
-
-Scaling
-~~~~~~~~
-
-Scale tasks appropriately:
-
-- **Horizontal Scaling** Add more workers as needed
-- **Vertical Scaling** Increase worker resources
-- **Load Balancing** Distribute tasks across workers
-- **Auto-scaling** Implement automatic scaling based on queue depth

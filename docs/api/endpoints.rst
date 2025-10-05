@@ -905,7 +905,7 @@ Get Address Type by ID
    - ``200`` OK - Address type found
    - ``404`` Not Found - Address type not found
 
-Data Lineage
+Address Lineage
 ------------
 
 Create Address Lineage
@@ -1282,7 +1282,7 @@ Celery Queue Monitoring
       }
 
    **Alert Thresholds:**
-   
+
    - **WARNING**: 50+ pending tasks
    - **CRITICAL**: 100+ pending tasks
 
