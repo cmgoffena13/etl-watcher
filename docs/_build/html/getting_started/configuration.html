@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Configuration &mdash; watcher 1.0.0 documentation</title>
+  <title>Configuration &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -113,7 +113,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -183,21 +183,21 @@
 <section id="connection-settings">
 <h3>Connection Settings<a class="headerlink" href="#connection-settings" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Host</strong>: Database server hostname</p></li>
-<li><p><strong>Port</strong>: Database port (default: 5432)</p></li>
-<li><p><strong>Database</strong>: Database name</p></li>
-<li><p><strong>Username</strong>: Database username</p></li>
-<li><p><strong>Password</strong>: Database password</p></li>
-<li><p><strong>SSL</strong>: SSL connection settings</p></li>
+<li><p><strong>Host</strong> Database server hostname</p></li>
+<li><p><strong>Port</strong> Database port (default: 5432)</p></li>
+<li><p><strong>Database</strong> Database name</p></li>
+<li><p><strong>Username</strong> Database username</p></li>
+<li><p><strong>Password</strong> Database password</p></li>
+<li><p><strong>SSL</strong> SSL connection settings</p></li>
 </ul>
 </section>
 <section id="connection-pool-settings">
 <h3>Connection Pool Settings<a class="headerlink" href="#connection-pool-settings" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Pool Size</strong>: 20 connections</p></li>
-<li><p><strong>Max Overflow</strong>: 10 additional connections</p></li>
-<li><p><strong>Pool Timeout</strong>: 30 seconds</p></li>
-<li><p><strong>Pool Recycle</strong>: 3600 seconds</p></li>
+<li><p><strong>Pool Size</strong> 20 connections</p></li>
+<li><p><strong>Max Overflow</strong> 10 additional connections</p></li>
+<li><p><strong>Pool Timeout</strong> 30 seconds</p></li>
+<li><p><strong>Pool Recycle</strong> 3600 seconds</p></li>
 </ul>
 </section>
 </section>
@@ -206,21 +206,21 @@
 <section id="id1">
 <h3>Connection Settings<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Host</strong>: Redis server hostname</p></li>
-<li><p><strong>Port</strong>: Redis port (default: 6379)</p></li>
-<li><p><strong>Database</strong>: Redis database number (default: 1)</p></li>
-<li><p><strong>Password</strong>: Redis password (if required)</p></li>
+<li><p><strong>Host</strong> Redis server hostname</p></li>
+<li><p><strong>Port</strong> Redis port (default: 6379)</p></li>
+<li><p><strong>Database</strong> Redis database number (default: 1)</p></li>
+<li><p><strong>Password</strong> Redis password (if required)</p></li>
 </ul>
 </section>
 <section id="celery-configuration">
 <h3>Celery Configuration<a class="headerlink" href="#celery-configuration" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Broker</strong>: Redis URL for message broker</p></li>
-<li><p><strong>Backend</strong>: Redis URL for result backend</p></li>
-<li><p><strong>Task Serializer</strong>: JSON</p></li>
-<li><p><strong>Result Serializer</strong>: JSON</p></li>
-<li><p><strong>Accept Content</strong>: JSON</p></li>
-<li><p><strong>Time Zone</strong>: UTC</p></li>
+<li><p><strong>Broker</strong> Redis URL for message broker</p></li>
+<li><p><strong>Backend</strong> Redis URL for result backend</p></li>
+<li><p><strong>Task Serializer</strong> JSON</p></li>
+<li><p><strong>Result Serializer</strong> JSON</p></li>
+<li><p><strong>Accept Content</strong> JSON</p></li>
+<li><p><strong>Time Zone</strong> UTC</p></li>
 </ul>
 </section>
 </section>
@@ -230,10 +230,10 @@
 <h3>Logfire Integration<a class="headerlink" href="#logfire-integration" title="Link to this heading"></a></h3>
 <p>Logfire provides comprehensive observability for your Watcher instance:</p>
 <ul class="simple">
-<li><p><strong>Application Metrics</strong>: Request/response times, error rates</p></li>
-<li><p><strong>Database Queries</strong>: Query performance and slow query detection</p></li>
-<li><p><strong>Background Tasks</strong>: Celery worker execution logging and task tracking</p></li>
-<li><p><strong>Custom Events</strong>: Pipeline execution tracking and anomaly detection</p></li>
+<li><p><strong>Application Metrics</strong> Request/response times, error rates</p></li>
+<li><p><strong>Database Queries</strong> Query performance and slow query detection</p></li>
+<li><p><strong>Background Tasks</strong> Celery worker execution logging and task tracking</p></li>
+<li><p><strong>Custom Events</strong> Pipeline execution tracking and anomaly detection</p></li>
 </ul>
 <p>Setup:</p>
 <ol class="arabic simple">
@@ -254,9 +254,9 @@
 </ol>
 <p>Alert Types:</p>
 <ul class="simple">
-<li><p><strong>Queue Monitoring</strong>: Celery queue depth alerts</p></li>
-<li><p><strong>Anomaly Detection</strong>: Statistical anomaly alerts</p></li>
-<li><p><strong>System Health</strong>: Database and Redis connectivity issues</p></li>
+<li><p><strong>Queue Monitoring</strong> Celery queue depth alerts</p></li>
+<li><p><strong>Anomaly Detection</strong> Statistical anomaly alerts</p></li>
+<li><p><strong>System Health</strong> Database and Redis connectivity issues</p></li>
 </ul>
 </section>
 </section>
@@ -312,28 +312,28 @@
 <section id="database-optimization">
 <h3>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Indexes</strong>: Ensure proper indexing on frequently queried columns</p></li>
-<li><p><strong>Connection Pooling</strong>: Tune pool size based on load</p></li>
-<li><p><strong>Query Optimization</strong>: Monitor and optimize slow queries</p></li>
-<li><p><strong>Vacuum</strong>: Regular database maintenance</p></li>
+<li><p><strong>Indexes</strong> Ensure proper indexing on frequently queried columns</p></li>
+<li><p><strong>Connection Pooling</strong> Tune pool size based on load</p></li>
+<li><p><strong>Query Optimization</strong> Monitor and optimize slow queries</p></li>
+<li><p><strong>Vacuum</strong> Regular database maintenance</p></li>
 </ul>
 </section>
 <section id="redis-optimization">
 <h3>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Memory</strong>: Monitor Redis memory usage</p></li>
-<li><p><strong>Persistence</strong>: Configure appropriate persistence settings</p></li>
-<li><p><strong>Eviction</strong>: Set appropriate eviction policies</p></li>
-<li><p><strong>Monitoring</strong>: Monitor Redis performance metrics</p></li>
+<li><p><strong>Memory</strong> Monitor Redis memory usage</p></li>
+<li><p><strong>Persistence</strong> Configure appropriate persistence settings</p></li>
+<li><p><strong>Eviction</strong> Set appropriate eviction policies</p></li>
+<li><p><strong>Monitoring</strong> Monitor Redis performance metrics</p></li>
 </ul>
 </section>
 <section id="celery-optimization">
 <h3>Celery Optimization<a class="headerlink" href="#celery-optimization" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Workers</strong>: Scale workers based on task volume</p></li>
-<li><p><strong>Rate Limits</strong>: Configure appropriate rate limits</p></li>
-<li><p><strong>Retries</strong>: Tune retry policies</p></li>
-<li><p><strong>Monitoring</strong>: Monitor worker performance and queue depth</p></li>
+<li><p><strong>Workers</strong> Scale workers based on task volume</p></li>
+<li><p><strong>Rate Limits</strong> Configure appropriate rate limits</p></li>
+<li><p><strong>Retries</strong> Tune retry policies</p></li>
+<li><p><strong>Monitoring</strong> Monitor worker performance and queue depth</p></li>
 </ul>
 </section>
 </section>

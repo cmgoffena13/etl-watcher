@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Database Schema &mdash; watcher 1.0.0 documentation</title>
+  <title>Database Schema &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -134,7 +134,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -562,27 +562,27 @@
 <section id="standard-types">
 <h3>Standard Types<a class="headerlink" href="#standard-types" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>SERIAL</strong>: Auto-incrementing integer primary keys</p></li>
-<li><p><strong>VARCHAR</strong>: Variable-length character strings</p></li>
-<li><p><strong>BOOLEAN</strong>: True/false values</p></li>
-<li><p><strong>TIMESTAMP WITH TIME ZONE</strong>: Timezone-aware timestamps</p></li>
-<li><p><strong>DECIMAL</strong>: Fixed-point decimal numbers</p></li>
-<li><p><strong>INTEGER</strong>: 32-bit signed integers</p></li>
-<li><p><strong>BIGINT</strong>: 64-bit signed integers</p></li>
+<li><p><strong>SERIAL</strong> Auto-incrementing integer primary keys</p></li>
+<li><p><strong>VARCHAR</strong> Variable-length character strings</p></li>
+<li><p><strong>BOOLEAN</strong> True/false values</p></li>
+<li><p><strong>TIMESTAMP WITH TIME ZONE</strong> Timezone-aware timestamps</p></li>
+<li><p><strong>DECIMAL</strong> Fixed-point decimal numbers</p></li>
+<li><p><strong>INTEGER</strong> 32-bit signed integers</p></li>
+<li><p><strong>BIGINT</strong> 64-bit signed integers</p></li>
 </ul>
 </section>
 <section id="json-types">
 <h3>JSON Types<a class="headerlink" href="#json-types" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>JSONB</strong>: Binary JSON for efficient storage and querying</p></li>
-<li><p><strong>JSON</strong>: Text-based JSON for simple storage</p></li>
+<li><p><strong>JSONB</strong> Binary JSON for efficient storage and querying</p></li>
+<li><p><strong>JSON</strong> Text-based JSON for simple storage</p></li>
 </ul>
 </section>
 <section id="special-types">
 <h3>Special Types<a class="headerlink" href="#special-types" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>DatePartEnum</strong>: Enumeration for date parts (hour, day, week, month, quarter, year)</p></li>
-<li><p><strong>AnomalyMetricFieldEnum</strong>: Enumeration for anomaly detection metrics</p></li>
+<li><p><strong>DatePartEnum</strong> Enumeration for date parts (hour, day, week, month, quarter, year)</p></li>
+<li><p><strong>AnomalyMetricFieldEnum</strong> Enumeration for anomaly detection metrics</p></li>
 </ul>
 </section>
 </section>
@@ -590,22 +590,22 @@
 <h2>Data Relationships<a class="headerlink" href="#data-relationships" title="Link to this heading"></a></h2>
 <section id="hierarchical-relationships">
 <h3>Hierarchical Relationships<a class="headerlink" href="#hierarchical-relationships" title="Link to this heading"></a></h3>
-<p><strong>Pipeline Execution Hierarchy</strong>:
+<p><strong>Pipeline Execution Hierarchy</strong>
 - Parent-child relationships via <cite>parent_id</cite>
 - Closure table for efficient ancestor/descendant queries
 - Depth tracking for relationship levels</p>
-<p><strong>Address Lineage Hierarchy</strong>:
+<p><strong>Address Lineage Hierarchy</strong>
 - Source-target relationships via <cite>source_address_id</cite> and <cite>target_address_id</cite>
 - Closure table for transitive relationships
 - Depth tracking for lineage levels</p>
 </section>
 <section id="many-to-many-relationships">
 <h3>Many-to-Many Relationships<a class="headerlink" href="#many-to-many-relationships" title="Link to this heading"></a></h3>
-<p><strong>Pipeline-Address Relationships</strong>:
+<p><strong>Pipeline-Address Relationships</strong>
 - Pipelines can have multiple addresses
 - Addresses can be used by multiple pipelines
 - Junction table: <cite>address_lineage</cite></p>
-<p><strong>Pipeline-Execution Relationships</strong>:
+<p><strong>Pipeline-Execution Relationships</strong>
 - Pipelines can have multiple executions
 - Executions belong to one pipeline
 - Foreign key: <cite>pipeline_id</cite></p>
@@ -644,28 +644,28 @@
 <section id="migration-strategy">
 <h3>Migration Strategy<a class="headerlink" href="#migration-strategy" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Alembic</strong>: Database migration management</p></li>
-<li><p><strong>Version Control</strong>: Track schema changes</p></li>
-<li><p><strong>Rollback Support</strong>: Revert schema changes</p></li>
-<li><p><strong>Data Preservation</strong>: Maintain data integrity</p></li>
+<li><p><strong>Alembic</strong> Database migration management</p></li>
+<li><p><strong>Version Control</strong> Track schema changes</p></li>
+<li><p><strong>Rollback Support</strong> Revert schema changes</p></li>
+<li><p><strong>Data Preservation</strong> Maintain data integrity</p></li>
 </ul>
 </section>
 <section id="migration-best-practices">
 <h3>Migration Best Practices<a class="headerlink" href="#migration-best-practices" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Backup First</strong>: Always backup before migrations</p></li>
-<li><p><strong>Test Migrations</strong>: Test in development first</p></li>
-<li><p><strong>Incremental Changes</strong>: Small, focused migrations</p></li>
-<li><p><strong>Documentation</strong>: Document schema changes</p></li>
+<li><p><strong>Backup First</strong> Always backup before migrations</p></li>
+<li><p><strong>Test Migrations</strong> Test in development first</p></li>
+<li><p><strong>Incremental Changes</strong> Small, focused migrations</p></li>
+<li><p><strong>Documentation</strong> Document schema changes</p></li>
 </ul>
 </section>
 <section id="schema-maintenance">
 <h3>Schema Maintenance<a class="headerlink" href="#schema-maintenance" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Regular Cleanup</strong>: Remove unused tables/columns</p></li>
-<li><p><strong>Index Optimization</strong>: Monitor and optimize indexes</p></li>
-<li><p><strong>Statistics Updates</strong>: Keep statistics current</p></li>
-<li><p><strong>Performance Monitoring</strong>: Track query performance</p></li>
+<li><p><strong>Regular Cleanup</strong> Remove unused tables/columns</p></li>
+<li><p><strong>Index Optimization</strong> Monitor and optimize indexes</p></li>
+<li><p><strong>Statistics Updates</strong> Keep statistics current</p></li>
+<li><p><strong>Performance Monitoring</strong> Track query performance</p></li>
 </ul>
 </section>
 </section>

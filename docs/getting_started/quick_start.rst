@@ -131,10 +131,10 @@ Step 5: Monitor Your System
 Next Steps
 ----------
 
-- **Set up scheduled monitoring**: Configure cron jobs to ping the monitoring endpoints
-- **Configure Slack alerts**: Add your Slack webhook URL for notifications
-- **Set up anomaly detection rules**: Create rules for your specific metrics
-- **Explore the diagnostics page**: Monitor system health and performance
+- **Set up scheduled monitoring** Configure cron jobs to ping the monitoring endpoints
+- **Configure Slack alerts** Add your Slack webhook URL for notifications
+- **Set up anomaly detection rules** Create rules for your specific metrics
+- **Explore the diagnostics page** Monitor system health and performance
 
 Common Issues
 -------------

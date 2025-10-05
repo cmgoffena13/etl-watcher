@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pipeline Management &mdash; watcher 1.0.0 documentation</title>
+  <title>Pipeline Management &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -122,7 +122,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -148,7 +148,7 @@
 <section id="basic-pipeline-creation">
 <h3>Basic Pipeline Creation<a class="headerlink" href="#basic-pipeline-creation" title="Link to this heading"></a></h3>
 <ol class="arabic">
-<li><p><strong>Create a pipeline type first</strong>:</p>
+<li><p><strong>Create a pipeline type first</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline_type&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -158,7 +158,7 @@
 </pre></div>
 </div>
 </li>
-<li><p><strong>Create the pipeline</strong>:</p>
+<li><p><strong>Create the pipeline</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -200,7 +200,7 @@
 <section id="starting-executions">
 <h3>Starting Executions<a class="headerlink" href="#starting-executions" title="Link to this heading"></a></h3>
 <ol class="arabic">
-<li><p><strong>Start a pipeline execution</strong>:</p>
+<li><p><strong>Start a pipeline execution</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -213,7 +213,7 @@
 </pre></div>
 </div>
 </li>
-<li><p><strong>End the execution with metrics</strong>:</p>
+<li><p><strong>End the execution with metrics</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -232,7 +232,7 @@
 </section>
 <section id="execution-patterns">
 <h3>Execution Patterns<a class="headerlink" href="#execution-patterns" title="Link to this heading"></a></h3>
-<p><strong>Full Load Pattern</strong>:</p>
+<p><strong>Full Load Pattern</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
@@ -242,7 +242,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Incremental Load Pattern</strong>:</p>
+<p><strong>Incremental Load Pattern</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T10:00:00Z&quot;</span><span class="p">,</span>
@@ -252,7 +252,7 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Nested Execution Pattern</strong>:</p>
+<p><strong>Nested Execution Pattern</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
@@ -275,27 +275,27 @@
 <h3>Understanding Watermarks<a class="headerlink" href="#understanding-watermarks" title="Link to this heading"></a></h3>
 <p>Watermarks track the progress of data processing:</p>
 <ul class="simple">
-<li><p><strong>watermark</strong>: Current position (where processing has reached)</p></li>
-<li><p><strong>next_watermark</strong>: Target position (where processing should go to)</p></li>
+<li><p><strong>watermark</strong> Current position (where processing has reached)</p></li>
+<li><p><strong>next_watermark</strong> Target position (where processing should go to)</p></li>
 </ul>
 </section>
 <section id="watermark-patterns">
 <h3>Watermark Patterns<a class="headerlink" href="#watermark-patterns" title="Link to this heading"></a></h3>
-<p><strong>Daily Processing</strong>:</p>
+<p><strong>Daily Processing</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Hourly Processing</strong>:</p>
+<p><strong>Hourly Processing</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T11:00:00Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Numeric Watermarks</strong>:</p>
+<p><strong>Numeric Watermarks</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;1000&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2000&quot;</span>
@@ -371,7 +371,7 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <section id="setting-up-anomaly-detection">
 <h3>Setting Up Anomaly Detection<a class="headerlink" href="#setting-up-anomaly-detection" title="Link to this heading"></a></h3>
 <ol class="arabic">
-<li><p><strong>Create an anomaly detection rule</strong>:</p>
+<li><p><strong>Create an anomaly detection rule</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -390,22 +390,22 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <h3>Supported Metrics<a class="headerlink" href="#supported-metrics" title="Link to this heading"></a></h3>
 <p>Monitor various pipeline metrics:</p>
 <ul class="simple">
-<li><p><strong>total_rows</strong>: Total number of rows processed</p></li>
-<li><p><strong>duration_seconds</strong>: Execution duration</p></li>
-<li><p><strong>throughput</strong>: Rows processed per second</p></li>
-<li><p><strong>inserts</strong>: Number of insert operations</p></li>
-<li><p><strong>updates</strong>: Number of update operations</p></li>
-<li><p><strong>soft_deletes</strong>: Number of soft delete operations</p></li>
+<li><p><strong>total_rows</strong> Total number of rows processed</p></li>
+<li><p><strong>duration_seconds</strong> Execution duration</p></li>
+<li><p><strong>throughput</strong> Rows processed per second</p></li>
+<li><p><strong>inserts</strong> Number of insert operations</p></li>
+<li><p><strong>updates</strong> Number of update operations</p></li>
+<li><p><strong>soft_deletes</strong> Number of soft delete operations</p></li>
 </ul>
 </section>
 <section id="z-score-thresholds">
 <h3>Z-Score Thresholds<a class="headerlink" href="#z-score-thresholds" title="Link to this heading"></a></h3>
 <p>Configure sensitivity of anomaly detection:</p>
 <ul class="simple">
-<li><p><strong>1.5</strong>: Very sensitive (catches minor variations)</p></li>
-<li><p><strong>2.0</strong>: Standard sensitivity (recommended)</p></li>
-<li><p><strong>2.5</strong>: Less sensitive (catches major variations)</p></li>
-<li><p><strong>3.0</strong>: Very conservative (catches only extreme anomalies)</p></li>
+<li><p><strong>1.5</strong> Very sensitive (catches minor variations)</p></li>
+<li><p><strong>2.0</strong> Standard sensitivity (recommended)</p></li>
+<li><p><strong>2.5</strong> Less sensitive (catches major variations)</p></li>
+<li><p><strong>3.0</strong> Very conservative (catches only extreme anomalies)</p></li>
 </ul>
 </section>
 </section>
@@ -473,7 +473,7 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 </section>
 <section id="common-update-scenarios">
 <h3>Common Update Scenarios<a class="headerlink" href="#common-update-scenarios" title="Link to this heading"></a></h3>
-<p><strong>Change Monitoring Thresholds</strong>:</p>
+<p><strong>Change Monitoring Thresholds</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
@@ -483,7 +483,7 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Mute Monitoring Checks</strong>:</p>
+<p><strong>Mute Monitoring Checks</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -491,7 +491,7 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Update Watermark</strong>:</p>
+<p><strong>Update Watermark</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span>
@@ -505,28 +505,28 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <section id="pipeline-design">
 <h3>Pipeline Design<a class="headerlink" href="#pipeline-design" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Clear Naming</strong>: Use descriptive names for pipelines</p></li>
-<li><p><strong>Consistent Watermarks</strong>: Use consistent watermark formats</p></li>
-<li><p><strong>Metadata</strong>: Include relevant metadata for context</p></li>
-<li><p><strong>Monitoring</strong>: Configure appropriate monitoring thresholds</p></li>
+<li><p><strong>Clear Naming</strong> Use descriptive names for pipelines</p></li>
+<li><p><strong>Consistent Watermarks</strong> Use consistent watermark formats</p></li>
+<li><p><strong>Metadata</strong> Include relevant metadata for context</p></li>
+<li><p><strong>Monitoring</strong> Configure appropriate monitoring thresholds</p></li>
 </ul>
 </section>
 <section id="execution-management">
 <h3>Execution Management<a class="headerlink" href="#execution-management" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Regular Executions</strong>: Run pipelines on consistent schedules</p></li>
-<li><p><strong>Proper Metrics</strong>: Always provide accurate execution metrics</p></li>
-<li><p><strong>Error Handling</strong>: Handle failures gracefully</p></li>
-<li><p><strong>Documentation</strong>: Document pipeline behavior and dependencies</p></li>
+<li><p><strong>Regular Executions</strong> Run pipelines on consistent schedules</p></li>
+<li><p><strong>Proper Metrics</strong> Always provide accurate execution metrics</p></li>
+<li><p><strong>Error Handling</strong> Handle failures gracefully</p></li>
+<li><p><strong>Documentation</strong> Document pipeline behavior and dependencies</p></li>
 </ul>
 </section>
 <section id="monitoring-strategy">
 <h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Appropriate Thresholds</strong>: Set realistic monitoring thresholds</p></li>
-<li><p><strong>Regular Checks</strong>: Run monitoring checks regularly</p></li>
-<li><p><strong>Alert Configuration</strong>: Configure appropriate alerting</p></li>
-<li><p><strong>Performance Tracking</strong>: Monitor execution performance trends</p></li>
+<li><p><strong>Appropriate Thresholds</strong> Set realistic monitoring thresholds</p></li>
+<li><p><strong>Regular Checks</strong> Run monitoring checks regularly</p></li>
+<li><p><strong>Alert Configuration</strong> Configure appropriate alerting</p></li>
+<li><p><strong>Performance Tracking</strong> Monitor execution performance trends</p></li>
 </ul>
 </section>
 <section id="troubleshooting">
@@ -534,19 +534,19 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 </section>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>Watermark Not Updating</strong>:
+<p><strong>Watermark Not Updating</strong>
 - Check if execution completed successfully
 - Verify next_watermark is provided
 - Check for database connection issues</p>
-<p><strong>Monitoring Alerts</strong>:
+<p><strong>Monitoring Alerts</strong>
 - Review monitoring thresholds
 - Check data freshness and timeliness
 - Verify pipeline execution schedules</p>
-<p><strong>Anomaly Detection</strong>:
+<p><strong>Anomaly Detection</strong>
 - Ensure sufficient historical data
 - Check z-score thresholds
 - Verify metric field selection</p>
-<p><strong>Lineage Issues</strong>:
+<p><strong>Lineage Issues</strong>
 - Verify address creation
 - Check lineage relationship creation
 - Review closure table maintenance</p>

@@ -24,3 +24,9 @@ load-test:
 
 docs:
 	uv run sphinx-build -b html docs docs/_build/html
+
+docs-serve:
+	uv run sphinx-autobuild docs docs/_build/html --open-browser --port 8080
+
+docs-watch:
+	uv run sphinx-autobuild docs docs/_build/html --watch src/ --port 8080

@@ -7,7 +7,7 @@ Pipeline Models
 ---------------
 
 PipelinePostInput
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -25,7 +25,7 @@ PipelinePostInput
        load_lineage: Optional[bool] = None
 
 PipelinePostOutput
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -36,7 +36,7 @@ PipelinePostOutput
        watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 PipelinePatchInput
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -59,7 +59,7 @@ Pipeline Execution Models
 -------------------------
 
 PipelineExecutionStartInput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -81,7 +81,7 @@ PipelineExecutionStartOutput
        id: int
 
 PipelineExecutionEndInput
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -98,7 +98,7 @@ Address Models
 --------------
 
 AddressPostInput
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -108,7 +108,7 @@ AddressPostInput
        address_type_group_name: str = Field(max_length=150, min_length=1)
 
 AddressPostOutput
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -119,7 +119,7 @@ AddressPostOutput
        watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 AddressPatchInput
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -132,7 +132,7 @@ Address Type Models
 -------------------
 
 AddressTypePostInput
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -141,7 +141,7 @@ AddressTypePostInput
        group_name: str = Field(max_length=150, min_length=1)
 
 AddressTypePostOutput
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -149,7 +149,7 @@ AddressTypePostOutput
        id: int
 
 AddressTypePatchInput
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -162,7 +162,7 @@ Address Lineage Models
 ----------------------
 
 AddressLineagePostInput
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -172,7 +172,7 @@ AddressLineagePostInput
        target_addresses: List[TargetAddress]
 
 SourceAddress
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -182,7 +182,7 @@ SourceAddress
        address_type_group_name: str = Field(max_length=150, min_length=1)
 
 TargetAddress
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -192,7 +192,7 @@ TargetAddress
        address_type_group_name: str = Field(max_length=150, min_length=1)
 
 AddressLineagePostOutput
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -202,7 +202,7 @@ AddressLineagePostOutput
        message: Optional[str] = None
 
 AddressLineageGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -213,7 +213,7 @@ AddressLineageGetOutput
        target_address_id: int
 
 AddressLineageClosureGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -228,7 +228,7 @@ Anomaly Detection Models
 ------------------------
 
 AnomalyDetectionRulePostInput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -239,7 +239,7 @@ AnomalyDetectionRulePostInput
        minimum_executions: int = Field(ge=2)
 
 AnomalyDetectionRulePostOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -253,7 +253,7 @@ AnomalyDetectionRulePostOutput
        created_at: DateTime
 
 AnomalyDetectionRulePatchInput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -265,7 +265,7 @@ AnomalyDetectionRulePatchInput
        active: Optional[bool] = None
 
 UnflagAnomalyInput
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -275,7 +275,7 @@ UnflagAnomalyInput
        metric_field: List[AnomalyMetricFieldEnum]
 
 AnomalyDetectionResultGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -293,7 +293,7 @@ AnomalyDetectionResultGetOutput
        detected_at: DateTime
 
 AnomalyDetectionSummaryGetOutput
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -307,7 +307,7 @@ Monitoring Models
 -----------------
 
 FreshnessPostOutput
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -315,7 +315,7 @@ FreshnessPostOutput
        status: str
 
 TimelinessPostInput
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -323,7 +323,7 @@ TimelinessPostInput
        lookback_minutes: int = Field(gt=0)
 
 TimelinessPostOutput
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -334,7 +334,7 @@ Log Cleanup Models
 -----------------
 
 LogCleanupPostOutput
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -350,7 +350,7 @@ Enums
 -----
 
 AnomalyMetricFieldEnum
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -363,7 +363,7 @@ AnomalyMetricFieldEnum
        SOFT_DELETES = "soft_deletes"
 
 DatePartEnum
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: python
 
@@ -380,10 +380,10 @@ ValidatorModel
 
 All models inherit from ``ValidatorModel`` which provides:
 
-- **Pydantic validation**: Automatic data validation and type checking
-- **String coercion**: Automatic conversion of various types to strings for database storage
-- **Case normalization**: Automatic lowercase conversion for string fields
-- **Field validation**: Built-in validation for field constraints (length, ranges, etc.)
+- **Pydantic validation** Automatic data validation and type checking
+- **String coercion** Automatic conversion of various types to strings for database storage
+- **Case normalization** Automatic lowercase conversion for string fields
+- **Field validation** Built-in validation for field constraints (length, ranges, etc.)
 
 Example:
 

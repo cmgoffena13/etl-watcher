@@ -33,7 +33,7 @@ Primary pipeline configuration table.
    );
 
 Pipeline Type
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 Pipeline type classification.
 
@@ -75,7 +75,7 @@ Pipeline execution tracking.
    );
 
 Pipeline Execution Closure
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Hierarchical pipeline execution relationships.
 
@@ -110,7 +110,7 @@ Data address tracking.
    );
 
 Address Type
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Address type classification.
 
@@ -142,7 +142,7 @@ Data lineage relationships.
    );
 
 Address Lineage Closure
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Transitive closure of address lineage relationships.
 
@@ -161,7 +161,7 @@ Monitoring Tables
 -----------------
 
 Timeliness Pipeline Execution Log
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Timeliness monitoring results.
 
@@ -179,7 +179,7 @@ Timeliness monitoring results.
    );
 
 Freshness Pipeline Log
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 Freshness monitoring results.
 
@@ -199,7 +199,7 @@ Anomaly Detection
 -----------------
 
 Anomaly Detection Rule
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
 Anomaly detection configuration.
 
@@ -217,7 +217,7 @@ Anomaly detection configuration.
    );
 
 Anomaly Detection Result
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Anomaly detection results.
 
@@ -242,7 +242,7 @@ Indexes
 -------
 
 Performance Indexes
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -282,7 +282,7 @@ Performance Indexes
    CREATE INDEX ix_anomaly_detection_result_detected_at ON anomaly_detection_result(detected_at);
 
 Composite Indexes
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -304,7 +304,7 @@ Composite Indexes
    CREATE INDEX ix_anomaly_detection_result_rule_execution ON anomaly_detection_result(rule_id, pipeline_execution_id);
 
 Covering Indexes
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -320,7 +320,7 @@ Covering Indexes
    CREATE INDEX ix_freshness_pipeline_log_pipeline_address_modified ON freshness_pipeline_log(pipeline_id, address_id, last_modified) INCLUDE (threshold_hours, is_fresh);
 
 Partial Indexes
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -340,7 +340,7 @@ Constraints
 -----------
 
 Primary Key Constraints
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -359,7 +359,7 @@ Primary Key Constraints
    ALTER TABLE anomaly_detection_result ADD CONSTRAINT pk_anomaly_detection_result PRIMARY KEY (id);
 
 Foreign Key Constraints
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -427,7 +427,7 @@ Check Constraints
    ALTER TABLE freshness_pipeline_log ADD CONSTRAINT ck_freshness_pipeline_log_threshold_hours CHECK (threshold_hours > 0);
 
 Unique Constraints
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: sql
 
@@ -443,51 +443,51 @@ Data Types
 Standard Types
 ~~~~~~~~~~~~~~
 
-- **SERIAL**: Auto-incrementing integer primary keys
-- **VARCHAR**: Variable-length character strings
-- **BOOLEAN**: True/false values
-- **TIMESTAMP WITH TIME ZONE**: Timezone-aware timestamps
-- **DECIMAL**: Fixed-point decimal numbers
-- **INTEGER**: 32-bit signed integers
-- **BIGINT**: 64-bit signed integers
+- **SERIAL** Auto-incrementing integer primary keys
+- **VARCHAR** Variable-length character strings
+- **BOOLEAN** True/false values
+- **TIMESTAMP WITH TIME ZONE** Timezone-aware timestamps
+- **DECIMAL** Fixed-point decimal numbers
+- **INTEGER** 32-bit signed integers
+- **BIGINT** 64-bit signed integers
 
 JSON Types
 ~~~~~~~~~~
 
-- **JSONB**: Binary JSON for efficient storage and querying
-- **JSON**: Text-based JSON for simple storage
+- **JSONB** Binary JSON for efficient storage and querying
+- **JSON** Text-based JSON for simple storage
 
 Special Types
-~~~~~~~~~~~~~
+~~~~~~~~~~~~
 
-- **DatePartEnum**: Enumeration for date parts (hour, day, week, month, quarter, year)
-- **AnomalyMetricFieldEnum**: Enumeration for anomaly detection metrics
+- **DatePartEnum** Enumeration for date parts (hour, day, week, month, quarter, year)
+- **AnomalyMetricFieldEnum** Enumeration for anomaly detection metrics
 
 Data Relationships
 -------------------
 
 Hierarchical Relationships
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Pipeline Execution Hierarchy**:
+**Pipeline Execution Hierarchy**
 - Parent-child relationships via `parent_id`
 - Closure table for efficient ancestor/descendant queries
 - Depth tracking for relationship levels
 
-**Address Lineage Hierarchy**:
+**Address Lineage Hierarchy**
 - Source-target relationships via `source_address_id` and `target_address_id`
 - Closure table for transitive relationships
 - Depth tracking for lineage levels
 
 Many-to-Many Relationships
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Pipeline-Address Relationships**:
+**Pipeline-Address Relationships**
 - Pipelines can have multiple addresses
 - Addresses can be used by multiple pipelines
 - Junction table: `address_lineage`
 
-**Pipeline-Execution Relationships**:
+**Pipeline-Execution Relationships**
 - Pipelines can have multiple executions
 - Executions belong to one pipeline
 - Foreign key: `pipeline_id`
@@ -496,7 +496,7 @@ Data Integrity
 --------------
 
 Referential Integrity
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 - All foreign keys have corresponding primary keys
 - Cascade deletes for dependent records
@@ -523,23 +523,23 @@ Schema Evolution
 Migration Strategy
 ~~~~~~~~~~~~~~~~~~
 
-- **Alembic**: Database migration management
-- **Version Control**: Track schema changes
-- **Rollback Support**: Revert schema changes
-- **Data Preservation**: Maintain data integrity
+- **Alembic** Database migration management
+- **Version Control** Track schema changes
+- **Rollback Support** Revert schema changes
+- **Data Preservation** Maintain data integrity
 
 Migration Best Practices
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Backup First**: Always backup before migrations
-- **Test Migrations**: Test in development first
-- **Incremental Changes**: Small, focused migrations
-- **Documentation**: Document schema changes
+- **Backup First** Always backup before migrations
+- **Test Migrations** Test in development first
+- **Incremental Changes** Small, focused migrations
+- **Documentation** Document schema changes
 
 Schema Maintenance
 ~~~~~~~~~~~~~~~~~~
 
-- **Regular Cleanup**: Remove unused tables/columns
-- **Index Optimization**: Monitor and optimize indexes
-- **Statistics Updates**: Keep statistics current
-- **Performance Monitoring**: Track query performance
+- **Regular Cleanup** Remove unused tables/columns
+- **Index Optimization** Monitor and optimize indexes
+- **Statistics Updates** Keep statistics current
+- **Performance Monitoring** Track query performance

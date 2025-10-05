@@ -12,35 +12,35 @@ How It Works
 ------------
 
 Statistical Analysis
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The anomaly detection system uses z-score analysis:
 
-1. **Baseline Calculation**: Analyzes historical execution data
-2. **Statistical Metrics**: Calculates mean and standard deviation
-3. **Z-Score Calculation**: Determines how many standard deviations a value is from the mean
-4. **Threshold Comparison**: Compares z-score against configured threshold
-5. **Anomaly Detection**: Flags values that exceed the threshold
+1. **Baseline Calculation** Analyzes historical execution data
+2. **Statistical Metrics** Calculates mean and standard deviation
+3. **Z-Score Calculation** Determines how many standard deviations a value is from the mean
+4. **Threshold Comparison** Compares z-score against configured threshold
+5. **Anomaly Detection** Flags values that exceed the threshold
 
 Supported Metrics
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Monitor various pipeline execution metrics:
 
-- **total_rows**: Total number of rows processed
-- **duration_seconds**: Execution duration in seconds
-- **throughput**: Rows processed per second
-- **inserts**: Number of insert operations
-- **updates**: Number of update operations
-- **soft_deletes**: Number of soft delete operations
+- **total_rows** Total number of rows processed
+- **duration_seconds** Execution duration in seconds
+- **throughput** Rows processed per second
+- **inserts** Number of insert operations
+- **updates** Number of update operations
+- **soft_deletes** Number of soft delete operations
 
 Setting Up Anomaly Detection
 ----------------------------
 
 Creating Detection Rules
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Create an anomaly detection rule**:
+1. **Create an anomaly detection rule**
 
    .. code-block:: bash
 
@@ -53,7 +53,7 @@ Creating Detection Rules
              "minimum_executions": 5
            }'
 
-2. **Response**:
+2. **Response**
 
    .. code-block:: json
 
@@ -68,11 +68,11 @@ Creating Detection Rules
       }
 
 Rule Configuration
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Pipeline ID**: The pipeline to monitor for anomalies
+**Pipeline ID** The pipeline to monitor for anomalies
 
-**Metric Field**: The specific metric to analyze:
+**Metric Field** The specific metric to analyze:
 - ``total_rows``: Monitor row count variations
 - ``duration_seconds``: Monitor execution time variations
 - ``throughput``: Monitor processing speed variations
@@ -80,19 +80,19 @@ Rule Configuration
 - ``updates``: Monitor update operation variations
 - ``soft_deletes``: Monitor soft delete variations
 
-**Z-Threshold**: Sensitivity of anomaly detection:
+**Z-Threshold** Sensitivity of anomaly detection:
 - ``1.5``: Very sensitive (catches minor variations)
 - ``2.0``: Standard sensitivity (recommended)
 - ``2.5``: Less sensitive (catches major variations)
 - ``3.0``: Very conservative (catches only extreme anomalies)
 
-**Minimum Executions**: Number of historical executions needed before analysis:
+**Minimum Executions** Number of historical executions needed before analysis:
 - ``5``: Minimum for basic analysis
 - ``10``: Recommended for stable baselines
 - ``20``: For highly variable pipelines
 
 Multiple Rules
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Create multiple rules for comprehensive monitoring:
 
@@ -132,7 +132,7 @@ Automatic Execution
 -------------------
 
 Triggered Execution
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Anomaly detection runs automatically after each successful pipeline execution:
 
@@ -144,20 +144,20 @@ Anomaly detection runs automatically after each successful pipeline execution:
 6. **Sends alerts if anomalies are found**
 
 No Manual Triggering Required
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Unlike monitoring checks, anomaly detection doesn't require manual triggering:
 
-- **Automatic**: Runs after every successful execution
-- **Background**: Processed by Celery workers
-- **Real-time**: Results available immediately
-- **Persistent**: Anomaly results stored in database
+- **Automatic** Runs after every successful execution
+- **Background** Processed by Celery workers
+- **Real-time** Results available immediately
+- **Persistent** Anomaly results stored in database
 
 Anomaly Results
 ---------------
 
 Understanding Results
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When an anomaly is detected, the system stores detailed information:
 
@@ -181,21 +181,21 @@ When an anomaly is detected, the system stores detailed information:
    }
 
 Result Fields
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **violation_value**: The actual metric value that triggered the anomaly
-- **z_score**: How many standard deviations from the mean
-- **historical_mean**: Average value from historical data
-- **std_deviation_value**: Standard deviation from historical data
-- **z_threshold**: Configured threshold for this rule
-- **threshold_min_value**: Minimum expected value
-- **threshold_max_value**: Maximum expected value
+- **violation_value** The actual metric value that triggered the anomaly
+- **z_score** How many standard deviations from the mean
+- **historical_mean** Average value from historical data
+- **std_deviation_value** Standard deviation from historical data
+- **z_threshold** Configured threshold for this rule
+- **threshold_min_value** Minimum expected value
+- **threshold_max_value** Maximum expected value
 
 Alert Notifications
 -------------------
 
 Slack Alerts
-~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When anomalies are detected, Slack alerts are sent automatically:
 
@@ -214,7 +214,7 @@ When anomalies are detected, Slack alerts are sent automatically:
    • duration_seconds: 1800 seconds (expected: ~1200, z-score: 2.3)
 
 Alert Configuration
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure Slack webhooks for alerts:
 
@@ -230,7 +230,7 @@ Managing Anomalies
 ------------------
 
 Viewing Anomalies
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 List all anomaly detection rules:
 
@@ -258,7 +258,7 @@ Get specific rule details:
    curl -X GET "http://localhost:8000/anomaly_detection_rule/1"
 
 Updating Rules
-~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Update anomaly detection rules:
 
@@ -273,7 +273,7 @@ Update anomaly detection rules:
         }'
 
 Unflagging Anomalies
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Unflag anomalies that are false positives:
 
@@ -293,41 +293,41 @@ Best Practices
 ---------------
 
 Rule Configuration
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Start Conservative**: Begin with higher z-thresholds (2.5-3.0)
-- **Adjust Based on Data**: Lower thresholds as you understand your data patterns
-- **Multiple Metrics**: Monitor different aspects of pipeline performance
-- **Sufficient History**: Ensure enough historical data for stable baselines
+- **Start Conservative** Begin with higher z-thresholds (2.5-3.0)
+- **Adjust Based on Data** Lower thresholds as you understand your data patterns
+- **Multiple Metrics** Monitor different aspects of pipeline performance
+- **Sufficient History** Ensure enough historical data for stable baselines
 
 Threshold Selection
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**For Stable Pipelines**:
+**For Stable Pipelines**
 - Z-threshold: 2.0-2.5
 - Minimum executions: 10-15
 
-**For Variable Pipelines**:
+**For Variable Pipelines**
 - Z-threshold: 2.5-3.0
 - Minimum executions: 15-20
 
-**For Critical Pipelines**:
+**For Critical Pipelines**
 - Z-threshold: 1.5-2.0
 - Minimum executions: 5-10
 
 Monitoring Strategy
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Regular Review**: Review anomaly results regularly
-- **False Positive Management**: Unflag false positives promptly
-- **Threshold Tuning**: Adjust thresholds based on results
-- **Alert Fatigue**: Avoid overly sensitive thresholds
+- **Regular Review** Review anomaly results regularly
+- **False Positive Management** Unflag false positives promptly
+- **Threshold Tuning** Adjust thresholds based on results
+- **Alert Fatigue** Avoid overly sensitive thresholds
 
 Common Scenarios
 ----------------
 
 Data Volume Anomalies
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Detect unusual data volumes:
 
@@ -341,7 +341,7 @@ Detect unusual data volumes:
    }
 
 Performance Anomalies
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Detect execution time issues:
 
@@ -355,7 +355,7 @@ Detect execution time issues:
    }
 
 Throughput Anomalies
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Detect processing speed issues:
 
@@ -369,7 +369,7 @@ Detect processing speed issues:
    }
 
 DML Operation Anomalies
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Detect unusual insert/update patterns:
 
@@ -386,41 +386,41 @@ Troubleshooting
 ---------------
 
 Common Issues
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**No Anomalies Detected**:
+**No Anomalies Detected**
 - Check if rules are active
 - Verify minimum executions requirement
 - Check if z-threshold is too high
 
-**Too Many False Positives**:
+**Too Many False Positives**
 - Increase z-threshold
 - Increase minimum executions
 - Review historical data quality
 
-**Missing Alerts**:
+**Missing Alerts**
 - Verify Slack webhook configuration
 - Check Celery worker status
 - Review alert delivery logs
 
-**Baseline Issues**:
+**Baseline Issues**
 - Ensure sufficient historical data
 - Check for data quality issues
 - Verify metric field selection
 
 Performance Considerations
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Historical Data**: More data = better baselines
-- **Rule Complexity**: Multiple rules increase processing time
-- **Alert Volume**: Too many alerts can cause fatigue
-- **Storage**: Anomaly results are stored in database
+- **Historical Data** More data = better baselines
+- **Rule Complexity** Multiple rules increase processing time
+- **Alert Volume** Too many alerts can cause fatigue
+- **Storage** Anomaly results are stored in database
 
 Advanced Configuration
 ----------------------
 
 Auto-Creation Rules
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enable automatic rule creation for new pipelines:
 
@@ -434,7 +434,7 @@ Enable automatic rule creation for new pipelines:
 This automatically creates default anomaly detection rules for new pipelines.
 
 Custom Thresholds
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For pipelines with known patterns, use custom thresholds:
 
@@ -446,13 +446,3 @@ For pipelines with known patterns, use custom thresholds:
      "z_threshold": 1.5,
      "minimum_executions": 20
    }
-
-Batch Anomaly Detection
-~~~~~~~~~~~~~~~~~~~~~~~
-
-For high-volume pipelines, consider batch processing:
-
-- Monitor multiple executions together
-- Use rolling windows for baselines
-- Implement custom detection logic
-- Consider external anomaly detection systems

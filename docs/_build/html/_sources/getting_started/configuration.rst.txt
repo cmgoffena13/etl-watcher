@@ -5,7 +5,7 @@ Environment Variables
 ---------------------
 
 Development Environment
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
 
@@ -52,22 +52,22 @@ Database Configuration
 ----------------------
 
 Connection Settings
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Host**: Database server hostname
-- **Port**: Database port (default: 5432)
-- **Database**: Database name
-- **Username**: Database username
-- **Password**: Database password
-- **SSL**: SSL connection settings
+- **Host** Database server hostname
+- **Port** Database port (default: 5432)
+- **Database** Database name
+- **Username** Database username
+- **Password** Database password
+- **SSL** SSL connection settings
 
 Connection Pool Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Pool Size**: 20 connections
-- **Max Overflow**: 10 additional connections
-- **Pool Timeout**: 30 seconds
-- **Pool Recycle**: 3600 seconds
+- **Pool Size** 20 connections
+- **Max Overflow** 10 additional connections
+- **Pool Timeout** 30 seconds
+- **Pool Recycle** 3600 seconds
 
 Redis Configuration
 ------------------
@@ -75,33 +75,33 @@ Redis Configuration
 Connection Settings
 ~~~~~~~~~~~~~~~~~~~
 
-- **Host**: Redis server hostname
-- **Port**: Redis port (default: 6379)
-- **Database**: Redis database number (default: 1)
-- **Password**: Redis password (if required)
+- **Host** Redis server hostname
+- **Port** Redis port (default: 6379)
+- **Database** Redis database number (default: 1)
+- **Password** Redis password (if required)
 
 Celery Configuration
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Broker**: Redis URL for message broker
-- **Backend**: Redis URL for result backend
-- **Task Serializer**: JSON
-- **Result Serializer**: JSON
-- **Accept Content**: JSON
-- **Time Zone**: UTC
+- **Broker** Redis URL for message broker
+- **Backend** Redis URL for result backend
+- **Task Serializer** JSON
+- **Result Serializer** JSON
+- **Accept Content** JSON
+- **Time Zone** UTC
 
 Monitoring Configuration
 ------------------------
 
 Logfire Integration
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Logfire provides comprehensive observability for your Watcher instance:
 
-- **Application Metrics**: Request/response times, error rates
-- **Database Queries**: Query performance and slow query detection
-- **Background Tasks**: Celery worker execution logging and task tracking
-- **Custom Events**: Pipeline execution tracking and anomaly detection
+- **Application Metrics** Request/response times, error rates
+- **Database Queries** Query performance and slow query detection
+- **Background Tasks** Celery worker execution logging and task tracking
+- **Custom Events** Pipeline execution tracking and anomaly detection
 
 Setup:
 
@@ -111,7 +111,7 @@ Setup:
 4. Restart your application
 
 Slack Notifications
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure Slack webhooks for real-time alerts:
 
@@ -122,15 +122,15 @@ Configure Slack webhooks for real-time alerts:
 
 Alert Types:
 
-- **Queue Monitoring**: Celery queue depth alerts
-- **Anomaly Detection**: Statistical anomaly alerts
-- **System Health**: Database and Redis connectivity issues
+- **Queue Monitoring** Celery queue depth alerts
+- **Anomaly Detection** Statistical anomaly alerts
+- **System Health** Database and Redis connectivity issues
 
 Feature Flags
 -------------
 
 Auto-Create Anomaly Detection Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 When enabled, Watcher automatically creates anomaly detection rules for new pipelines:
 
@@ -139,7 +139,7 @@ When enabled, Watcher automatically creates anomaly detection rules for new pipe
    WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true
 
 Profiling
-~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Enable application profiling for performance analysis:
 
@@ -151,7 +151,7 @@ Security Configuration
 ----------------------
 
 Database Security
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - Use strong passwords
 - Enable SSL connections in production
@@ -178,25 +178,25 @@ Performance Tuning
 -----------------
 
 Database Optimization
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
-- **Indexes**: Ensure proper indexing on frequently queried columns
-- **Connection Pooling**: Tune pool size based on load
-- **Query Optimization**: Monitor and optimize slow queries
-- **Vacuum**: Regular database maintenance
+- **Indexes** Ensure proper indexing on frequently queried columns
+- **Connection Pooling** Tune pool size based on load
+- **Query Optimization** Monitor and optimize slow queries
+- **Vacuum** Regular database maintenance
 
 Redis Optimization
 ~~~~~~~~~~~~~~~~~~
 
-- **Memory**: Monitor Redis memory usage
-- **Persistence**: Configure appropriate persistence settings
-- **Eviction**: Set appropriate eviction policies
-- **Monitoring**: Monitor Redis performance metrics
+- **Memory** Monitor Redis memory usage
+- **Persistence** Configure appropriate persistence settings
+- **Eviction** Set appropriate eviction policies
+- **Monitoring** Monitor Redis performance metrics
 
 Celery Optimization
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Workers**: Scale workers based on task volume
-- **Rate Limits**: Configure appropriate rate limits
-- **Retries**: Tune retry policies
-- **Monitoring**: Monitor worker performance and queue depth
+- **Workers** Scale workers based on task volume
+- **Rate Limits** Configure appropriate rate limits
+- **Retries** Tune retry policies
+- **Monitoring** Monitor worker performance and queue depth

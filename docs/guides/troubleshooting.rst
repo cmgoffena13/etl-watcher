@@ -13,6 +13,8 @@ Installation Issues
    **Problem**: Ports 8000, 5432, or 6379 are already in use
    
    **Solution**:
+
+   
    .. code-block:: bash
 
       # Check what's using the ports
@@ -31,6 +33,8 @@ Installation Issues
    **Problem**: Cannot connect to PostgreSQL
    
    **Solution**:
+
+   
    .. code-block:: bash
 
       # Check if PostgreSQL is running
@@ -49,6 +53,8 @@ Installation Issues
    **Problem**: Cannot connect to Redis
    
    **Solution**:
+
+   
    .. code-block:: bash
 
       # Check if Redis is running
@@ -64,6 +70,7 @@ Installation Issues
    **Problem**: Database migrations fail
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check database exists
@@ -85,6 +92,7 @@ Application Issues
    **Problem**: FastAPI application fails to start
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check logs
@@ -103,6 +111,7 @@ Application Issues
    **Problem**: Module import errors
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check Python path
@@ -118,6 +127,7 @@ Application Issues
    **Problem**: Configuration validation errors
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check environment variables
@@ -136,6 +146,7 @@ Database Issues
    **Problem**: Database connection timeouts
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check connection pool settings
@@ -151,6 +162,7 @@ Database Issues
    **Problem**: Slow database queries
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check slow queries
@@ -166,6 +178,7 @@ Database Issues
    **Problem**: Database schema problems
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check schema
@@ -186,6 +199,7 @@ Celery Issues
    **Problem**: Celery workers fail to start
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check worker logs
@@ -204,6 +218,7 @@ Celery Issues
    **Problem**: Tasks stuck in queue
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check queue depth
@@ -222,6 +237,7 @@ Celery Issues
    **Problem**: Tasks failing repeatedly
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check task results
@@ -237,6 +253,7 @@ Celery Issues
    **Problem**: Queue building up with tasks
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check queue depth
@@ -255,6 +272,7 @@ Monitoring Issues
    **Problem**: Freshness monitoring not working
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check freshness task
@@ -273,6 +291,7 @@ Monitoring Issues
    **Problem**: Timeliness monitoring not working
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check timeliness task
@@ -291,6 +310,7 @@ Monitoring Issues
    **Problem**: Anomaly detection not running
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check anomaly detection rules
@@ -309,6 +329,7 @@ Monitoring Issues
    **Problem**: Slack alerts not being sent
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check Slack webhook
@@ -330,6 +351,7 @@ Performance Issues
    **Problem**: API endpoints responding slowly
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check database performance
@@ -348,6 +370,7 @@ Performance Issues
    **Problem**: Application using too much memory
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check memory usage
@@ -366,6 +389,7 @@ Performance Issues
    **Problem**: Database queries running slowly
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check slow queries
@@ -384,6 +408,7 @@ Performance Issues
    **Problem**: Redis operations running slowly
    
    **Solution**:
+
    .. code-block:: bash
 
       # Check Redis performance
@@ -403,6 +428,7 @@ Debugging Techniques
 
 **Enable Debug Logging**
    **Solution**:
+
    .. code-block:: bash
 
       # Set debug logging
@@ -416,6 +442,7 @@ Debugging Techniques
 
 **Database Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Enable query logging
@@ -429,6 +456,7 @@ Debugging Techniques
 
 **Celery Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Enable Celery debug logging
@@ -442,6 +470,7 @@ Debugging Techniques
 
 **API Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Test API endpoints
@@ -455,6 +484,7 @@ Debugging Techniques
 
 **Network Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check network connectivity
@@ -468,6 +498,7 @@ Debugging Techniques
 
 **Container Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check container status
@@ -485,6 +516,7 @@ Debugging Techniques
 
 **Environment Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check environment variables
@@ -498,6 +530,7 @@ Debugging Techniques
 
 **Database Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check database connection
@@ -511,6 +544,7 @@ Debugging Techniques
 
 **Redis Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check Redis connection
@@ -524,6 +558,7 @@ Debugging Techniques
 
 **Celery Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check Celery connection
@@ -537,6 +572,7 @@ Debugging Techniques
 
 **API Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check API health
@@ -552,6 +588,7 @@ Debugging Techniques
 
 **Monitoring Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check diagnostics
@@ -567,6 +604,7 @@ Debugging Techniques
 
 **Alerting Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check Slack webhook
@@ -580,6 +618,7 @@ Debugging Techniques
 
 **Performance Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check system resources
@@ -596,6 +635,7 @@ Debugging Techniques
 
 **Load Testing Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Run load tests
@@ -609,6 +649,7 @@ Debugging Techniques
 
 **Security Debugging**
    **Solution**:
+
    .. code-block:: bash
 
       # Check SSL certificates
@@ -622,6 +663,7 @@ Debugging Techniques
 
 **Backup and Recovery**
    **Solution**:
+
    .. code-block:: bash
 
       # Backup database
@@ -638,6 +680,7 @@ Debugging Techniques
 
 **Disaster Recovery**
    **Solution**:
+
    .. code-block:: bash
 
       # Check system status

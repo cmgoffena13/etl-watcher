@@ -12,9 +12,9 @@ Prerequisites
 System Requirements
 -------------------
 
-- **Memory**: Minimum 4GB RAM, 8GB recommended
-- **Storage**: 10GB free space for logs and data
-- **Network**: Ports 8000 (FastAPI), 5432 (PostgreSQL), 6379 (Redis)
+- **Memory** Minimum 4GB RAM, 8GB recommended
+- **Storage** 10GB free space for logs and data
+- **Network** Ports 8000 (FastAPI), 5432 (PostgreSQL), 6379 (Redis)
 
 Installation Steps
 ------------------
@@ -67,15 +67,15 @@ Verification
 
 Once running, you can verify the installation:
 
-- **API Documentation**: http://localhost:8000/scalar
-- **Health Check**: http://localhost:8000/health
-- **Diagnostics**: http://localhost:8000/diagnostics
+- **API Documentation** http://localhost:8000/scalar
+- **Health Check** http://localhost:8000/health
+- **Diagnostics** http://localhost:8000/diagnostics
 
 Environment Variables
 ---------------------
 
 Required Environment Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - ``DATABASE_URL`` - PostgreSQL connection string
 - ``REDIS_URL`` - Redis connection string

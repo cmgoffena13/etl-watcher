@@ -110,7 +110,7 @@ Pipeline Execution
 ------------------
 
 Start Pipeline Execution
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /start_pipeline_execution
 
@@ -173,7 +173,7 @@ Pipeline Types
 --------------
 
 Create or Get Pipeline Type
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /pipeline_type
 
@@ -299,7 +299,7 @@ Data Lineage
 ------------
 
 Create Address Lineage
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
 
 .. http:post:: /address_lineage
 
@@ -394,21 +394,21 @@ Create Anomaly Detection Rule
       }
 
 List Anomaly Detection Rules
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /anomaly_detection_rule
 
    Get all anomaly detection rules.
 
 Get Anomaly Detection Rule by ID
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /anomaly_detection_rule/{anomaly_detection_rule_id}
 
    Get a specific anomaly detection rule by ID.
 
 Update Anomaly Detection Rule
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. http:patch:: /anomaly_detection_rule
 
@@ -458,7 +458,7 @@ Check Timeliness
       }
 
 Check Freshness
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~
 
 .. http:post:: /freshness
 
@@ -537,7 +537,7 @@ Schema Health
    Get database schema health information.
 
 Performance Metrics
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /diagnostics/performance
 
@@ -554,7 +554,7 @@ Reporting
 ---------
 
 Daily Pipeline Metrics
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /reporting/daily-pipeline-metrics
 
@@ -576,7 +576,7 @@ Pipeline Names
    Get list of pipeline names for dropdown.
 
 Pipeline Type Names
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /reporting/pipeline-type-names
 

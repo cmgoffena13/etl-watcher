@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Troubleshooting &mdash; watcher 1.0.0 documentation</title>
+  <title>Troubleshooting &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -86,7 +86,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -113,59 +113,65 @@
 <h3>Installation Issues<a class="headerlink" href="#installation-issues" title="Link to this heading"></a></h3>
 <dl>
 <dt><strong>Port Already in Use</strong></dt><dd><p><strong>Problem</strong>: Ports 8000, 5432, or 6379 are already in use</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check what’s using the ports
-lsof -i :8000
-lsof -i :5432
-lsof -i :6379</p>
-<p># Kill processes if needed
-kill -9 &lt;PID&gt;</p>
-<p># Or use different ports
-docker-compose -f docker-compose.yml up -d –scale app=0
-docker-compose -f docker-compose.yml up -d -p 8001:8000</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check what&#39;s using the ports</span>
+lsof<span class="w"> </span>-i<span class="w"> </span>:8000
+lsof<span class="w"> </span>-i<span class="w"> </span>:5432
+lsof<span class="w"> </span>-i<span class="w"> </span>:6379
+
+<span class="c1"># Kill processes if needed</span>
+<span class="nb">kill</span><span class="w"> </span>-9<span class="w"> </span>&lt;PID&gt;
+
+<span class="c1"># Or use different ports</span>
+docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.yml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--scale<span class="w"> </span><span class="nv">app</span><span class="o">=</span><span class="m">0</span>
+docker-compose<span class="w"> </span>-f<span class="w"> </span>docker-compose.yml<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>-p<span class="w"> </span><span class="m">8001</span>:8000
+</pre></div>
+</div>
 </dd>
 <dt><strong>Database Connection Failed</strong></dt><dd><p><strong>Problem</strong>: Cannot connect to PostgreSQL</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check if PostgreSQL is running
-docker ps | grep postgres</p>
-<p># Check connection string
-echo $DATABASE_URL</p>
-<p># Test connection
-psql $DATABASE_URL -c “SELECT 1;”</p>
-<p># Restart PostgreSQL if needed
-docker-compose restart postgres</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if PostgreSQL is running</span>
+docker<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>postgres
+
+<span class="c1"># Check connection string</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$DATABASE_URL</span>
+
+<span class="c1"># Test connection</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1;&quot;</span>
+
+<span class="c1"># Restart PostgreSQL if needed</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>postgres
+</pre></div>
+</div>
 </dd>
 <dt><strong>Redis Connection Failed</strong></dt><dd><p><strong>Problem</strong>: Cannot connect to Redis</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check if Redis is running
-docker ps | grep redis</p>
-<p># Test Redis connection
-redis-cli -u $REDIS_URL ping</p>
-<p># Restart Redis if needed
-docker-compose restart redis</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if Redis is running</span>
+docker<span class="w"> </span>ps<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>redis
+
+<span class="c1"># Test Redis connection</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
+
+<span class="c1"># Restart Redis if needed</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>redis
+</pre></div>
+</div>
 </dd>
 <dt><strong>Migration Errors</strong></dt><dd><p><strong>Problem</strong>: Database migrations fail</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check database exists
-psql $DATABASE_URL -c “SELECT 1;”</p>
-<p># Check migration status
-alembic current</p>
-<p># Run migrations
-alembic upgrade head</p>
-<p># Check for conflicts
-alembic heads</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check database exists</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1;&quot;</span>
+
+<span class="c1"># Check migration status</span>
+alembic<span class="w"> </span>current
+
+<span class="c1"># Run migrations</span>
+alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+
+<span class="c1"># Check for conflicts</span>
+alembic<span class="w"> </span>heads
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
@@ -174,42 +180,46 @@ alembic heads</p>
 <h2>Application Issues<a class="headerlink" href="#application-issues" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Application Won’t Start</strong></dt><dd><p><strong>Problem</strong>: FastAPI application fails to start</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check logs
-docker-compose logs app</p>
-<p># Check environment variables
-docker-compose exec app env | grep -E “(DATABASE|REDIS|LOGFIRE)”</p>
-<p># Check dependencies
-uv run python -c “import src.app”</p>
-<p># Restart application
-docker-compose restart app</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app
+
+<span class="c1"># Check environment variables</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;(DATABASE|REDIS|LOGFIRE)&quot;</span>
+
+<span class="c1"># Check dependencies</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import src.app&quot;</span>
+
+<span class="c1"># Restart application</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>app
+</pre></div>
+</div>
 </dd>
 <dt><strong>Import Errors</strong></dt><dd><p><strong>Problem</strong>: Module import errors</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Python path
-uv run python -c “import sys; print(sys.path)”</p>
-<p># Reinstall dependencies
-uv sync</p>
-<p># Check for circular imports
-uv run python -c “import src.app”</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Python path</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import sys; print(sys.path)&quot;</span>
+
+<span class="c1"># Reinstall dependencies</span>
+uv<span class="w"> </span>sync
+
+<span class="c1"># Check for circular imports</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import src.app&quot;</span>
+</pre></div>
+</div>
 </dd>
 <dt><strong>Configuration Errors</strong></dt><dd><p><strong>Problem</strong>: Configuration validation errors</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check environment variables
-env | grep -E “(DEV|PROD|TEST)”</p>
-<p># Validate configuration
-uv run python -c “from src.settings import config; print(config)”</p>
-<p># Check .env file
-cat .env</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check environment variables</span>
+env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-E<span class="w"> </span><span class="s2">&quot;(DEV|PROD|TEST)&quot;</span>
+
+<span class="c1"># Validate configuration</span>
+uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from src.settings import config; print(config)&quot;</span>
+
+<span class="c1"># Check .env file</span>
+cat<span class="w"> </span>.env
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
@@ -217,42 +227,45 @@ cat .env</p>
 <h2>Database Issues<a class="headerlink" href="#database-issues" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Connection Timeouts</strong></dt><dd><p><strong>Problem</strong>: Database connection timeouts</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check connection pool settings
-grep -r “pool_size” src/</p>
-<p># Check database performance
-psql $DATABASE_URL -c “SELECT * FROM pg_stat_activity;”</p>
-<p># Restart database
-docker-compose restart postgres</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check connection pool settings</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;pool_size&quot;</span><span class="w"> </span>src/
+
+<span class="c1"># Check database performance</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT * FROM pg_stat_activity;&quot;</span>
+
+<span class="c1"># Restart database</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>postgres
+</pre></div>
+</div>
 </dd>
 <dt><strong>Query Performance</strong></dt><dd><p><strong>Problem</strong>: Slow database queries</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check slow queries
-psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;”</p>
-<p># Check indexes
-psql $DATABASE_URL -c “SELECT schemaname, tablename, indexname FROM pg_indexes;”</p>
-<p># Analyze tables
-psql $DATABASE_URL -c “ANALYZE;”</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check slow queries</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;&quot;</span>
+
+<span class="c1"># Check indexes</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT schemaname, tablename, indexname FROM pg_indexes;&quot;</span>
+
+<span class="c1"># Analyze tables</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;ANALYZE;&quot;</span>
+</pre></div>
+</div>
 </dd>
 <dt><strong>Schema Issues</strong></dt><dd><p><strong>Problem</strong>: Database schema problems</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check schema
-psql $DATABASE_URL -c “d”</p>
-<p># Check migrations
-alembic current
-alembic history</p>
-<p># Reset schema if needed
-alembic downgrade base
-alembic upgrade head</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check schema</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;\d&quot;</span>
+
+<span class="c1"># Check migrations</span>
+alembic<span class="w"> </span>current
+alembic<span class="w"> </span><span class="nb">history</span>
+
+<span class="c1"># Reset schema if needed</span>
+alembic<span class="w"> </span>downgrade<span class="w"> </span>base
+alembic<span class="w"> </span>upgrade<span class="w"> </span>head
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
@@ -260,56 +273,62 @@ alembic upgrade head</p>
 <h2>Celery Issues<a class="headerlink" href="#celery-issues" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Workers Not Starting</strong></dt><dd><p><strong>Problem</strong>: Celery workers fail to start</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check worker logs
-docker-compose logs celery</p>
-<p># Check Redis connection
-redis-cli -u $REDIS_URL ping</p>
-<p># Start worker manually
-celery -A src.celery_app worker –loglevel=info</p>
-<p># Check worker status
-celery -A src.celery_app inspect active</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check worker logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery
+
+<span class="c1"># Check Redis connection</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
+
+<span class="c1"># Start worker manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>info
+
+<span class="c1"># Check worker status</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>active
+</pre></div>
+</div>
 </dd>
 <dt><strong>Tasks Not Processing</strong></dt><dd><p><strong>Problem</strong>: Tasks stuck in queue</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check queue depth
-redis-cli -u $REDIS_URL llen celery</p>
-<p># Check worker status
-celery -A src.celery_app inspect active</p>
-<p># Purge queue if needed
-celery -A src.celery_app purge</p>
-<p># Restart workers
-docker-compose restart celery</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check queue depth</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Check worker status</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>active
+
+<span class="c1"># Purge queue if needed</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>purge
+
+<span class="c1"># Restart workers</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>celery
+</pre></div>
+</div>
 </dd>
 <dt><strong>Task Failures</strong></dt><dd><p><strong>Problem</strong>: Tasks failing repeatedly</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check task results
-celery -A src.celery_app inspect stats</p>
-<p># Check error logs
-docker-compose logs celery | grep ERROR</p>
-<p># Test task manually
-celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check task results</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>stats
+
+<span class="c1"># Check error logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>ERROR
+
+<span class="c1"># Test task manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>call<span class="w"> </span>src.celery_tasks.freshness_check_task
+</pre></div>
+</div>
 </dd>
 <dt><strong>Queue Backlog</strong></dt><dd><p><strong>Problem</strong>: Queue building up with tasks</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check queue depth
-redis-cli -u $REDIS_URL llen celery</p>
-<p># Scale workers
-docker-compose up -d –scale celery=3</p>
-<p># Check worker performance
-celery -A src.celery_app inspect stats</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check queue depth</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Scale workers</span>
+docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>--scale<span class="w"> </span><span class="nv">celery</span><span class="o">=</span><span class="m">3</span>
+
+<span class="c1"># Check worker performance</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>stats
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
@@ -317,60 +336,68 @@ celery -A src.celery_app inspect stats</p>
 <h2>Monitoring Issues<a class="headerlink" href="#monitoring-issues" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Freshness Checks Failing</strong></dt><dd><p><strong>Problem</strong>: Freshness monitoring not working</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check freshness task
-curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”</p>
-<p># Check task queue
-redis-cli -u $REDIS_URL llen celery</p>
-<p># Check worker logs
-docker-compose logs celery | grep freshness</p>
-<p># Test manually
-celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check freshness task</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+
+<span class="c1"># Check task queue</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Check worker logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>freshness
+
+<span class="c1"># Test manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>call<span class="w"> </span>src.celery_tasks.freshness_check_task
+</pre></div>
+</div>
 </dd>
 <dt><strong>Timeliness Checks Failing</strong></dt><dd><p><strong>Problem</strong>: Timeliness monitoring not working</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check timeliness task
-curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’</p>
-<p># Check task queue
-redis-cli -u $REDIS_URL llen celery</p>
-<p># Check worker logs
-docker-compose logs celery | grep timeliness</p>
-<p># Test manually
-celery -A src.celery_app call src.celery_tasks.timeliness_check_task</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check timeliness task</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
+
+<span class="c1"># Check task queue</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Check worker logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>timeliness
+
+<span class="c1"># Test manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>call<span class="w"> </span>src.celery_tasks.timeliness_check_task
+</pre></div>
+</div>
 </dd>
 <dt><strong>Anomaly Detection Not Working</strong></dt><dd><p><strong>Problem</strong>: Anomaly detection not running</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check anomaly detection rules
-curl -X GET “<a class="reference external" href="http://localhost:8000/anomaly_detection_rule">http://localhost:8000/anomaly_detection_rule</a>”</p>
-<p># Check pipeline executions
-curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
-<p># Check task queue
-redis-cli -u $REDIS_URL llen celery</p>
-<p># Test manually
-celery -A src.celery_app call src.celery_tasks.detect_anomalies_task –args=’[1, 123]’</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check anomaly detection rules</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span>
+
+<span class="c1"># Check pipeline executions</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span>
+
+<span class="c1"># Check task queue</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Test manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>call<span class="w"> </span>src.celery_tasks.detect_anomalies_task<span class="w"> </span>--args<span class="o">=</span><span class="s1">&#39;[1, 123]&#39;</span>
+</pre></div>
+</div>
 </dd>
 <dt><strong>Alerts Not Sending</strong></dt><dd><p><strong>Problem</strong>: Slack alerts not being sent</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Slack webhook
-echo $SLACK_WEBHOOK_URL</p>
-<p># Test webhook
-curl -X POST $SLACK_WEBHOOK_URL -H “Content-Type: application/json” -d ‘{“text”: “Test message”}’</p>
-<p># Check alert logs
-docker-compose logs app | grep -i slack</p>
-<p># Check environment variables
-docker-compose exec app env | grep SLACK</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Slack webhook</span>
+<span class="nb">echo</span><span class="w"> </span><span class="nv">$SLACK_WEBHOOK_URL</span>
+
+<span class="c1"># Test webhook</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$SLACK_WEBHOOK_URL</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Test message&quot;}&#39;</span>
+
+<span class="c1"># Check alert logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>slack
+
+<span class="c1"># Check environment variables</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>SLACK
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
@@ -378,278 +405,306 @@ docker-compose exec app env | grep SLACK</p>
 <h2>Performance Issues<a class="headerlink" href="#performance-issues" title="Link to this heading"></a></h2>
 <dl>
 <dt><strong>Slow API Responses</strong></dt><dd><p><strong>Problem</strong>: API endpoints responding slowly</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check database performance
-psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;”</p>
-<p># Check connection pool
-grep -r “pool_size” src/</p>
-<p># Check Redis performance
-redis-cli -u $REDIS_URL –latency</p>
-<p># Monitor system resources
-docker stats</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check database performance</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;&quot;</span>
+
+<span class="c1"># Check connection pool</span>
+grep<span class="w"> </span>-r<span class="w"> </span><span class="s2">&quot;pool_size&quot;</span><span class="w"> </span>src/
+
+<span class="c1"># Check Redis performance</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
+
+<span class="c1"># Monitor system resources</span>
+docker<span class="w"> </span>stats
+</pre></div>
+</div>
 </dd>
 <dt><strong>High Memory Usage</strong></dt><dd><p><strong>Problem</strong>: Application using too much memory</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check memory usage
-docker stats</p>
-<p># Check for memory leaks
-docker-compose logs app | grep -i memory</p>
-<p># Restart application
-docker-compose restart app</p>
-<p># Check worker memory
-docker-compose logs celery | grep -i memory</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check memory usage</span>
+docker<span class="w"> </span>stats
+
+<span class="c1"># Check for memory leaks</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>memory
+
+<span class="c1"># Restart application</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>app
+
+<span class="c1"># Check worker memory</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>memory
+</pre></div>
+</div>
 </dd>
 <dt><strong>Database Performance</strong></dt><dd><p><strong>Problem</strong>: Database queries running slowly</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check slow queries
-psql $DATABASE_URL -c “SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;”</p>
-<p># Check indexes
-psql $DATABASE_URL -c “SELECT schemaname, tablename, indexname FROM pg_indexes WHERE tablename LIKE ‘%pipeline%’;”</p>
-<p># Analyze tables
-psql $DATABASE_URL -c “ANALYZE;”</p>
-<p># Check database size
-psql $DATABASE_URL -c “SELECT pg_size_pretty(pg_database_size(current_database()));”</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check slow queries</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;&quot;</span>
+
+<span class="c1"># Check indexes</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT schemaname, tablename, indexname FROM pg_indexes WHERE tablename LIKE &#39;%pipeline%&#39;;&quot;</span>
+
+<span class="c1"># Analyze tables</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;ANALYZE;&quot;</span>
+
+<span class="c1"># Check database size</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT pg_size_pretty(pg_database_size(current_database()));&quot;</span>
+</pre></div>
+</div>
 </dd>
 <dt><strong>Redis Performance</strong></dt><dd><p><strong>Problem</strong>: Redis operations running slowly</p>
-<p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Redis performance
-redis-cli -u $REDIS_URL –latency</p>
-<p># Check Redis memory
-redis-cli -u $REDIS_URL info memory</p>
-<p># Check Redis keys
-redis-cli -u $REDIS_URL keys “*” | wc -l</p>
-<p># Clear Redis if needed
-redis-cli -u $REDIS_URL flushdb</p>
-</div></blockquote>
+<p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Redis performance</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
+
+<span class="c1"># Check Redis memory</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>info<span class="w"> </span>memory
+
+<span class="c1"># Check Redis keys</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>keys<span class="w"> </span><span class="s2">&quot;*&quot;</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>wc<span class="w"> </span>-l
+
+<span class="c1"># Clear Redis if needed</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>flushdb
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>
 <section id="debugging-techniques">
 <h2>Debugging Techniques<a class="headerlink" href="#debugging-techniques" title="Link to this heading"></a></h2>
 <dl>
-<dt><strong>Enable Debug Logging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Set debug logging
-export LOG_LEVEL=DEBUG</p>
-<p># Restart application
-docker-compose restart app</p>
-<p># Check logs
-docker-compose logs -f app</p>
-</div></blockquote>
+<dt><strong>Enable Debug Logging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set debug logging</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">LOG_LEVEL</span><span class="o">=</span>DEBUG
+
+<span class="c1"># Restart application</span>
+docker-compose<span class="w"> </span>restart<span class="w"> </span>app
+
+<span class="c1"># Check logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>-f<span class="w"> </span>app
+</pre></div>
+</div>
 </dd>
-<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Enable query logging
-export DATABASE_ECHO=true</p>
-<p># Check database logs
-docker-compose logs postgres</p>
-<p># Test queries manually
-psql $DATABASE_URL -c “SELECT * FROM pipeline LIMIT 5;”</p>
-</div></blockquote>
+<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable query logging</span>
+<span class="nb">export</span><span class="w"> </span><span class="nv">DATABASE_ECHO</span><span class="o">=</span><span class="nb">true</span>
+
+<span class="c1"># Check database logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>postgres
+
+<span class="c1"># Test queries manually</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT * FROM pipeline LIMIT 5;&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Enable Celery debug logging
-celery -A src.celery_app worker –loglevel=debug</p>
-<p># Check task results
-celery -A src.celery_app inspect stats</p>
-<p># Test tasks manually
-celery -A src.celery_app call src.celery_tasks.freshness_check_task</p>
-</div></blockquote>
+<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable Celery debug logging</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>worker<span class="w"> </span>--loglevel<span class="o">=</span>debug
+
+<span class="c1"># Check task results</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>stats
+
+<span class="c1"># Test tasks manually</span>
+celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>call<span class="w"> </span>src.celery_tasks.freshness_check_task
+</pre></div>
+</div>
 </dd>
-<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Test API endpoints
-curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
-<p># Check API documentation
-curl <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p>
-<p># Test specific endpoints
-curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
-</div></blockquote>
+<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test API endpoints</span>
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+
+<span class="c1"># Check API documentation</span>
+curl<span class="w"> </span>http://localhost:8000/scalar
+
+<span class="c1"># Test specific endpoints</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Network Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check network connectivity
-docker-compose exec app ping postgres
-docker-compose exec app ping redis</p>
-<p># Check port accessibility
-telnet localhost 8000
-telnet localhost 5432
-telnet localhost 6379</p>
-</div></blockquote>
+<dt><strong>Network Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check network connectivity</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>ping<span class="w"> </span>postgres
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>ping<span class="w"> </span>redis
+
+<span class="c1"># Check port accessibility</span>
+telnet<span class="w"> </span>localhost<span class="w"> </span><span class="m">8000</span>
+telnet<span class="w"> </span>localhost<span class="w"> </span><span class="m">5432</span>
+telnet<span class="w"> </span>localhost<span class="w"> </span><span class="m">6379</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Container Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check container status
-docker-compose ps</p>
-<p># Check container logs
-docker-compose logs app
-docker-compose logs postgres
-docker-compose logs redis
-docker-compose logs celery</p>
-<p># Execute commands in containers
-docker-compose exec app bash
-docker-compose exec postgres psql -U user -d watcher_dev</p>
-</div></blockquote>
+<dt><strong>Container Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check container status</span>
+docker-compose<span class="w"> </span>ps
+
+<span class="c1"># Check container logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app
+docker-compose<span class="w"> </span>logs<span class="w"> </span>postgres
+docker-compose<span class="w"> </span>logs<span class="w"> </span>redis
+docker-compose<span class="w"> </span>logs<span class="w"> </span>celery
+
+<span class="c1"># Execute commands in containers</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>bash
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>postgres<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>user<span class="w"> </span>-d<span class="w"> </span>watcher_dev
+</pre></div>
+</div>
 </dd>
-<dt><strong>Environment Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check environment variables
-docker-compose exec app env</p>
-<p># Check configuration
-docker-compose exec app python -c “from src.settings import config; print(config)”</p>
-<p># Check dependencies
-docker-compose exec app uv run python -c “import src.app”</p>
-</div></blockquote>
+<dt><strong>Environment Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check environment variables</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>env
+
+<span class="c1"># Check configuration</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from src.settings import config; print(config)&quot;</span>
+
+<span class="c1"># Check dependencies</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import src.app&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check database connection
-docker-compose exec app python -c “from src.database.session import engine; print(engine)”</p>
-<p># Check migrations
-docker-compose exec app alembic current</p>
-<p># Check database schema
-docker-compose exec postgres psql -U user -d watcher_dev -c “d”</p>
-</div></blockquote>
+<dt><strong>Database Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check database connection</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from src.database.session import engine; print(engine)&quot;</span>
+
+<span class="c1"># Check migrations</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>alembic<span class="w"> </span>current
+
+<span class="c1"># Check database schema</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>postgres<span class="w"> </span>psql<span class="w"> </span>-U<span class="w"> </span>user<span class="w"> </span>-d<span class="w"> </span>watcher_dev<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;\d&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Redis Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Redis connection
-docker-compose exec app python -c “import redis; r = redis.from_url(‘redis://redis:6379/1’); print(r.ping())”</p>
-<p># Check Redis keys
-docker-compose exec redis redis-cli keys “*”</p>
-<p># Check Redis memory
-docker-compose exec redis redis-cli info memory</p>
-</div></blockquote>
+<dt><strong>Redis Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Redis connection</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;import redis; r = redis.from_url(&#39;redis://redis:6379/1&#39;); print(r.ping())&quot;</span>
+
+<span class="c1"># Check Redis keys</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>redis<span class="w"> </span>redis-cli<span class="w"> </span>keys<span class="w"> </span><span class="s2">&quot;*&quot;</span>
+
+<span class="c1"># Check Redis memory</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>redis<span class="w"> </span>redis-cli<span class="w"> </span>info<span class="w"> </span>memory
+</pre></div>
+</div>
 </dd>
-<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Celery connection
-docker-compose exec app python -c “from src.celery_app import celery; print(celery.control.inspect().active())”</p>
-<p># Check task queue
-docker-compose exec redis redis-cli llen celery</p>
-<p># Check worker status
-docker-compose exec app celery -A src.celery_app inspect active</p>
-</div></blockquote>
+<dt><strong>Celery Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Celery connection</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>python<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;from src.celery_app import celery; print(celery.control.inspect().active())&quot;</span>
+
+<span class="c1"># Check task queue</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>redis<span class="w"> </span>redis-cli<span class="w"> </span>llen<span class="w"> </span>celery
+
+<span class="c1"># Check worker status</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>celery<span class="w"> </span>-A<span class="w"> </span>src.celery_app<span class="w"> </span>inspect<span class="w"> </span>active
+</pre></div>
+</div>
 </dd>
-<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check API health
-curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
-<p># Check API documentation
-curl <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p>
-<p># Test specific endpoints
-curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”
-curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”
-curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’</p>
-</div></blockquote>
+<dt><strong>API Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check API health</span>
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+
+<span class="c1"># Check API documentation</span>
+curl<span class="w"> </span>http://localhost:8000/scalar
+
+<span class="c1"># Test specific endpoints</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Monitoring Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check diagnostics
-curl <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p>
-<p># Check monitoring endpoints
-curl -X POST “<a class="reference external" href="http://localhost:8000/freshness">http://localhost:8000/freshness</a>”
-curl -X POST “<a class="reference external" href="http://localhost:8000/timeliness">http://localhost:8000/timeliness</a>” -H “Content-Type: application/json” -d ‘{“lookback_minutes”: 60}’
-curl -X POST “<a class="reference external" href="http://localhost:8000/celery/monitor-queue">http://localhost:8000/celery/monitor-queue</a>”</p>
-<p># Check monitoring logs
-docker-compose logs app | grep -i “freshness|timeliness|anomaly”</p>
-</div></blockquote>
+<dt><strong>Monitoring Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check diagnostics</span>
+curl<span class="w"> </span>http://localhost:8000/diagnostics
+
+<span class="c1"># Check monitoring endpoints</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/celery/monitor-queue&quot;</span>
+
+<span class="c1"># Check monitoring logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span><span class="s2">&quot;freshness\|timeliness\|anomaly&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Alerting Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check Slack webhook
-curl -X POST $SLACK_WEBHOOK_URL -H “Content-Type: application/json” -d ‘{“text”: “Test message”}’</p>
-<p># Check alert logs
-docker-compose logs app | grep -i slack</p>
-<p># Check environment variables
-docker-compose exec app env | grep SLACK</p>
-</div></blockquote>
+<dt><strong>Alerting Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Slack webhook</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="nv">$SLACK_WEBHOOK_URL</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;text&quot;: &quot;Test message&quot;}&#39;</span>
+
+<span class="c1"># Check alert logs</span>
+docker-compose<span class="w"> </span>logs<span class="w"> </span>app<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>-i<span class="w"> </span>slack
+
+<span class="c1"># Check environment variables</span>
+docker-compose<span class="w"> </span><span class="nb">exec</span><span class="w"> </span>app<span class="w"> </span>env<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>SLACK
+</pre></div>
+</div>
 </dd>
-<dt><strong>Performance Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check system resources
-docker stats</p>
-<p># Check database performance
-psql $DATABASE_URL -c “SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;”</p>
-<p># Check Redis performance
-redis-cli -u $REDIS_URL –latency</p>
-<p># Check application performance
-curl -w “&#64;curl-format.txt” -o /dev/null -s <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
-</div></blockquote>
+<dt><strong>Performance Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check system resources</span>
+docker<span class="w"> </span>stats
+
+<span class="c1"># Check database performance</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT query, mean_time FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 5;&quot;</span>
+
+<span class="c1"># Check Redis performance</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
+
+<span class="c1"># Check application performance</span>
+curl<span class="w"> </span>-w<span class="w"> </span><span class="s2">&quot;@curl-format.txt&quot;</span><span class="w"> </span>-o<span class="w"> </span>/dev/null<span class="w"> </span>-s<span class="w"> </span>http://localhost:8000/health
+</pre></div>
+</div>
 </dd>
-<dt><strong>Load Testing Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Run load tests
-locust -f src/diagnostics/locustfile.py –host=http://localhost:8000</p>
-<p># Check load test results
-curl <a class="reference external" href="http://localhost:8089">http://localhost:8089</a></p>
-<p># Check system performance under load
-docker stats</p>
-</div></blockquote>
+<dt><strong>Load Testing Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Run load tests</span>
+locust<span class="w"> </span>-f<span class="w"> </span>src/diagnostics/locustfile.py<span class="w"> </span>--host<span class="o">=</span>http://localhost:8000
+
+<span class="c1"># Check load test results</span>
+curl<span class="w"> </span>http://localhost:8089
+
+<span class="c1"># Check system performance under load</span>
+docker<span class="w"> </span>stats
+</pre></div>
+</div>
 </dd>
-<dt><strong>Security Debugging</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check SSL certificates
-openssl s_client -connect localhost:8000</p>
-<p># Check authentication
-curl -v <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
-<p># Check authorization
-curl -X GET “<a class="reference external" href="http://localhost:8000/pipeline">http://localhost:8000/pipeline</a>”</p>
-</div></blockquote>
+<dt><strong>Security Debugging</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check SSL certificates</span>
+openssl<span class="w"> </span>s_client<span class="w"> </span>-connect<span class="w"> </span>localhost:8000
+
+<span class="c1"># Check authentication</span>
+curl<span class="w"> </span>-v<span class="w"> </span>http://localhost:8000/health
+
+<span class="c1"># Check authorization</span>
+curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span>
+</pre></div>
+</div>
 </dd>
-<dt><strong>Backup and Recovery</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Backup database
-pg_dump $DATABASE_URL &gt; backup.sql</p>
-<p># Backup Redis
-redis-cli -u $REDIS_URL –rdb backup.rdb</p>
-<p># Restore database
-psql $DATABASE_URL &lt; backup.sql</p>
-<p># Restore Redis
-redis-cli -u $REDIS_URL –pipe &lt; backup.rdb</p>
-</div></blockquote>
+<dt><strong>Backup and Recovery</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup database</span>
+pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup.sql
+
+<span class="c1"># Backup Redis</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--rdb<span class="w"> </span>backup.rdb
+
+<span class="c1"># Restore database</span>
+psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
+
+<span class="c1"># Restore Redis</span>
+redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--pipe<span class="w"> </span>&lt;<span class="w"> </span>backup.rdb
+</pre></div>
+</div>
 </dd>
-<dt><strong>Disaster Recovery</strong></dt><dd><p><strong>Solution</strong>:
-.. code-block:: bash</p>
-<blockquote>
-<div><p># Check system status
-docker-compose ps</p>
-<p># Restart all services
-docker-compose restart</p>
-<p># Check logs
-docker-compose logs</p>
-<p># Verify functionality
-curl <a class="reference external" href="http://localhost:8000/health">http://localhost:8000/health</a></p>
-</div></blockquote>
+<dt><strong>Disaster Recovery</strong></dt><dd><p><strong>Solution</strong>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check system status</span>
+docker-compose<span class="w"> </span>ps
+
+<span class="c1"># Restart all services</span>
+docker-compose<span class="w"> </span>restart
+
+<span class="c1"># Check logs</span>
+docker-compose<span class="w"> </span>logs
+
+<span class="c1"># Verify functionality</span>
+curl<span class="w"> </span>http://localhost:8000/health
+</pre></div>
+</div>
 </dd>
 </dl>
 </section>

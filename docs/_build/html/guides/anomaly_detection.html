@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Anomaly Detection &mdash; watcher 1.0.0 documentation</title>
+  <title>Anomaly Detection &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -112,7 +112,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auto-creation-rules">Auto-Creation Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#custom-thresholds">Custom Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#batch-anomaly-detection">Batch Anomaly Detection</a></li>
 </ul>
 </li>
 </ul>
@@ -133,7 +132,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -164,23 +163,23 @@
 <h3>Statistical Analysis<a class="headerlink" href="#statistical-analysis" title="Link to this heading"></a></h3>
 <p>The anomaly detection system uses z-score analysis:</p>
 <ol class="arabic simple">
-<li><p><strong>Baseline Calculation</strong>: Analyzes historical execution data</p></li>
-<li><p><strong>Statistical Metrics</strong>: Calculates mean and standard deviation</p></li>
-<li><p><strong>Z-Score Calculation</strong>: Determines how many standard deviations a value is from the mean</p></li>
-<li><p><strong>Threshold Comparison</strong>: Compares z-score against configured threshold</p></li>
-<li><p><strong>Anomaly Detection</strong>: Flags values that exceed the threshold</p></li>
+<li><p><strong>Baseline Calculation</strong> Analyzes historical execution data</p></li>
+<li><p><strong>Statistical Metrics</strong> Calculates mean and standard deviation</p></li>
+<li><p><strong>Z-Score Calculation</strong> Determines how many standard deviations a value is from the mean</p></li>
+<li><p><strong>Threshold Comparison</strong> Compares z-score against configured threshold</p></li>
+<li><p><strong>Anomaly Detection</strong> Flags values that exceed the threshold</p></li>
 </ol>
 </section>
 <section id="supported-metrics">
 <h3>Supported Metrics<a class="headerlink" href="#supported-metrics" title="Link to this heading"></a></h3>
 <p>Monitor various pipeline execution metrics:</p>
 <ul class="simple">
-<li><p><strong>total_rows</strong>: Total number of rows processed</p></li>
-<li><p><strong>duration_seconds</strong>: Execution duration in seconds</p></li>
-<li><p><strong>throughput</strong>: Rows processed per second</p></li>
-<li><p><strong>inserts</strong>: Number of insert operations</p></li>
-<li><p><strong>updates</strong>: Number of update operations</p></li>
-<li><p><strong>soft_deletes</strong>: Number of soft delete operations</p></li>
+<li><p><strong>total_rows</strong> Total number of rows processed</p></li>
+<li><p><strong>duration_seconds</strong> Execution duration in seconds</p></li>
+<li><p><strong>throughput</strong> Rows processed per second</p></li>
+<li><p><strong>inserts</strong> Number of insert operations</p></li>
+<li><p><strong>updates</strong> Number of update operations</p></li>
+<li><p><strong>soft_deletes</strong> Number of soft delete operations</p></li>
 </ul>
 </section>
 </section>
@@ -189,7 +188,7 @@
 <section id="creating-detection-rules">
 <h3>Creating Detection Rules<a class="headerlink" href="#creating-detection-rules" title="Link to this heading"></a></h3>
 <ol class="arabic">
-<li><p><strong>Create an anomaly detection rule</strong>:</p>
+<li><p><strong>Create an anomaly detection rule</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -201,7 +200,7 @@
 </pre></div>
 </div>
 </li>
-<li><p><strong>Response</strong>:</p>
+<li><p><strong>Response</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -218,20 +217,20 @@
 </section>
 <section id="rule-configuration">
 <h3>Rule Configuration<a class="headerlink" href="#rule-configuration" title="Link to this heading"></a></h3>
-<p><strong>Pipeline ID</strong>: The pipeline to monitor for anomalies</p>
-<p><strong>Metric Field</strong>: The specific metric to analyze:
+<p><strong>Pipeline ID</strong> The pipeline to monitor for anomalies</p>
+<p><strong>Metric Field</strong> The specific metric to analyze:
 - <code class="docutils literal notranslate"><span class="pre">total_rows</span></code>: Monitor row count variations
 - <code class="docutils literal notranslate"><span class="pre">duration_seconds</span></code>: Monitor execution time variations
 - <code class="docutils literal notranslate"><span class="pre">throughput</span></code>: Monitor processing speed variations
 - <code class="docutils literal notranslate"><span class="pre">inserts</span></code>: Monitor insert operation variations
 - <code class="docutils literal notranslate"><span class="pre">updates</span></code>: Monitor update operation variations
 - <code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code>: Monitor soft delete variations</p>
-<p><strong>Z-Threshold</strong>: Sensitivity of anomaly detection:
+<p><strong>Z-Threshold</strong> Sensitivity of anomaly detection:
 - <code class="docutils literal notranslate"><span class="pre">1.5</span></code>: Very sensitive (catches minor variations)
 - <code class="docutils literal notranslate"><span class="pre">2.0</span></code>: Standard sensitivity (recommended)
 - <code class="docutils literal notranslate"><span class="pre">2.5</span></code>: Less sensitive (catches major variations)
 - <code class="docutils literal notranslate"><span class="pre">3.0</span></code>: Very conservative (catches only extreme anomalies)</p>
-<p><strong>Minimum Executions</strong>: Number of historical executions needed before analysis:
+<p><strong>Minimum Executions</strong> Number of historical executions needed before analysis:
 - <code class="docutils literal notranslate"><span class="pre">5</span></code>: Minimum for basic analysis
 - <code class="docutils literal notranslate"><span class="pre">10</span></code>: Recommended for stable baselines
 - <code class="docutils literal notranslate"><span class="pre">20</span></code>: For highly variable pipelines</p>
@@ -290,10 +289,10 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <h3>No Manual Triggering Required<a class="headerlink" href="#no-manual-triggering-required" title="Link to this heading"></a></h3>
 <p>Unlike monitoring checks, anomaly detection doesn’t require manual triggering:</p>
 <ul class="simple">
-<li><p><strong>Automatic</strong>: Runs after every successful execution</p></li>
-<li><p><strong>Background</strong>: Processed by Celery workers</p></li>
-<li><p><strong>Real-time</strong>: Results available immediately</p></li>
-<li><p><strong>Persistent</strong>: Anomaly results stored in database</p></li>
+<li><p><strong>Automatic</strong> Runs after every successful execution</p></li>
+<li><p><strong>Background</strong> Processed by Celery workers</p></li>
+<li><p><strong>Real-time</strong> Results available immediately</p></li>
+<li><p><strong>Persistent</strong> Anomaly results stored in database</p></li>
 </ul>
 </section>
 </section>
@@ -324,13 +323,13 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <section id="result-fields">
 <h3>Result Fields<a class="headerlink" href="#result-fields" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>violation_value</strong>: The actual metric value that triggered the anomaly</p></li>
-<li><p><strong>z_score</strong>: How many standard deviations from the mean</p></li>
-<li><p><strong>historical_mean</strong>: Average value from historical data</p></li>
-<li><p><strong>std_deviation_value</strong>: Standard deviation from historical data</p></li>
-<li><p><strong>z_threshold</strong>: Configured threshold for this rule</p></li>
-<li><p><strong>threshold_min_value</strong>: Minimum expected value</p></li>
-<li><p><strong>threshold_max_value</strong>: Maximum expected value</p></li>
+<li><p><strong>violation_value</strong> The actual metric value that triggered the anomaly</p></li>
+<li><p><strong>z_score</strong> How many standard deviations from the mean</p></li>
+<li><p><strong>historical_mean</strong> Average value from historical data</p></li>
+<li><p><strong>std_deviation_value</strong> Standard deviation from historical data</p></li>
+<li><p><strong>z_threshold</strong> Configured threshold for this rule</p></li>
+<li><p><strong>threshold_min_value</strong> Minimum expected value</p></li>
+<li><p><strong>threshold_max_value</strong> Maximum expected value</p></li>
 </ul>
 </section>
 </section>
@@ -424,31 +423,31 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <section id="id1">
 <h3>Rule Configuration<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Start Conservative</strong>: Begin with higher z-thresholds (2.5-3.0)</p></li>
-<li><p><strong>Adjust Based on Data</strong>: Lower thresholds as you understand your data patterns</p></li>
-<li><p><strong>Multiple Metrics</strong>: Monitor different aspects of pipeline performance</p></li>
-<li><p><strong>Sufficient History</strong>: Ensure enough historical data for stable baselines</p></li>
+<li><p><strong>Start Conservative</strong> Begin with higher z-thresholds (2.5-3.0)</p></li>
+<li><p><strong>Adjust Based on Data</strong> Lower thresholds as you understand your data patterns</p></li>
+<li><p><strong>Multiple Metrics</strong> Monitor different aspects of pipeline performance</p></li>
+<li><p><strong>Sufficient History</strong> Ensure enough historical data for stable baselines</p></li>
 </ul>
 </section>
 <section id="threshold-selection">
 <h3>Threshold Selection<a class="headerlink" href="#threshold-selection" title="Link to this heading"></a></h3>
-<p><strong>For Stable Pipelines</strong>:
+<p><strong>For Stable Pipelines</strong>
 - Z-threshold: 2.0-2.5
 - Minimum executions: 10-15</p>
-<p><strong>For Variable Pipelines</strong>:
+<p><strong>For Variable Pipelines</strong>
 - Z-threshold: 2.5-3.0
 - Minimum executions: 15-20</p>
-<p><strong>For Critical Pipelines</strong>:
+<p><strong>For Critical Pipelines</strong>
 - Z-threshold: 1.5-2.0
 - Minimum executions: 5-10</p>
 </section>
 <section id="monitoring-strategy">
 <h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Regular Review</strong>: Review anomaly results regularly</p></li>
-<li><p><strong>False Positive Management</strong>: Unflag false positives promptly</p></li>
-<li><p><strong>Threshold Tuning</strong>: Adjust thresholds based on results</p></li>
-<li><p><strong>Alert Fatigue</strong>: Avoid overly sensitive thresholds</p></li>
+<li><p><strong>Regular Review</strong> Review anomaly results regularly</p></li>
+<li><p><strong>False Positive Management</strong> Unflag false positives promptly</p></li>
+<li><p><strong>Threshold Tuning</strong> Adjust thresholds based on results</p></li>
+<li><p><strong>Alert Fatigue</strong> Avoid overly sensitive thresholds</p></li>
 </ul>
 </section>
 </section>
@@ -507,19 +506,19 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>No Anomalies Detected</strong>:
+<p><strong>No Anomalies Detected</strong>
 - Check if rules are active
 - Verify minimum executions requirement
 - Check if z-threshold is too high</p>
-<p><strong>Too Many False Positives</strong>:
+<p><strong>Too Many False Positives</strong>
 - Increase z-threshold
 - Increase minimum executions
 - Review historical data quality</p>
-<p><strong>Missing Alerts</strong>:
+<p><strong>Missing Alerts</strong>
 - Verify Slack webhook configuration
 - Check Celery worker status
 - Review alert delivery logs</p>
-<p><strong>Baseline Issues</strong>:
+<p><strong>Baseline Issues</strong>
 - Ensure sufficient historical data
 - Check for data quality issues
 - Verify metric field selection</p>
@@ -527,10 +526,10 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <section id="performance-considerations">
 <h3>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Historical Data</strong>: More data = better baselines</p></li>
-<li><p><strong>Rule Complexity</strong>: Multiple rules increase processing time</p></li>
-<li><p><strong>Alert Volume</strong>: Too many alerts can cause fatigue</p></li>
-<li><p><strong>Storage</strong>: Anomaly results are stored in database</p></li>
+<li><p><strong>Historical Data</strong> More data = better baselines</p></li>
+<li><p><strong>Rule Complexity</strong> Multiple rules increase processing time</p></li>
+<li><p><strong>Alert Volume</strong> Too many alerts can cause fatigue</p></li>
+<li><p><strong>Storage</strong> Anomaly results are stored in database</p></li>
 </ul>
 </section>
 </section>
@@ -558,16 +557,6 @@ uv<span class="w"> </span>run<span class="w"> </span>python<span class="w"> </sp
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-<section id="batch-anomaly-detection">
-<h3>Batch Anomaly Detection<a class="headerlink" href="#batch-anomaly-detection" title="Link to this heading"></a></h3>
-<p>For high-volume pipelines, consider batch processing:</p>
-<ul class="simple">
-<li><p>Monitor multiple executions together</p></li>
-<li><p>Use rolling windows for baselines</p></li>
-<li><p>Implement custom detection logic</p></li>
-<li><p>Consider external anomaly detection systems</p></li>
-</ul>
 </section>
 </section>
 </section>

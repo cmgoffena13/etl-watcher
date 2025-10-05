@@ -7,9 +7,9 @@ Creating Pipelines
 ------------------
 
 Basic Pipeline Creation
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Create a pipeline type first**:
+1. **Create a pipeline type first**
 
    .. code-block:: bash
 
@@ -20,7 +20,7 @@ Basic Pipeline Creation
              "group_name": "databricks"
            }'
 
-2. **Create the pipeline**:
+2. **Create the pipeline**
 
    .. code-block:: bash
 
@@ -38,7 +38,7 @@ Basic Pipeline Creation
            }'
 
 Pipeline Configuration
-~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure monitoring settings during pipeline creation:
 
@@ -61,9 +61,9 @@ Pipeline Execution
 ------------------
 
 Starting Executions
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Start a pipeline execution**:
+1. **Start a pipeline execution**
 
    .. code-block:: bash
 
@@ -77,7 +77,7 @@ Starting Executions
              "next_watermark": "2024-01-01T23:59:59Z"
            }'
 
-2. **End the execution with metrics**:
+2. **End the execution with metrics**
 
    .. code-block:: bash
 
@@ -94,9 +94,9 @@ Starting Executions
            }'
 
 Execution Patterns
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Full Load Pattern**:
+**Full Load Pattern**
 
 .. code-block:: json
 
@@ -108,7 +108,7 @@ Execution Patterns
      "next_watermark": "2024-01-01T23:59:59Z"
    }
 
-**Incremental Load Pattern**:
+**Incremental Load Pattern**
 
 .. code-block:: json
 
@@ -120,7 +120,7 @@ Execution Patterns
      "next_watermark": "2024-01-02T23:59:59Z"
    }
 
-**Nested Execution Pattern**:
+**Nested Execution Pattern**
 
 .. code-block:: json
 
@@ -141,17 +141,17 @@ Watermark Management
 -------------------
 
 Understanding Watermarks
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Watermarks track the progress of data processing:
 
-- **watermark**: Current position (where processing has reached)
-- **next_watermark**: Target position (where processing should go to)
+- **watermark** Current position (where processing has reached)
+- **next_watermark** Target position (where processing should go to)
 
 Watermark Patterns
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Daily Processing**:
+**Daily Processing**
 
 .. code-block:: json
 
@@ -160,7 +160,7 @@ Watermark Patterns
      "next_watermark": "2024-01-01T23:59:59Z"
    }
 
-**Hourly Processing**:
+**Hourly Processing**
 
 .. code-block:: json
 
@@ -169,7 +169,7 @@ Watermark Patterns
      "next_watermark": "2024-01-01T11:00:00Z"
    }
 
-**Numeric Watermarks**:
+**Numeric Watermarks**
 
 .. code-block:: json
 
@@ -179,7 +179,7 @@ Watermark Patterns
    }
 
 Watermark Increment Logic
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 After successful execution, the watermark is automatically updated:
 
@@ -199,7 +199,7 @@ Pipeline Monitoring
 -------------------
 
 Freshness Monitoring
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Monitor data freshness to ensure data is up-to-date:
 
@@ -213,7 +213,7 @@ Monitor data freshness to ensure data is up-to-date:
    }
 
 Timeliness Monitoring
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Monitor pipeline execution timing:
 
@@ -231,7 +231,7 @@ Monitor pipeline execution timing:
    }
 
 Monitoring Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure monitoring thresholds in pipeline creation:
 
@@ -254,7 +254,7 @@ Anomaly Detection
 Setting Up Anomaly Detection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-1. **Create an anomaly detection rule**:
+1. **Create an anomaly detection rule**
 
    .. code-block:: bash
 
@@ -270,32 +270,32 @@ Setting Up Anomaly Detection
 2. **Anomaly detection runs automatically** after each successful execution
 
 Supported Metrics
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Monitor various pipeline metrics:
 
-- **total_rows**: Total number of rows processed
-- **duration_seconds**: Execution duration
-- **throughput**: Rows processed per second
-- **inserts**: Number of insert operations
-- **updates**: Number of update operations
-- **soft_deletes**: Number of soft delete operations
+- **total_rows** Total number of rows processed
+- **duration_seconds** Execution duration
+- **throughput** Rows processed per second
+- **inserts** Number of insert operations
+- **updates** Number of update operations
+- **soft_deletes** Number of soft delete operations
 
 Z-Score Thresholds
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Configure sensitivity of anomaly detection:
 
-- **1.5**: Very sensitive (catches minor variations)
-- **2.0**: Standard sensitivity (recommended)
-- **2.5**: Less sensitive (catches major variations)
-- **3.0**: Very conservative (catches only extreme anomalies)
+- **1.5** Very sensitive (catches minor variations)
+- **2.0** Standard sensitivity (recommended)
+- **2.5** Less sensitive (catches major variations)
+- **3.0** Very conservative (catches only extreme anomalies)
 
 Data Lineage
 ------------
 
 Creating Lineage Relationships
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Track relationships between data sources:
 
@@ -322,7 +322,7 @@ Track relationships between data sources:
            }'
 
 Querying Lineage
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Get lineage information for an address:
 
@@ -345,7 +345,7 @@ Pipeline Updates
 ----------------
 
 Updating Pipeline Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Update pipeline settings:
 
@@ -361,9 +361,9 @@ Update pipeline settings:
         }'
 
 Common Update Scenarios
-~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Change Monitoring Thresholds**:
+**Change Monitoring Thresholds**
 
 .. code-block:: json
 
@@ -375,7 +375,7 @@ Common Update Scenarios
      "timeliness_datepart": "hour"
    }
 
-**Mute Monitoring Checks**:
+**Mute Monitoring Checks**
 
 .. code-block:: json
 
@@ -385,7 +385,7 @@ Common Update Scenarios
      "mute_timeliness_check": true
    }
 
-**Update Watermark**:
+**Update Watermark**
 
 .. code-block:: json
 
@@ -398,51 +398,51 @@ Best Practices
 --------------
 
 Pipeline Design
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Clear Naming**: Use descriptive names for pipelines
-- **Consistent Watermarks**: Use consistent watermark formats
-- **Metadata**: Include relevant metadata for context
-- **Monitoring**: Configure appropriate monitoring thresholds
+- **Clear Naming** Use descriptive names for pipelines
+- **Consistent Watermarks** Use consistent watermark formats
+- **Metadata** Include relevant metadata for context
+- **Monitoring** Configure appropriate monitoring thresholds
 
 Execution Management
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Regular Executions**: Run pipelines on consistent schedules
-- **Proper Metrics**: Always provide accurate execution metrics
-- **Error Handling**: Handle failures gracefully
-- **Documentation**: Document pipeline behavior and dependencies
+- **Regular Executions** Run pipelines on consistent schedules
+- **Proper Metrics** Always provide accurate execution metrics
+- **Error Handling** Handle failures gracefully
+- **Documentation** Document pipeline behavior and dependencies
 
 Monitoring Strategy
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Appropriate Thresholds**: Set realistic monitoring thresholds
-- **Regular Checks**: Run monitoring checks regularly
-- **Alert Configuration**: Configure appropriate alerting
-- **Performance Tracking**: Monitor execution performance trends
+- **Appropriate Thresholds** Set realistic monitoring thresholds
+- **Regular Checks** Run monitoring checks regularly
+- **Alert Configuration** Configure appropriate alerting
+- **Performance Tracking** Monitor execution performance trends
 
 Troubleshooting
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Common Issues
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Watermark Not Updating**:
+**Watermark Not Updating**
 - Check if execution completed successfully
 - Verify next_watermark is provided
 - Check for database connection issues
 
-**Monitoring Alerts**:
+**Monitoring Alerts**
 - Review monitoring thresholds
 - Check data freshness and timeliness
 - Verify pipeline execution schedules
 
-**Anomaly Detection**:
+**Anomaly Detection**
 - Ensure sufficient historical data
 - Check z-score thresholds
 - Verify metric field selection
 
-**Lineage Issues**:
+**Lineage Issues**
 - Verify address creation
 - Check lineage relationship creation
 - Review closure table maintenance

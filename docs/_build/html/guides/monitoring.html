@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Monitoring &amp; Health Checks &mdash; watcher 1.0.0 documentation</title>
+  <title>Monitoring &amp; Health Checks &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -32,7 +32,7 @@
           
           
           <a href="../index.html" class="icon icon-home">
-            watcher
+            Watcher
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -135,7 +135,7 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="../index.html">watcher</a>
+          <a href="../index.html">Watcher</a>
       </nav>
 
       <div class="wy-nav-content">
@@ -160,10 +160,10 @@
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>Watcher provides multiple monitoring capabilities to ensure your data pipelines are running optimally:</p>
 <ul class="simple">
-<li><p><strong>Freshness Monitoring</strong>: Track data staleness and DML operations</p></li>
-<li><p><strong>Timeliness Monitoring</strong>: Validate pipeline execution timing</p></li>
-<li><p><strong>System Health</strong>: Monitor database, Redis, and Celery health</p></li>
-<li><p><strong>Queue Monitoring</strong>: Track Celery task queue depth and performance</p></li>
+<li><p><strong>Freshness Monitoring</strong> Track data staleness and DML operations</p></li>
+<li><p><strong>Timeliness Monitoring</strong> Validate pipeline execution timing</p></li>
+<li><p><strong>System Health</strong> Monitor database, Redis, and Celery health</p></li>
+<li><p><strong>Queue Monitoring</strong> Track Celery task queue depth and performance</p></li>
 </ul>
 </section>
 <section id="freshness-monitoring">
@@ -172,9 +172,9 @@
 <h3>Purpose<a class="headerlink" href="#purpose" title="Link to this heading"></a></h3>
 <p>Freshness monitoring tracks when data was last modified to detect stale data:</p>
 <ul class="simple">
-<li><p><strong>DML Operations</strong>: Monitors inserts, updates, and soft deletes</p></li>
-<li><p><strong>Staleness Detection</strong>: Identifies data that hasn’t been updated recently</p></li>
-<li><p><strong>Alerting</strong>: Notifies when data becomes stale</p></li>
+<li><p><strong>DML Operations</strong> Monitors inserts, updates, and soft deletes</p></li>
+<li><p><strong>Staleness Detection</strong> Identifies data that hasn’t been updated recently</p></li>
+<li><p><strong>Alerting</strong> Notifies when data becomes stale</p></li>
 </ul>
 </section>
 <section id="configuration">
@@ -189,22 +189,22 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Freshness Settings</strong>:</p>
+<p><strong>Freshness Settings</strong></p>
 <ul class="simple">
-<li><p><strong>freshness_number</strong>: Time threshold (e.g., 24)</p></li>
-<li><p><strong>freshness_datepart</strong>: Time unit (hour, day, week, month, quarter, year)</p></li>
-<li><p><strong>mute_freshness_check</strong>: Disable freshness monitoring</p></li>
+<li><p><strong>freshness_number</strong> Time threshold (e.g., 24)</p></li>
+<li><p><strong>freshness_datepart</strong> Time unit (hour, day, week, month, quarter, year)</p></li>
+<li><p><strong>mute_freshness_check</strong> Disable freshness monitoring</p></li>
 </ul>
 </section>
 <section id="supported-time-units">
 <h3>Supported Time Units<a class="headerlink" href="#supported-time-units" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>hour</strong>: Monitor hourly freshness</p></li>
-<li><p><strong>day</strong>: Monitor daily freshness</p></li>
-<li><p><strong>week</strong>: Monitor weekly freshness</p></li>
-<li><p><strong>month</strong>: Monitor monthly freshness</p></li>
-<li><p><strong>quarter</strong>: Monitor quarterly freshness</p></li>
-<li><p><strong>year</strong>: Monitor yearly freshness</p></li>
+<li><p><strong>hour</strong> Monitor hourly freshness</p></li>
+<li><p><strong>day</strong> Monitor daily freshness</p></li>
+<li><p><strong>week</strong> Monitor weekly freshness</p></li>
+<li><p><strong>month</strong> Monitor monthly freshness</p></li>
+<li><p><strong>quarter</strong> Monitor quarterly freshness</p></li>
+<li><p><strong>year</strong> Monitor yearly freshness</p></li>
 </ul>
 </section>
 <section id="running-freshness-checks">
@@ -227,9 +227,9 @@
 <h3>Purpose<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <p>Timeliness monitoring validates that pipeline executions complete within expected timeframes:</p>
 <ul class="simple">
-<li><p><strong>Execution Timing</strong>: Tracks how long pipelines take to complete</p></li>
-<li><p><strong>Threshold Validation</strong>: Compares against configured timeliness thresholds</p></li>
-<li><p><strong>Performance Issues</strong>: Identifies slow or stuck pipelines</p></li>
+<li><p><strong>Execution Timing</strong> Tracks how long pipelines take to complete</p></li>
+<li><p><strong>Threshold Validation</strong> Compares against configured timeliness thresholds</p></li>
+<li><p><strong>Performance Issues</strong> Identifies slow or stuck pipelines</p></li>
 </ul>
 </section>
 <section id="id2">
@@ -244,11 +244,11 @@
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Timeliness Settings</strong>:</p>
+<p><strong>Timeliness Settings</strong></p>
 <ul class="simple">
-<li><p><strong>timeliness_number</strong>: Time threshold (e.g., 2)</p></li>
-<li><p><strong>timeliness_datepart</strong>: Time unit (hour, day, week, month, quarter, year)</p></li>
-<li><p><strong>mute_timeliness_check</strong>: Disable timeliness monitoring</p></li>
+<li><p><strong>timeliness_number</strong> Time threshold (e.g., 2)</p></li>
+<li><p><strong>timeliness_datepart</strong> Time unit (hour, day, week, month, quarter, year)</p></li>
+<li><p><strong>mute_timeliness_check</strong> Disable timeliness monitoring</p></li>
 </ul>
 </section>
 <section id="running-timeliness-checks">
@@ -266,7 +266,7 @@
 <span class="o">}</span>
 </pre></div>
 </div>
-<p><strong>Lookback Period</strong>: How far back to look for executions (in minutes)</p>
+<p><strong>Lookback Period</strong> How far back to look for executions (in minutes)</p>
 </section>
 </section>
 <section id="system-health-monitoring">
@@ -275,39 +275,39 @@
 <h3>Diagnostics Page<a class="headerlink" href="#diagnostics-page" title="Link to this heading"></a></h3>
 <p>Access comprehensive system diagnostics:</p>
 <ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
-<li><p><strong>Features</strong>: Real-time system health information</p></li>
-<li><p><strong>Sections</strong>: Database, Redis, Celery, Performance metrics</p></li>
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
+<li><p><strong>Features</strong> Real-time system health information</p></li>
+<li><p><strong>Sections</strong> Database, Redis, Celery, Performance metrics</p></li>
 </ul>
 </section>
 <section id="database-health">
 <h3>Database Health<a class="headerlink" href="#database-health" title="Link to this heading"></a></h3>
 <p>Monitor database connectivity and performance:</p>
 <ul class="simple">
-<li><p><strong>Connection Status</strong>: Database connectivity</p></li>
-<li><p><strong>Query Performance</strong>: Slow query detection</p></li>
-<li><p><strong>Schema Health</strong>: Database schema validation</p></li>
-<li><p><strong>Index Usage</strong>: Index utilization metrics</p></li>
+<li><p><strong>Connection Status</strong> Database connectivity</p></li>
+<li><p><strong>Query Performance</strong> Slow query detection</p></li>
+<li><p><strong>Schema Health</strong> Database schema validation</p></li>
+<li><p><strong>Index Usage</strong> Index utilization metrics</p></li>
 </ul>
 </section>
 <section id="redis-health">
 <h3>Redis Health<a class="headerlink" href="#redis-health" title="Link to this heading"></a></h3>
 <p>Monitor Redis connectivity and performance:</p>
 <ul class="simple">
-<li><p><strong>Connection Status</strong>: Redis connectivity</p></li>
-<li><p><strong>Memory Usage</strong>: Redis memory consumption</p></li>
-<li><p><strong>Key Count</strong>: Number of keys in Redis</p></li>
-<li><p><strong>Performance</strong>: Redis operation latency</p></li>
+<li><p><strong>Connection Status</strong> Redis connectivity</p></li>
+<li><p><strong>Memory Usage</strong> Redis memory consumption</p></li>
+<li><p><strong>Key Count</strong> Number of keys in Redis</p></li>
+<li><p><strong>Performance</strong> Redis operation latency</p></li>
 </ul>
 </section>
 <section id="celery-health">
 <h3>Celery Health<a class="headerlink" href="#celery-health" title="Link to this heading"></a></h3>
 <p>Monitor Celery workers and queues:</p>
 <ul class="simple">
-<li><p><strong>Worker Status</strong>: Active workers and their status</p></li>
-<li><p><strong>Queue Depth</strong>: Number of pending tasks</p></li>
-<li><p><strong>Task Performance</strong>: Task execution metrics</p></li>
-<li><p><strong>Error Rates</strong>: Failed task percentages</p></li>
+<li><p><strong>Worker Status</strong> Active workers and their status</p></li>
+<li><p><strong>Queue Depth</strong> Number of pending tasks</p></li>
+<li><p><strong>Task Performance</strong> Task execution metrics</p></li>
+<li><p><strong>Error Rates</strong> Failed task percentages</p></li>
 </ul>
 </section>
 </section>
@@ -359,37 +359,37 @@ Details:
 <h3>Connection Performance<a class="headerlink" href="#connection-performance" title="Link to this heading"></a></h3>
 <p>Monitor database connection performance:</p>
 <ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/connection-performance">http://localhost:8000/diagnostics/connection-performance</a></p></li>
-<li><p><strong>Metrics</strong>: Connection times, query performance</p></li>
-<li><p><strong>Alerts</strong>: Slow query detection</p></li>
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics/connection-performance">http://localhost:8000/diagnostics/connection-performance</a></p></li>
+<li><p><strong>Metrics</strong> Connection times, query performance</p></li>
+<li><p><strong>Alerts</strong> Slow query detection</p></li>
 </ul>
 </section>
 <section id="schema-health">
 <h3>Schema Health<a class="headerlink" href="#schema-health" title="Link to this heading"></a></h3>
 <p>Monitor database schema health:</p>
 <ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/schema-health">http://localhost:8000/diagnostics/schema-health</a></p></li>
-<li><p><strong>Validation</strong>: Schema integrity checks</p></li>
-<li><p><strong>Indexes</strong>: Index usage and performance</p></li>
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics/schema-health">http://localhost:8000/diagnostics/schema-health</a></p></li>
+<li><p><strong>Validation</strong> Schema integrity checks</p></li>
+<li><p><strong>Indexes</strong> Index usage and performance</p></li>
 </ul>
 </section>
 <section id="performance-metrics">
 <h3>Performance Metrics<a class="headerlink" href="#performance-metrics" title="Link to this heading"></a></h3>
 <p>Monitor application performance:</p>
 <ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/performance">http://localhost:8000/diagnostics/performance</a></p></li>
-<li><p><strong>Metrics</strong>: Request/response times, error rates</p></li>
-<li><p><strong>Trends</strong>: Performance over time</p></li>
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics/performance">http://localhost:8000/diagnostics/performance</a></p></li>
+<li><p><strong>Metrics</strong> Request/response times, error rates</p></li>
+<li><p><strong>Trends</strong> Performance over time</p></li>
 </ul>
 </section>
 <section id="celery-diagnostics">
 <h3>Celery Diagnostics<a class="headerlink" href="#celery-diagnostics" title="Link to this heading"></a></h3>
 <p>Monitor Celery performance:</p>
 <ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics/celery">http://localhost:8000/diagnostics/celery</a></p></li>
-<li><p><strong>Workers</strong>: Worker status and activity</p></li>
-<li><p><strong>Tasks</strong>: Task performance and execution times</p></li>
-<li><p><strong>Queues</strong>: Queue depth and processing rates</p></li>
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics/celery">http://localhost:8000/diagnostics/celery</a></p></li>
+<li><p><strong>Workers</strong> Worker status and activity</p></li>
+<li><p><strong>Tasks</strong> Task performance and execution times</p></li>
+<li><p><strong>Queues</strong> Queue depth and processing rates</p></li>
 </ul>
 </section>
 </section>
@@ -399,14 +399,14 @@ Details:
 <h3>Slack Integration<a class="headerlink" href="#slack-integration" title="Link to this heading"></a></h3>
 <p>Configure Slack alerts for monitoring:</p>
 <ol class="arabic">
-<li><p><strong>Create Slack App</strong>:
+<li><p><strong>Create Slack App</strong>
 - Go to <a class="reference external" href="https://api.slack.com/apps">https://api.slack.com/apps</a>
 - Create new app for your workspace
 - Add Incoming Webhooks feature</p></li>
-<li><p><strong>Get Webhook URL</strong>:
+<li><p><strong>Get Webhook URL</strong>
 - Create webhook for your channel
 - Copy the webhook URL</p></li>
-<li><p><strong>Configure Environment</strong>:
+<li><p><strong>Configure Environment</strong>
 .. code-block:: bash</p>
 <blockquote>
 <div><p>export SLACK_WEBHOOK_URL=”<a class="reference external" href="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK">https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK</a>”</p>
@@ -418,15 +418,15 @@ uv run python src/app.py</p>
 </section>
 <section id="alert-types">
 <h3>Alert Types<a class="headerlink" href="#alert-types" title="Link to this heading"></a></h3>
-<p><strong>Queue Alerts</strong>:
+<p><strong>Queue Alerts</strong>
 - Queue depth exceeds thresholds
 - Worker status issues
 - Task processing delays</p>
-<p><strong>Anomaly Alerts</strong>:
+<p><strong>Anomaly Alerts</strong>
 - Statistical anomalies detected
 - Metric threshold violations
 - Performance degradation</p>
-<p><strong>System Alerts</strong>:
+<p><strong>System Alerts</strong>
 - Database connectivity issues
 - Redis connectivity issues
 - Application errors</p>
@@ -456,11 +456,11 @@ uv run python src/app.py</p>
 <h3>Monitoring Frequency<a class="headerlink" href="#monitoring-frequency" title="Link to this heading"></a></h3>
 <p>Recommended monitoring frequencies:</p>
 <ul class="simple">
-<li><p><strong>Freshness</strong>: Every hour</p></li>
-<li><p><strong>Timeliness</strong>: Every 30 minutes</p></li>
-<li><p><strong>Queue Monitoring</strong>: Every 5 minutes</p></li>
-<li><p><strong>Log Cleanup</strong>: Daily</p></li>
-<li><p><strong>System Diagnostics</strong>: As needed</p></li>
+<li><p><strong>Freshness</strong> Every hour</p></li>
+<li><p><strong>Timeliness</strong> Every 30 minutes</p></li>
+<li><p><strong>Queue Monitoring</strong> Every 5 minutes</p></li>
+<li><p><strong>Log Cleanup</strong> Daily</p></li>
+<li><p><strong>System Diagnostics</strong> As needed</p></li>
 </ul>
 </section>
 <section id="load-testing">
@@ -492,11 +492,11 @@ locust<span class="w"> </span>-f<span class="w"> </span>src/diagnostics/locustfi
 <section id="performance-targets">
 <h3>Performance Targets<a class="headerlink" href="#performance-targets" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Response Time</strong>: &lt; 200ms for API endpoints</p></li>
-<li><p><strong>Throughput</strong>: &gt; 1000 requests/second</p></li>
-<li><p><strong>Error Rate</strong>: &lt; 0.1%</p></li>
-<li><p><strong>Queue Depth</strong>: &lt; 50 messages</p></li>
-<li><p><strong>Worker Utilization</strong>: 70-80%</p></li>
+<li><p><strong>Response Time</strong> &lt; 200ms for API endpoints</p></li>
+<li><p><strong>Throughput</strong> &gt; 1000 requests/second</p></li>
+<li><p><strong>Error Rate</strong> &lt; 0.1%</p></li>
+<li><p><strong>Queue Depth</strong> &lt; 50 messages</p></li>
+<li><p><strong>Worker Utilization</strong> 70-80%</p></li>
 </ul>
 </section>
 </section>
@@ -504,34 +504,34 @@ locust<span class="w"> </span>-f<span class="w"> </span>src/diagnostics/locustfi
 <h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
 <section id="common-issues">
 <h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>Freshness Alerts</strong>:
+<p><strong>Freshness Alerts</strong>
 - Check data modification timestamps
 - Verify freshness thresholds
 - Review data pipeline schedules</p>
-<p><strong>Timeliness Alerts</strong>:
+<p><strong>Timeliness Alerts</strong>
 - Check pipeline execution times
 - Verify timeliness thresholds
 - Review system performance</p>
-<p><strong>Queue Alerts</strong>:
+<p><strong>Queue Alerts</strong>
 - Check Celery worker status
 - Verify Redis connectivity
 - Review task processing rates</p>
-<p><strong>System Alerts</strong>:
+<p><strong>System Alerts</strong>
 - Check database connectivity
 - Verify Redis connectivity
 - Review application logs</p>
 </section>
 <section id="performance-issues">
 <h3>Performance Issues<a class="headerlink" href="#performance-issues" title="Link to this heading"></a></h3>
-<p><strong>Slow Responses</strong>:
+<p><strong>Slow Responses</strong>
 - Check database performance
 - Review query optimization
 - Verify connection pooling</p>
-<p><strong>High Queue Depth</strong>:
+<p><strong>High Queue Depth</strong>
 - Scale Celery workers
 - Check task processing rates
 - Review rate limiting</p>
-<p><strong>Memory Issues</strong>:
+<p><strong>Memory Issues</strong>
 - Monitor memory usage
 - Check for memory leaks
 - Review worker configuration</p>
@@ -542,37 +542,37 @@ locust<span class="w"> </span>-f<span class="w"> </span>src/diagnostics/locustfi
 <section id="monitoring-setup">
 <h3>Monitoring Setup<a class="headerlink" href="#monitoring-setup" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Comprehensive Coverage</strong>: Monitor all critical components</p></li>
-<li><p><strong>Appropriate Thresholds</strong>: Set realistic alert thresholds</p></li>
-<li><p><strong>Regular Review</strong>: Review monitoring results regularly</p></li>
-<li><p><strong>Alert Fatigue</strong>: Avoid overly sensitive alerts</p></li>
+<li><p><strong>Comprehensive Coverage</strong> Monitor all critical components</p></li>
+<li><p><strong>Appropriate Thresholds</strong> Set realistic alert thresholds</p></li>
+<li><p><strong>Regular Review</strong> Review monitoring results regularly</p></li>
+<li><p><strong>Alert Fatigue</strong> Avoid overly sensitive alerts</p></li>
 </ul>
 </section>
 <section id="performance-optimization">
 <h3>Performance Optimization<a class="headerlink" href="#performance-optimization" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Database Optimization</strong>: Optimize queries and indexes</p></li>
-<li><p><strong>Connection Pooling</strong>: Tune connection pool settings</p></li>
-<li><p><strong>Worker Scaling</strong>: Scale workers based on load</p></li>
-<li><p><strong>Caching</strong>: Implement appropriate caching strategies</p></li>
+<li><p><strong>Database Optimization</strong> Optimize queries and indexes</p></li>
+<li><p><strong>Connection Pooling</strong> Tune connection pool settings</p></li>
+<li><p><strong>Worker Scaling</strong> Scale workers based on load</p></li>
+<li><p><strong>Caching</strong> Implement appropriate caching strategies</p></li>
 </ul>
 </section>
 <section id="alert-management">
 <h3>Alert Management<a class="headerlink" href="#alert-management" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Clear Alerts</strong>: Use descriptive alert messages</p></li>
-<li><p><strong>Actionable Alerts</strong>: Include remediation steps</p></li>
-<li><p><strong>Alert Escalation</strong>: Implement alert escalation procedures</p></li>
-<li><p><strong>Alert History</strong>: Track alert trends and patterns</p></li>
+<li><p><strong>Clear Alerts</strong> Use descriptive alert messages</p></li>
+<li><p><strong>Actionable Alerts</strong> Include remediation steps</p></li>
+<li><p><strong>Alert Escalation</strong> Implement alert escalation procedures</p></li>
+<li><p><strong>Alert History</strong> Track alert trends and patterns</p></li>
 </ul>
 </section>
 <section id="maintenance">
 <h3>Maintenance<a class="headerlink" href="#maintenance" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Regular Cleanup</strong>: Clean up old logs and data</p></li>
-<li><p><strong>Performance Tuning</strong>: Regular performance optimization</p></li>
-<li><p><strong>Security Updates</strong>: Keep dependencies updated</p></li>
-<li><p><strong>Backup Strategy</strong>: Implement data backup procedures</p></li>
+<li><p><strong>Regular Cleanup</strong> Clean up old logs and data</p></li>
+<li><p><strong>Performance Tuning</strong> Regular performance optimization</p></li>
+<li><p><strong>Security Updates</strong> Keep dependencies updated</p></li>
+<li><p><strong>Backup Strategy</strong> Implement data backup procedures</p></li>
 </ul>
 </section>
 </section>

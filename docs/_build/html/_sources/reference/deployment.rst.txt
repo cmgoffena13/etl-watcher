@@ -9,7 +9,9 @@ Deployment Options
 Docker Compose
 ~~~~~~~~~~~~~~
 
-**Development Deployment**:
+Development Deployment
+~~~~~~~~~~~~~~~~~~~~~~~
+
 .. code-block:: bash
 
    # Start all services
@@ -21,7 +23,9 @@ Docker Compose
    # View logs
    docker-compose logs -f
 
-**Production Deployment**:
+Production Deployment
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. code-block:: bash
 
    # Set environment variables
@@ -36,7 +40,9 @@ Docker Compose
 Kubernetes
 ~~~~~~~~~~
 
-**Namespace Setup**:
+Namespace Setup
+~~~~~~~~~~~~~~~
+
 .. code-block:: yaml
 
    apiVersion: v1
@@ -44,7 +50,9 @@ Kubernetes
    metadata:
      name: watcher
 
-**ConfigMap**:
+ConfigMap
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. code-block:: yaml
 
    apiVersion: v1
@@ -56,7 +64,9 @@ Kubernetes
      DATABASE_URL: "postgresql+asyncpg://user:password@postgres:5432/watcher"
      REDIS_URL: "redis://redis:6379/1"
 
-**Secrets**:
+Secrets
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 .. code-block:: yaml
 
    apiVersion: v1
@@ -69,7 +79,7 @@ Kubernetes
      LOGFIRE_TOKEN: <base64-encoded-token>
      SLACK_WEBHOOK_URL: <base64-encoded-webhook>
 
-**Deployment**:
+**Deployment**
 .. code-block:: yaml
 
    apiVersion: apps/v1
@@ -98,7 +108,7 @@ Kubernetes
            - secretRef:
                name: watcher-secrets
 
-**Service**:
+**Service**
 .. code-block:: yaml
 
    apiVersion: v1
@@ -114,7 +124,7 @@ Kubernetes
        targetPort: 8000
      type: LoadBalancer
 
-**Ingress**:
+**Ingress**
 .. code-block:: yaml
 
    apiVersion: networking.k8s.io/v1
@@ -139,9 +149,9 @@ Environment Configuration
 -------------------------
 
 Development
-~~~~~~~~~~~
+********************~
 
-**Environment Variables**:
+**Environment Variables**
 .. code-block:: bash
 
    # Database
@@ -161,7 +171,7 @@ Development
    export DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES="false"
    export DEV_PROFILING_ENABLED="true"
 
-**Docker Compose**:
+**Docker Compose**
 .. code-block:: yaml
 
    version: '3.8'
@@ -195,7 +205,7 @@ Development
 Production
 ~~~~~~~~~~
 
-**Environment Variables**:
+**Environment Variables**
 .. code-block:: bash
 
    # Database
@@ -215,7 +225,7 @@ Production
    export PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES="true"
    export PROD_PROFILING_ENABLED="false"
 
-**Production Docker Compose**:
+**Production Docker Compose**
 .. code-block:: yaml
 
    version: '3.8'
@@ -252,9 +262,9 @@ Database Setup
 ---------------
 
 PostgreSQL Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
 
-**Production Settings**:
+**Production Settings**
 .. code-block:: sql
 
    -- Connection settings
@@ -271,7 +281,7 @@ PostgreSQL Configuration
    log_duration = on
    log_min_duration_statement = 1000
 
-**Index Optimization**:
+**Index Optimization**
 .. code-block:: sql
 
    -- Analyze tables regularly
@@ -284,9 +294,9 @@ PostgreSQL Configuration
    VACUUM ANALYZE;
 
 Redis Configuration
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Production Settings**:
+**Production Settings**
 .. code-block:: conf
 
    # Memory settings
@@ -302,7 +312,7 @@ Redis Configuration
    loglevel notice
    logfile /var/log/redis/redis.log
 
-**Performance Tuning**:
+**Performance Tuning**
 .. code-block:: bash
 
    # Check Redis performance
@@ -320,7 +330,7 @@ Migration Strategy
 Pre-Deployment
 ~~~~~~~~~~~~~~
 
-**Database Backup**:
+**Database Backup**
 .. code-block:: bash
 
    # Backup database
@@ -329,7 +339,7 @@ Pre-Deployment
    # Verify backup
    psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
 
-**Migration Testing**:
+**Migration Testing**
 .. code-block:: bash
 
    # Test migrations
@@ -341,7 +351,7 @@ Pre-Deployment
    # Verify migration
    alembic current
 
-**Application Testing**:
+**Application Testing**
 .. code-block:: bash
 
    # Test application
@@ -354,9 +364,9 @@ Pre-Deployment
    curl http://localhost:8000/diagnostics
 
 Post-Deployment
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Verification**:
+**Verification**
 .. code-block:: bash
 
    # Check application health
@@ -368,7 +378,7 @@ Post-Deployment
    # Check Redis connectivity
    redis-cli -u $REDIS_URL ping
 
-**Monitoring**:
+**Monitoring**
 .. code-block:: bash
 
    # Check application logs
@@ -383,7 +393,7 @@ Post-Deployment
 Rollback Strategy
 ~~~~~~~~~~~~~~~~
 
-**Application Rollback**:
+**Application Rollback**
 .. code-block:: bash
 
    # Rollback application
@@ -391,7 +401,7 @@ Rollback Strategy
    docker-compose up -d --scale app=0
    docker-compose up -d
 
-**Database Rollback**:
+**Database Rollback**
 .. code-block:: bash
 
    # Rollback migrations
@@ -403,7 +413,7 @@ Rollback Strategy
    # Check application
    curl http://localhost:8000/health
 
-**Data Rollback**:
+**Data Rollback**
 .. code-block:: bash
 
    # Restore from backup
@@ -416,9 +426,9 @@ Monitoring & Alerting
 ---------------------
 
 Health Checks
-~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Application Health**:
+**Application Health**
 .. code-block:: bash
 
    # Health check endpoint
@@ -430,7 +440,7 @@ Health Checks
    # Performance metrics
    curl http://localhost:8000/diagnostics/performance
 
-**Database Health**:
+**Database Health**
 .. code-block:: bash
 
    # Connection performance
@@ -442,7 +452,7 @@ Health Checks
    # Database queries
    psql $DATABASE_URL -c "SELECT COUNT(*) FROM pipeline;"
 
-**Redis Health**:
+**Redis Health**
 .. code-block:: bash
 
    # Redis connectivity
@@ -454,7 +464,7 @@ Health Checks
    # Redis memory
    redis-cli -u $REDIS_URL info memory
 
-**Celery Health**:
+**Celery Health**
 .. code-block:: bash
 
    # Celery diagnostics
@@ -469,7 +479,7 @@ Health Checks
 Alerting Setup
 ~~~~~~~~~~~~~~
 
-**Slack Integration**:
+**Slack Integration**
 .. code-block:: bash
 
    # Set Slack webhook
@@ -481,7 +491,7 @@ Alerting Setup
    # Restart application
    docker-compose restart app
 
-**Monitoring Checks**:
+**Monitoring Checks**
 .. code-block:: bash
 
    # Freshness monitoring
@@ -493,7 +503,7 @@ Alerting Setup
    # Queue monitoring
    curl -X POST http://localhost:8000/celery/monitor-queue
 
-**Scheduled Monitoring**:
+**Scheduled Monitoring**
 .. code-block:: bash
 
    # Add to crontab
@@ -513,9 +523,9 @@ Performance Optimization
 ------------------------
 
 Database Optimization
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Query Optimization**:
+**Query Optimization**
 .. code-block:: sql
 
    -- Check slow queries
@@ -527,7 +537,7 @@ Database Optimization
    -- Analyze tables
    ANALYZE;
 
-**Connection Pooling**:
+**Connection Pooling**
 .. code-block:: python
 
    # Connection pool settings
@@ -536,7 +546,7 @@ Database Optimization
    pool_timeout = 30
    pool_recycle = 3600
 
-**Index Optimization**:
+**Index Optimization**
 .. code-block:: sql
 
    -- Create covering indexes
@@ -548,7 +558,7 @@ Database Optimization
 Redis Optimization
 ~~~~~~~~~~~~~~~~~~
 
-**Memory Optimization**:
+**Memory Optimization**
 .. code-block:: conf
 
    # Memory settings
@@ -558,7 +568,7 @@ Redis Optimization
    # Eviction settings
    maxmemory-samples 5
 
-**Performance Monitoring**:
+**Performance Monitoring**
 .. code-block:: bash
 
    # Monitor Redis performance
@@ -571,9 +581,9 @@ Redis Optimization
    redis-cli monitor
 
 Celery Optimization
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Worker Scaling**:
+**Worker Scaling**
 .. code-block:: bash
 
    # Scale workers
@@ -585,7 +595,7 @@ Celery Optimization
    # Monitor worker performance
    celery -A src.celery_app inspect stats
 
-**Queue Optimization**:
+**Queue Optimization**
 .. code-block:: bash
 
    # Monitor queue depth
@@ -601,9 +611,9 @@ Security Considerations
 -----------------------
 
 Database Security
-~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Connection Security**:
+**Connection Security**
 .. code-block:: bash
 
    # Use SSL connections
@@ -613,7 +623,7 @@ Database Security
    export DATABASE_POOL_SIZE=20
    export DATABASE_MAX_OVERFLOW=10
 
-**Access Control**:
+**Access Control**
 .. code-block:: sql
 
    -- Create application user
@@ -630,7 +640,7 @@ Database Security
 Redis Security
 ~~~~~~~~~~~~~~
 
-**Authentication**:
+**Authentication**
 .. code-block:: conf
 
    # Require authentication
@@ -640,7 +650,7 @@ Redis Security
    rename-command FLUSHDB ""
    rename-command FLUSHALL ""
 
-**Network Security**:
+**Network Security**
 .. code-block:: conf
 
    # Bind to specific interface
@@ -650,9 +660,9 @@ Redis Security
    protected-mode yes
 
 Application Security
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Environment Variables**:
+**Environment Variables**
 .. code-block:: bash
 
    # Use secure passwords
@@ -663,7 +673,7 @@ Application Security
    export ENV_STATE="production"
    export PROFILING_ENABLED="false"
 
-**API Security**:
+**API Security**
 .. code-block:: python
 
    # Use HTTPS in production
@@ -675,7 +685,7 @@ Application Security
    limiter = Limiter(key_func=get_remote_address)
    app.state.limiter = limiter
 
-**Logging Security**:
+**Logging Security**
 .. code-block:: python
 
    # Don't log sensitive data
@@ -692,7 +702,7 @@ Disaster Recovery
 Backup Strategy
 ~~~~~~~~~~~~~~
 
-**Database Backup**:
+**Database Backup**
 .. code-block:: bash
 
    # Daily backup
@@ -704,7 +714,7 @@ Backup Strategy
    # Monthly backup
    pg_dump $DATABASE_URL | gzip > backup_$(date +%Y%m).sql.gz
 
-**Redis Backup**:
+**Redis Backup**
 .. code-block:: bash
 
    # Redis backup
@@ -713,7 +723,7 @@ Backup Strategy
    # Compress backup
    gzip backup.rdb
 
-**Application Backup**:
+**Application Backup**
 .. code-block:: bash
 
    # Backup application code
@@ -723,9 +733,9 @@ Backup Strategy
    cp .env backup_env_$(date +%Y%m%d).env
 
 Recovery Procedures
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Database Recovery**:
+**Database Recovery**
 .. code-block:: bash
 
    # Restore database
@@ -737,7 +747,7 @@ Recovery Procedures
    # Run migrations
    alembic upgrade head
 
-**Redis Recovery**:
+**Redis Recovery**
 .. code-block:: bash
 
    # Restore Redis
@@ -746,7 +756,7 @@ Recovery Procedures
    # Verify data
    redis-cli -u $REDIS_URL dbsize
 
-**Application Recovery**:
+**Application Recovery**
 .. code-block:: bash
 
    # Restore application
@@ -758,7 +768,7 @@ Recovery Procedures
    # Restart application
    docker-compose up -d
 
-**Full Recovery**:
+**Full Recovery**
 .. code-block:: bash
 
    # Stop all services
@@ -780,9 +790,9 @@ Maintenance Procedures
 ----------------------
 
 Regular Maintenance
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Daily Tasks**:
+**Daily Tasks**
 .. code-block:: bash
 
    # Check application health
@@ -797,7 +807,7 @@ Regular Maintenance
    # Check Celery queue
    redis-cli -u $REDIS_URL llen celery
 
-**Weekly Tasks**:
+**Weekly Tasks**
 .. code-block:: bash
 
    # Analyze database
@@ -812,7 +822,7 @@ Regular Maintenance
    # Check memory usage
    free -h
 
-**Monthly Tasks**:
+**Monthly Tasks**
 .. code-block:: bash
 
    # Full database backup
@@ -827,7 +837,7 @@ Regular Maintenance
    # Performance review
    psql $DATABASE_URL -c "SELECT query, mean_time, calls FROM pg_stat_statements ORDER BY mean_time DESC LIMIT 10;"
 
-**Quarterly Tasks**:
+**Quarterly Tasks**
 .. code-block:: bash
 
    # Security audit
@@ -837,9 +847,9 @@ Regular Maintenance
    # Disaster recovery testing
 
 Troubleshooting
-~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-**Common Issues**:
+**Common Issues**
 .. code-block:: bash
 
    # Application won't start
@@ -854,7 +864,7 @@ Troubleshooting
    # Celery worker issues
    docker-compose logs celery
 
-**Performance Issues**:
+**Performance Issues**
 .. code-block:: bash
 
    # Check system resources
@@ -869,7 +879,7 @@ Troubleshooting
    # Check Celery performance
    celery -A src.celery_app inspect stats
 
-**Recovery Issues**:
+**Recovery Issues**
 .. code-block:: bash
 
    # Check backup integrity
