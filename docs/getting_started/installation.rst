@@ -32,10 +32,12 @@ Installation Steps
 
       # Development
       ENV_STATE=dev
-      DEV_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_dev
       TEST_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_test
       DEV_LOGFIRE_TOKEN=your_logfire_token_here
       DEV_SLACK_WEBHOOK_URL=your_slack_webhook_url_here
+
+   .. note::
+      ``TEST_DATABASE_URL`` is only needed for tests.
 
 3. **Start services with Docker Compose**
 

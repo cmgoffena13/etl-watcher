@@ -53,13 +53,12 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#database-configuration">Database Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#connection-settings">Connection Settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#connection-pool-settings">Connection Pool Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-pool-default-settings">Connection Pool Default Settings</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#redis-configuration">Redis Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Connection Settings</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#celery-configuration">Celery Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#connection-default-settings">Connection Default Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-default-configuration">Celery Default Configuration</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#monitoring-configuration">Monitoring Configuration</a><ul>
@@ -70,18 +69,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#feature-flags">Feature Flags</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auto-create-anomaly-detection-rules">Auto-Create Anomaly Detection Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#profiling">Profiling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#security-configuration">Security Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database-security">Database Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#redis-security">Redis Security</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#api-security">API Security</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#performance-tuning">Performance Tuning</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#database-optimization">Database Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#redis-optimization">Redis Optimization</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#celery-optimization">Celery Optimization</a></li>
 </ul>
 </li>
 </ul>
@@ -135,6 +122,15 @@
 <h1>Configuration<a class="headerlink" href="#configuration" title="Link to this heading"></a></h1>
 <section id="environment-variables">
 <h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All environment variables must be prefixed with the environment name:</p>
+<ul class="simple">
+<li><p><strong>Development</strong>: <code class="docutils literal notranslate"><span class="pre">DEV_</span></code> prefix (e.g., <code class="docutils literal notranslate"><span class="pre">DEV_DATABASE_URL</span></code>)</p></li>
+<li><p><strong>Test</strong>: <code class="docutils literal notranslate"><span class="pre">TEST_</span></code> prefix (e.g., <code class="docutils literal notranslate"><span class="pre">TEST_DATABASE_URL</span></code>)</p></li>
+<li><p><strong>Production</strong>: <code class="docutils literal notranslate"><span class="pre">PROD_</span></code> prefix (e.g., <code class="docutils literal notranslate"><span class="pre">PROD_DATABASE_URL</span></code>)</p></li>
+</ul>
+</div>
 <section id="development-environment">
 <h3>Development Environment<a class="headerlink" href="#development-environment" title="Link to this heading"></a></h3>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database</span>
@@ -180,19 +176,8 @@
 </section>
 <section id="database-configuration">
 <h2>Database Configuration<a class="headerlink" href="#database-configuration" title="Link to this heading"></a></h2>
-<section id="connection-settings">
-<h3>Connection Settings<a class="headerlink" href="#connection-settings" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Host</strong> Database server hostname</p></li>
-<li><p><strong>Port</strong> Database port (default: 5432)</p></li>
-<li><p><strong>Database</strong> Database name</p></li>
-<li><p><strong>Username</strong> Database username</p></li>
-<li><p><strong>Password</strong> Database password</p></li>
-<li><p><strong>SSL</strong> SSL connection settings</p></li>
-</ul>
-</section>
-<section id="connection-pool-settings">
-<h3>Connection Pool Settings<a class="headerlink" href="#connection-pool-settings" title="Link to this heading"></a></h3>
+<section id="connection-pool-default-settings">
+<h3>Connection Pool Default Settings<a class="headerlink" href="#connection-pool-default-settings" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Pool Size</strong> 20 connections</p></li>
 <li><p><strong>Max Overflow</strong> 10 additional connections</p></li>
@@ -203,17 +188,16 @@
 </section>
 <section id="redis-configuration">
 <h2>Redis Configuration<a class="headerlink" href="#redis-configuration" title="Link to this heading"></a></h2>
-<section id="id1">
-<h3>Connection Settings<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<section id="connection-default-settings">
+<h3>Connection Default Settings<a class="headerlink" href="#connection-default-settings" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Host</strong> Redis server hostname</p></li>
 <li><p><strong>Port</strong> Redis port (default: 6379)</p></li>
 <li><p><strong>Database</strong> Redis database number (default: 1)</p></li>
-<li><p><strong>Password</strong> Redis password (if required)</p></li>
 </ul>
 </section>
-<section id="celery-configuration">
-<h3>Celery Configuration<a class="headerlink" href="#celery-configuration" title="Link to this heading"></a></h3>
+<section id="celery-default-configuration">
+<h3>Celery Default Configuration<a class="headerlink" href="#celery-default-configuration" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><strong>Broker</strong> Redis URL for message broker</p></li>
 <li><p><strong>Backend</strong> Redis URL for result backend</p></li>
@@ -257,7 +241,6 @@
 <li><p><strong>Anomaly Detection</strong> Statistical anomaly alerts</p></li>
 <li><p><strong>Timeliness</strong> Pipeline execution timeliness alerts</p></li>
 <li><p><strong>Freshness</strong> DML operation freshness alerts</p></li>
-<li><p><strong>System Health</strong> Database and Redis connectivity issues</p></li>
 </ul>
 </section>
 </section>
@@ -276,66 +259,6 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">PROFILING_ENABLED</span><span class="o">=</span><span class="nb">true</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="security-configuration">
-<h2>Security Configuration<a class="headerlink" href="#security-configuration" title="Link to this heading"></a></h2>
-<section id="database-security">
-<h3>Database Security<a class="headerlink" href="#database-security" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Use strong passwords</p></li>
-<li><p>Enable SSL connections in production</p></li>
-<li><p>Restrict database access to application servers only</p></li>
-<li><p>Regular security updates</p></li>
-</ul>
-</section>
-<section id="redis-security">
-<h3>Redis Security<a class="headerlink" href="#redis-security" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Use authentication if Redis is exposed</p></li>
-<li><p>Enable TLS in production</p></li>
-<li><p>Restrict network access</p></li>
-<li><p>Regular security updates</p></li>
-</ul>
-</section>
-<section id="api-security">
-<h3>API Security<a class="headerlink" href="#api-security" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p>Use HTTPS in production</p></li>
-<li><p>Implement API rate limiting</p></li>
-<li><p>Validate all input data</p></li>
-<li><p>Regular security audits</p></li>
-</ul>
-</section>
-</section>
-<section id="performance-tuning">
-<h2>Performance Tuning<a class="headerlink" href="#performance-tuning" title="Link to this heading"></a></h2>
-<section id="database-optimization">
-<h3>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Indexes</strong> Ensure proper indexing on frequently queried columns</p></li>
-<li><p><strong>Connection Pooling</strong> Tune pool size based on load</p></li>
-<li><p><strong>Query Optimization</strong> Monitor and optimize slow queries</p></li>
-<li><p><strong>Vacuum</strong> Regular database maintenance</p></li>
-</ul>
-</section>
-<section id="redis-optimization">
-<h3>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Memory</strong> Monitor Redis memory usage</p></li>
-<li><p><strong>Persistence</strong> Configure appropriate persistence settings</p></li>
-<li><p><strong>Eviction</strong> Set appropriate eviction policies</p></li>
-<li><p><strong>Monitoring</strong> Monitor Redis performance metrics</p></li>
-</ul>
-</section>
-<section id="celery-optimization">
-<h3>Celery Optimization<a class="headerlink" href="#celery-optimization" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Workers</strong> Scale workers based on task volume</p></li>
-<li><p><strong>Rate Limits</strong> Configure appropriate rate limits</p></li>
-<li><p><strong>Retries</strong> Tune retry policies</p></li>
-<li><p><strong>Monitoring</strong> Monitor worker performance and queue depth</p></li>
-</ul>
 </section>
 </section>
 </section>

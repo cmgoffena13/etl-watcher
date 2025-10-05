@@ -58,16 +58,6 @@ Production Environment
 Database Configuration
 ----------------------
 
-Connection Settings
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Host** Database server hostname
-- **Port** Database port (default: 5432)
-- **Database** Database name
-- **Username** Database username
-- **Password** Database password
-- **SSL** SSL connection settings
-
 Connection Pool Default Settings
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -79,15 +69,14 @@ Connection Pool Default Settings
 Redis Configuration
 ------------------
 
-Connection Settings
+Connection Default Settings
 ~~~~~~~~~~~~~~~~~~~
 
 - **Host** Redis server hostname
 - **Port** Redis port (default: 6379)
 - **Database** Redis database number (default: 1)
-- **Password** Redis password (if required)
 
-Celery Configuration
+Celery Default Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - **Broker** Redis URL for message broker
@@ -132,7 +121,6 @@ Alert Types:
 - **Anomaly Detection** Statistical anomaly alerts
 - **Timeliness** Pipeline execution timeliness alerts
 - **Freshness** DML operation freshness alerts
-- **System Health** Database and Redis connectivity issues
 
 Feature Flags
 -------------
@@ -154,57 +142,3 @@ Enable application profiling for performance analysis. Enabling this allows you 
 .. code-block:: bash
 
    PROFILING_ENABLED=true
-
-Security Configuration
-----------------------
-
-Database Security
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- Use strong passwords
-- Enable SSL connections in production
-- Restrict database access to application servers only
-- Regular security updates
-
-Redis Security
-~~~~~~~~~~~~~~
-
-- Use authentication if Redis is exposed
-- Enable TLS in production
-- Restrict network access
-- Regular security updates
-
-API Security
-~~~~~~~~~~~~
-
-- Use HTTPS in production
-- Implement API rate limiting
-- Validate all input data
-- Regular security audits
-
-Performance Tuning
------------------
-
-Database Optimization
-~~~~~~~~~~~~~~~~~~~~
-
-- **Indexes** Ensure proper indexing on frequently queried columns
-- **Connection Pooling** Tune pool size based on load
-- **Query Optimization** Monitor and optimize slow queries
-- **Vacuum** Regular database maintenance
-
-Redis Optimization
-~~~~~~~~~~~~~~~~~~
-
-- **Memory** Monitor Redis memory usage
-- **Persistence** Configure appropriate persistence settings
-- **Eviction** Set appropriate eviction policies
-- **Monitoring** Monitor Redis performance metrics
-
-Celery Optimization
-~~~~~~~~~~~~~~~~~~~~
-
-- **Workers** Scale workers based on task volume
-- **Rate Limits** Configure appropriate rate limits
-- **Retries** Tune retry policies
-- **Monitoring** Monitor worker performance and queue depth

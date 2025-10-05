@@ -1,53 +1,12 @@
 Quick Start Guide
 =================
 
-This guide will get you up and running with Watcher in under 10 minutes.
+This guide will get you up and running with Watcher.
 
 Step 1: Create Your First Pipeline
 ----------------------------------
 
-1. **Create a pipeline type**
-
-   .. tabs::
-
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/pipeline_type", json={
-                "name": "extraction"
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
-
-         .. code-block:: python
-
-            import httpx
-            
-            response = httpx.post("http://localhost:8000/pipeline_type", json={
-                "name": "extraction"
-            })
-            print(response.json())
-
-      .. tab:: curl
-
-         .. code-block:: bash
-
-            curl -X POST "http://localhost:8000/pipeline_type" \
-                 -H "Content-Type: application/json" \
-                 -d '{"name": "extraction", "group_name": "databricks"}'
-
-      .. tab:: HTTPie
-
-         .. code-block:: bash
-
-            http POST localhost:8000/pipeline_type \
-                 name=extraction
-
-2. **Create a pipeline**
+1. **Create a pipeline** (automatically creates pipeline type if needed)
 
    .. tabs::
 
@@ -94,7 +53,7 @@ Step 1: Create Your First Pipeline
 Step 2: Start Pipeline Execution
 -------------------------------
 
-1. **Start an execution**
+2. **Start an execution**
 
    .. tabs::
 
@@ -107,9 +66,7 @@ Step 2: Start Pipeline Execution
             response = requests.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
                 "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True,
-                "watermark": "2024-01-01T00:00:00Z",
-                "next_watermark": "2024-01-01T23:59:59Z"
+                "full_load": True
             })
             print(response.json())
 
@@ -122,9 +79,7 @@ Step 2: Start Pipeline Execution
             response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
                 "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True,
-                "watermark": "2024-01-01T00:00:00Z",
-                "next_watermark": "2024-01-01T23:59:59Z"
+                "full_load": True
             })
             print(response.json())
 
@@ -137,9 +92,7 @@ Step 2: Start Pipeline Execution
                  -d '{
                    "pipeline_id": 1,
                    "start_date": "2024-01-01T10:00:00Z",
-                   "full_load": true,
-                   "watermark": "2024-01-01T00:00:00Z",
-                   "next_watermark": "2024-01-01T23:59:59Z"
+                   "full_load": true
                  }'
 
       .. tab:: HTTPie
@@ -149,11 +102,9 @@ Step 2: Start Pipeline Execution
             http POST localhost:8000/start_pipeline_execution \
                  pipeline_id=1 \
                  start_date="2024-01-01T10:00:00Z" \
-                 full_load=true \
-                 watermark="2024-01-01T00:00:00Z" \
-                 next_watermark="2024-01-01T23:59:59Z"
+                 full_load=true
 
-2. **End the execution with metrics**
+3. **End the execution with metrics**
 
    .. tabs::
 
@@ -220,10 +171,10 @@ Step 2: Start Pipeline Execution
                  updates=200 \
                  soft_deletes=0
 
-Step 3: Set Up Monitoring
--------------------------
+Step 3: Create Data Lineage
+----------------------------
 
-1. **Create an address for monitoring**
+1. **Create data lineage** (automatically creates addresses and address types if needed)
 
    .. tabs::
 
@@ -233,10 +184,22 @@ Step 3: Set Up Monitoring
 
             import requests
             
-            response = requests.post("http://localhost:8000/address", json={
-                "name": "my_table",
-                "address_type_name": "databricks",
-                "address_type_group_name": "database"
+            response = requests.post("http://localhost:8000/address_lineage", json={
+                "pipeline_id": 1,
+                "source_addresses": [
+                    {
+                        "name": "source_db.source_schema.source_table",
+                        "address_type_name": "postgres",
+                        "address_type_group_name": "database"
+                    }
+                ],
+                "target_addresses": [
+                    {
+                        "name": "target_db.target_schema.target_table",
+                        "address_type_name": "postgres",
+                        "address_type_group_name": "database"
+                    }
+                ]
             })
             print(response.json())
 
@@ -246,10 +209,22 @@ Step 3: Set Up Monitoring
 
             import httpx
             
-            response = httpx.post("http://localhost:8000/address", json={
-                "name": "my_table",
-                "address_type_name": "databricks",
-                "address_type_group_name": "database"
+            response = httpx.post("http://localhost:8000/address_lineage", json={
+                "pipeline_id": 1,
+                "source_addresses": [
+                    {
+                        "name": "source_db.source_schema.source_table",
+                        "address_type_name": "postgres",
+                        "address_type_group_name": "database"
+                    }
+                ],
+                "target_addresses": [
+                    {
+                        "name": "target_db.target_schema.target_table",
+                        "address_type_name": "postgres",
+                        "address_type_group_name": "database"
+                    }
+                ]
             })
             print(response.json())
 
@@ -257,24 +232,39 @@ Step 3: Set Up Monitoring
 
          .. code-block:: bash
 
-            curl -X POST "http://localhost:8000/address" \
+            curl -X POST "http://localhost:8000/address_lineage" \
                  -H "Content-Type: application/json" \
                  -d '{
-                   "name": "my_table",
-                   "address_type_name": "databricks",
-                   "address_type_group_name": "database"
+                   "pipeline_id": 1,
+                   "source_addresses": [
+                     {
+                       "name": "source_db.source_schema.source_table",
+                       "address_type_name": "postgres",
+                       "address_type_group_name": "database"
+                     }
+                   ],
+                   "target_addresses": [
+                     {
+                       "name": "target_db.target_schema.target_table",
+                       "address_type_name": "postgres",
+                       "address_type_group_name": "database"
+                     }
+                   ]
                  }'
 
       .. tab:: HTTPie
 
          .. code-block:: bash
 
-            http POST localhost:8000/address \
-                 name=my_table \
-                 address_type_name=databricks \
-                 address_type_group_name=database
+            http POST localhost:8000/address_lineage \
+                 pipeline_id=1 \
+                 source_addresses:='[{"name": "source_db.source_schema.source_table", "address_type_name": "postgres", "address_type_group_name": "database"}]' \
+                 target_addresses:='[{"name": "target_db.target_schema.target_table", "address_type_name": "postgres", "address_type_group_name": "database"}]'
 
-2. **Run a freshness check**
+Step 4: Set Up Monitoring
+--------------------------
+
+1. **Run a freshness check**
 
    .. tabs::
 
@@ -351,78 +341,7 @@ Step 3: Set Up Monitoring
             http POST localhost:8000/timeliness \
                  lookback_minutes=60
 
-Step 4: Configure Anomaly Detection
------------------------------------
-
-1. **Create an anomaly detection rule**
-
-   .. tabs::
-
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/anomaly_detection_rule", json={
-                "pipeline_id": 1,
-                "metric_field": "total_rows",
-                "z_threshold": 2.0,
-                "minimum_executions": 5
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
-
-         .. code-block:: python
-
-            import httpx
-            
-            response = httpx.post("http://localhost:8000/anomaly_detection_rule", json={
-                "pipeline_id": 1,
-                "metric_field": "total_rows",
-                "z_threshold": 2.0,
-                "minimum_executions": 5
-            })
-            print(response.json())
-
-      .. tab:: curl
-
-         .. code-block:: bash
-
-            curl -X POST "http://localhost:8000/anomaly_detection_rule" \
-                 -H "Content-Type: application/json" \
-                 -d '{
-                   "pipeline_id": 1,
-                   "metric_field": "total_rows",
-                   "z_threshold": 2.0,
-                   "minimum_executions": 5
-                 }'
-
-      .. tab:: HTTPie
-
-         .. code-block:: bash
-
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=total_rows \
-                 z_threshold=2.0 \
-                 minimum_executions=5
-
-2. **Anomaly detection runs automatically** after each successful pipeline execution
-
-Step 5: Monitor Your System
---------------------------
-
-1. **Check system health**
-
-   Visit: http://localhost:8000/diagnostics
-
-2. **View API documentation**
-
-   Visit: http://localhost:8000/scalar
-
-3. **Monitor Celery queue**
+4. **Run a Celery queue check**
 
    .. tabs::
 
@@ -456,25 +375,111 @@ Step 5: Monitor Your System
 
             http POST localhost:8000/celery/monitor-queue
 
+Step 5: Configure Anomaly Detection
+-----------------------------------
+
+.. note::
+   Set ``WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true`` to automatically create anomaly detection rules for new pipelines.
+
+1. **Create an anomaly detection rule**
+
+   .. tabs::
+
+      .. tab:: Python - requests
+
+         .. code-block:: python
+
+            import requests
+            
+            response = requests.post("http://localhost:8000/anomaly_detection_rule", json={
+                "pipeline_id": 1,
+                "metric_field": "total_rows",
+                "z_threshold": 3.0,
+                "minimum_executions": 30,
+                "lookback_days": 30
+            })
+            print(response.json())
+
+      .. tab:: Python - httpx
+
+         .. code-block:: python
+
+            import httpx
+            
+            response = httpx.post("http://localhost:8000/anomaly_detection_rule", json={
+                "pipeline_id": 1,
+                "metric_field": "total_rows",
+                "z_threshold": 3.0,
+                "minimum_executions": 30,
+                "lookback_days": 30
+            })
+            print(response.json())
+
+      .. tab:: curl
+
+         .. code-block:: bash
+
+            curl -X POST "http://localhost:8000/anomaly_detection_rule" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "pipeline_id": 1,
+                   "metric_field": "total_rows",
+                   "z_threshold": 3.0,
+                   "minimum_executions": 30,
+                   "lookback_days": 30
+                 }'
+
+      .. tab:: HTTPie
+
+         .. code-block:: bash
+
+            http POST localhost:8000/anomaly_detection_rule \
+                 pipeline_id=1 \
+                 metric_field=total_rows \
+                 z_threshold=3.0 \
+                 minimum_executions=30 \
+                 lookback_days=30
+
+2. **Anomaly detection runs automatically** after each successful pipeline execution
+
+Step 6: Web Pages
+-----------------
+
+1. **Check system health**
+
+   Visit: http://localhost:8000/diagnostics
+
+2. **View API documentation**
+
+   Visit: http://localhost:8000/scalar
+
+3. **View reporting dashboard**
+
+   Visit: http://localhost:8000/reporting
+
 Next Steps
 ----------
 
 - **Set up scheduled monitoring** Configure cron jobs to ping the monitoring endpoints
 - **Configure Slack alerts** Add your Slack webhook URL for notifications
 - **Set up anomaly detection rules** Create rules for your specific metrics
-- **Explore the diagnostics page** Monitor system health and performance
+- **Explore the web pages** Monitor system health & performance and access reporting dashboard
 
 Common Issues
 -------------
 
 **Port already in use**
-   Make sure ports 8000, 5432, and 6379 are available
+   Make sure port 8000 is available on your host machine
+
+**Docker containers not starting**
+   Check that Docker and Docker Compose are running properly
 
 **Database connection failed**
-   Ensure PostgreSQL is running and accessible
+   - Ensure the PostgreSQL container is running: ``docker-compose ps``
+   - Ensure you have the proper configuration prefix (e.g., ``DEV_DATABASE_URL``)
 
 **Redis connection failed**
-   Ensure Redis is running and accessible
+   Ensure the Redis container is running: ``docker-compose ps``
 
 **Migration errors**
-   Check that the database exists and you have proper permissions
+   Try restarting the application container: ``docker-compose restart app``

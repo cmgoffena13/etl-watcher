@@ -50,7 +50,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#verification">Verification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#required-environment-variables">Required Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#optional-environment-variables">Optional Environment Variables</a></li>
 </ul>
 </li>
@@ -132,11 +132,15 @@
 <li><p><strong>Set up environment variables</strong></p>
 <p>Create a <cite>.env</cite> file:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development</span>
-<span class="nv">DEV_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@localhost:5432/watcher_dev
-<span class="nv">DEV_REDIS_URL</span><span class="o">=</span>redis://localhost:6379/1
+<span class="nv">ENV_STATE</span><span class="o">=</span>dev
+<span class="nv">TEST_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@localhost:5432/watcher_test
 <span class="nv">DEV_LOGFIRE_TOKEN</span><span class="o">=</span>your_logfire_token_here
 <span class="nv">DEV_SLACK_WEBHOOK_URL</span><span class="o">=</span>your_slack_webhook_url_here
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">TEST_DATABASE_URL</span></code> is only needed for tests.</p>
 </div>
 </li>
 <li><p><strong>Start services with Docker Compose</strong></p>
@@ -157,20 +161,20 @@
 </section>
 <section id="environment-variables">
 <h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<section id="required-environment-variables">
-<h3>Required Environment Variables<a class="headerlink" href="#required-environment-variables" title="Link to this heading"></a></h3>
+<section id="minimum-required-production-environment-variables">
+<h3>Minimum Required Production Environment Variables<a class="headerlink" href="#minimum-required-production-environment-variables" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DATABASE_URL</span></code> - PostgreSQL connection string</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">REDIS_URL</span></code> - Redis connection string</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">LOGFIRE_TOKEN</span></code> - Logfire monitoring token (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_DATABASE_URL</span></code> - PostgreSQL connection string</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_REDIS_URL</span></code> - Redis connection string</p></li>
 </ul>
 </section>
 <section id="optional-environment-variables">
 <h3>Optional Environment Variables<a class="headerlink" href="#optional-environment-variables" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">SLACK_WEBHOOK_URL</span></code> - Slack notifications</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span></code> - Auto-create rules (default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROFILING_ENABLED</span></code> - Enable profiling (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_LOGFIRE_TOKEN</span></code> - Logfire monitoring token</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_SLACK_WEBHOOK_URL</span></code> - Slack notifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span></code> - Auto-create rules (default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_PROFILING_ENABLED</span></code> - Enable profiling (default: false)</p></li>
 </ul>
 </section>
 </section>

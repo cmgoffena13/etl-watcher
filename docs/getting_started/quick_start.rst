@@ -66,9 +66,7 @@ Step 2: Start Pipeline Execution
             response = requests.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
                 "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True,
-                "watermark": "2024-01-01T00:00:00Z",
-                "next_watermark": "2024-01-01T23:59:59Z"
+                "full_load": True
             })
             print(response.json())
 
@@ -81,9 +79,7 @@ Step 2: Start Pipeline Execution
             response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
                 "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True,
-                "watermark": "2024-01-01T00:00:00Z",
-                "next_watermark": "2024-01-01T23:59:59Z"
+                "full_load": True
             })
             print(response.json())
 
@@ -96,9 +92,7 @@ Step 2: Start Pipeline Execution
                  -d '{
                    "pipeline_id": 1,
                    "start_date": "2024-01-01T10:00:00Z",
-                   "full_load": true,
-                   "watermark": "2024-01-01T00:00:00Z",
-                   "next_watermark": "2024-01-01T23:59:59Z"
+                   "full_load": true
                  }'
 
       .. tab:: HTTPie
@@ -108,9 +102,7 @@ Step 2: Start Pipeline Execution
             http POST localhost:8000/start_pipeline_execution \
                  pipeline_id=1 \
                  start_date="2024-01-01T10:00:00Z" \
-                 full_load=true \
-                 watermark="2024-01-01T00:00:00Z" \
-                 next_watermark="2024-01-01T23:59:59Z"
+                 full_load=true
 
 3. **End the execution with metrics**
 
@@ -179,13 +171,10 @@ Step 2: Start Pipeline Execution
                  updates=200 \
                  soft_deletes=0
 
-Step 3: Set Up Monitoring
--------------------------
+Step 3: Create Data Lineage
+----------------------------
 
 1. **Create data lineage** (automatically creates addresses and address types if needed)
-
-   .. note::
-      Set ``WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true`` to automatically create anomaly detection rules for new pipelines.
 
    .. tabs::
 
@@ -199,15 +188,15 @@ Step 3: Set Up Monitoring
                 "pipeline_id": 1,
                 "source_addresses": [
                     {
-                        "name": "source_table",
-                        "address_type_name": "databricks",
+                        "name": "source_db.source_schema.source_table",
+                        "address_type_name": "postgres",
                         "address_type_group_name": "database"
                     }
                 ],
                 "target_addresses": [
                     {
-                        "name": "target_table",
-                        "address_type_name": "databricks",
+                        "name": "target_db.target_schema.target_table",
+                        "address_type_name": "postgres",
                         "address_type_group_name": "database"
                     }
                 ]
@@ -224,15 +213,15 @@ Step 3: Set Up Monitoring
                 "pipeline_id": 1,
                 "source_addresses": [
                     {
-                        "name": "source_table",
-                        "address_type_name": "databricks",
+                        "name": "source_db.source_schema.source_table",
+                        "address_type_name": "postgres",
                         "address_type_group_name": "database"
                     }
                 ],
                 "target_addresses": [
                     {
-                        "name": "target_table",
-                        "address_type_name": "databricks",
+                        "name": "target_db.target_schema.target_table",
+                        "address_type_name": "postgres",
                         "address_type_group_name": "database"
                     }
                 ]
@@ -249,15 +238,15 @@ Step 3: Set Up Monitoring
                    "pipeline_id": 1,
                    "source_addresses": [
                      {
-                       "name": "source_table",
-                       "address_type_name": "databricks",
+                       "name": "source_db.source_schema.source_table",
+                       "address_type_name": "postgres",
                        "address_type_group_name": "database"
                      }
                    ],
                    "target_addresses": [
                      {
-                       "name": "target_table",
-                       "address_type_name": "databricks",
+                       "name": "target_db.target_schema.target_table",
+                       "address_type_name": "postgres",
                        "address_type_group_name": "database"
                      }
                    ]
@@ -269,10 +258,13 @@ Step 3: Set Up Monitoring
 
             http POST localhost:8000/address_lineage \
                  pipeline_id=1 \
-                 source_addresses:='[{"name": "source_table", "address_type_name": "databricks", "address_type_group_name": "database"}]' \
-                 target_addresses:='[{"name": "target_table", "address_type_name": "databricks", "address_type_group_name": "database"}]'
+                 source_addresses:='[{"name": "source_db.source_schema.source_table", "address_type_name": "postgres", "address_type_group_name": "database"}]' \
+                 target_addresses:='[{"name": "target_db.target_schema.target_table", "address_type_name": "postgres", "address_type_group_name": "database"}]'
 
-2. **Run a freshness check**
+Step 4: Set Up Monitoring
+--------------------------
+
+1. **Run a freshness check**
 
    .. tabs::
 
@@ -349,10 +341,7 @@ Step 3: Set Up Monitoring
             http POST localhost:8000/timeliness \
                  lookback_minutes=60
 
-Step 4: Run a Celery Queue Check
---------------------------------
-
-1. **Monitor Celery queue**
+4. **Run a Celery queue check**
 
    .. tabs::
 
@@ -389,6 +378,9 @@ Step 4: Run a Celery Queue Check
 Step 5: Configure Anomaly Detection
 -----------------------------------
 
+.. note::
+   Set ``WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES=true`` to automatically create anomaly detection rules for new pipelines.
+
 1. **Create an anomaly detection rule**
 
    .. tabs::
@@ -403,7 +395,8 @@ Step 5: Configure Anomaly Detection
                 "pipeline_id": 1,
                 "metric_field": "total_rows",
                 "z_threshold": 3.0,
-                "minimum_executions": 30
+                "minimum_executions": 30,
+                "lookback_days": 30
             })
             print(response.json())
 
@@ -417,7 +410,8 @@ Step 5: Configure Anomaly Detection
                 "pipeline_id": 1,
                 "metric_field": "total_rows",
                 "z_threshold": 3.0,
-                "minimum_executions": 30
+                "minimum_executions": 30,
+                "lookback_days": 30
             })
             print(response.json())
 
@@ -431,7 +425,8 @@ Step 5: Configure Anomaly Detection
                    "pipeline_id": 1,
                    "metric_field": "total_rows",
                    "z_threshold": 3.0,
-                   "minimum_executions": 30
+                   "minimum_executions": 30,
+                   "lookback_days": 30
                  }'
 
       .. tab:: HTTPie
@@ -442,12 +437,13 @@ Step 5: Configure Anomaly Detection
                  pipeline_id=1 \
                  metric_field=total_rows \
                  z_threshold=3.0 \
-                 minimum_executions=30
+                 minimum_executions=30 \
+                 lookback_days=30
 
 2. **Anomaly detection runs automatically** after each successful pipeline execution
 
-Step 6: Monitor Your System
---------------------------
+Step 6: Web Pages
+-----------------
 
 1. **Check system health**
 
@@ -457,13 +453,17 @@ Step 6: Monitor Your System
 
    Visit: http://localhost:8000/scalar
 
+3. **View reporting dashboard**
+
+   Visit: http://localhost:8000/reporting
+
 Next Steps
 ----------
 
 - **Set up scheduled monitoring** Configure cron jobs to ping the monitoring endpoints
 - **Configure Slack alerts** Add your Slack webhook URL for notifications
 - **Set up anomaly detection rules** Create rules for your specific metrics
-- **Explore the diagnostics page** Monitor system health and performance
+- **Explore the web pages** Monitor system health & performance and access reporting dashboard
 
 Common Issues
 -------------
@@ -475,7 +475,8 @@ Common Issues
    Check that Docker and Docker Compose are running properly
 
 **Database connection failed**
-   Ensure the PostgreSQL container is running: ``docker-compose ps``
+   - Ensure the PostgreSQL container is running: ``docker-compose ps``
+   - Ensure you have the proper configuration prefix (e.g., ``DEV_DATABASE_URL``)
 
 **Redis connection failed**
    Ensure the Redis container is running: ``docker-compose ps``
