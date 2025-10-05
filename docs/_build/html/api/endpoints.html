@@ -88,7 +88,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#create-anomaly-detection-rule">Create Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#create-or-get-anomaly-detection-rule">Create or Get Anomaly Detection Rule</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#list-anomaly-detection-rules">List Anomaly Detection Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#get-anomaly-detection-rule-by-id">Get Anomaly Detection Rule by ID</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#update-anomaly-detection-rule">Update Anomaly Detection Rule</a></li>
@@ -104,10 +104,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#diagnostics">Diagnostics</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#reporting">Reporting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#daily-pipeline-metrics">Daily Pipeline Metrics</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#interactive-documentation">Interactive Documentation</a><ul>
@@ -167,15 +163,23 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--pipeline">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/pipeline</span></span><a class="headerlink" href="#post--pipeline" title="Link to this definition"></a></dt>
-<dd><p>Create a new pipeline or get existing one.</p>
+<dd><p>Create a new pipeline or get existing one (upsert behavior). Automatically creates pipeline type if it doesn’t exist.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;My Data Pipeline&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my data pipeline&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daily data extraction pipeline&quot;</span>
-<span class="w">  </span><span class="p">}</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -188,6 +192,34 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_name</span></code> (string): Pipeline type name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string|int|datetime|date): Next watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Additional pipeline metadata (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted (optional, default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted (optional, default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage (optional)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether pipeline is active</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Current watermark value (returned when next_watermark is provided)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - New pipeline was created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Existing pipeline was found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">500</span></code> Internal Server Error - Unique constraint violation</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -205,14 +237,73 @@
 <span class="w">    </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="nt">&quot;last_target_insert&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_target_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_target_soft_delete&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;another pipeline&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_target_insert&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_target_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;last_target_soft_delete&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">]</span>
 </pre></div>
 </div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_id</span></code> (int): Pipeline type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string): Watermark value (max 50 characters, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string): Next watermark value (max 50 characters, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Pipeline metadata (JSONB, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_insert</span></code> (string): Last target insert timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_update</span></code> (string): Last target update timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_soft_delete</span></code> (string): Last target soft delete timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number (nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (hour, day, week, month, year, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number (nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (hour, day, week, month, year, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether pipeline is active</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipelines retrieved successfully</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -222,10 +313,8 @@
 <dt class="sig sig-object http" id="get--pipeline-pipeline_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline/{pipeline_id}</span></span><a class="headerlink" href="#get--pipeline-pipeline_id" title="Link to this definition"></a></dt>
 <dd><p>Get a specific pipeline by ID.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID</p></li>
-</ul>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID</p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -233,13 +322,52 @@
 <span class="w">  </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;last_target_insert&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;last_target_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;last_target_soft_delete&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_id</span></code> (int): Pipeline type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string): Watermark value (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string): Next watermark value (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Pipeline metadata (JSONB)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_insert</span></code> (string): Last target insert timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_update</span></code> (string): Last target update timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_soft_delete</span></code> (string): Last target soft delete timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether pipeline is active</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Pipeline not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -252,11 +380,92 @@
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Updated Pipeline Name&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated pipeline name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated pipeline name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;production&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="nt">&quot;last_target_insert&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;last_target_update&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;last_target_soft_delete&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name (1-150 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_id</span></code> (int): Pipeline type ID (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string|int|datetime|date): Next watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Additional pipeline metadata (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage (optional)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_id</span></code> (int): Pipeline type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string): Watermark value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string): Next watermark value</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Pipeline metadata</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_insert</span></code> (string): Last target insert timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_update</span></code> (string): Last target update timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">last_target_soft_delete</span></code> (string): Last target soft delete timestamp (ISO 8601, nullable)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether pipeline is active</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline updated successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Pipeline not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -268,7 +477,7 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--start_pipeline_execution">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/start_pipeline_execution</span></span><a class="headerlink" href="#post--start_pipeline_execution" title="Link to this definition"></a></dt>
-<dd><p>Start a new pipeline execution.</p>
+<dd><p>Start a new pipeline execution. Automatically calculates hour_recorded and date_recorded.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -289,6 +498,24 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (string): Start timestamp (ISO 8601, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">full_load</span></code> (bool): Whether this is a full load (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string|int|datetime|date): Next watermark value (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int): Parent execution ID for hierarchical executions (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_metadata</span></code> (object): Additional execution metadata (optional)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline execution ID</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - Pipeline execution started successfully</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -297,10 +524,11 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--end_pipeline_execution">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/end_pipeline_execution</span></span><a class="headerlink" href="#post--end_pipeline_execution" title="Link to this definition"></a></dt>
-<dd><p>End a pipeline execution with metrics.</p>
+<dd><p>End a pipeline execution with metrics. Automatically calculates duration and throughput.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;end_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;completed_successfully&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;total_rows&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
@@ -310,6 +538,26 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong>
+HTTP 204 No Content</p>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline execution ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (string): End timestamp (ISO 8601, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">completed_successfully</span></code> (bool): Whether execution completed successfully (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_rows</span></code> (int): Total rows processed (optional, ≥0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">inserts</span></code> (int): Number of inserts (optional, ≥0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updates</span></code> (int): Number of updates (optional, ≥0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">soft_deletes</span></code> (int): Number of soft deletes (optional, ≥0)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">204</span></code> No Content - Pipeline execution ended successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">400</span></code> Bad Request - end_date must be greater than start_date</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Pipeline execution not found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">500</span></code> Internal Server Error - Database integrity error</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -321,11 +569,16 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--pipeline_type">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type</span></span><a class="headerlink" href="#post--pipeline_type" title="Link to this definition"></a></dt>
-<dd><p>Create a new pipeline type or get existing one.</p>
+<dd><p>Create a new pipeline type or get existing one (upsert behavior).</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -335,6 +588,24 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline type name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted (optional, default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number (optional, &gt;0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (optional, hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted (optional, default: false)</p></li>
+</ul>
+<p><strong>Response Fields:</strong>
+- <code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline type ID</p>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - New pipeline type was created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Existing pipeline type was found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">500</span></code> Internal Server Error - Unique constraint violation</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -344,6 +615,52 @@
 <dt class="sig sig-object http" id="get--pipeline_type">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type</span></span><a class="headerlink" href="#get--pipeline_type" title="Link to this definition"></a></dt>
 <dd><p>Get all pipeline types.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;transformation&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">48</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline type name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline types retrieved successfully</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -353,6 +670,41 @@
 <dt class="sig sig-object http" id="get--pipeline_type-pipeline_type_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/pipeline_type/{pipeline_type_id}</span></span><a class="headerlink" href="#get--pipeline_type-pipeline_type_id" title="Link to this definition"></a></dt>
 <dd><p>Get a specific pipeline type by ID.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">pipeline_type_id</span></code> (int): Pipeline type ID</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Pipeline type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline type name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (hour, day, week, month, year)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline type found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Pipeline type not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -364,24 +716,46 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--address">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#post--address" title="Link to this definition"></a></dt>
-<dd><p>Create a new address or get existing one.</p>
+<dd><p>Create a new address or get existing one (upsert behavior). Automatically creates address type if it doesn’t exist.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my_table&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (string): Address type name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (string): Address type group name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (string): Database name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated (optional, default: false)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - New address was created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Existing address was found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -391,6 +765,52 @@
 <dt class="sig sig-object http" id="get--address">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#get--address" title="Link to this definition"></a></dt>
 <dd><p>Get all addresses.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_db&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_schema&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_id</span></code> (int): Address type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (string): Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Addresses retrieved successfully</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -400,6 +820,41 @@
 <dt class="sig sig-object http" id="get--address-address_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address/{address_id}</span></span><a class="headerlink" href="#get--address-address_id" title="Link to this definition"></a></dt>
 <dd><p>Get a specific address by ID.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">address_id</span></code> (int): Address ID</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_id</span></code> (int): Address type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (string): Database name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Address not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -409,6 +864,63 @@
 <dt class="sig sig-object http" id="patch--address">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/address</span></span><a class="headerlink" href="#patch--address" title="Link to this definition"></a></dt>
 <dd><p>Update address information.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table_name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_schema&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table_name&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_db&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_schema&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name (1-150 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_id</span></code> (int): Address type ID (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (string): Database name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters, optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated (optional)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_id</span></code> (int): Address type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">database_name</span></code> (string): Database name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address updated successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Address not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -420,14 +932,34 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--address_type">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address_type</span></span><a class="headerlink" href="#post--address_type" title="Link to this definition"></a></dt>
-<dd><p>Create a new address type or get existing one.</p>
+<dd><p>Create a new address type or get existing one (upsert behavior).</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address type name (1-150 characters, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">group_name</span></code> (string): Address type group name (1-150 characters, required)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address type ID</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - New address type was created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Existing address type was found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -437,6 +969,37 @@
 <dt class="sig sig-object http" id="get--address_type">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_type</span></span><a class="headerlink" href="#get--address_type" title="Link to this definition"></a></dt>
 <dd><p>Get all address types.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;mysql&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address type name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">group_name</span></code> (string): Address type group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address types retrieved successfully</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -446,6 +1009,31 @@
 <dt class="sig sig-object http" id="get--address_type-address_type_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_type/{address_type_id}</span></span><a class="headerlink" href="#get--address_type-address_type_id" title="Link to this definition"></a></dt>
 <dd><p>Get a specific address type by ID.</p>
+<p><strong>Parameters:</strong>
+- <code class="docutils literal notranslate"><span class="pre">address_type_id</span></code> (int): Address type ID</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address type ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address type name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">group_name</span></code> (string): Address type group name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address type found</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Address type not found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -457,21 +1045,21 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--address_lineage">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/address_lineage</span></span><a class="headerlink" href="#post--address_lineage" title="Link to this definition"></a></dt>
-<dd><p>Create lineage relationships between addresses.</p>
+<dd><p>Create lineage relationships between addresses. Automatically creates addresses and address types if they don’t exist.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;source_addresses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_db.source_schema.source_table&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;target_addresses&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span><span class="p">,</span>
-<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;databricks&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;address_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;address_type_group_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;database&quot;</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">]</span>
@@ -482,10 +1070,30 @@
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;lineage_relationships_created&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lineage relationships created successfully&quot;</span>
+<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Lineage relationships created for pipeline 1&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Request Body Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_addresses</span></code> (array): List of source addresses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_addresses</span></code> (array): List of target addresses</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_name</span></code> (string): Address type name (1-150 characters)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_type_group_name</span></code> (string): Address type group name (1-150 characters)</p></li>
+</ul>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lineage_relationships_created</span></code> (int): Number of relationships created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">message</span></code> (string): Status message</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - Lineage relationships created successfully</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline does not have load_lineage=True, no relationships created</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -494,7 +1102,12 @@
 <dl class="http get">
 <dt class="sig sig-object http" id="get--address_lineage-address_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_lineage/{address_id}</span></span><a class="headerlink" href="#get--address_lineage-address_id" title="Link to this definition"></a></dt>
-<dd><p>Get lineage for specific address.</p>
+<dd><p>Get lineage relationships for a specific address using the closure table.
+Returns all relationships where the address is either source or target.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">address_id</span></code> (int): Address ID to get lineage for</p></li>
+</ul>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span>
@@ -507,39 +1120,57 @@
 <span class="p">]</span>
 </pre></div>
 </div>
+<p><strong>Response Fields:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">source_address_id</span></code> (int): Source address ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_address_id</span></code> (int): Target address ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">depth</span></code> (int): Relationship depth (0 = direct, &gt;0 = transitive)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">source_address_name</span></code> (string): Source address name</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">target_address_name</span></code> (string): Target address name</p></li>
+</ul>
 </dd></dl>
 
 </section>
 </section>
 <section id="anomaly-detection">
 <h2>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h2>
-<section id="create-anomaly-detection-rule">
-<h3>Create Anomaly Detection Rule<a class="headerlink" href="#create-anomaly-detection-rule" title="Link to this heading"></a></h3>
+<section id="create-or-get-anomaly-detection-rule">
+<h3>Create or Get Anomaly Detection Rule<a class="headerlink" href="#create-or-get-anomaly-detection-rule" title="Link to this heading"></a></h3>
 <dl class="http post">
 <dt class="sig sig-object http" id="post--anomaly_detection_rule">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#post--anomaly_detection_rule" title="Link to this definition"></a></dt>
-<dd><p>Create or get anomaly detection rule.</p>
+<dd><p>Create a new anomaly detection rule or get existing one (upsert behavior).</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
+<span class="w">  </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metric_field</span></code> (string): Metric field to monitor (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z_threshold</span></code> (float): Z-score threshold 1.0-10.0 (default: 3.0)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lookback_days</span></code> (int): Days of historical data 1-365 (default: 30)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minimum_executions</span></code> (int): Minimum executions 5-1000 (default: 30)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether rule is active (default: true)</p></li>
+</ul>
+<p><strong>Status Codes:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - New rule was created</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Existing rule was found</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -549,6 +1180,33 @@
 <dt class="sig sig-object http" id="get--anomaly_detection_rule">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#get--anomaly_detection_rule" title="Link to this definition"></a></dt>
 <dd><p>Get all anomaly detection rules.</p>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="w">  </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;duration_seconds&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">3.0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -558,6 +1216,24 @@
 <dt class="sig sig-object http" id="get--anomaly_detection_rule-anomaly_detection_rule_id">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule/{anomaly_detection_rule_id}</span></span><a class="headerlink" href="#get--anomaly_detection_rule-anomaly_detection_rule_id" title="Link to this definition"></a></dt>
 <dd><p>Get a specific anomaly detection rule by ID.</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">anomaly_detection_rule_id</span></code> (int): Rule ID</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;total_rows&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
 </dd></dl>
 
 </section>
@@ -567,6 +1243,42 @@
 <dt class="sig sig-object http" id="patch--anomaly_detection_rule">
 <span class="sig-name descname"><span class="pre">PATCH</span> </span><span class="sig-name descname"><span class="pre">/anomaly_detection_rule</span></span><a class="headerlink" href="#patch--anomaly_detection_rule" title="Link to this definition"></a></dt>
 <dd><p>Update anomaly detection rule.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updates&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;metric_field&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updates&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;z_threshold&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">2.5</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;lookback_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;minimum_executions&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">20</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;active&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Rule ID (required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metric_field</span></code> (string): Metric field to monitor (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z_threshold</span></code> (float): Z-score threshold 1.0-10.0 (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lookback_days</span></code> (int): Days of historical data 1-365 (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minimum_executions</span></code> (int): Minimum executions 5-1000 (optional)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">active</span></code> (bool): Whether rule is active (optional)</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -584,6 +1296,13 @@
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Response:</strong> HTTP 204 No Content</p>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_execution_id</span></code> (int): Pipeline execution ID</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">metric_field</span></code> (array): List of metric fields to unflag</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -631,7 +1350,19 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--log_cleanup">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/log_cleanup</span></span><a class="headerlink" href="#post--log_cleanup" title="Link to this definition"></a></dt>
-<dd><p>Clean up old log data.</p>
+<dd><p>Clean up old log data based on retention period.</p>
+<p><strong>Request Body:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;retention_days&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">90</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;batch_size&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">10000</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Parameters:</strong></p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">retention_days</span></code> (int): Number of days to retain data (minimum: 90)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">batch_size</span></code> (int): Number of records to delete per batch (default: 10000)</p></li>
+</ul>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;total_pipeline_executions_deleted&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">,</span>
@@ -651,16 +1382,25 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--celery-monitor-queue">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/celery/monitor-queue</span></span><a class="headerlink" href="#post--celery-monitor-queue" title="Link to this definition"></a></dt>
-<dd><p>Trigger Celery queue monitoring and alerting.</p>
+<dd><p>Monitor Celery queue depths and alert if queue gets too big.</p>
+<p><strong>Request Body:</strong> None</p>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Queue monitoring completed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;queues_checked&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;total_messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Error Response:</strong></p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;error&quot;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Alert Thresholds:</strong></p>
+<ul class="simple">
+<li><p><strong>WARNING</strong>: 50+ pending tasks</p></li>
+<li><p><strong>CRITICAL</strong>: 100+ pending tasks</p></li>
+</ul>
 </dd></dl>
 
 </section>
@@ -674,26 +1414,6 @@
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics</span></span><a class="headerlink" href="#get--diagnostics" title="Link to this definition"></a></dt>
 <dd><p>Get comprehensive system diagnostics.</p>
 <p><strong>Response:</strong> HTML page with system health information</p>
-</dd></dl>
-
-</section>
-</section>
-<section id="reporting">
-<h2>Reporting<a class="headerlink" href="#reporting" title="Link to this heading"></a></h2>
-<section id="daily-pipeline-metrics">
-<h3>Daily Pipeline Metrics<a class="headerlink" href="#daily-pipeline-metrics" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--reporting">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting</span></span><a class="headerlink" href="#get--reporting" title="Link to this definition"></a></dt>
-<dd><p>Get daily pipeline metrics with pagination and filtering.</p>
-<p><strong>Query Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">page</span></code> (int): Page number (default: 1)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">page_size</span></code> (int): Items per page (default: 50)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Filter by pipeline ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (str): Start date filter</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">end_date</span></code> (str): End date filter</p></li>
-</ul>
 </dd></dl>
 
 </section>

@@ -46,6 +46,7 @@ Create or Get Pipeline
       }
 
    **Request Body Fields:**
+
    - ``name`` (string): Pipeline name (1-150 characters, required)
    - ``pipeline_type_name`` (string): Pipeline type name (1-150 characters, required)
    - ``watermark`` (string|int|datetime|date): Watermark value (optional)
@@ -60,12 +61,14 @@ Create or Get Pipeline
    - ``load_lineage`` (bool): Whether to load lineage (optional)
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline ID
    - ``active`` (bool): Whether pipeline is active
    - ``load_lineage`` (bool): Whether to load lineage
    - ``watermark`` (string|int|datetime|date): Current watermark value (returned when next_watermark is provided)
 
    **Status Codes:**
+
    - ``201`` Created - New pipeline was created
    - ``200`` OK - Existing pipeline was found
    - ``500`` Internal Server Error - Unique constraint violation
@@ -129,6 +132,7 @@ List Pipelines
       ]
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline ID
    - ``name`` (string): Pipeline name (1-150 characters)
    - ``pipeline_type_id`` (int): Pipeline type ID
@@ -150,6 +154,7 @@ List Pipelines
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Pipelines retrieved successfully
 
 Get Pipeline by ID
@@ -191,6 +196,7 @@ Get Pipeline by ID
       }
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline ID
    - ``name`` (string): Pipeline name (1-150 characters)
    - ``pipeline_type_id`` (int): Pipeline type ID
@@ -212,6 +218,7 @@ Get Pipeline by ID
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Pipeline found
    - ``404`` Not Found - Pipeline not found
 
@@ -273,6 +280,7 @@ Update Pipeline
       }
 
    **Request Body Fields:**
+
    - ``id`` (int): Pipeline ID (required)
    - ``name`` (string): Pipeline name (1-150 characters, optional)
    - ``pipeline_type_id`` (int): Pipeline type ID (optional)
@@ -288,6 +296,7 @@ Update Pipeline
    - ``load_lineage`` (bool): Whether to load lineage (optional)
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline ID
    - ``name`` (string): Pipeline name
    - ``pipeline_type_id`` (int): Pipeline type ID
@@ -309,6 +318,7 @@ Update Pipeline
    - ``updated_at`` (string): Last update timestamp (ISO 8601)
 
    **Status Codes:**
+
    - ``200`` OK - Pipeline updated successfully
    - ``404`` Not Found - Pipeline not found
 
@@ -347,6 +357,7 @@ Start Pipeline Execution
       }
 
    **Request Body Fields:**
+
    - ``pipeline_id`` (int): Pipeline ID (required)
    - ``start_date`` (string): Start timestamp (ISO 8601, required)
    - ``full_load`` (bool): Whether this is a full load (required)
@@ -356,9 +367,11 @@ Start Pipeline Execution
    - ``execution_metadata`` (object): Additional execution metadata (optional)
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline execution ID
 
    **Status Codes:**
+
    - ``201`` Created - Pipeline execution started successfully
 
 End Pipeline Execution
@@ -387,6 +400,7 @@ End Pipeline Execution
    HTTP 204 No Content
 
    **Request Body Fields:**
+
    - ``id`` (int): Pipeline execution ID (required)
    - ``pipeline_id`` (int): Pipeline ID (required)
    - ``end_date`` (string): End timestamp (ISO 8601, required)
@@ -397,6 +411,7 @@ End Pipeline Execution
    - ``soft_deletes`` (int): Number of soft deletes (optional, ≥0)
 
    **Status Codes:**
+
    - ``204`` No Content - Pipeline execution ended successfully
    - ``400`` Bad Request - end_date must be greater than start_date
    - ``404`` Not Found - Pipeline execution not found
@@ -435,6 +450,7 @@ Create or Get Pipeline Type
       }
 
    **Request Body Fields:**
+
    - ``name`` (string): Pipeline type name (1-150 characters, required)
    - ``freshness_number`` (int): Freshness check interval number (optional, >0)
    - ``freshness_datepart`` (string): Freshness check date part (optional, hour, day, week, month, year)
@@ -447,6 +463,7 @@ Create or Get Pipeline Type
    - ``id`` (int): Pipeline type ID
 
    **Status Codes:**
+
    - ``201`` Created - New pipeline type was created
    - ``200`` OK - Existing pipeline type was found
    - ``500`` Internal Server Error - Unique constraint violation
@@ -490,6 +507,7 @@ List Pipeline Types
       ]
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline type ID
    - ``name`` (string): Pipeline type name (1-150 characters)
    - ``freshness_number`` (int): Freshness check interval number
@@ -502,6 +520,7 @@ List Pipeline Types
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Pipeline types retrieved successfully
 
 Get Pipeline Type by ID
@@ -532,6 +551,7 @@ Get Pipeline Type by ID
       }
 
    **Response Fields:**
+
    - ``id`` (int): Pipeline type ID
    - ``name`` (string): Pipeline type name (1-150 characters)
    - ``freshness_number`` (int): Freshness check interval number
@@ -544,6 +564,7 @@ Get Pipeline Type by ID
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Pipeline type found
    - ``404`` Not Found - Pipeline type not found
 
@@ -581,6 +602,7 @@ Create or Get Address
       }
 
    **Request Body Fields:**
+
    - ``name`` (string): Address name (1-150 characters, required)
    - ``address_type_name`` (string): Address type name (1-150 characters, required)
    - ``address_type_group_name`` (string): Address type group name (1-150 characters, required)
@@ -591,9 +613,11 @@ Create or Get Address
    - ``deprecated`` (bool): Whether address is deprecated (optional, default: false)
 
    **Response Fields:**
+
    - ``id`` (int): Address ID
 
    **Status Codes:**
+
    - ``201`` Created - New address was created
    - ``200`` OK - Existing address was found
 
@@ -636,6 +660,7 @@ List Addresses
       ]
 
    **Response Fields:**
+
    - ``id`` (int): Address ID
    - ``name`` (string): Address name (1-150 characters)
    - ``address_type_id`` (int): Address type ID
@@ -648,6 +673,7 @@ List Addresses
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Addresses retrieved successfully
 
 Get Address by ID
@@ -678,6 +704,7 @@ Get Address by ID
       }
 
    **Response Fields:**
+
    - ``id`` (int): Address ID
    - ``name`` (string): Address name (1-150 characters)
    - ``address_type_id`` (int): Address type ID
@@ -690,6 +717,7 @@ Get Address by ID
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Address found
    - ``404`` Not Found - Address not found
 
@@ -733,6 +761,7 @@ Update Address
       }
 
    **Request Body Fields:**
+
    - ``id`` (int): Address ID (required)
    - ``name`` (string): Address name (1-150 characters, optional)
    - ``address_type_id`` (int): Address type ID (optional)
@@ -743,6 +772,7 @@ Update Address
    - ``deprecated`` (bool): Whether address is deprecated (optional)
 
    **Response Fields:**
+
    - ``id`` (int): Address ID
    - ``name`` (string): Address name
    - ``address_type_id`` (int): Address type ID
@@ -755,6 +785,7 @@ Update Address
    - ``updated_at`` (string): Last update timestamp (ISO 8601)
 
    **Status Codes:**
+
    - ``200`` OK - Address updated successfully
    - ``404`` Not Found - Address not found
 
@@ -786,13 +817,16 @@ Create or Get Address Type
       }
 
    **Request Body Fields:**
+
    - ``name`` (string): Address type name (1-150 characters, required)
    - ``group_name`` (string): Address type group name (1-150 characters, required)
 
    **Response Fields:**
+
    - ``id`` (int): Address type ID
 
    **Status Codes:**
+
    - ``201`` Created - New address type was created
    - ``200`` OK - Existing address type was found
 
@@ -825,6 +859,7 @@ List Address Types
       ]
 
    **Response Fields:**
+
    - ``id`` (int): Address type ID
    - ``name`` (string): Address type name (1-150 characters)
    - ``group_name`` (string): Address type group name (1-150 characters)
@@ -832,6 +867,7 @@ List Address Types
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Address types retrieved successfully
 
 Get Address Type by ID
@@ -857,6 +893,7 @@ Get Address Type by ID
       }
 
    **Response Fields:**
+
    - ``id`` (int): Address type ID
    - ``name`` (string): Address type name (1-150 characters)
    - ``group_name`` (string): Address type group name (1-150 characters)
@@ -864,6 +901,7 @@ Get Address Type by ID
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
    **Status Codes:**
+
    - ``200`` OK - Address type found
    - ``404`` Not Found - Address type not found
 
@@ -910,6 +948,7 @@ Create Address Lineage
       }
 
    **Request Body Fields:**
+
    - ``pipeline_id`` (int): Pipeline ID (required)
    - ``source_addresses`` (array): List of source addresses
    - ``target_addresses`` (array): List of target addresses
@@ -918,11 +957,13 @@ Create Address Lineage
    - ``address_type_group_name`` (string): Address type group name (1-150 characters)
 
    **Response Fields:**
+
    - ``pipeline_id`` (int): Pipeline ID
    - ``lineage_relationships_created`` (int): Number of relationships created
    - ``message`` (string): Status message
 
    **Status Codes:**
+
    - ``201`` Created - Lineage relationships created successfully
    - ``200`` OK - Pipeline does not have load_lineage=True, no relationships created
 
@@ -935,6 +976,7 @@ Get Address Lineage
    Returns all relationships where the address is either source or target.
 
    **Parameters:**
+
    - ``address_id`` (int): Address ID to get lineage for
 
    **Response:**
@@ -952,6 +994,7 @@ Get Address Lineage
       ]
 
    **Response Fields:**
+
    - ``source_address_id`` (int): Source address ID
    - ``target_address_id`` (int): Target address ID  
    - ``depth`` (int): Relationship depth (0 = direct, >0 = transitive)
@@ -990,6 +1033,7 @@ Create or Get Anomaly Detection Rule
       }
 
    **Parameters:**
+
    - ``pipeline_id`` (int): Pipeline ID (required)
    - ``metric_field`` (string): Metric field to monitor (required)
    - ``z_threshold`` (float): Z-score threshold 1.0-10.0 (default: 3.0)
@@ -998,6 +1042,7 @@ Create or Get Anomaly Detection Rule
    - ``active`` (bool): Whether rule is active (default: true)
 
    **Status Codes:**
+
    - ``201`` Created - New rule was created
    - ``200`` OK - Existing rule was found
 
@@ -1045,6 +1090,7 @@ Get Anomaly Detection Rule by ID
    Get a specific anomaly detection rule by ID.
 
    **Parameters:**
+
    - ``anomaly_detection_rule_id`` (int): Rule ID
 
    **Response:**
@@ -1101,6 +1147,7 @@ Update Anomaly Detection Rule
       }
 
    **Parameters:**
+
    - ``id`` (int): Rule ID (required)
    - ``pipeline_id`` (int): Pipeline ID (optional)
    - ``metric_field`` (string): Metric field to monitor (optional)
@@ -1129,6 +1176,7 @@ Unflag Anomalies
    **Response:** HTTP 204 No Content
 
    **Parameters:**
+
    - ``pipeline_id`` (int): Pipeline ID
    - ``pipeline_execution_id`` (int): Pipeline execution ID
    - ``metric_field`` (array): List of metric fields to unflag
@@ -1191,6 +1239,7 @@ Log Cleanup
       }
 
    **Parameters:**
+
    - ``retention_days`` (int): Number of days to retain data (minimum: 90)
    - ``batch_size`` (int): Number of records to delete per batch (default: 10000)
 
@@ -1233,6 +1282,7 @@ Celery Queue Monitoring
       }
 
    **Alert Thresholds:**
+   
    - **WARNING**: 50+ pending tasks
    - **CRITICAL**: 100+ pending tasks
 
