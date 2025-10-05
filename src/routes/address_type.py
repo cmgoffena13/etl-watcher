@@ -46,7 +46,5 @@ async def get_address_type(address_type_id: int, session: SessionDep):
 @router.patch(
     "/address_type", response_model=AddressType, status_code=status.HTTP_200_OK
 )
-async def update_pipeline_type(
-    address_type: AddressTypePatchInput, session: SessionDep
-):
+async def update_address_type(address_type: AddressTypePatchInput, session: SessionDep):
     return await db_update_address_type(patch=address_type, session=session)
