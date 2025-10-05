@@ -63,31 +63,3 @@ class UnflagAnomalyInput(ValidatorModel):
     pipeline_id: int
     pipeline_execution_id: int
     metric_field: List[AnomalyMetricFieldEnum]
-
-
-class AnomalyDetectionResultGetOutput(ValidatorModel):
-    rule_id: int
-    pipeline_execution_id: int
-
-    # Current anomaly values
-    violation_value: float
-    z_score: float
-
-    # Historical baseline statistics
-    historical_mean: float
-    std_deviation_value: float
-
-    # Threshold configuration and values
-    z_threshold: float
-    threshold_min_value: float
-    threshold_max_value: float
-
-    context: Optional[dict] = None
-    detected_at: DateTime
-
-
-class AnomalyDetectionSummaryGetOutput(ValidatorModel):
-    rule_id: int
-    rule_name: str
-    anomaly_count: int
-    latest_anomaly: Optional[AnomalyDetectionResultGetOutput] = None

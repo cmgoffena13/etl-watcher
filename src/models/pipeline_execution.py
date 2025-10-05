@@ -1,6 +1,5 @@
 from typing import Optional, Union
 
-import pendulum
 from pydantic import Field
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
