@@ -97,6 +97,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ### Pipeline Management
 - `POST /pipeline` - Create or get existing pipeline
 - `GET /pipeline` - List all pipelines
+- `GET /pipeline/{pipeline_id}` - Get specific pipeline by ID
 - `PATCH /pipeline` - Update pipeline configuration
 
 ### Pipeline Execution
@@ -106,15 +107,18 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ### Pipeline Types
 - `POST /pipeline_type` - Create or get pipeline type
 - `GET /pipeline_type` - List all pipeline types
+- `GET /pipeline_type/{pipeline_type_id}` - Get specific pipeline type by ID
 
 ### Address Management
 - `POST /address` - Create or get address
 - `GET /address` - List all addresses
+- `GET /address/{address_id}` - Get specific address by ID
 - `PATCH /address` - Update address information
 
 ### Address Types
 - `POST /address_type` - Create or get address type
 - `GET /address_type` - List all address types
+- `GET /address_type/{address_type_id}` - Get specific address type by ID
 
 ### Data Lineage
 - `POST /address_lineage` - Create lineage relationships between addresses
@@ -125,7 +129,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - `GET /anomaly_detection_rule` - List all anomaly detection rules
 - `PATCH /anomaly_detection_rule` - Update anomaly detection rule
 - `POST /unflag_anomaly` - Unflag anomalies for a pipeline execution
-- `POST /anomaly_detection/detect/{pipeline_id}` - Run anomaly detection for a pipeline
 
 *See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
 
