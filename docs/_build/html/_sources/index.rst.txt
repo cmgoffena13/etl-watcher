@@ -31,7 +31,6 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
    guides/pipeline_management
    guides/anomaly_detection
    guides/monitoring
-   guides/troubleshooting
 
 .. toctree::
    :maxdepth: 2
@@ -45,7 +44,7 @@ Key Features
 
 - **Pipeline Monitoring** - Track execution timing and data freshness
 - **Anomaly Detection** - Statistical analysis of pipeline patterns  
-- **Data Lineage** - Track relationships between data sources
+- **Address Lineage** - Track relationships between data sources
 - **Health Checks** - Comprehensive system monitoring
 - **Background Processing** - Celery-based distributed task processing
 

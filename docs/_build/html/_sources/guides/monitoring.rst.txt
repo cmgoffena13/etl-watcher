@@ -2,15 +2,10 @@ Monitoring & Health Checks
 ============================
 
 This guide covers how to set up comprehensive monitoring for your Watcher instance.
-
-Overview
---------
-
 Watcher provides multiple monitoring capabilities to ensure your data pipelines are running optimally:
 
 - **Freshness Monitoring** Track data staleness and DML operations
 - **Timeliness Monitoring** Validate pipeline execution timing
-- **System Health** Monitor database, Redis, and Celery health
 - **Queue Monitoring** Track Celery task queue depth and performance
 
 Freshness Monitoring
@@ -22,7 +17,7 @@ Purpose
 Freshness monitoring tracks when data was last modified to detect stale data:
 
 - **DML Operations** Monitors inserts, updates, and soft deletes
-- **Staleness Detection** Identifies data that hasn't been updated recently
+- **Staleness Detection** Identifies data that hasn't had DML activity recently
 - **Alerting** Notifies when data becomes stale
 
 Configuration
@@ -42,30 +37,62 @@ Configure freshness monitoring in pipeline creation:
 
 **Freshness Settings**
 
-- **freshness_number** Time threshold (e.g., 24)
-- **freshness_datepart** Time unit (hour, day, week, month, quarter, year)
-- **mute_freshness_check** Disable freshness monitoring
+- **freshness_number**: Time threshold (e.g., 24)
+- **freshness_datepart**: Time unit (hour, day, week, month, quarter, year)
+- **mute_freshness_check**: Disable freshness monitoring
 
 Supported Time Units
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **hour** Monitor hourly freshness
-- **day** Monitor daily freshness
-- **week** Monitor weekly freshness
-- **month** Monitor monthly freshness
-- **quarter** Monitor quarterly freshness
-- **year** Monitor yearly freshness
+- **hour**
+- **day**
+- **week**
+- **month**
+- **quarter**
+- **year**
 
 Running Freshness Checks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Trigger freshness checks manually:
 
-.. code-block:: bash
+.. tabs::
 
-   curl -X POST "http://localhost:8000/freshness"
-   
-   # Response
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+
+         response = requests.post("http://localhost:8000/freshness")
+         print(response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         with httpx.Client() as client:
+             response = client.post("http://localhost:8000/freshness")
+             print(response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         curl -X POST "http://localhost:8000/freshness"
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         http POST localhost:8000/freshness
+
+**Response:**
+
+.. code-block:: json
+
    {
      "status": "queued"
    }
@@ -76,7 +103,7 @@ Timeliness Monitoring
 ---------------------
 
 Purpose
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
 
 Timeliness monitoring validates that pipeline executions complete within expected timeframes:
 
@@ -85,7 +112,7 @@ Timeliness monitoring validates that pipeline executions complete within expecte
 - **Performance Issues** Identifies slow or stuck pipelines
 
 Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Configure timeliness monitoring in pipeline creation:
 
@@ -110,62 +137,59 @@ Running Timeliness Checks
 
 Trigger timeliness checks with lookback period:
 
-.. code-block:: bash
+.. tabs::
 
-   curl -X POST "http://localhost:8000/timeliness" \
-        -H "Content-Type: application/json" \
-        -d '{
-          "lookback_minutes": 60
-        }'
-   
-   # Response
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+
+         response = requests.post(
+             "http://localhost:8000/timeliness",
+             json={"lookback_minutes": 60}
+         )
+         print(response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         with httpx.Client() as client:
+             response = client.post(
+                 "http://localhost:8000/timeliness",
+                 json={"lookback_minutes": 60}
+             )
+             print(response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         curl -X POST "http://localhost:8000/timeliness" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "lookback_minutes": 60
+              }'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         http POST localhost:8000/timeliness \
+              lookback_minutes=60
+
+**Response:**
+
+.. code-block:: json
+
    {
      "status": "queued"
    }
 
 **Lookback Period** How far back to look for executions (in minutes)
-
-System Health Monitoring
-------------------------
-
-Diagnostics Page
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Access comprehensive system diagnostics:
-
-- **URL** http://localhost:8000/diagnostics
-- **Features** Real-time system health information
-- **Sections** Database, Redis, Celery, Performance metrics
-
-Database Health
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Monitor database connectivity and performance:
-
-- **Connection Status** Database connectivity
-- **Query Performance** Slow query detection
-- **Schema Health** Database schema validation
-- **Index Usage** Index utilization metrics
-
-Redis Health
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Monitor Redis connectivity and performance:
-
-- **Connection Status** Redis connectivity
-- **Memory Usage** Redis memory consumption
-- **Key Count** Number of keys in Redis
-- **Performance** Redis operation latency
-
-Celery Health
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Monitor Celery workers and queues:
-
-- **Worker Status** Active workers and their status
-- **Queue Depth** Number of pending tasks
-- **Task Performance** Task execution metrics
-- **Error Rates** Failed task percentages
 
 Queue Monitoring
 ----------------
@@ -175,11 +199,43 @@ Celery Queue Monitoring
 
 Monitor Celery queue health and performance:
 
-.. code-block:: bash
+.. tabs::
 
-   curl -X POST "http://localhost:8000/celery/monitor-queue"
-   
-   # Response
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+
+         response = requests.post("http://localhost:8000/celery/monitor-queue")
+         print(response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         with httpx.Client() as client:
+             response = client.post("http://localhost:8000/celery/monitor-queue")
+             print(response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         curl -X POST "http://localhost:8000/celery/monitor-queue"
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         http POST localhost:8000/celery/monitor-queue
+
+**Response:**
+
+.. code-block:: json
+
    {
      "status": "success",
      "message": "Queue monitoring completed",
@@ -209,54 +265,32 @@ Example Alert
    Details:
    • Messages in queue: 2367
    • Scheduled tasks: 0
-   • Workers active: 2
-   • Queue: celery
+   • Total pending: 2367
 
-Performance Monitoring
-----------------------
+System Health Monitoring
+------------------------
 
-Connection Performance
+Diagnostics Page
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Monitor database connection performance:
+Access comprehensive system diagnostics through the web interface:
 
-- **URL** http://localhost:8000/diagnostics/connection-performance
-- **Metrics** Connection times, query performance
-- **Alerts** Slow query detection
+- **URL** http://localhost:8000/diagnostics
+- **Features** Real-time system health information
+- **Sections** Database, Redis, Celery, Performance metrics
 
-Schema Health
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The diagnostics page provides a comprehensive dashboard for monitoring:
 
-Monitor database schema health:
-
-- **URL** http://localhost:8000/diagnostics/schema-health
-- **Validation** Schema integrity checks
-- **Indexes** Index usage and performance
-
-Performance Metrics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Monitor application performance:
-
-- **URL** http://localhost:8000/diagnostics/performance
-- **Metrics** Request/response times, error rates
-- **Trends** Performance over time
-
-Celery Diagnostics
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-Monitor Celery performance:
-
-- **URL** http://localhost:8000/diagnostics/celery
-- **Workers** Worker status and activity
-- **Tasks** Task performance and execution times
-- **Queues** Queue depth and processing rates
+- **Database Health** Connection status, query performance, schema validation
+- **Database Performance** Deadlock statistics, active queries, long-running queries
+- **Schema Health** Table sizes, index usage, database statistics
+- **Celery Health** Worker status, task performance, queue monitoring
 
 Alerting Configuration
 -----------------------
 
 Slack Integration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 Configure Slack alerts for monitoring:
 
@@ -270,30 +304,30 @@ Configure Slack alerts for monitoring:
    - Copy the webhook URL
 
 3. **Configure Environment**
+
    .. code-block:: bash
 
-      export SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
-      
-      # Restart application
-      uv run python src/app.py
+      SLACK_WEBHOOK_URL="https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK"
 
 Alert Types
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
 
-**Queue Alerts**
-- Queue depth exceeds thresholds
-- Worker status issues
-- Task processing delays
+**Celery Queue Alerts**
 
-**Anomaly Alerts**
-- Statistical anomalies detected
-- Metric threshold violations
-- Performance degradation
+- Queue depth exceeds thresholds (WARNING: 50+, CRITICAL: 100+)
+- Worker status and task processing issues
 
-**System Alerts**
-- Database connectivity issues
-- Redis connectivity issues
-- Application errors
+**Anomaly Detection Alerts**
+
+- Statistical anomalies detected in pipeline executions
+- Metric threshold violations (duration, rows, throughput, DML operations)
+- Z-score analysis results
+
+**Timeliness & Freshness Alerts**
+
+- Pipeline execution timeliness failures
+- DML operation freshness violations
+- Overdue pipeline executions
 
 Monitoring Strategy
 -------------------
@@ -303,147 +337,177 @@ Scheduled Monitoring
 
 Set up regular monitoring checks:
 
-.. code-block:: bash
+.. tabs::
 
-   # Add to crontab
-   # Check freshness every hour
-   0 * * * * curl -X POST "http://localhost:8000/freshness"
-   
-   # Check timeliness every 30 minutes
-   */30 * * * * curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
-   
-   # Monitor Celery queue every 5 minutes
-   */5 * * * * curl -X POST "http://localhost:8000/celery/monitor-queue"
-   
-   # Clean up logs daily
-   0 2 * * * curl -X POST "http://localhost:8000/log_cleanup"
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+         import schedule
+         import time
+
+         def check_freshness():
+             response = requests.post("http://localhost:8000/freshness")
+             print(f"Freshness check: {response.status_code}")
+
+         def check_timeliness():
+             response = requests.post(
+                 "http://localhost:8000/timeliness",
+                 json={"lookback_minutes": 60}
+             )
+             print(f"Timeliness check: {response.status_code}")
+
+         def monitor_celery_queue():
+             response = requests.post("http://localhost:8000/celery/monitor-queue")
+             print(f"Celery queue check: {response.status_code}")
+
+         def cleanup_logs():
+             response = requests.post(
+                 "http://localhost:8000/log_cleanup",
+                 json={"retention_days": 365}
+             )
+             print(f"Log cleanup: {response.status_code}")
+
+         # Schedule tasks
+         schedule.every(5).minutes.do(check_freshness)
+         schedule.every(5).minutes.do(check_timeliness)
+         schedule.every(5).minutes.do(monitor_celery_queue)
+         schedule.every().day.at("02:00").do(cleanup_logs)
+
+         while True:
+             schedule.run_pending()
+             time.sleep(60)
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+         import schedule
+         import time
+
+         def check_freshness():
+             with httpx.Client() as client:
+                 response = client.post("http://localhost:8000/freshness")
+                 print(f"Freshness check: {response.status_code}")
+
+         def check_timeliness():
+             with httpx.Client() as client:
+                 response = client.post(
+                     "http://localhost:8000/timeliness",
+                     json={"lookback_minutes": 60}
+                 )
+                 print(f"Timeliness check: {response.status_code}")
+
+         def monitor_celery_queue():
+             with httpx.Client() as client:
+                 response = client.post("http://localhost:8000/celery/monitor-queue")
+                 print(f"Celery queue check: {response.status_code}")
+
+         def cleanup_logs():
+             with httpx.Client() as client:
+                 response = client.post(
+                     "http://localhost:8000/log_cleanup",
+                     json={"retention_days": 365}
+                 )
+                 print(f"Log cleanup: {response.status_code}")
+
+         # Schedule tasks
+         schedule.every(5).minutes.do(check_freshness)
+         schedule.every(5).minutes.do(check_timeliness)
+         schedule.every(5).minutes.do(monitor_celery_queue)
+         schedule.every().day.at("02:00").do(cleanup_logs)
+
+         while True:
+             schedule.run_pending()
+             time.sleep(60)
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         # Add to crontab
+         # Check freshness every 5 minutes
+         */5 * * * * curl -X POST "http://localhost:8000/freshness"
+         
+         # Check timeliness every 5 minutes
+         */5 * * * * curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
+         
+         # Monitor Celery queue every 5 minutes
+         */5 * * * * curl -X POST "http://localhost:8000/celery/monitor-queue"
+         
+         # Clean up logs daily (365 days retention)
+         0 2 * * * curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         # Add to crontab
+         # Check freshness every 5 minutes
+         */5 * * * * http POST localhost:8000/freshness
+         
+         # Check timeliness every 5 minutes
+         */5 * * * * http POST localhost:8000/timeliness lookback_minutes=60
+         
+         # Monitor Celery queue every 5 minutes
+         */5 * * * * http POST localhost:8000/celery/monitor-queue
+         
+         # Clean up logs daily (365 days retention)
+         0 2 * * * http POST localhost:8000/log_cleanup retention_days=365
 
 Monitoring Frequency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Recommended monitoring frequencies:
 
-- **Freshness** Every hour
-- **Timeliness** Every 30 minutes
+- **Freshness** Every 5 minutes
+- **Timeliness** Every 5 minutes
 - **Queue Monitoring** Every 5 minutes
-- **Log Cleanup** Daily
-- **System Diagnostics** As needed
+- **Log Cleanup** Daily, Weekly, or Monthly
 
 Load Testing
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------
+
+Trigger Load Tests
+~~~~~~~~~~~~~~~~~~
 
 Use Locust for load testing:
 
 .. code-block:: bash
 
-   # Install Locust
-   pip install locust
-   
-   # Run load tests
-   locust -f src/diagnostics/locustfile.py --host=http://localhost:8000
+   # Run load tests using Makefile
+   make load-test
    
    # Web interface: http://localhost:8089
 
 Load Test Scenarios
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 **Pipeline Execution Users** (998 users):
+
 - Create and execute pipelines
 - 5-minute execution times
 - 1% anomaly generation rate
 
 **Monitoring Users** (1 user):
+
 - Run freshness and timeliness checks
 - 5-minute monitoring intervals
 
 **Heartbeat Users** (1 user):
-- Health check endpoints
+
+- Health check endpoint (http://localhost:8000)
 - 1-minute intervals
 
 Performance Targets
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
-- **Response Time** < 200ms for API endpoints
-- **Throughput** > 1000 requests/second
-- **Error Rate** < 0.1%
-- **Queue Depth** < 50 messages
-- **Worker Utilization** 70-80%
+Based on the load test configuration, the system should handle:
 
-Troubleshooting
----------------
-
-Common Issues
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Freshness Alerts**
-- Check data modification timestamps
-- Verify freshness thresholds
-- Review data pipeline schedules
-
-**Timeliness Alerts**
-- Check pipeline execution times
-- Verify timeliness thresholds
-- Review system performance
-
-**Queue Alerts**
-- Check Celery worker status
-- Verify Redis connectivity
-- Review task processing rates
-
-**System Alerts**
-- Check database connectivity
-- Verify Redis connectivity
-- Review application logs
-
-Performance Issues
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Slow Responses**
-- Check database performance
-- Review query optimization
-- Verify connection pooling
-
-**High Queue Depth**
-- Scale Celery workers
-- Check task processing rates
-- Review rate limiting
-
-**Memory Issues**
-- Monitor memory usage
-- Check for memory leaks
-- Review worker configuration
-
-Best Practices
---------------
-
-Monitoring Setup
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Comprehensive Coverage** Monitor all critical components
-- **Appropriate Thresholds** Set realistic alert thresholds
-- **Regular Review** Review monitoring results regularly
-- **Alert Fatigue** Avoid overly sensitive alerts
-
-Performance Optimization
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Database Optimization** Optimize queries and indexes
-- **Connection Pooling** Tune connection pool settings
-- **Worker Scaling** Scale workers based on load
-- **Caching** Implement appropriate caching strategies
-
-Alert Management
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Clear Alerts** Use descriptive alert messages
-- **Actionable Alerts** Include remediation steps
-- **Alert Escalation** Implement alert escalation procedures
-- **Alert History** Track alert trends and patterns
-
-Maintenance
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- **Regular Cleanup** Clean up old logs and data
-- **Performance Tuning** Regular performance optimization
-- **Security Updates** Keep dependencies updated
-- **Backup Strategy** Implement data backup procedures
+- **998 concurrent pipelines** executing every 5 minutes
+- **~10-20 RPS** sustained load (998 users ÷ 300 seconds)
+- **Sub-second response times** for all endpoints
+- **<1% failure rate** under normal conditions
+- **Continuous monitoring** with dedicated monitoring and heartbeat users
