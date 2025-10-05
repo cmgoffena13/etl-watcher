@@ -434,30 +434,3 @@ Alerting
      echo "Pending migrations found"
      exit 1
    fi
-
-Best Practices Summary
-----------------------
-
-Migration Development
-~~~~~~~~~~~~~~~~~~~~
-
-- **Small Changes** Keep migrations focused and small
-- **Test Thoroughly** Test migrations in development
-- **Document Changes** Document migration purpose
-- **Review Code** Review migration code before deployment
-
-Migration Deployment
-~~~~~~~~~~~~~~~~~~~~
-
-- **Backup First** Always backup before migrations
-- **Test Environment** Test in staging first
-- **Rollback Plan** Have rollback strategy ready
-- **Monitor Closely** Monitor during deployment
-
-Migration Maintenance
-~~~~~~~~~~~~~~~~~~~~
-
-- **Regular Cleanup** Remove old migration files
-- **Performance Monitoring** Monitor migration performance
-- **Documentation** Keep migration documentation current
-- **Training** Train team on migration procedures

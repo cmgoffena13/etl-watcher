@@ -105,10 +105,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#dml-operation-anomalies">DML Operation Anomalies</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#advanced-configuration">Advanced Configuration</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#auto-creation-rules">Auto-Creation Rules</a></li>
 </ul>
@@ -116,7 +112,6 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -751,36 +746,6 @@ According to the Central Limit Theorem, 30 executions is enough to get a stable 
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
-</section>
-<section id="troubleshooting">
-<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h2>
-<section id="common-issues">
-<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>No Anomalies Detected</strong></p>
-<ul class="simple">
-<li><p>Check if rules are active</p></li>
-<li><p>Verify minimum executions requirement</p></li>
-<li><p>Check if z-threshold is too high</p></li>
-</ul>
-<p><strong>Too Many False Positives</strong></p>
-<ul class="simple">
-<li><p>Increase z-threshold</p></li>
-<li><p>Increase minimum executions</p></li>
-<li><p>Review historical data quality</p></li>
-</ul>
-<p><strong>Missing Alerts</strong></p>
-<ul class="simple">
-<li><p>Verify Slack webhook configuration</p></li>
-<li><p>Check Celery worker status</p></li>
-<li><p>Review alert delivery logs</p></li>
-</ul>
-<p><strong>Baseline Issues</strong></p>
-<ul class="simple">
-<li><p>Ensure sufficient historical data</p></li>
-<li><p>Check for data quality issues</p></li>
-<li><p>Verify metric field selection</p></li>
-</ul>
 </section>
 </section>
 <section id="advanced-configuration">

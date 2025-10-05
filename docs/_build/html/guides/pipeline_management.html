@@ -73,19 +73,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#watermark-increment-logic">Watermark Increment Logic</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#pipeline-monitoring">Pipeline Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#freshness-monitoring">Freshness Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#timeliness-monitoring">Timeliness Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring-configuration">Monitoring Configuration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#setting-up-anomaly-detection">Setting Up Anomaly Detection</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#supported-metrics">Supported Metrics</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#z-score-thresholds">Z-Score Thresholds</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#data-lineage">Data Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#creating-lineage-relationships">Creating Lineage Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#querying-lineage">Querying Lineage</a></li>
 </ul>
@@ -99,21 +87,17 @@
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-design">Pipeline Design</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#execution-management">Execution Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -319,98 +303,8 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 </div>
 </section>
 </section>
-<section id="pipeline-monitoring">
-<h2>Pipeline Monitoring<a class="headerlink" href="#pipeline-monitoring" title="Link to this heading"></a></h2>
-<section id="freshness-monitoring">
-<h3>Freshness Monitoring<a class="headerlink" href="#freshness-monitoring" title="Link to this heading"></a></h3>
-<p>Monitor data freshness to ensure data is up-to-date:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
-
-<span class="c1"># Response</span>
-<span class="o">{</span>
-<span class="w">  </span><span class="s2">&quot;status&quot;</span>:<span class="w"> </span><span class="s2">&quot;queued&quot;</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-</section>
-<section id="timeliness-monitoring">
-<h3>Timeliness Monitoring<a class="headerlink" href="#timeliness-monitoring" title="Link to this heading"></a></h3>
-<p>Monitor pipeline execution timing:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;lookback_minutes&quot;: 60</span>
-<span class="s1">     }&#39;</span>
-
-<span class="c1"># Response</span>
-<span class="o">{</span>
-<span class="w">  </span><span class="s2">&quot;status&quot;</span>:<span class="w"> </span><span class="s2">&quot;queued&quot;</span>
-<span class="o">}</span>
-</pre></div>
-</div>
-</section>
-<section id="monitoring-configuration">
-<h3>Monitoring Configuration<a class="headerlink" href="#monitoring-configuration" title="Link to this heading"></a></h3>
-<p>Configure monitoring thresholds in pipeline creation:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Critical Data Pipeline&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;minute&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="anomaly-detection">
-<h2>Anomaly Detection<a class="headerlink" href="#anomaly-detection" title="Link to this heading"></a></h2>
-<section id="setting-up-anomaly-detection">
-<h3>Setting Up Anomaly Detection<a class="headerlink" href="#setting-up-anomaly-detection" title="Link to this heading"></a></h3>
-<ol class="arabic">
-<li><p><strong>Create an anomaly detection rule</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/anomaly_detection_rule&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
-<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
-<span class="s1">       &quot;metric_field&quot;: &quot;total_rows&quot;,</span>
-<span class="s1">       &quot;z_threshold&quot;: 2.0,</span>
-<span class="s1">       &quot;minimum_executions&quot;: 5</span>
-<span class="s1">     }&#39;</span>
-</pre></div>
-</div>
-</li>
-<li><p><strong>Anomaly detection runs automatically</strong> after each successful execution</p></li>
-</ol>
-</section>
-<section id="supported-metrics">
-<h3>Supported Metrics<a class="headerlink" href="#supported-metrics" title="Link to this heading"></a></h3>
-<p>Monitor various pipeline metrics:</p>
-<ul class="simple">
-<li><p><strong>total_rows</strong> Total number of rows processed</p></li>
-<li><p><strong>duration_seconds</strong> Execution duration</p></li>
-<li><p><strong>throughput</strong> Rows processed per second</p></li>
-<li><p><strong>inserts</strong> Number of insert operations</p></li>
-<li><p><strong>updates</strong> Number of update operations</p></li>
-<li><p><strong>soft_deletes</strong> Number of soft delete operations</p></li>
-</ul>
-</section>
-<section id="z-score-thresholds">
-<h3>Z-Score Thresholds<a class="headerlink" href="#z-score-thresholds" title="Link to this heading"></a></h3>
-<p>Configure sensitivity of anomaly detection:</p>
-<ul class="simple">
-<li><p><strong>1.5</strong> Very sensitive (catches minor variations)</p></li>
-<li><p><strong>2.0</strong> Standard sensitivity (recommended)</p></li>
-<li><p><strong>2.5</strong> Less sensitive (catches major variations)</p></li>
-<li><p><strong>3.0</strong> Very conservative (catches only extreme anomalies)</p></li>
-</ul>
-</section>
-</section>
-<section id="data-lineage">
-<h2>Data Lineage<a class="headerlink" href="#data-lineage" title="Link to this heading"></a></h2>
+<section id="address-lineage">
+<h2>Address Lineage<a class="headerlink" href="#address-lineage" title="Link to this heading"></a></h2>
 <section id="creating-lineage-relationships">
 <h3>Creating Lineage Relationships<a class="headerlink" href="#creating-lineage-relationships" title="Link to this heading"></a></h3>
 <p>Track relationships between data sources:</p>
@@ -528,28 +422,6 @@ Execution 3: watermark=2000, next_watermark=3000 → Success → watermark=3000
 <li><p><strong>Alert Configuration</strong> Configure appropriate alerting</p></li>
 <li><p><strong>Performance Tracking</strong> Monitor execution performance trends</p></li>
 </ul>
-</section>
-<section id="troubleshooting">
-<h3>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Link to this heading"></a></h3>
-</section>
-<section id="common-issues">
-<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-<p><strong>Watermark Not Updating</strong>
-- Check if execution completed successfully
-- Verify next_watermark is provided
-- Check for database connection issues</p>
-<p><strong>Monitoring Alerts</strong>
-- Review monitoring thresholds
-- Check data freshness and timeliness
-- Verify pipeline execution schedules</p>
-<p><strong>Anomaly Detection</strong>
-- Ensure sufficient historical data
-- Check z-score thresholds
-- Verify metric field selection</p>
-<p><strong>Lineage Issues</strong>
-- Verify address creation
-- Check lineage relationship creation
-- Review closure table maintenance</p>
 </section>
 </section>
 </section>

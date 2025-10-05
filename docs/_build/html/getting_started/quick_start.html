@@ -55,7 +55,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#step-5-configure-anomaly-detection">Step 5: Configure Anomaly Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-6-web-pages">Step 6: Web Pages</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#next-steps">Next Steps</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#common-issues">Common Issues</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
@@ -71,13 +70,11 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -484,24 +481,6 @@
 <li><p><strong>Set up anomaly detection rules</strong> Create rules for your specific metrics</p></li>
 <li><p><strong>Explore the web pages</strong> Monitor system health &amp; performance and access reporting dashboard</p></li>
 </ul>
-</section>
-<section id="common-issues">
-<h2>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h2>
-<dl class="simple">
-<dt><strong>Port already in use</strong></dt><dd><p>Make sure port 8000 is available on your host machine</p>
-</dd>
-<dt><strong>Docker containers not starting</strong></dt><dd><p>Check that Docker and Docker Compose are running properly</p>
-</dd>
-<dt><strong>Database connection failed</strong></dt><dd><ul class="simple">
-<li><p>Ensure the PostgreSQL container is running: <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">ps</span></code></p></li>
-<li><p>Ensure you have the proper configuration prefix (e.g., <code class="docutils literal notranslate"><span class="pre">DEV_DATABASE_URL</span></code>)</p></li>
-</ul>
-</dd>
-<dt><strong>Redis connection failed</strong></dt><dd><p>Ensure the Redis container is running: <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">ps</span></code></p>
-</dd>
-<dt><strong>Migration errors</strong></dt><dd><p>Try restarting the application container: <code class="docutils literal notranslate"><span class="pre">docker-compose</span> <span class="pre">restart</span> <span class="pre">app</span></code></p>
-</dd>
-</dl>
 </section>
 </section>
 

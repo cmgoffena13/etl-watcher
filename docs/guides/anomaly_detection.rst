@@ -685,36 +685,6 @@ Detect unusual insert/update patterns:
      "minimum_executions": 30
    }
 
-Troubleshooting
----------------
-
-Common Issues
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**No Anomalies Detected**
-
-- Check if rules are active
-- Verify minimum executions requirement
-- Check if z-threshold is too high
-
-**Too Many False Positives**
-
-- Increase z-threshold
-- Increase minimum executions
-- Review historical data quality
-
-**Missing Alerts**
-
-- Verify Slack webhook configuration
-- Check Celery worker status
-- Review alert delivery logs
-
-**Baseline Issues**
-
-- Ensure sufficient historical data
-- Check for data quality issues
-- Verify metric field selection
-
 Advanced Configuration
 ----------------------
 

@@ -19,7 +19,6 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Deployment Guide" href="deployment.html" />
     <link rel="prev" title="Database Schema" href="database_schema.html" /> 
 </head>
 
@@ -59,7 +58,6 @@
 <li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
@@ -127,15 +125,8 @@
 <li class="toctree-l3"><a class="reference internal" href="#alerting">Alerting</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices-summary">Best Practices Summary</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#migration-development">Migration Development</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-deployment">Migration Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-maintenance">Migration Maintenance</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -583,36 +574,6 @@ alembic<span class="w"> </span>current
 </div>
 </section>
 </section>
-<section id="best-practices-summary">
-<h2>Best Practices Summary<a class="headerlink" href="#best-practices-summary" title="Link to this heading"></a></h2>
-<section id="migration-development">
-<h3>Migration Development<a class="headerlink" href="#migration-development" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Small Changes</strong> Keep migrations focused and small</p></li>
-<li><p><strong>Test Thoroughly</strong> Test migrations in development</p></li>
-<li><p><strong>Document Changes</strong> Document migration purpose</p></li>
-<li><p><strong>Review Code</strong> Review migration code before deployment</p></li>
-</ul>
-</section>
-<section id="migration-deployment">
-<h3>Migration Deployment<a class="headerlink" href="#migration-deployment" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Backup First</strong> Always backup before migrations</p></li>
-<li><p><strong>Test Environment</strong> Test in staging first</p></li>
-<li><p><strong>Rollback Plan</strong> Have rollback strategy ready</p></li>
-<li><p><strong>Monitor Closely</strong> Monitor during deployment</p></li>
-</ul>
-</section>
-<section id="migration-maintenance">
-<h3>Migration Maintenance<a class="headerlink" href="#migration-maintenance" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Regular Cleanup</strong> Remove old migration files</p></li>
-<li><p><strong>Performance Monitoring</strong> Monitor migration performance</p></li>
-<li><p><strong>Documentation</strong> Keep migration documentation current</p></li>
-<li><p><strong>Training</strong> Train team on migration procedures</p></li>
-</ul>
-</section>
-</section>
 </section>
 
 
@@ -620,7 +581,6 @@ alembic<span class="w"> </span>current
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="database_schema.html" class="btn btn-neutral float-left" title="Database Schema" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="deployment.html" class="btn btn-neutral float-right" title="Deployment Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
