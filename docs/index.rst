@@ -52,10 +52,10 @@ The application will be available at `http://localhost:8000` with interactive AP
    guides/address_lineage
    guides/anomaly_detection
    guides/custom_querying
+   guides/etl_example
    guides/log_cleanup
    guides/monitoring
    guides/pipeline_management
-   guides/polygon_example
    guides/watermark_management
 
 .. toctree::

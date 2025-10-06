@@ -1,4 +1,4 @@
-Polygon Example
+ETL Example
 ===============
 
 This section documents a complete ETL example using Watcher and the Polygon API to extract stock market data.
