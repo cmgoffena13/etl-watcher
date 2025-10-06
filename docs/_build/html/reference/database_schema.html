@@ -384,7 +384,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -859,25 +858,33 @@
 <h2>Data Relationships<a class="headerlink" href="#data-relationships" title="Link to this heading"></a></h2>
 <section id="hierarchical-relationships">
 <h3>Hierarchical Relationships<a class="headerlink" href="#hierarchical-relationships" title="Link to this heading"></a></h3>
-<p><strong>Pipeline Execution Hierarchy</strong>
-- Parent-child relationships via <cite>parent_id</cite>
-- Closure table for efficient parent/child queries
-- Depth tracking for relationship levels</p>
-<p><strong>Address Lineage Hierarchy</strong>
-- Source-target relationships via <cite>source_address_id</cite> and <cite>target_address_id</cite>
-- Closure table for transitive relationships
-- Depth tracking for lineage levels</p>
+<p><strong>Pipeline Execution Hierarchy</strong></p>
+<ul class="simple">
+<li><p>Parent-child relationships via <cite>parent_id</cite></p></li>
+<li><p>Closure table for efficient parent/child queries</p></li>
+<li><p>Depth tracking for relationship levels</p></li>
+</ul>
+<p><strong>Address Lineage Hierarchy</strong></p>
+<ul class="simple">
+<li><p>Source-target relationships via <cite>source_address_id</cite> and <cite>target_address_id</cite></p></li>
+<li><p>Closure table for transitive relationships</p></li>
+<li><p>Depth tracking for lineage levels</p></li>
+</ul>
 </section>
 <section id="many-to-many-relationships">
 <h3>Many-to-Many Relationships<a class="headerlink" href="#many-to-many-relationships" title="Link to this heading"></a></h3>
-<p><strong>Pipeline-Address Relationships</strong>
-- Pipelines can have multiple addresses
-- Addresses can be used by multiple pipelines
-- Junction table: <cite>address_lineage</cite></p>
-<p><strong>Pipeline-Execution Relationships</strong>
-- Pipelines can have multiple executions
-- Executions belong to one pipeline
-- Foreign key: <cite>pipeline_id</cite></p>
+<p><strong>Pipeline-Address Relationships</strong></p>
+<ul class="simple">
+<li><p>Pipelines can have multiple addresses</p></li>
+<li><p>Addresses can be used by multiple pipelines</p></li>
+<li><p>Junction table: <cite>address_lineage</cite></p></li>
+</ul>
+<p><strong>Pipeline-Execution Relationships</strong></p>
+<ul class="simple">
+<li><p>Pipelines can have multiple executions</p></li>
+<li><p>Executions belong to one pipeline</p></li>
+<li><p>Foreign key: <cite>pipeline_id</cite></p></li>
+</ul>
 </section>
 </section>
 <section id="schema-evolution">

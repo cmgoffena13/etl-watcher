@@ -301,11 +301,13 @@ Hierarchical Relationships
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Pipeline Execution Hierarchy**
+
 - Parent-child relationships via `parent_id`
 - Closure table for efficient parent/child queries
 - Depth tracking for relationship levels
 
 **Address Lineage Hierarchy**
+
 - Source-target relationships via `source_address_id` and `target_address_id`
 - Closure table for transitive relationships
 - Depth tracking for lineage levels
@@ -314,11 +316,13 @@ Many-to-Many Relationships
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Pipeline-Address Relationships**
+
 - Pipelines can have multiple addresses
 - Addresses can be used by multiple pipelines
 - Junction table: `address_lineage`
 
 **Pipeline-Execution Relationships**
+
 - Pipelines can have multiple executions
 - Executions belong to one pipeline
 - Foreign key: `pipeline_id`
