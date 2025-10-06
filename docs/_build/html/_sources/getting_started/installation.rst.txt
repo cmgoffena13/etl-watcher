@@ -67,6 +67,6 @@ Optional Environment Variables
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 - ``PROD_LOGFIRE_TOKEN`` - Logfire monitoring token
-- ``PROD_SLACK_WEBHOOK_URL`` - Slack notifications
+- ``PROD_SLACK_WEBHOOK_URL`` - Slack notifications for alerting
 - ``PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES`` - Auto-create rules (default: false)
 - ``PROD_PROFILING_ENABLED`` - Enable profiling (default: false)

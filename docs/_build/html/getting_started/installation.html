@@ -61,22 +61,26 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/custom_querying.html">Custom Database Querying</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
 </ul>
 
         </div>
@@ -172,7 +176,7 @@
 <h3>Optional Environment Variables<a class="headerlink" href="#optional-environment-variables" title="Link to this heading"></a></h3>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">PROD_LOGFIRE_TOKEN</span></code> - Logfire monitoring token</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_SLACK_WEBHOOK_URL</span></code> - Slack notifications</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PROD_SLACK_WEBHOOK_URL</span></code> - Slack notifications for alerting</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span></code> - Auto-create rules (default: false)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">PROD_PROFILING_ENABLED</span></code> - Enable profiling (default: false)</p></li>
 </ul>
