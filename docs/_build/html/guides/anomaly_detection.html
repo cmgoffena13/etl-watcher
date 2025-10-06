@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Monitoring &amp; Health Checks" href="monitoring.html" />
-    <link rel="prev" title="Pipeline Management" href="pipeline_management.html" /> 
+    <link rel="next" title="Custom Database Querying" href="custom_querying.html" />
+    <link rel="prev" title="Address Lineage" href="address_lineage.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,13 +52,13 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Anomaly Detection</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#how-it-works">How It Works</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#statistical-analysis">Statistical Analysis</a></li>
@@ -90,6 +90,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#viewing-anomalies">Viewing Anomalies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updating-rules">Updating Rules</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#unflagging-anomalies">Unflagging Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#adjusting-thresholds">Adjusting Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#understanding-the-data">Understanding the Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tuning-process">Tuning Process</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
@@ -111,10 +114,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="custom_querying.html">Custom Database Querying</a></li>
 <li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
 </ul>
@@ -670,6 +678,44 @@ Details:
 </div></blockquote>
 <p>This removes the anomaly flags and allows the execution to be included in future baseline calculations.</p>
 </section>
+<section id="adjusting-thresholds">
+<h3>Adjusting Thresholds<a class="headerlink" href="#adjusting-thresholds" title="Link to this heading"></a></h3>
+<p>The system provides detailed statistical data to help you fine-tune anomaly detection sensitivity. Each anomaly result includes both the <strong>z-score</strong> (actual deviation) and <strong>z-threshold</strong> (sensitivity setting) to guide adjustments.</p>
+</section>
+<section id="understanding-the-data">
+<h3>Understanding the Data<a class="headerlink" href="#understanding-the-data" title="Link to this heading"></a></h3>
+<p><strong>Z-Score vs Z-Threshold:</strong>
+- <strong>Z-Score</strong>: How many standard deviations the current value is from the historical mean
+- <strong>Z-Threshold</strong>: Your sensitivity setting (e.g., 2.0 = flag anything beyond 2 standard deviations)
+- <strong>Relationship</strong>: If <cite>z_score &gt; z_threshold</cite> → Anomaly detected</p>
+</section>
+<section id="tuning-process">
+<h3>Tuning Process<a class="headerlink" href="#tuning-process" title="Link to this heading"></a></h3>
+<p>You are given the pipeline execution id in the alert message. You can utilize this to query the <cite>anomaly_detection_result</cite> table:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="cm">/* Current Values */</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">pipeline_execution_id</span><span class="p">,</span>
+<span class="k">rule</span><span class="p">.</span><span class="n">metric_field</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">violation_value</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">historical_mean</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">std_deviation_value</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">z_threshold</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">threshold_min_value</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">threshold_max_value</span><span class="p">,</span>
+
+<span class="cm">/* Z-Score for analysis */</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">z_score</span><span class="p">,</span>
+<span class="n">FLOOR</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">historical_mean</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="p">(</span><span class="n">adr</span><span class="p">.</span><span class="n">std_deviation_value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">z_score</span><span class="p">))</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">new_threshold_min_value</span><span class="p">,</span>
+<span class="n">adr</span><span class="p">.</span><span class="n">historical_mean</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">adr</span><span class="p">.</span><span class="n">std_deviation_value</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">z_score</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">new_threshold_max_value</span>
+<span class="k">FROM</span><span class="w"> </span><span class="k">public</span><span class="p">.</span><span class="n">anomaly_detection_result</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">adr</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="k">public</span><span class="p">.</span><span class="n">anomaly_detection_rule</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">rule</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="k">rule</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">rule_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pipeline_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">12</span><span class="w">  </span><span class="cm">/* Grab from Alert */</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="k">rule</span><span class="p">.</span><span class="n">metric_field</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;DURATION_SECONDS&#39;</span><span class="w">  </span><span class="cm">/* Grab from Alert */</span>
+</pre></div>
+</div>
+<p>This gives you information around how close the <cite>violation_value</cite> was to the threshold and what a new threshold would look like if adjusted to the violation value and its z_score. This gives you an idea of how to adjust the <cite>z_threshold</cite> to mitigate false positives.</p>
+</section>
 </section>
 <section id="best-practices">
 <h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
@@ -765,8 +811,8 @@ According to the Central Limit Theorem, 30 executions is enough to get a stable 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pipeline_management.html" class="btn btn-neutral float-left" title="Pipeline Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="monitoring.html" class="btn btn-neutral float-right" title="Monitoring &amp; Health Checks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="address_lineage.html" class="btn btn-neutral float-left" title="Address Lineage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="custom_querying.html" class="btn btn-neutral float-right" title="Custom Database Querying" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
-    <link rel="prev" title="Anomaly Detection" href="anomaly_detection.html" /> 
+    <link rel="next" title="Pipeline Management" href="pipeline_management.html" />
+    <link rel="prev" title="Custom Database Querying" href="custom_querying.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,14 +52,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_querying.html">Custom Database Querying</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Monitoring &amp; Health Checks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#freshness-monitoring">Freshness Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#purpose">Purpose</a></li>
@@ -81,7 +82,8 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#system-health-monitoring">System Health Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#diagnostics-page">Diagnostics Page</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#diagnostics-dashboard">Diagnostics Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#alerting-configuration">Alerting Configuration</a><ul>
@@ -102,9 +104,13 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
 </ul>
@@ -352,20 +358,60 @@ Details:
 </section>
 <section id="system-health-monitoring">
 <h2>System Health Monitoring<a class="headerlink" href="#system-health-monitoring" title="Link to this heading"></a></h2>
-<section id="diagnostics-page">
-<h3>Diagnostics Page<a class="headerlink" href="#diagnostics-page" title="Link to this heading"></a></h3>
-<p>Access comprehensive system diagnostics through the web interface:</p>
+<section id="diagnostics-dashboard">
+<h3>Diagnostics Dashboard<a class="headerlink" href="#diagnostics-dashboard" title="Link to this heading"></a></h3>
+<p>Access comprehensive system diagnostics through the interactive web interface:</p>
 <ul class="simple">
 <li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
-<li><p><strong>Features</strong> Real-time system health information</p></li>
-<li><p><strong>Sections</strong> Database, Redis, Celery, Performance metrics</p></li>
+<li><p><strong>Features</strong> Real-time system health information and performance analysis</p></li>
 </ul>
-<p>The diagnostics page provides a comprehensive dashboard for monitoring:</p>
+<p><strong>Connection Speed Test</strong></p>
 <ul class="simple">
-<li><p><strong>Database Health</strong> Connection status, query performance, schema validation</p></li>
-<li><p><strong>Database Performance</strong> Deadlock statistics, active queries, long-running queries</p></li>
-<li><p><strong>Schema Health</strong> Table sizes, index usage, database statistics</p></li>
-<li><p><strong>Celery Health</strong> Worker status, task performance, queue monitoring</p></li>
+<li><p>Raw asyncpg connection performance testing</p></li>
+<li><p>Direct database connectivity validation</p></li>
+</ul>
+<p><strong>Connection Performance</strong></p>
+<ul class="simple">
+<li><p>Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution)</p></li>
+<li><p>Connection pool analysis and performance metrics</p></li>
+</ul>
+<p><strong>Schema Health Check</strong></p>
+<ul class="simple">
+<li><p>Table sizes and row counts</p></li>
+<li><p>Index usage statistics and performance metrics</p></li>
+<li><p>Potential missing indexes for tables with sequential scans</p></li>
+<li><p>Unused indexes identification</p></li>
+<li><p>Table statistics and dead tuple analysis</p></li>
+</ul>
+<p><strong>Performance &amp; Locks</strong></p>
+<ul class="simple">
+<li><p>Deadlock statistics and trends</p></li>
+<li><p>Currently locked tables (public schema only)</p></li>
+<li><p>Top active queries with duration and wait events</p></li>
+<li><p>Long running queries (&gt;30s) identification</p></li>
+</ul>
+</section>
+<section id="pipeline-reporting-dashboard">
+<h3>Pipeline Reporting Dashboard<a class="headerlink" href="#pipeline-reporting-dashboard" title="Link to this heading"></a></h3>
+<p>Access daily pipeline metrics and performance analytics:</p>
+<ul class="simple">
+<li><p><strong>URL</strong> <a class="reference external" href="http://localhost:8000/reporting">http://localhost:8000/reporting</a></p></li>
+<li><p><strong>Features</strong> Comprehensive pipeline performance analysis</p></li>
+</ul>
+<p><strong>Pipeline Metrics</strong></p>
+<ul class="simple">
+<li><p>Daily aggregations of execution counts, error rates, and performance data</p></li>
+<li><p>Pipeline type filtering (e.g., extraction, audit, sales)</p></li>
+<li><p>Pipeline name filtering for specific pipeline analysis</p></li>
+<li><p>Time range filtering (last 1-30 days)</p></li>
+</ul>
+<p><strong>Performance Analytics</strong></p>
+<ul class="simple">
+<li><p>Track throughput, duration, and DML operation trends</p></li>
+<li><p>Error rate monitoring with visual indicators (high, medium, low)</p></li>
+<li><p>Pagination for navigating large datasets with configurable page sizes</p></li>
+<li><p>Auto-refresh with materialized view refreshes automatically on page load</p></li>
+<li><p>Real-time data built on PostgreSQL materialized views for fast query performance</p></li>
 </ul>
 </section>
 </section>
@@ -584,8 +630,8 @@ make<span class="w"> </span>load-test
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="anomaly_detection.html" class="btn btn-neutral float-left" title="Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="custom_querying.html" class="btn btn-neutral float-left" title="Custom Database Querying" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pipeline_management.html" class="btn btn-neutral float-right" title="Pipeline Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

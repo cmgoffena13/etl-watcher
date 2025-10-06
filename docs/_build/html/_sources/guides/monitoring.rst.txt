@@ -270,21 +270,61 @@ Example Alert
 System Health Monitoring
 ------------------------
 
-Diagnostics Page
+Diagnostics Dashboard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Access comprehensive system diagnostics through the web interface:
+Access comprehensive system diagnostics through the interactive web interface:
 
 - **URL** http://localhost:8000/diagnostics
-- **Features** Real-time system health information
-- **Sections** Database, Redis, Celery, Performance metrics
+- **Features** Real-time system health information and performance analysis
 
-The diagnostics page provides a comprehensive dashboard for monitoring:
+**Connection Speed Test**
 
-- **Database Health** Connection status, query performance, schema validation
-- **Database Performance** Deadlock statistics, active queries, long-running queries
-- **Schema Health** Table sizes, index usage, database statistics
-- **Celery Health** Worker status, task performance, queue monitoring
+- Raw asyncpg connection performance testing
+- Direct database connectivity validation
+
+**Connection Performance**
+
+- Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution)
+- Connection pool analysis and performance metrics
+
+**Schema Health Check**
+
+- Table sizes and row counts
+- Index usage statistics and performance metrics
+- Potential missing indexes for tables with sequential scans
+- Unused indexes identification
+- Table statistics and dead tuple analysis
+
+**Performance & Locks**
+
+- Deadlock statistics and trends
+- Currently locked tables (public schema only)
+- Top active queries with duration and wait events
+- Long running queries (>30s) identification
+
+Pipeline Reporting Dashboard
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Access daily pipeline metrics and performance analytics:
+
+- **URL** http://localhost:8000/reporting
+- **Features** Comprehensive pipeline performance analysis
+
+**Pipeline Metrics**
+
+- Daily aggregations of execution counts, error rates, and performance data
+- Pipeline type filtering (e.g., extraction, audit, sales)
+- Pipeline name filtering for specific pipeline analysis
+- Time range filtering (last 1-30 days)
+
+**Performance Analytics**
+
+- Track throughput, duration, and DML operation trends
+- Error rate monitoring with visual indicators (high, medium, low)
+- Pagination for navigating large datasets with configurable page sizes
+- Auto-refresh with materialized view refreshes automatically on page load
+- Real-time data built on PostgreSQL materialized views for fast query performance
 
 Alerting Configuration
 -----------------------

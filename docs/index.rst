@@ -31,6 +31,7 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
    guides/address_lineage
    guides/anomaly_detection
    guides/custom_querying
+   guides/log_cleanup
    guides/monitoring
    guides/pipeline_management
    guides/polygon_example

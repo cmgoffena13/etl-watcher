@@ -601,6 +601,49 @@ Unflag anomalies that are false positives:
 
 This removes the anomaly flags and allows the execution to be included in future baseline calculations.
 
+Adjusting Thresholds
+~~~~~~~~~~~~~~~~~~~~
+
+The system provides detailed statistical data to help you fine-tune anomaly detection sensitivity. Each anomaly result includes both the **z-score** (actual deviation) and **z-threshold** (sensitivity setting) to guide adjustments.
+
+Understanding the Data
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+**Z-Score vs Z-Threshold:**
+- **Z-Score**: How many standard deviations the current value is from the historical mean
+- **Z-Threshold**: Your sensitivity setting (e.g., 2.0 = flag anything beyond 2 standard deviations)
+- **Relationship**: If `z_score > z_threshold` → Anomaly detected
+
+Tuning Process
+~~~~~~~~~~~~~~
+
+You are given the pipeline execution id in the alert message. You can utilize this to query the `anomaly_detection_result` table:
+
+.. code-block:: sql
+
+   SELECT
+   /* Current Values */
+   adr.pipeline_execution_id,
+   rule.metric_field,
+   adr.violation_value,
+   adr.historical_mean,
+   adr.std_deviation_value,
+   adr.z_threshold,
+   adr.threshold_min_value,
+   adr.threshold_max_value,
+
+   /* Z-Score for analysis */
+   adr.z_score,
+   FLOOR(0, adr.historical_mean - (adr.std_deviation_value * adr.z_score)) AS new_threshold_min_value,
+   adr.historical_mean + (adr.std_deviation_value * adr.z_score) AS new_threshold_max_value
+   FROM public.anomaly_detection_result AS adr
+   INNER JOIN public.anomaly_detection_rule AS rule
+       ON rule.id = adr.rule_id
+   WHERE pipeline_execution_id = 12  /* Grab from Alert */
+       AND rule.metric_field = 'DURATION_SECONDS'  /* Grab from Alert */
+
+This gives you information around how close the `violation_value` was to the threshold and what a new threshold would look like if adjusted to the violation value and its z_score. This gives you an idea of how to adjust the `z_threshold` to mitigate false positives.
+
 Best Practices
 ---------------
 
