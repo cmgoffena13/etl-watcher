@@ -6,16 +6,17 @@ Welcome to Watcher's documentation!
    :align: center
    :width: 200px
 
-Watcher is a comprehensive data pipeline monitoring and anomaly detection system designed to ensure your data pipelines are running optimally and detect issues before they impact your business.
+Watcher is a comprehensive data pipeline monitoring and anomaly detection system designed to 
+ensure your data pipelines are running optimally and detect issues before they impact your business.
 
 
 Key Features
 ============
 
+- **Execution Tracking** - Start and end pipeline executions with detailed metadata to track performance
 - **Pipeline Monitoring** - Track execution timing and data freshness
 - **Anomaly Detection** - Statistical analysis of pipeline patterns  
 - **Address Lineage** - Track relationships between data sources
-- **Health Checks** - Comprehensive system monitoring
 - **Background Processing** - Celery-based distributed task processing
 
 
