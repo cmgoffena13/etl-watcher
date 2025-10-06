@@ -699,6 +699,7 @@ twice or missed between executions.</p>
 <span class="c1"># Step 5: End execution (watermark automatically updated)</span>
 <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/end_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
     <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">execution_id</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
     <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">180</span>
