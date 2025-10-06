@@ -49,8 +49,8 @@
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Quick Start Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#step-1-create-your-first-pipeline">Step 1: Create Your First Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-2-start-pipeline-execution">Step 2: Start Pipeline Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#step-3-create-data-lineage">Step 3: Create Data Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-2-start-a-pipeline-execution">Step 2: Start a Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#step-3-create-address-lineage">Step 3: Create Address Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-4-set-up-monitoring">Step 4: Set Up Monitoring</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-5-configure-anomaly-detection">Step 5: Configure Anomaly Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#step-6-web-pages">Step 6: Web Pages</a></li>
@@ -61,18 +61,24 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/custom_querying.html">Custom Database Querying</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
 </ul>
@@ -141,8 +147,8 @@
 </li>
 </ol>
 </section>
-<section id="step-2-start-pipeline-execution">
-<h2>Step 2: Start Pipeline Execution<a class="headerlink" href="#step-2-start-pipeline-execution" title="Link to this heading"></a></h2>
+<section id="step-2-start-a-pipeline-execution">
+<h2>Step 2: Start a Pipeline Execution<a class="headerlink" href="#step-2-start-a-pipeline-execution" title="Link to this heading"></a></h2>
 <ol class="arabic" start="2">
 <li><p><strong>Start an execution</strong></p>
 <div class="sphinx-tabs docutils container">
@@ -240,10 +246,10 @@
 </li>
 </ol>
 </section>
-<section id="step-3-create-data-lineage">
-<h2>Step 3: Create Data Lineage<a class="headerlink" href="#step-3-create-data-lineage" title="Link to this heading"></a></h2>
+<section id="step-3-create-address-lineage">
+<h2>Step 3: Create Address Lineage<a class="headerlink" href="#step-3-create-address-lineage" title="Link to this heading"></a></h2>
 <ol class="arabic">
-<li><p><strong>Create data lineage</strong> (automatically creates addresses and address types if needed)</p>
+<li><p><strong>Create address lineage</strong> (automatically creates addresses and address types if needed)</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-3-3-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-2" name="3-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-3-3-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-3" name="3-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 

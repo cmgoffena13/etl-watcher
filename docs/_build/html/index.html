@@ -58,10 +58,10 @@
 <li class="toctree-l1"><a class="reference internal" href="guides/address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/custom_querying.html">Custom Database Querying</a></li>
+<li class="toctree-l1"><a class="reference internal" href="guides/etl_example.html">ETL Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/pipeline_management.html">Pipeline Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="guides/polygon_example.html">Polygon Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="guides/watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
@@ -117,7 +117,10 @@ ensure your data pipelines are running optimally and detect issues before they i
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d
 </pre></div>
 </div>
-<p>The application will be available at <cite>http://localhost:8000</cite> with interactive API documentation at <cite>http://localhost:8000/scalar</cite>.</p>
+<ul class="simple">
+<li><p>The application will be available at <cite>http://localhost:8000</cite></p></li>
+<li><p>Interactive API documentation will be available at <cite>http://localhost:8000/scalar</cite></p></li>
+</ul>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
@@ -131,8 +134,8 @@ ensure your data pipelines are running optimally and detect issues before they i
 </li>
 <li class="toctree-l1"><a class="reference internal" href="getting_started/quick_start.html">Quick Start Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-1-create-your-first-pipeline">Step 1: Create Your First Pipeline</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-2-start-pipeline-execution">Step 2: Start Pipeline Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-3-create-data-lineage">Step 3: Create Data Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-2-start-a-pipeline-execution">Step 2: Start a Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-3-create-address-lineage">Step 3: Create Address Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-4-set-up-monitoring">Step 4: Set Up Monitoring</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-5-configure-anomaly-detection">Step 5: Configure Anomaly Detection</a></li>
 <li class="toctree-l2"><a class="reference internal" href="getting_started/quick_start.html#step-6-web-pages">Step 6: Web Pages</a></li>
@@ -223,6 +226,13 @@ ensure your data pipelines are running optimally and detect issues before they i
 <li class="toctree-l2"><a class="reference internal" href="guides/custom_querying.html#advanced-patterns">Advanced Patterns</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="guides/log_cleanup.html#how-it-works">How It Works</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/log_cleanup.html#configuration">Configuration</a></li>
@@ -247,13 +257,6 @@ ensure your data pipelines are running optimally and detect issues before they i
 <li class="toctree-l2"><a class="reference internal" href="guides/pipeline_management.html#pipeline-updates">Pipeline Updates</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/pipeline_management.html#nested-pipeline-executions">Nested Pipeline Executions</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/pipeline_management.html#pipeline-organization">Pipeline Organization</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="guides/polygon_example.html">Polygon Example</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="guides/polygon_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guides/polygon_example.html#complete-implementation">Complete Implementation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guides/polygon_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="guides/polygon_example.html#best-practices-shown">Best Practices Shown</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guides/watermark_management.html">Watermark Management</a><ul>

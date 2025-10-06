@@ -72,7 +72,8 @@ Get recent executions for a specific pipeline:
        pe.completed_successfully,
        p.name as pipeline_name
    FROM pipeline_execution pe
-   JOIN pipeline p ON pe.pipeline_id = p.id
+   INNER JOIN pipeline p 
+       ON pe.pipeline_id = p.id
    WHERE pe.pipeline_id = 1
        AND pe.start_date >= CURRENT_DATE - INTERVAL '7 days'
    ORDER BY pe.start_date DESC;
@@ -85,7 +86,7 @@ Query anomaly detection results for a specific pipeline:
 .. code-block:: sql
 
    SELECT 
-       pe.id as execution_id,
+       adr.pipeline_execution_id,
        p.name as pipeline_name,
        adr.metric_field,
        adr.violation_value,
@@ -94,8 +95,8 @@ Query anomaly detection results for a specific pipeline:
        adr.std_deviation_value,
        adr.detected_at
    FROM anomaly_detection_result adr
-   JOIN pipeline_execution pe ON adr.pipeline_execution_id = pe.id
-   JOIN pipeline p ON pe.pipeline_id = p.id
+   INNER JOIN pipeline p 
+       ON adr.pipeline_execution_id = p.id
    WHERE p.id = 1  -- Filter to specific pipeline
        AND adr.detected_at >= CURRENT_DATE - INTERVAL '7 days'
    ORDER BY adr.detected_at DESC;
@@ -115,11 +116,16 @@ Analyze data lineage relationships for a specific pipeline:
        sat.name as source_type,
        tat.name as target_type
    FROM address_lineage al
-   JOIN pipeline p ON al.pipeline_id = p.id
-   JOIN address sa ON al.source_address_id = sa.id
-   JOIN address ta ON al.target_address_id = ta.id
-   JOIN address_type sat ON sa.address_type_id = sat.id
-   JOIN address_type tat ON ta.address_type_id = tat.id
+   INNER JOIN pipeline p 
+       ON al.pipeline_id = p.id
+   INNER JOIN address sa 
+       ON al.source_address_id = sa.id
+   INNER JOIN address ta 
+       ON al.target_address_id = ta.id
+   INNER JOIN address_type sat 
+       ON sa.address_type_id = sat.id
+   INNER JOIN address_type tat 
+       ON ta.address_type_id = tat.id
    WHERE p.id = 1  -- Filter to specific pipeline
    ORDER BY p.name, sa.name;
 
@@ -198,6 +204,82 @@ Reporting and Analytics
 - **Data Volume Analysis**: Monitor data processing volumes over time
 - **Error Analysis**: Identify patterns in failed executions
 - **Resource Utilization**: Analyze pipeline resource consumption
+
+Daily Pipeline Report Materialized View
+----------------------------------------
+
+Watcher includes a pre-built materialized view ``daily_pipeline_report`` that 
+provides daily aggregations of pipeline performance metrics. 
+This is an alternative to using the web dashboard for programmatic access to daily reporting data.
+
+.. note::
+   The materialized view only includes data from the last 30 days (excluding the current day) to maintain performance. 
+   Historical data beyond 30 days and today's data are not included in this view.
+
+**View Structure:**
+
+The materialized view includes the following columns:
+
+- ``date_recorded`` - Date of execution
+- ``pipeline_type_name`` - Type of pipeline (e.g., extraction, transformation)
+- ``pipeline_name`` - Name of the specific pipeline
+- ``total_executions`` - Total number of executions for that day
+- ``failed_executions`` - Number of failed executions
+- ``error_percentage`` - Percentage of failed executions
+- ``daily_inserts`` - Total inserts processed
+- ``daily_updates`` - Total updates processed
+- ``daily_soft_deletes`` - Total soft deletes processed
+- ``daily_total_rows`` - Total rows processed
+- ``avg_duration_seconds`` - Average execution duration
+- ``daily_throughput`` - Rows processed per second
+
+**Refreshing the View:**
+
+The materialized view needs to be refreshed to include new data:
+
+.. code-block:: sql
+
+   -- Refresh the materialized view
+   REFRESH MATERIALIZED VIEW daily_pipeline_report;
+
+**Querying the View:**
+
+.. code-block:: sql
+
+   -- Get daily performance for a specific pipeline
+   SELECT 
+       date_recorded,
+       total_executions,
+       failed_executions,
+       error_percentage,
+       daily_total_rows,
+       avg_duration_seconds,
+       daily_throughput
+   FROM daily_pipeline_report
+   WHERE pipeline_name = 'daily sales pipeline'
+       AND date_recorded >= CURRENT_DATE - INTERVAL '7 days'
+   ORDER BY date_recorded DESC;
+
+   -- Get performance summary by pipeline type
+   SELECT 
+       pipeline_type_name,
+       COUNT(DISTINCT pipeline_name) as pipeline_count,
+       SUM(total_executions) as total_executions,
+       ROUND(AVG(error_percentage), 2) as avg_error_percentage,
+       SUM(daily_total_rows) as total_rows_processed
+   FROM daily_pipeline_report
+   WHERE date_recorded >= CURRENT_DATE - INTERVAL '30 days'
+   GROUP BY pipeline_type_name
+   ORDER BY total_executions DESC;
+
+**Automated Refresh:**
+
+Set up automated refresh using cron or your scheduling system:
+
+.. code-block:: bash
+
+   # Refresh daily at 2 AM
+   0 2 * * * psql -d watcher -c "REFRESH MATERIALIZED VIEW daily_pipeline_report;"
 
 Operational Monitoring
 ----------------------

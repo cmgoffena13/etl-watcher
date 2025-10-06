@@ -50,7 +50,7 @@ Step 1: Create Your First Pipeline
                  name="My Data Pipeline" \
                  pipeline_type_name=extraction
 
-Step 2: Start Pipeline Execution
+Step 2: Start a Pipeline Execution
 -------------------------------
 
 2. **Start an execution**
@@ -171,10 +171,10 @@ Step 2: Start Pipeline Execution
                  updates=200 \
                  soft_deletes=0
 
-Step 3: Create Data Lineage
+Step 3: Create Address Lineage
 ----------------------------
 
-1. **Create data lineage** (automatically creates addresses and address types if needed)
+1. **Create address lineage** (automatically creates addresses and address types if needed)
 
    .. tabs::
 

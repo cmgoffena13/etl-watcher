@@ -27,7 +27,8 @@ Quick Start
 
    docker-compose up -d
 
-The application will be available at `http://localhost:8000` with interactive API documentation at `http://localhost:8000/scalar`.
+- The application will be available at `http://localhost:8000`
+- Interactive API documentation will be available at `http://localhost:8000/scalar`
 
 .. toctree::
    :maxdepth: 2

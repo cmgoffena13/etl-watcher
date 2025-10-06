@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
-    <link rel="prev" title="Polygon Example" href="polygon_example.html" /> 
+    <link rel="next" title="ETL Example" href="etl_example.html" />
+    <link rel="prev" title="Anomaly Detection" href="anomaly_detection.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,18 +50,14 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 <li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
-<li class="toctree-l1"><a class="reference internal" href="polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Database Querying</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#index-utilization-patterns">Index Utilization Patterns</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#date-based-queries">Date-Based Queries</a></li>
@@ -83,6 +79,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#common-use-cases">Common Use Cases</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#reporting-and-analytics">Reporting and Analytics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#daily-pipeline-report-materialized-view">Daily Pipeline Report Materialized View</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#operational-monitoring">Operational Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#data-quality-analysis">Data Quality Analysis</a></li>
 </ul>
@@ -93,12 +90,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 </ul>
 
         </div>
@@ -188,7 +190,8 @@ Use the provided index patterns to optimize your queries and avoid performance i
 <span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">completed_successfully</span><span class="p">,</span>
 <span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span>
 <span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
 <span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
 <span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
@@ -199,7 +202,7 @@ Use the provided index patterns to optimize your queries and avoid performance i
 <h3>Anomaly Detection Analysis<a class="headerlink" href="#anomaly-detection-analysis" title="Link to this heading"></a></h3>
 <p>Query anomaly detection results for a specific pipeline:</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
-<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">execution_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">pipeline_execution_id</span><span class="p">,</span>
 <span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span><span class="p">,</span>
 <span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">metric_field</span><span class="p">,</span>
 <span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">violation_value</span><span class="p">,</span>
@@ -208,8 +211,8 @@ Use the provided index patterns to optimize your queries and avoid performance i
 <span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">std_deviation_value</span><span class="p">,</span>
 <span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span>
 <span class="k">FROM</span><span class="w"> </span><span class="n">anomaly_detection_result</span><span class="w"> </span><span class="n">adr</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">pipeline_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">pipeline_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">-- Filter to specific pipeline</span>
 <span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
 <span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
@@ -227,11 +230,16 @@ Use the provided index patterns to optimize your queries and avoid performance i
 <span class="w">    </span><span class="n">sat</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">source_type</span><span class="p">,</span>
 <span class="w">    </span><span class="n">tat</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">target_type</span>
 <span class="k">FROM</span><span class="w"> </span><span class="n">address_lineage</span><span class="w"> </span><span class="n">al</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">sa</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">source_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">id</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">ta</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">target_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">id</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">sat</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sat</span><span class="p">.</span><span class="n">id</span>
-<span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">tat</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tat</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">sa</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">source_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">ta</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">target_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">sat</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sat</span><span class="p">.</span><span class="n">id</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">tat</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tat</span><span class="p">.</span><span class="n">id</span>
 <span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">-- Filter to specific pipeline</span>
 <span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
 </pre></div>
@@ -315,6 +323,73 @@ Use the provided index patterns to optimize your queries and avoid performance i
 <li><p><strong>Resource Utilization</strong>: Analyze pipeline resource consumption</p></li>
 </ul>
 </section>
+<section id="daily-pipeline-report-materialized-view">
+<h3>Daily Pipeline Report Materialized View<a class="headerlink" href="#daily-pipeline-report-materialized-view" title="Link to this heading"></a></h3>
+<p>Watcher includes a pre-built materialized view <code class="docutils literal notranslate"><span class="pre">daily_pipeline_report</span></code> that
+provides daily aggregations of pipeline performance metrics.
+This is an alternative to using the web dashboard for programmatic access to daily reporting data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The materialized view only includes data from the last 30 days (excluding the current day) to maintain performance.
+Historical data beyond 30 days and today’s data are not included in this view.</p>
+</div>
+<p><strong>View Structure:</strong></p>
+<p>The materialized view includes the following columns:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">date_recorded</span></code> - Date of execution</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_name</span></code> - Type of pipeline (e.g., extraction, transformation)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_name</span></code> - Name of the specific pipeline</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">total_executions</span></code> - Total number of executions for that day</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">failed_executions</span></code> - Number of failed executions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error_percentage</span></code> - Percentage of failed executions</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">daily_inserts</span></code> - Total inserts processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">daily_updates</span></code> - Total updates processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">daily_soft_deletes</span></code> - Total soft deletes processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">daily_total_rows</span></code> - Total rows processed</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">avg_duration_seconds</span></code> - Average execution duration</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">daily_throughput</span></code> - Rows processed per second</p></li>
+</ul>
+<p><strong>Refreshing the View:</strong></p>
+<p>The materialized view needs to be refreshed to include new data:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Refresh the materialized view</span>
+<span class="n">REFRESH</span><span class="w"> </span><span class="n">MATERIALIZED</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">daily_pipeline_report</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Querying the View:</strong></p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Get daily performance for a specific pipeline</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">date_recorded</span><span class="p">,</span>
+<span class="w">    </span><span class="n">total_executions</span><span class="p">,</span>
+<span class="w">    </span><span class="n">failed_executions</span><span class="p">,</span>
+<span class="w">    </span><span class="n">error_percentage</span><span class="p">,</span>
+<span class="w">    </span><span class="n">daily_total_rows</span><span class="p">,</span>
+<span class="w">    </span><span class="n">avg_duration_seconds</span><span class="p">,</span>
+<span class="w">    </span><span class="n">daily_throughput</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">daily_pipeline_report</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pipeline_name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s1">&#39;daily sales pipeline&#39;</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">date_recorded</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">date_recorded</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+
+<span class="c1">-- Get performance summary by pipeline type</span>
+<span class="k">SELECT</span>
+<span class="w">    </span><span class="n">pipeline_type_name</span><span class="p">,</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">pipeline_name</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_count</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">total_executions</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_executions</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ROUND</span><span class="p">(</span><span class="k">AVG</span><span class="p">(</span><span class="n">error_percentage</span><span class="p">),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">avg_error_percentage</span><span class="p">,</span>
+<span class="w">    </span><span class="k">SUM</span><span class="p">(</span><span class="n">daily_total_rows</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">total_rows_processed</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">daily_pipeline_report</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">date_recorded</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;30 days&#39;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pipeline_type_name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">total_executions</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+<p><strong>Automated Refresh:</strong></p>
+<p>Set up automated refresh using cron or your scheduling system:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Refresh daily at 2 AM</span>
+<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>psql<span class="w"> </span>-d<span class="w"> </span>watcher<span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;REFRESH MATERIALIZED VIEW daily_pipeline_report;&quot;</span>
+</pre></div>
+</div>
+</section>
 <section id="operational-monitoring">
 <h3>Operational Monitoring<a class="headerlink" href="#operational-monitoring" title="Link to this heading"></a></h3>
 <ul class="simple">
@@ -364,8 +439,8 @@ Use the provided index patterns to optimize your queries and avoid performance i
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="polygon_example.html" class="btn btn-neutral float-left" title="Polygon Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="anomaly_detection.html" class="btn btn-neutral float-left" title="Anomaly Detection" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="etl_example.html" class="btn btn-neutral float-right" title="ETL Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
