@@ -153,7 +153,7 @@ For feature requests, please provide:
 - **Follow PEP 8**: Use `ruff` for linting (configured in `ruff.toml`)
 - **Type hints**: Use type annotations for all function parameters and return values
 - **Docstrings**: Write clear docstrings for all public functions and classes
-    - Working to get the entire codebase up to standards
+    - I'm working to get the entire codebase up to standards!
 - **Variable names**: Use descriptive, clear variable names
 
 ### Database Code
