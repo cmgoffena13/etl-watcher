@@ -386,7 +386,6 @@
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -753,38 +752,6 @@
 
 <span class="c1"># Clean up logs weekly (90 days retention)</span>
 <span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span><span class="m">0</span><span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/log_cleanup<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 90}&#39;</span>
-</pre></div>
-</div>
-<p><strong>Programmatic Cleanup</strong></p>
-<p>Use Python scheduling for more control:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">schedule</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">cleanup_logs</span><span class="p">():</span>
-    <span class="n">cleanup_data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;retention_days&quot;</span><span class="p">:</span> <span class="mi">90</span><span class="p">,</span>
-        <span class="s2">&quot;batch_size&quot;</span><span class="p">:</span> <span class="mi">10000</span>
-    <span class="p">}</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s2">&quot;http://localhost:8000/log_cleanup&quot;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">=</span><span class="n">cleanup_data</span>
-    <span class="p">)</span>
-
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">200</span><span class="p">:</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleanup completed: </span><span class="si">{</span><span class="n">result</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cleanup failed: </span><span class="si">{</span><span class="n">response</span><span class="o">.</span><span class="n">text</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-
-<span class="c1"># Schedule cleanup every Sunday at 2 AM</span>
-<span class="n">schedule</span><span class="o">.</span><span class="n">every</span><span class="p">()</span><span class="o">.</span><span class="n">sunday</span><span class="o">.</span><span class="n">at</span><span class="p">(</span><span class="s2">&quot;02:00&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">do</span><span class="p">(</span><span class="n">cleanup_logs</span><span class="p">)</span>
-
-<span class="c1"># Run the scheduler</span>
-<span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">schedule</span><span class="o">.</span><span class="n">run_pending</span><span class="p">()</span>
-    <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The log cleanup system helps maintain optimal database performance while preserving the data you need for monitoring and analysis.</p>

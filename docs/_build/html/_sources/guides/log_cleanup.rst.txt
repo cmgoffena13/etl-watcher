@@ -177,7 +177,6 @@ Scheduled Cleanup
 
 **Automated Cleanup with Cron**
 
-
 Set up automated log cleanup using cron:
 
 .. code-block:: bash
@@ -187,41 +186,5 @@ Set up automated log cleanup using cron:
 
    # Clean up logs weekly (90 days retention)
    0 2 * * 0 curl -X POST http://localhost:8000/log_cleanup -H "Content-Type: application/json" -d '{"retention_days": 90}'
-
-
-**Programmatic Cleanup**
-
-Use Python scheduling for more control:
-
-.. code-block:: python
-
-   import schedule
-   import time
-   import requests
-
-   def cleanup_logs():
-       cleanup_data = {
-           "retention_days": 90,
-           "batch_size": 10000
-       }
-       
-       response = requests.post(
-           "http://localhost:8000/log_cleanup",
-           json=cleanup_data
-       )
-       
-       if response.status_code == 200:
-           result = response.json()
-           print(f"Cleanup completed: {result}")
-       else:
-           print(f"Cleanup failed: {response.text}")
-
-   # Schedule cleanup every Sunday at 2 AM
-   schedule.every().sunday.at("02:00").do(cleanup_logs)
-
-   # Run the scheduler
-   while True:
-       schedule.run_pending()
-       time.sleep(60)
 
 The log cleanup system helps maintain optimal database performance while preserving the data you need for monitoring and analysis.

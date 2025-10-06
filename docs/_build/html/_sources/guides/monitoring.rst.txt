@@ -512,201 +512,22 @@ Monitoring Strategy
 Scheduled Monitoring
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Set up regular monitoring checks:
+Set up regular monitoring checks using cron jobs or an orchestrator/scheduler:
 
-.. tabs::
+.. code-block:: bash
 
-   .. tab:: Python
-
-      .. code-block:: python
-
-         import httpx
-         import schedule
-         import time
-
-         def check_freshness():
-             response = httpx.post("http://localhost:8000/freshness")
-             print(f"Freshness check: {response.status_code}")
-
-         def check_timeliness():
-             response = httpx.post(
-                 "http://localhost:8000/timeliness",
-                 json={"lookback_minutes": 60}
-             )
-             print(f"Timeliness check: {response.status_code}")
-
-         def monitor_celery_queue():
-             response = httpx.post("http://localhost:8000/celery/monitor-queue")
-             print(f"Celery queue check: {response.status_code}")
-
-         def cleanup_logs():
-             response = httpx.post(
-                 "http://localhost:8000/log_cleanup",
-                 json={"retention_days": 365}
-             )
-             print(f"Log cleanup: {response.status_code}")
-
-         # Schedule tasks
-         schedule.every(5).minutes.do(check_freshness)
-         schedule.every(5).minutes.do(check_timeliness)
-         schedule.every(5).minutes.do(monitor_celery_queue)
-         schedule.every().day.at("02:00").do(cleanup_logs)
-
-         while True:
-             schedule.run_pending()
-             time.sleep(60)
-
-   .. tab:: curl
-
-      .. code-block:: bash
-
-         # Add to crontab
-         # Check freshness every 5 minutes
-         */5 * * * * curl -X POST "http://localhost:8000/freshness"
-         
-         # Check timeliness every 5 minutes
-         */5 * * * * curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
-         
-         # Monitor Celery queue every 5 minutes
-         */5 * * * * curl -X POST "http://localhost:8000/celery/monitor-queue"
-         
-         # Clean up logs daily (365 days retention)
-         0 2 * * * curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
-
-   .. tab:: Go
-
-      .. code-block:: go
-
-         package main
-
-         import (
-             "bytes"
-             "encoding/json"
-             "fmt"
-             "net/http"
-             "time"
-         )
-
-         func checkFreshness() {
-             resp, _ := http.Post("http://localhost:8000/freshness", 
-                 "application/json", nil)
-             defer resp.Body.Close()
-             fmt.Printf("Freshness check: %d\n", resp.StatusCode)
-         }
-
-         func checkTimeliness() {
-             data := map[string]int{"lookback_minutes": 60}
-             jsonData, _ := json.Marshal(data)
-             resp, _ := http.Post("http://localhost:8000/timeliness", 
-                 "application/json", bytes.NewBuffer(jsonData))
-             defer resp.Body.Close()
-             fmt.Printf("Timeliness check: %d\n", resp.StatusCode)
-         }
-
-         func monitorCeleryQueue() {
-             resp, _ := http.Post("http://localhost:8000/celery/monitor-queue", 
-                 "application/json", nil)
-             defer resp.Body.Close()
-             fmt.Printf("Celery queue check: %d\n", resp.StatusCode)
-         }
-
-         func cleanupLogs() {
-             data := map[string]int{"retention_days": 365}
-             jsonData, _ := json.Marshal(data)
-             resp, _ := http.Post("http://localhost:8000/log_cleanup", 
-                 "application/json", bytes.NewBuffer(jsonData))
-             defer resp.Body.Close()
-             fmt.Printf("Log cleanup: %d\n", resp.StatusCode)
-         }
-
-         func main() {
-             ticker := time.NewTicker(5 * time.Minute)
-             defer ticker.Stop()
-
-             for {
-                 select {
-                 case <-ticker.C:
-                     checkFreshness()
-                     checkTimeliness()
-                     monitorCeleryQueue()
-                 case <-time.After(24 * time.Hour):
-                     cleanupLogs()
-                 }
-             }
-         }
-
-   .. tab:: Scala
-
-      .. code-block:: scala
-
-         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
-         import java.net.URI
-         import play.api.libs.json.Json
-         import scala.concurrent.duration._
-         import scala.concurrent.ExecutionContext.Implicits.global
-         import scala.concurrent.Future
-
-         object ScheduledMonitoringExample {
-             def main(args: Array[String]): Unit = {
-                 val client = HttpClient.newHttpClient()
-                 
-                 def checkFreshness(): Unit = {
-                     val request = HttpRequest.newBuilder()
-                         .uri(URI.create("http://localhost:8000/freshness"))
-                         .POST(HttpRequest.BodyPublishers.noBody())
-                         .build()
-                     
-                     val response = client.send(request, 
-                         HttpResponse.BodyHandlers.ofString())
-                     println(s"Freshness check: ${response.statusCode()}")
-                 }
-                 
-                 def checkTimeliness(): Unit = {
-                     val json = Json.obj("lookback_minutes" -> 60).toString()
-                     val request = HttpRequest.newBuilder()
-                         .uri(URI.create("http://localhost:8000/timeliness"))
-                         .header("Content-Type", "application/json")
-                         .POST(HttpRequest.BodyPublishers.ofString(json))
-                         .build()
-                     
-                     val response = client.send(request, 
-                         HttpResponse.BodyHandlers.ofString())
-                     println(s"Timeliness check: ${response.statusCode()}")
-                 }
-                 
-                 def monitorCeleryQueue(): Unit = {
-                     val request = HttpRequest.newBuilder()
-                         .uri(URI.create("http://localhost:8000/celery/monitor-queue"))
-                         .POST(HttpRequest.BodyPublishers.noBody())
-                         .build()
-                     
-                     val response = client.send(request, 
-                         HttpResponse.BodyHandlers.ofString())
-                     println(s"Celery queue check: ${response.statusCode()}")
-                 }
-                 
-                 def cleanupLogs(): Unit = {
-                     val json = Json.obj("retention_days" -> 365).toString()
-                     val request = HttpRequest.newBuilder()
-                         .uri(URI.create("http://localhost:8000/log_cleanup"))
-                         .header("Content-Type", "application/json")
-                         .POST(HttpRequest.BodyPublishers.ofString(json))
-                         .build()
-                     
-                     val response = client.send(request, 
-                         HttpResponse.BodyHandlers.ofString())
-                     println(s"Log cleanup: ${response.statusCode()}")
-                 }
-                 
-                 // Run every 5 minutes
-                 while (true) {
-                     checkFreshness()
-                     checkTimeliness()
-                     monitorCeleryQueue()
-                     Thread.sleep(5 * 60 * 1000) // 5 minutes
-                 }
-             }
-         }
+   # Add to crontab
+   # Check freshness every 5 minutes
+   */5 * * * * curl -X POST "http://localhost:8000/freshness"
+   
+   # Check timeliness every 5 minutes
+   */5 * * * * curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
+   
+   # Monitor Celery queue every 5 minutes
+   */5 * * * * curl -X POST "http://localhost:8000/celery/monitor-queue"
+   
+   # Clean up logs daily (365 days retention)
+   0 2 * * * curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
 
 Monitoring Frequency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
