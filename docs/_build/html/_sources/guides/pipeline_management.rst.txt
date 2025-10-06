@@ -104,6 +104,120 @@ Configure monitoring settings during pipeline creation:
      "load_lineage": true
    }
 
+Pipeline Active Flag
+~~~~~~~~~~~~~~~~~~~~
+
+The `active` flag allows you to control pipeline execution without deleting the pipeline configuration. This is useful for:
+
+- **Temporary Disabling**: Turn off pipelines during maintenance windows
+- **Emergency Response**: Quickly disable failing pipelines to prevent cascading issues
+
+**Default Behavior:**
+- New pipelines are `active: true` by default
+- The flag is purely informational - your code can check this field to implement custom logic
+- Pipeline metadata and configuration are preserved regardless of active status
+- The `active` flag is always returned in the /pipeline API response
+
+**Managing Active Status:**
+
+The `active` flag can be updated via the PATCH endpoint:
+
+.. tabs::
+
+   .. tab:: Python - requests
+
+      .. code-block:: python
+
+         import requests
+
+         # Disable a pipeline
+         update_data = {
+             "id": 1,
+             "active": False
+         }
+         
+         response = requests.patch(
+             "http://localhost:8000/pipeline",
+             json=update_data
+         )
+         print(response.json())
+
+   .. tab:: Python - httpx
+
+      .. code-block:: python
+
+         import httpx
+
+         # Re-enable a pipeline
+         update_data = {
+             "id": 1,
+             "active": True
+         }
+         
+         with httpx.Client() as client:
+             response = client.patch(
+                 "http://localhost:8000/pipeline",
+                 json=update_data
+             )
+             print(response.json())
+
+   .. tab:: curl
+
+      .. code-block:: bash
+
+         # Disable pipeline
+         curl -X PATCH "http://localhost:8000/pipeline" \
+              -H "Content-Type: application/json" \
+              -d '{"id": 1, "active": false}'
+
+   .. tab:: HTTPie
+
+      .. code-block:: bash
+
+         # Re-enable pipeline
+         http PATCH localhost:8000/pipeline id:=1 active:=true
+
+**Practical Example:**
+
+Here's a complete example showing how to create/get a pipeline and use the `active` flag:
+
+.. code-block:: python
+
+   import requests
+
+   def run_pipeline_if_active(pipeline_name: str, pipeline_type: str):
+       """Create or get pipeline and run only if active."""
+       
+       # Create or get pipeline
+       pipeline_data = {
+           "name": pipeline_name,
+           "pipeline_type_name": pipeline_type
+       }
+       
+       response = requests.post(
+           "http://localhost:8000/pipeline",
+           json=pipeline_data
+       )
+       pipeline = response.json()
+       
+       # Check active flag before proceeding
+       if not pipeline["active"]:
+           print(f"Pipeline '{pipeline_name}' is inactive, skipping execution")
+           return
+       
+       print(f"Pipeline '{pipeline_name}' is active, proceeding with execution")
+       
+       # Your pipeline logic here
+       # - Data extraction
+       # - Data transformation  
+       # - Data loading
+       # - etc.
+       
+       print("Pipeline execution completed successfully")
+
+   # Usage
+   run_pipeline_if_active("daily sales pipeline", "extraction")
+
 Pipeline Execution
 ------------------
 

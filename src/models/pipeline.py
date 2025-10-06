@@ -42,3 +42,4 @@ class PipelinePatchInput(ValidatorModel):
     timeliness_datepart: Optional[DatePartEnum] = None
     mute_timeliness_check: Optional[bool] = None
     load_lineage: Optional[bool] = None
+    active: Optional[bool] = None

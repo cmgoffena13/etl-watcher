@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Anomaly Detection" href="anomaly_detection.html" />
-    <link rel="prev" title="Celery Tasks" href="../api/celery_tasks.html" /> 
+    <link rel="next" title="Polygon Example" href="polygon_example.html" />
+    <link rel="prev" title="Monitoring &amp; Health Checks" href="monitoring.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -52,16 +52,22 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="custom_querying.html">Custom Database Querying</a></li>
+<li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Pipeline Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-configuration">Pipeline Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a><ul>
@@ -84,17 +90,14 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
 </ul>
 
         </div>
@@ -209,13 +212,109 @@ including execution tracking, hierarchical workflows, and organizational best pr
 </pre></div>
 </div>
 </section>
+<section id="pipeline-active-flag">
+<h3>Pipeline Active Flag<a class="headerlink" href="#pipeline-active-flag" title="Link to this heading"></a></h3>
+<p>The <cite>active</cite> flag allows you to control pipeline execution without deleting the pipeline configuration. This is useful for:</p>
+<ul class="simple">
+<li><p><strong>Temporary Disabling</strong>: Turn off pipelines during maintenance windows</p></li>
+<li><p><strong>Emergency Response</strong>: Quickly disable failing pipelines to prevent cascading issues</p></li>
+</ul>
+<p><strong>Default Behavior:</strong>
+- New pipelines are <cite>active: true</cite> by default
+- The flag is purely informational - your code can check this field to implement custom logic
+- Pipeline metadata and configuration are preserved regardless of active status
+- The <cite>active</cite> flag is always returned in the /pipeline API response</p>
+<p><strong>Managing Active Status:</strong></p>
+<p>The <cite>active</cite> flag can be updated via the PATCH endpoint:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="c1"># Disable a pipeline</span>
+<span class="n">update_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">False</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+    <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+    <span class="n">json</span><span class="o">=</span><span class="n">update_data</span>
+<span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+
+<span class="c1"># Re-enable a pipeline</span>
+<span class="n">update_data</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;active&quot;</span><span class="p">:</span> <span class="kc">True</span>
+<span class="p">}</span>
+
+<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">update_data</span>
+    <span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Disable pipeline</span>
+curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;id&quot;: 1, &quot;active&quot;: false}&#39;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Re-enable pipeline</span>
+http<span class="w"> </span>PATCH<span class="w"> </span>localhost:8000/pipeline<span class="w"> </span>id:<span class="o">=</span><span class="m">1</span><span class="w"> </span>active:<span class="o">=</span><span class="nb">true</span>
+</pre></div>
+</div>
+</div></div>
+<p><strong>Practical Example:</strong></p>
+<p>Here’s a complete example showing how to create/get a pipeline and use the <cite>active</cite> flag:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline_if_active</span><span class="p">(</span><span class="n">pipeline_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">pipeline_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Create or get pipeline and run only if active.&quot;&quot;&quot;</span>
+
+    <span class="c1"># Create or get pipeline</span>
+    <span class="n">pipeline_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">pipeline_name</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="n">pipeline_type</span>
+    <span class="p">}</span>
+
+    <span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+        <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+        <span class="n">json</span><span class="o">=</span><span class="n">pipeline_data</span>
+    <span class="p">)</span>
+    <span class="n">pipeline</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+    <span class="c1"># Check active flag before proceeding</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">pipeline</span><span class="p">[</span><span class="s2">&quot;active&quot;</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; is inactive, skipping execution&quot;</span><span class="p">)</span>
+        <span class="k">return</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Pipeline &#39;</span><span class="si">{</span><span class="n">pipeline_name</span><span class="si">}</span><span class="s2">&#39; is active, proceeding with execution&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Your pipeline logic here</span>
+    <span class="c1"># - Data extraction</span>
+    <span class="c1"># - Data transformation</span>
+    <span class="c1"># - Data loading</span>
+    <span class="c1"># - etc.</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Pipeline execution completed successfully&quot;</span><span class="p">)</span>
+
+<span class="c1"># Usage</span>
+<span class="n">run_pipeline_if_active</span><span class="p">(</span><span class="s2">&quot;daily sales pipeline&quot;</span><span class="p">,</span> <span class="s2">&quot;extraction&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="pipeline-execution">
 <h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>
 <section id="starting-and-ending-executions">
 <h3>Starting and Ending Executions<a class="headerlink" href="#starting-and-ending-executions" title="Link to this heading"></a></h3>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="c1"># Start execution</span>
 <span class="n">start_data</span> <span class="o">=</span> <span class="p">{</span>
@@ -257,7 +356,7 @@ including execution tracking, hierarchical workflows, and organizational best pr
 <span class="nb">print</span><span class="p">(</span><span class="n">end_response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="c1"># Start execution</span>
@@ -300,7 +399,7 @@ including execution tracking, hierarchical workflows, and organizational best pr
     <span class="nb">print</span><span class="p">(</span><span class="n">end_response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
+</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -331,7 +430,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
+</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start execution</span>
 http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pipeline_execution<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span><span class="nv">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -440,7 +539,7 @@ http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/end_pipel
 </div>
 <p><strong>API Usage:</strong></p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-3-3-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-2" name="3-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-3-3-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-3" name="3-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
 
 <span class="c1"># Start main pipeline execution</span>
 <span class="n">main_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
@@ -465,7 +564,7 @@ http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/end_pipel
 <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+</div><div aria-labelledby="tab-3-3-1" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-1" name="3-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
     <span class="c1"># Start main pipeline execution</span>
@@ -491,7 +590,7 @@ http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/end_pipel
     <span class="p">)</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
+</div><div aria-labelledby="tab-3-3-2" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-2" name="3-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
@@ -511,7 +610,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
+</div><div aria-labelledby="tab-3-3-3" class="sphinx-tabs-panel" hidden="true" id="panel-3-3-3" name="3-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Start main pipeline execution</span>
 http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pipeline_execution<span class="w"> </span><span class="se">\</span>
 <span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span><span class="nv">start_date</span><span class="o">=</span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="w"> </span><span class="se">\</span>
@@ -625,8 +724,8 @@ http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/start_pip
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../api/celery_tasks.html" class="btn btn-neutral float-left" title="Celery Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="anomaly_detection.html" class="btn btn-neutral float-right" title="Anomaly Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="monitoring.html" class="btn btn-neutral float-left" title="Monitoring &amp; Health Checks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="polygon_example.html" class="btn btn-neutral float-right" title="Polygon Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
