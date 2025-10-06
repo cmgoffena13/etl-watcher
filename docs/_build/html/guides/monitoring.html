@@ -986,18 +986,66 @@ Details:
 <li><p>Queue depth exceeds thresholds (WARNING: 50+, CRITICAL: 100+)</p></li>
 <li><p>Worker status and task processing issues</p></li>
 </ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
+Celery Queue Alert
+Timestamp: 2025-09-28 06:04:26 UTC
+Message: Queue has 2367 pending tasks
+
+Details:
+• Messages in queue: 2367
+• Scheduled tasks: 0
+• Total pending: 2367
+</pre></div>
+</div>
 <p><strong>Anomaly Detection Alerts</strong></p>
 <ul class="simple">
 <li><p>Statistical anomalies detected in pipeline executions</p></li>
 <li><p>Metric threshold violations (duration, rows, throughput, DML operations)</p></li>
 <li><p>Z-score analysis results</p></li>
 </ul>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>⚠️ WARNING
+Anomaly Detection
+Timestamp: 2025-01-09 20:30:45 UTC
+Message: Anomalies Detected for Pipeline &#39;analytics_pipeline&#39; (ID: 123) - Execution ID 21 flagged
+
+Details:
+• Total Anomalies: 2
+• Metrics: [&#39;duration_seconds&#39;, &#39;throughput&#39;]
+• Anomalies:
+     • duration_seconds: 4914 (Range: 0 - 4767)
+     • throughput: 271.96 (Range: 0 - 250)
+</pre></div>
+</div>
 <p><strong>Timeliness &amp; Freshness Alerts</strong></p>
 <ul class="simple">
 <li><p>Pipeline execution timeliness failures</p></li>
 <li><p>DML operation freshness violations</p></li>
 <li><p>Overdue pipeline executions</p></li>
 </ul>
+<p><strong>Timeliness Alert Example</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:warning: WARNING
+Timeliness Check - Pipeline Execution
+Timestamp: 2025-09-28 17:24:41 UTC
+Message: Pipeline Execution Timeliness Check - 2 new execution(s) overdue
+
+Details:
+• Failed Executions:
+    • Pipeline &#39;hourly_pipeline_066&#39; (Execution ID: 8842): 28.72 minutes (running), Expected within 15 minutes (child config)
+    • Pipeline &#39;hourly_pipeline_701&#39; (Execution ID: 8843): 28.72 minutes (running), Expected within 15 minutes (child config)
+</pre></div>
+</div>
+<p><strong>Freshness Alert Example</strong></p>
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:warning: WARNING
+Freshness Check - Pipeline DML
+Timestamp: 2025-09-30 00:34:13 UTC
+Message: Pipeline Freshness Check - 2 NEW pipeline(s) overdue
+
+Details:
+• Failed Pipelines:
+    • hourly_pipeline_037 (ID: 30): Last DML 2025-09-28 17:34:20.019491+00:00, Expected within 6 hours
+    • hourly_pipeline_057 (ID: 49): Last DML 2025-09-28 17:34:41.016885+00:00, Expected within 6 hours
+</pre></div>
+</div>
 </section>
 </section>
 <section id="monitoring-strategy">

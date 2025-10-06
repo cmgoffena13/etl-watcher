@@ -453,17 +453,71 @@ Alert Types
 - Queue depth exceeds thresholds (WARNING: 50+, CRITICAL: 100+)
 - Worker status and task processing issues
 
+.. code-block:: text
+
+   🚨 CRITICAL
+   Celery Queue Alert
+   Timestamp: 2025-09-28 06:04:26 UTC
+   Message: Queue has 2367 pending tasks
+   
+   Details:
+   • Messages in queue: 2367
+   • Scheduled tasks: 0
+   • Total pending: 2367
+
 **Anomaly Detection Alerts**
 
 - Statistical anomalies detected in pipeline executions
 - Metric threshold violations (duration, rows, throughput, DML operations)
 - Z-score analysis results
 
+.. code-block:: text
+
+   ⚠️ WARNING
+   Anomaly Detection
+   Timestamp: 2025-01-09 20:30:45 UTC
+   Message: Anomalies Detected for Pipeline 'analytics_pipeline' (ID: 123) - Execution ID 21 flagged
+   
+   Details:
+   • Total Anomalies: 2
+   • Metrics: ['duration_seconds', 'throughput']
+   • Anomalies: 
+   	• duration_seconds: 4914 (Range: 0 - 4767)
+   	• throughput: 271.96 (Range: 0 - 250)
+
 **Timeliness & Freshness Alerts**
 
 - Pipeline execution timeliness failures
 - DML operation freshness violations
 - Overdue pipeline executions
+
+**Timeliness Alert Example**
+
+.. code-block:: text
+
+   :warning: WARNING
+   Timeliness Check - Pipeline Execution
+   Timestamp: 2025-09-28 17:24:41 UTC
+   Message: Pipeline Execution Timeliness Check - 2 new execution(s) overdue
+   
+   Details:
+   • Failed Executions:
+       • Pipeline 'hourly_pipeline_066' (Execution ID: 8842): 28.72 minutes (running), Expected within 15 minutes (child config)
+       • Pipeline 'hourly_pipeline_701' (Execution ID: 8843): 28.72 minutes (running), Expected within 15 minutes (child config)
+
+**Freshness Alert Example**
+
+.. code-block:: text
+
+   :warning: WARNING
+   Freshness Check - Pipeline DML
+   Timestamp: 2025-09-30 00:34:13 UTC
+   Message: Pipeline Freshness Check - 2 NEW pipeline(s) overdue
+   
+   Details:
+   • Failed Pipelines:
+       • hourly_pipeline_037 (ID: 30): Last DML 2025-09-28 17:34:20.019491+00:00, Expected within 6 hours
+       • hourly_pipeline_057 (ID: 49): Last DML 2025-09-28 17:34:41.016885+00:00, Expected within 6 hours
 
 Monitoring Strategy
 -------------------
