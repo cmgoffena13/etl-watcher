@@ -103,12 +103,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and result backend for Celery
 
-### Development Workflow
-1. **Adding New Tables**: Add model to `src.database.models.__init__.py` for SQLModel metadata
-2. **Database Migrations**: Use `make add-migration` to generate migration scripts
-3. **Testing**: Use `make test` to run the comprehensive test suite
-4. **Code Quality**: Pre-commit hooks automatically format and lint code
-
 ## Contributing
 
 We welcome contributions to Watcher! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, our development process, and how to submit pull requests.
