@@ -7,6 +7,12 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ![linesofcode](https://aschey.tech/tokei/github/cmgoffena13/watcher?category=code)
 
+## Table of Contents
+
+1. [Features](#features)
+2. [Technology Stack](#️-technology-stack)
+3. [Contributing](#contributing)
+
 ## Features
 
 ### 🔄 Pipeline Execution Monitoring
@@ -21,8 +27,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **DML Freshness Monitoring**: Check if data manipulation operations (inserts, updates, deletes) are recent enough
 - **Configurable Thresholds**: Set custom rules per pipeline type and individual pipelines
 - **Mute Capability**: Skip checks for specific pipelines when needed
-
-*See [Timeliness & Freshness](#-timeliness--freshness) section for detailed configuration and usage.*
 
 ### 🔗 Data Lineage Tracking
 - **Address Management**: Track source and target data addresses with type classification
@@ -99,86 +103,22 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and result backend for Celery
 
-## 🛠️ Development
-
-### Development Setup
-1. Install `uv`
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-2. Install python 3.12
-```bash
-uv python install 3.12
-```
-3. Check installation
-```bash
-uv python list
-```
-4. Sync python packages
-```bash
-uv sync --frozen --compile-bytecode
-```
-5. Add in pre-commits (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
-```bash
-pre-commit install --install-hooks
-```
-6. Add in Environment Variables referencing `.env.example`
-
-### Quick Start
-```bash
-# Start the development server
-make dev-compose
-
-# Run tests
-make test
-
-# Format and lint code
-make format
-```
-
-### Database Management
-```bash
-# Add a new migration
-make add-migration msg="description of changes"
-
-# Apply migrations
-make trigger-migration
-```
-
-### Performance Profiling
-
-Watcher includes built-in performance profiling for development using pyinstrument to help identify bottlenecks and optimize your pipeline operations.
-
-#### On-Demand Profiling
-
-Profile any API endpoint by adding `?profile=true` to the URL:
-
-#### Using Scalar API Docs
-
-1. **Start your app**: `make dev-compose`
-2. **Open Scalar**: http://localhost:8000/scalar
-3. **Add `?profile=true`** as a query parameter to any endpoint URL in the interface
-4. **Execute the request** - you'll get an interactive HTML profile directly in your browser
-
-#### Profile Features
-
-- **Interactive Call Stack**: Click to expand/collapse function calls
-- **Timing Breakdown**: See exactly where time is spent
-- **Database Operations**: Identify slow queries and connection issues
-- **Memory Usage**: Track memory allocation patterns
-- **Search & Filter**: Find specific functions or modules
-
-#### Configuration
-
-Profiling is enabled by default in development mode. To disable:
-
-```bash
-# Set in your environment
-DEV_PROFILING_ENABLED=false
-```
-
 ### Development Workflow
 1. **Adding New Tables**: Add model to `src.database.models.__init__.py` for SQLModel metadata
 2. **Database Migrations**: Use `make add-migration` to generate migration scripts
 3. **Testing**: Use `make test` to run the comprehensive test suite
 4. **Code Quality**: Pre-commit hooks automatically format and lint code
+
+## Contributing
+
+We welcome contributions to Watcher! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, our development process, and how to submit pull requests.
+
+### Quick Start for Contributors
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. You'll need a postgres test database (I recommending using [SupaBase](https://supabase.com))
+5. Run tests with `make test`
+6. Submit a pull request
+
+For detailed information about our coding standards, testing requirements, and contribution process, please refer to the [Contributing Guidelines](CONTRIBUTING.md).
