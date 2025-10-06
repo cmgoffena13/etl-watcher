@@ -1,7 +1,8 @@
 ETL Example
 ===============
 
-This section documents a complete ETL example using Watcher and the Polygon API to extract stock market data.
+This section documents a complete ETL example in Python using Watcher 
+and the Polygon API to extract stock market data.
 
 Overview
 ~~~~~~~~~~~~

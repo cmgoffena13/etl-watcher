@@ -36,8 +36,8 @@ Primary pipeline configuration table.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_pipeline_name_includes ON pipeline (name) INCLUDE (load_lineage, active, id);
-   CREATE INDEX ix_pipeline_pipeline_type_id_includes ON pipeline (pipeline_type_id) INCLUDE (id);
+   CREATE UNIQUE INDEX ux_pipeline_name_include ON pipeline (name) INCLUDE (load_lineage, active, id);
+   CREATE INDEX ix_pipeline_pipeline_type_id_include ON pipeline (pipeline_type_id) INCLUDE (id);
 
 Pipeline Type
 ~~~~~~~~~~~~~~
@@ -60,7 +60,7 @@ Pipeline type classification.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_pipeline_type_name_includes ON pipeline_type (name) INCLUDE (id);
+   CREATE UNIQUE INDEX ux_pipeline_type_name_include ON pipeline_type (name) INCLUDE (id);
 
 Pipeline Execution
 ~~~~~~~~~~~~~~~~~~
@@ -118,8 +118,8 @@ Hierarchical pipeline execution relationships.
    );
    
    -- Indexes
-   CREATE INDEX ix_pipeline_execution_closure_depth_parent ON pipeline_execution_closure (parent_execution_id, depth) INCLUDE (child_execution_id);
-   CREATE INDEX ix_pipeline_execution_closure_depth_child ON pipeline_execution_closure (child_execution_id, depth) INCLUDE (parent_execution_id);
+   CREATE INDEX ix_pipeline_execution_closure_depth_parent_include ON pipeline_execution_closure (parent_execution_id, depth) INCLUDE (child_execution_id);
+   CREATE INDEX ix_pipeline_execution_closure_depth_child_include ON pipeline_execution_closure (child_execution_id, depth) INCLUDE (parent_execution_id);
 
 Address
 ~~~~~~~
@@ -142,7 +142,7 @@ Data address tracking.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_address_name_includes ON address (name) INCLUDE (id);
+   CREATE UNIQUE INDEX ux_address_name_include ON address (name) INCLUDE (id);
 
 Address Type
 ~~~~~~~~~~~~~
@@ -160,7 +160,7 @@ Address type classification.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_address_type_name_includes ON address_type (name) INCLUDE (id);
+   CREATE UNIQUE INDEX ux_address_type_name_include ON address_type (name) INCLUDE (id);
 
 Address Lineage
 ~~~~~~~~~~~~~~~
@@ -177,9 +177,9 @@ Data lineage relationships.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_address_lineage_source_target ON address_lineage (source_address_id, target_address_id);
-   CREATE UNIQUE INDEX ix_address_lineage_target_source ON address_lineage (target_address_id, source_address_id);
-   CREATE INDEX ix_address_lineage_pipeline ON address_lineage (pipeline_id);
+   CREATE UNIQUE INDEX ux_address_lineage_source_target ON address_lineage (source_address_id, target_address_id);
+   CREATE UNIQUE INDEX ux_address_lineage_target_source ON address_lineage (target_address_id, source_address_id);
+   CREATE INDEX ix_address_lineage_pipeline_id ON address_lineage (pipeline_id);
 
 Address Lineage Closure
 ~~~~~~~~~~~~~~~~~~~~~~~~
@@ -198,8 +198,8 @@ Transitive closure of address lineage relationships.
    );
    
    -- Indexes
-   CREATE INDEX ix_address_lineage_closure_depth_source ON address_lineage_closure (source_address_id, depth) INCLUDE (target_address_id);
-   CREATE INDEX ix_address_lineage_closure_depth_target ON address_lineage_closure (target_address_id, depth) INCLUDE (source_address_id);
+   CREATE INDEX ix_address_lineage_closure_depth_source_include ON address_lineage_closure (source_address_id, depth) INCLUDE (target_address_id);
+   CREATE INDEX ix_address_lineage_closure_depth_target_include ON address_lineage_closure (target_address_id, depth) INCLUDE (source_address_id);
 
 Monitoring Tables
 -----------------
@@ -243,7 +243,7 @@ Freshness monitoring results.
    );
    
    -- Indexes
-   CREATE UNIQUE INDEX ix_freshness_pipeline_log_covering ON freshness_pipeline_log (last_dml_timestamp, pipeline_id);
+   CREATE UNIQUE INDEX ux_freshness_pipeline_log ON freshness_pipeline_log (last_dml_timestamp, pipeline_id);
 
 Anomaly Detection
 -----------------
@@ -268,8 +268,8 @@ Anomaly detection configuration.
    );
    
    -- Indexes
-   CREATE INDEX ix_anomaly_detection_rule_pipeline_id ON anomaly_detection_rule (pipeline_id, active) INCLUDE (id);
-   CREATE UNIQUE INDEX ix_anomaly_detection_rule_composite_key ON anomaly_detection_rule (pipeline_id, metric_field) INCLUDE (id);
+   CREATE INDEX ix_anomaly_detection_rule_pipeline_id_include ON anomaly_detection_rule (pipeline_id, active) INCLUDE (id);
+   CREATE UNIQUE INDEX ux_anomaly_detection_rule_composite_key_include ON anomaly_detection_rule (pipeline_id, metric_field) INCLUDE (id);
 
 Anomaly Detection Result
 ~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -38,6 +38,15 @@ exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 html_theme = "sphinx_rtd_theme"
 html_static_path = ["_static"]
 
+# -- Options for Read the Docs theme -----------------------------------------
+html_theme_options = {
+    "navigation_depth": 4,
+    "collapse_navigation": False,
+    "sticky_navigation": True,
+    "includehidden": True,
+    "titles_only": False,
+}
+
 # -- Options for MyST --------------------------------------------------------
 myst_enable_extensions = [
     "colon_fence",

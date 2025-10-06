@@ -4,24 +4,24 @@ Monitoring & Health Checks
 This guide covers how to set up comprehensive monitoring for your Watcher instance.
 Watcher provides multiple monitoring capabilities to ensure your data pipelines are running optimally:
 
-- **Freshness Monitoring** Track data staleness and DML operations
-- **Timeliness Monitoring** Validate pipeline execution timing
-- **Queue Monitoring** Track Celery task queue depth and performance
+- **Freshness Monitoring**: Track data staleness and DML operations
+- **Timeliness Monitoring**: Validate pipeline execution timing
+- **Queue Monitoring**: Track Celery task queue depth and performance
 
 Freshness Monitoring
 --------------------
 
 Purpose
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~
 
 Freshness monitoring tracks when data was last modified to detect stale data:
 
-- **DML Operations** Monitors inserts, updates, and soft deletes
-- **Staleness Detection** Identifies data that hasn't had DML activity recently
-- **Alerting** Notifies when data becomes stale
+- **DML Operations**: Monitors inserts, updates, and soft deletes
+- **Staleness Detection**: Identifies data that hasn't had DML activity recently
+- **Alerting**: Notifies when data becomes stale
 
 Configuration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~
 
 Configure freshness monitoring in pipeline creation:
 
@@ -58,24 +58,14 @@ Trigger freshness checks manually:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         response = requests.post("http://localhost:8000/freshness")
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
          import httpx
 
-         with httpx.Client() as client:
-             response = client.post("http://localhost:8000/freshness")
-             print(response.json())
+         response = httpx.post("http://localhost:8000/freshness")
+         print(response.json())
 
    .. tab:: curl
 
@@ -83,11 +73,49 @@ Trigger freshness checks manually:
 
          curl -X POST "http://localhost:8000/freshness"
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/freshness
+         package main
+
+         import (
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         func main() {
+             resp, _ := http.Post("http://localhost:8000/freshness", 
+                 "application/json", nil)
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+
+         object FreshnessExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/freshness"))
+                     .POST(HttpRequest.BodyPublishers.noBody())
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Response:**
 
@@ -139,30 +167,17 @@ Trigger timeliness checks with lookback period:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         response = requests.post(
-             "http://localhost:8000/timeliness",
-             json={"lookback_minutes": 60}
-         )
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
          import httpx
 
-         with httpx.Client() as client:
-             response = client.post(
-                 "http://localhost:8000/timeliness",
-                 json={"lookback_minutes": 60}
-             )
-             print(response.json())
+         response = httpx.post(
+             "http://localhost:8000/timeliness",
+             json={"lookback_minutes": 60}
+         )
+         print(response.json())
 
    .. tab:: curl
 
@@ -174,12 +189,65 @@ Trigger timeliness checks with lookback period:
                 "lookback_minutes": 60
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/timeliness \
-              lookback_minutes=60
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type TimelinessRequest struct {
+             LookbackMinutes int `json:"lookback_minutes"`
+         }
+
+         func main() {
+             data := TimelinessRequest{
+                 LookbackMinutes: 60,
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/timeliness", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object TimelinessExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "lookback_minutes" -> 60
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/timeliness"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Response:**
 
@@ -201,24 +269,14 @@ Monitor Celery queue health and performance:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         response = requests.post("http://localhost:8000/celery/monitor-queue")
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
          import httpx
 
-         with httpx.Client() as client:
-             response = client.post("http://localhost:8000/celery/monitor-queue")
-             print(response.json())
+         response = httpx.post("http://localhost:8000/celery/monitor-queue")
+         print(response.json())
 
    .. tab:: curl
 
@@ -226,11 +284,49 @@ Monitor Celery queue health and performance:
 
          curl -X POST "http://localhost:8000/celery/monitor-queue"
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/celery/monitor-queue
+         package main
+
+         import (
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         func main() {
+             resp, _ := http.Post("http://localhost:8000/celery/monitor-queue", 
+                 "application/json", nil)
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+
+         object QueueMonitoringExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/celery/monitor-queue"))
+                     .POST(HttpRequest.BodyPublishers.noBody())
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Response:**
 
@@ -379,47 +475,7 @@ Set up regular monitoring checks:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-         import schedule
-         import time
-
-         def check_freshness():
-             response = requests.post("http://localhost:8000/freshness")
-             print(f"Freshness check: {response.status_code}")
-
-         def check_timeliness():
-             response = requests.post(
-                 "http://localhost:8000/timeliness",
-                 json={"lookback_minutes": 60}
-             )
-             print(f"Timeliness check: {response.status_code}")
-
-         def monitor_celery_queue():
-             response = requests.post("http://localhost:8000/celery/monitor-queue")
-             print(f"Celery queue check: {response.status_code}")
-
-         def cleanup_logs():
-             response = requests.post(
-                 "http://localhost:8000/log_cleanup",
-                 json={"retention_days": 365}
-             )
-             print(f"Log cleanup: {response.status_code}")
-
-         # Schedule tasks
-         schedule.every(5).minutes.do(check_freshness)
-         schedule.every(5).minutes.do(check_timeliness)
-         schedule.every(5).minutes.do(monitor_celery_queue)
-         schedule.every().day.at("02:00").do(cleanup_logs)
-
-         while True:
-             schedule.run_pending()
-             time.sleep(60)
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
@@ -428,30 +484,26 @@ Set up regular monitoring checks:
          import time
 
          def check_freshness():
-             with httpx.Client() as client:
-                 response = client.post("http://localhost:8000/freshness")
-                 print(f"Freshness check: {response.status_code}")
+             response = httpx.post("http://localhost:8000/freshness")
+             print(f"Freshness check: {response.status_code}")
 
          def check_timeliness():
-             with httpx.Client() as client:
-                 response = client.post(
-                     "http://localhost:8000/timeliness",
-                     json={"lookback_minutes": 60}
-                 )
-                 print(f"Timeliness check: {response.status_code}")
+             response = httpx.post(
+                 "http://localhost:8000/timeliness",
+                 json={"lookback_minutes": 60}
+             )
+             print(f"Timeliness check: {response.status_code}")
 
          def monitor_celery_queue():
-             with httpx.Client() as client:
-                 response = client.post("http://localhost:8000/celery/monitor-queue")
-                 print(f"Celery queue check: {response.status_code}")
+             response = httpx.post("http://localhost:8000/celery/monitor-queue")
+             print(f"Celery queue check: {response.status_code}")
 
          def cleanup_logs():
-             with httpx.Client() as client:
-                 response = client.post(
-                     "http://localhost:8000/log_cleanup",
-                     json={"retention_days": 365}
-                 )
-                 print(f"Log cleanup: {response.status_code}")
+             response = httpx.post(
+                 "http://localhost:8000/log_cleanup",
+                 json={"retention_days": 365}
+             )
+             print(f"Log cleanup: {response.status_code}")
 
          # Schedule tasks
          schedule.every(5).minutes.do(check_freshness)
@@ -480,22 +532,140 @@ Set up regular monitoring checks:
          # Clean up logs daily (365 days retention)
          0 2 * * * curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         # Add to crontab
-         # Check freshness every 5 minutes
-         */5 * * * * http POST localhost:8000/freshness
-         
-         # Check timeliness every 5 minutes
-         */5 * * * * http POST localhost:8000/timeliness lookback_minutes=60
-         
-         # Monitor Celery queue every 5 minutes
-         */5 * * * * http POST localhost:8000/celery/monitor-queue
-         
-         # Clean up logs daily (365 days retention)
-         0 2 * * * http POST localhost:8000/log_cleanup retention_days=365
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+             "time"
+         )
+
+         func checkFreshness() {
+             resp, _ := http.Post("http://localhost:8000/freshness", 
+                 "application/json", nil)
+             defer resp.Body.Close()
+             fmt.Printf("Freshness check: %d\n", resp.StatusCode)
+         }
+
+         func checkTimeliness() {
+             data := map[string]int{"lookback_minutes": 60}
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/timeliness", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             fmt.Printf("Timeliness check: %d\n", resp.StatusCode)
+         }
+
+         func monitorCeleryQueue() {
+             resp, _ := http.Post("http://localhost:8000/celery/monitor-queue", 
+                 "application/json", nil)
+             defer resp.Body.Close()
+             fmt.Printf("Celery queue check: %d\n", resp.StatusCode)
+         }
+
+         func cleanupLogs() {
+             data := map[string]int{"retention_days": 365}
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/log_cleanup", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             fmt.Printf("Log cleanup: %d\n", resp.StatusCode)
+         }
+
+         func main() {
+             ticker := time.NewTicker(5 * time.Minute)
+             defer ticker.Stop()
+
+             for {
+                 select {
+                 case <-ticker.C:
+                     checkFreshness()
+                     checkTimeliness()
+                     monitorCeleryQueue()
+                 case <-time.After(24 * time.Hour):
+                     cleanupLogs()
+                 }
+             }
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+         import scala.concurrent.duration._
+         import scala.concurrent.ExecutionContext.Implicits.global
+         import scala.concurrent.Future
+
+         object ScheduledMonitoringExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 def checkFreshness(): Unit = {
+                     val request = HttpRequest.newBuilder()
+                         .uri(URI.create("http://localhost:8000/freshness"))
+                         .POST(HttpRequest.BodyPublishers.noBody())
+                         .build()
+                     
+                     val response = client.send(request, 
+                         HttpResponse.BodyHandlers.ofString())
+                     println(s"Freshness check: ${response.statusCode()}")
+                 }
+                 
+                 def checkTimeliness(): Unit = {
+                     val json = Json.obj("lookback_minutes" -> 60).toString()
+                     val request = HttpRequest.newBuilder()
+                         .uri(URI.create("http://localhost:8000/timeliness"))
+                         .header("Content-Type", "application/json")
+                         .POST(HttpRequest.BodyPublishers.ofString(json))
+                         .build()
+                     
+                     val response = client.send(request, 
+                         HttpResponse.BodyHandlers.ofString())
+                     println(s"Timeliness check: ${response.statusCode()}")
+                 }
+                 
+                 def monitorCeleryQueue(): Unit = {
+                     val request = HttpRequest.newBuilder()
+                         .uri(URI.create("http://localhost:8000/celery/monitor-queue"))
+                         .POST(HttpRequest.BodyPublishers.noBody())
+                         .build()
+                     
+                     val response = client.send(request, 
+                         HttpResponse.BodyHandlers.ofString())
+                     println(s"Celery queue check: ${response.statusCode()}")
+                 }
+                 
+                 def cleanupLogs(): Unit = {
+                     val json = Json.obj("retention_days" -> 365).toString()
+                     val request = HttpRequest.newBuilder()
+                         .uri(URI.create("http://localhost:8000/log_cleanup"))
+                         .header("Content-Type", "application/json")
+                         .POST(HttpRequest.BodyPublishers.ofString(json))
+                         .build()
+                     
+                     val response = client.send(request, 
+                         HttpResponse.BodyHandlers.ofString())
+                     println(s"Log cleanup: ${response.statusCode()}")
+                 }
+                 
+                 // Run every 5 minutes
+                 while (true) {
+                     checkFreshness()
+                     checkTimeliness()
+                     monitorCeleryQueue()
+                     Thread.sleep(5 * 60 * 1000) // 5 minutes
+                 }
+             }
+         }
 
 Monitoring Frequency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

@@ -21,8 +21,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
-    <link rel="prev" title="Watermark Management" href="watermark_management.html" /> 
+    <link rel="next" title="Anomaly Detection" href="anomaly_detection.html" />
+    <link rel="prev" title="Pydantic Data Models" href="../api/models.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,22 +46,214 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-1-create-your-first-pipeline">Step 1: Create Your First Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-2-start-a-pipeline-execution">Step 2: Start a Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-3-create-address-lineage">Step 3: Create Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-4-set-up-monitoring">Step 4: Set Up Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-5-configure-anomaly-detection">Step 5: Configure Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-6-web-pages">Step 6: Web Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#environment-variables">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#development-environment">Development Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#production-environment">Production Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#database-configuration">Database Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#connection-pool-default-settings">Connection Pool Default Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#redis-configuration">Redis Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#connection-default-settings">Connection Default Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#celery-default-configuration">Celery Default Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#monitoring-configuration">Monitoring Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#slack-notifications">Slack Notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#feature-flags">Feature Flags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#auto-create-anomaly-detection-rules">Auto-Create Anomaly Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#profiling">Profiling</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-management">Pipeline Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline">Create or Get Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#list-pipelines">List Pipelines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-pipeline-by-id">Get Pipeline by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#update-pipeline">Update Pipeline</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-execution">Pipeline Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#start-pipeline-execution">Start Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#end-pipeline-execution">End Pipeline Execution</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-types">Pipeline Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline-type">Create or Get Pipeline Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#list-pipeline-types">List Pipeline Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-pipeline-type-by-id">Get Pipeline Type by ID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-management">Address Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-address">Create or Get Address</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#list-addresses">List Addresses</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-by-id">Get Address by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#update-address">Update Address</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-types">Address Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-address-type">Create or Get Address Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#list-address-types">List Address Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-type-by-id">Get Address Type by ID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-lineage">Address Lineage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-address-lineage">Create Address Lineage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-lineage">Get Address Lineage</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#anomaly-detection">Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-anomaly-detection-rule">Create or Get Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#list-anomaly-detection-rules">List Anomaly Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-anomaly-detection-rule-by-id">Get Anomaly Detection Rule by ID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#update-anomaly-detection-rule">Update Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#unflag-anomalies">Unflag Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#monitoring-health">Monitoring &amp; Health</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#check-timeliness">Check Timeliness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#check-freshness">Check Freshness</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#log-cleanup">Log Cleanup</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#diagnostics-web-page">Diagnostics Web Page</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#system-diagnostics">System Diagnostics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#interactive-api-documentation">Interactive API Documentation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#scalar-api-documentation">Scalar API Documentation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepostinput">PipelinePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepostoutput">PipelinePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionendinput">PipelineExecutionEndInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-models">Address Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresspostinput">AddressPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresspostoutput">AddressPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresspatchinput">AddressPatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-type-models">Address Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresstypepostinput">AddressTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresstypepostoutput">AddressTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresstypepatchinput">AddressTypePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-lineage-models">Address Lineage Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#sourceaddress">SourceAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#targetaddress">TargetAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#anomaly-detection-models">Anomaly Detection Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#anomalydetectionrulepostinput">AnomalyDetectionRulePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#anomalydetectionrulepostoutput">AnomalyDetectionRulePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#anomalydetectionrulepatchinput">AnomalyDetectionRulePatchInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#unflaganomalyinput">UnflagAnomalyInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#monitoring-models">Monitoring Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#freshnesspostoutput">FreshnessPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#timelinesspostinput">TimelinessPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#timelinesspostoutput">TimelinessPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#enums">Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#anomalymetricfieldenum">AnomalyMetricFieldEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#datepartenum">DatePartEnum</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Address Lineage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-address-lineage">Understanding Address Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#source-controlled-lineage">Source-Controlled Lineage</a></li>
@@ -75,11 +267,300 @@
 <li class="toctree-l2"><a class="reference internal" href="#address-type-organization">Address Type Organization</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#how-it-works">How It Works</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#statistical-analysis">Statistical Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#supported-metrics">Supported Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#setting-up-anomaly-detection">Setting Up Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#creating-detection-rules">Creating Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#rule-configuration">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#multiple-rules">Multiple Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#automatic-execution">Automatic Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#triggered-execution">Triggered Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#no-manual-triggering-required">No Manual Triggering Required</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#anomaly-results">Anomaly Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#understanding-results">Understanding Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#result-fields">Result Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#alert-notifications">Alert Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#slack-alerts">Slack Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#alert-configuration">Alert Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#managing-anomalies">Managing Anomalies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#viewing-anomalies">Viewing Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#updating-rules">Updating Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#unflagging-anomalies">Unflagging Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#adjusting-thresholds">Adjusting Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#understanding-the-data">Understanding the Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#tuning-process">Tuning Process</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#id1">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#threshold-selection">Threshold Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#monitoring-strategy">Monitoring Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#common-scenarios">Common Scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#data-volume-anomalies">Data Volume Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#performance-anomalies">Performance Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#throughput-anomalies">Throughput Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#dml-operation-anomalies">DML Operation Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="anomaly_detection.html#advanced-configuration">Advanced Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="anomaly_detection.html#auto-creation-rules">Auto-Creation Rules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="custom_querying.html">Custom Database Querying</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="custom_querying.html#index-utilization-patterns">Index Utilization Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#date-based-queries">Date-Based Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#time-based-queries">Time-Based Queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_querying.html#common-query-patterns">Common Query Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#pipeline-execution-analysis">Pipeline Execution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#anomaly-detection-analysis">Anomaly Detection Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#lineage-analysis">Lineage Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#hierarchical-execution-analysis">Hierarchical Execution Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_querying.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#query-optimization">Query Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#safety-guidelines">Safety Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_querying.html#common-use-cases">Common Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#reporting-and-analytics">Reporting and Analytics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#daily-pipeline-report-materialized-view">Daily Pipeline Report Materialized View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#operational-monitoring">Operational Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#data-quality-analysis">Data Quality Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="custom_querying.html#advanced-patterns">Advanced Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="custom_querying.html#comparative-analysis">Comparative Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="log_cleanup.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_cleanup.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_cleanup.html#api-usage">API Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_cleanup.html#cleanup-process">Cleanup Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="log_cleanup.html#scheduled-cleanup">Scheduled Cleanup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#freshness-monitoring">Freshness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#supported-time-units">Supported Time Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#running-freshness-checks">Running Freshness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#timeliness-monitoring">Timeliness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#id1">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#id2">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#example-alert">Example Alert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#alerting-configuration">Alerting Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#slack-integration">Slack Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-types">Alert Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#load-testing">Load Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#trigger-load-tests">Trigger Load Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#load-test-scenarios">Load Test Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#performance-targets">Performance Targets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#execution-patterns">Execution Patterns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-updates">Pipeline Updates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#common-update-scenarios">Common Update Scenarios</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#nested-pipeline-executions">Nested Pipeline Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#querying-nested-executions">Querying Nested Executions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-organization">Pipeline Organization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-type-organization">Pipeline Type Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-naming-convention">Pipeline Naming Convention</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-increment-logic">Watermark Increment Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#how-to-use-watermarks">How to Use Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="watermark_management.html#practical-example">Practical Example</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#celery-background-processing">Celery Background Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#redis-message-broker">Redis Message Broker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#docker-containerization">Docker Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#performance-design-goals">Performance Design Goals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-type">Pipeline Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-execution-closure">Pipeline Execution Closure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address">Address</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-type">Address Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-lineage">Address Lineage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-lineage-closure">Address Lineage Closure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#monitoring-tables">Monitoring Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#timeliness-pipeline-execution-log">Timeliness Pipeline Execution Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#freshness-pipeline-log">Freshness Pipeline Log</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection">Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection-rule">Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection-result">Anomaly Detection Result</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#schema-evolution">Schema Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-strategy">Migration Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-best-practices">Migration Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#schema-maintenance">Schema Maintenance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-files">Migration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#current-migrations">Current Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-structure">Migration Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-commands">Migration Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#basic-commands">Basic Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-current-status">Check Current Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#view-migration-history">View Migration History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#run-migrations">Run Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-migrations">Rollback Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-new-migration">Create New Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#advanced-commands">Advanced Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#show-sql-for-migration">Show SQL for Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-for-pending-migrations">Check for Pending Migrations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-best-practices">Migration Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-migration">1. Create Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#edit-migration-file">2. Edit Migration File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#test-migration">3. Test Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#commit-changes">4. Commit Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#production-deployment">Production Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#pre-deployment">Pre-deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#post-deployment">Post-deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-safety">Migration Safety</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#safe-operations">Safe Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#risky-operations">Risky Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-strategy">Rollback Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#simple-rollbacks">Simple Rollbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#complex-rollbacks">Complex Rollbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-testing">Rollback Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#production-management">Production Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#id1">Production Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-production">Rollback Production</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-troubleshooting">Migration Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-conflicts">Migration Conflicts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#failed-migrations">Failed Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#data-corruption">Data Corruption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#schema-drift">Schema Drift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-automation">Migration Automation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#docker-integration">Docker Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-logging">Migration Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-tracking">Migration Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#alerting">Alerting</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -174,7 +655,7 @@
 <h2>Creating Lineage Relationships<a class="headerlink" href="#creating-lineage-relationships" title="Link to this heading"></a></h2>
 <p>Track relationships between data sources:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-0-0-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-3" name="0-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
@@ -194,42 +675,14 @@
     <span class="p">]</span>
 <span class="p">}</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
     <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
-        <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
-<span class="p">}</span>
-
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
-    <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
@@ -250,10 +703,94 @@
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>POST<span class="w"> </span>localhost:8000/address_lineage<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span><span class="nv">pipeline_id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>source_addresses:<span class="o">=</span><span class="s1">&#39;[{&quot;name&quot;: &quot;source_db.stock_prices&quot;, &quot;address_type_name&quot;: &quot;postgresql&quot;, &quot;address_type_group_name&quot;: &quot;database&quot;}]&#39;</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span>target_addresses:<span class="o">=</span><span class="s1">&#39;[{&quot;name&quot;: &quot;warehouse.stock_prices&quot;, &quot;address_type_name&quot;: &quot;postgresql&quot;, &quot;address_type_group_name&quot;: &quot;database&quot;}]&#39;</span>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;bytes&quot;</span>
+<span class="w">    </span><span class="s">&quot;encoding/json&quot;</span>
+<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
+<span class="w">    </span><span class="s">&quot;net/http&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">Address</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">Name</span><span class="w">                </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;name&quot;`</span>
+<span class="w">    </span><span class="nx">AddressTypeName</span><span class="w">     </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;address_type_name&quot;`</span>
+<span class="w">    </span><span class="nx">AddressTypeGroupName</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;address_type_group_name&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">LineageRequest</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">PipelineID</span><span class="w">      </span><span class="kt">int</span><span class="w">       </span><span class="s">`json:&quot;pipeline_id&quot;`</span>
+<span class="w">    </span><span class="nx">SourceAddresses</span><span class="w"> </span><span class="p">[]</span><span class="nx">Address</span><span class="w"> </span><span class="s">`json:&quot;source_addresses&quot;`</span>
+<span class="w">    </span><span class="nx">TargetAddresses</span><span class="w"> </span><span class="p">[]</span><span class="nx">Address</span><span class="w"> </span><span class="s">`json:&quot;target_addresses&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">data</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">LineageRequest</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">SourceAddresses</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">Address</span><span class="p">{</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">Name</span><span class="p">:</span><span class="w">                </span><span class="s">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">AddressTypeName</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;postgresql&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">AddressTypeGroupName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">TargetAddresses</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="nx">Address</span><span class="p">{</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="nx">Name</span><span class="p">:</span><span class="w">                </span><span class="s">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">AddressTypeName</span><span class="p">:</span><span class="w">     </span><span class="s">&quot;postgresql&quot;</span><span class="p">,</span>
+<span class="w">                </span><span class="nx">AddressTypeGroupName</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;database&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="p">},</span>
+<span class="w">        </span><span class="p">},</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">jsonData</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Post</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">))</span>
+<span class="w">    </span><span class="k">defer</span><span class="w"> </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-3" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-3" name="0-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nc">URI</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">play</span><span class="p">.</span><span class="nn">api</span><span class="p">.</span><span class="nn">libs</span><span class="p">.</span><span class="nn">json</span><span class="p">.</span><span class="nc">Json</span>
+
+<span class="k">object</span><span class="w"> </span><span class="nc">AddressLineageExample</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="nc">Array</span><span class="p">[</span><span class="nc">String</span><span class="p">]):</span><span class="w"> </span><span class="nc">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpClient</span><span class="p">.</span><span class="n">newHttpClient</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="s">&quot;source_addresses&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">arr</span><span class="p">(</span>
+<span class="w">                </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;address_type_name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;postgresql&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;address_type_group_name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;database&quot;</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">            </span><span class="p">),</span>
+<span class="w">            </span><span class="s">&quot;target_addresses&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">arr</span><span class="p">(</span>
+<span class="w">                </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
+<span class="w">                    </span><span class="s">&quot;name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;address_type_name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;postgresql&quot;</span><span class="p">,</span>
+<span class="w">                    </span><span class="s">&quot;address_type_group_name&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;database&quot;</span>
+<span class="w">                </span><span class="p">)</span>
+<span class="w">            </span><span class="p">)</span>
+<span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">uri</span><span class="p">(</span><span class="nc">URI</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nc">POST</span><span class="p">(</span><span class="nc">HttpRequest</span><span class="p">.</span><span class="nc">BodyPublishers</span><span class="p">.</span><span class="n">ofString</span><span class="p">(</span><span class="n">json</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+<span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
+<span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div></div>
@@ -262,23 +799,51 @@
 <h2>Querying Lineage<a class="headerlink" href="#querying-lineage" title="Link to this heading"></a></h2>
 <p>Get lineage information for an address:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;encoding/json&quot;</span>
+<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
+<span class="w">    </span><span class="s">&quot;net/http&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="k">defer</span><span class="w"> </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="p">[]</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+<span class="p">}</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>GET<span class="w"> </span>localhost:8000/address_lineage/1
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nc">URI</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">play</span><span class="p">.</span><span class="nn">api</span><span class="p">.</span><span class="nn">libs</span><span class="p">.</span><span class="nn">json</span><span class="p">.</span><span class="nc">Json</span>
+
+<span class="k">object</span><span class="w"> </span><span class="nc">GetLineageExample</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="nc">Array</span><span class="p">[</span><span class="nc">String</span><span class="p">]):</span><span class="w"> </span><span class="nc">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpClient</span><span class="p">.</span><span class="n">newHttpClient</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">uri</span><span class="p">(</span><span class="nc">URI</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="nc">GET</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+<span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
+<span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div></div>
@@ -308,7 +873,7 @@
 <p><strong>Background Task:</strong></p>
 <p>The <cite>address_lineage_closure_rebuild_task</cite> automatically maintains the closure table:</p>
 <ul class="simple">
-<li><p><strong>Rate Limit</strong>: 1 request per second</p></li>
+<li><p><strong>Rate Limit</strong>: 5 requests per second</p></li>
 <li><p><strong>Trigger</strong>: Runs when new lineage relationships are created</p></li>
 <li><p><strong>Purpose</strong>: Rebuilds all ancestor-descendant relationships</p></li>
 <li><p><strong>Performance</strong>: Enables efficient queries across complex lineage hierarchies</p></li>
@@ -378,7 +943,7 @@
 </ul>
 <p>Update a pipeline’s load_lineage flag:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python - requests</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">Python - httpx</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">HTTPie</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">requests</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="c1"># Update pipeline to enable lineage loading</span>
 <span class="n">pipeline_update</span> <span class="o">=</span> <span class="p">{</span>
@@ -386,30 +951,14 @@
     <span class="s2">&quot;load_lineage&quot;</span><span class="p">:</span> <span class="kc">True</span>
 <span class="p">}</span>
 
-<span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
     <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="n">pipeline_update</span>
 <span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="c1"># Update pipeline to enable lineage loading</span>
-<span class="n">pipeline_update</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;load_lineage&quot;</span><span class="p">:</span> <span class="kc">True</span>
-<span class="p">}</span>
-
-<span class="k">with</span> <span class="n">httpx</span><span class="o">.</span><span class="n">Client</span><span class="p">()</span> <span class="k">as</span> <span class="n">client</span><span class="p">:</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">client</span><span class="o">.</span><span class="n">patch</span><span class="p">(</span>
-        <span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">=</span><span class="n">pipeline_update</span>
-    <span class="p">)</span>
-    <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;id&quot;: 1,</span>
@@ -417,9 +966,65 @@
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>http<span class="w"> </span>PATCH<span class="w"> </span>localhost:8000/pipeline<span class="w"> </span><span class="se">\</span>
-<span class="w">     </span><span class="nv">id</span><span class="o">=</span><span class="m">1</span><span class="w"> </span><span class="se">\</span>
-<span class="w">     </span><span class="nv">load_lineage</span><span class="o">=</span><span class="nb">true</span>
+</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="s">&quot;bytes&quot;</span>
+<span class="w">    </span><span class="s">&quot;encoding/json&quot;</span>
+<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
+<span class="w">    </span><span class="s">&quot;net/http&quot;</span>
+<span class="p">)</span>
+
+<span class="kd">type</span><span class="w"> </span><span class="nx">PipelineUpdate</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">ID</span><span class="w">          </span><span class="kt">int</span><span class="w">  </span><span class="s">`json:&quot;id&quot;`</span>
+<span class="w">    </span><span class="nx">LoadLineage</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="s">`json:&quot;load_lineage&quot;`</span>
+<span class="p">}</span>
+
+<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nx">data</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">PipelineUpdate</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">ID</span><span class="p">:</span><span class="w">          </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">LoadLineage</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">jsonData</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">req</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">NewRequest</span><span class="p">(</span><span class="s">&quot;PATCH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">jsonData</span><span class="p">))</span>
+<span class="w">    </span><span class="nx">req</span><span class="p">.</span><span class="nx">Header</span><span class="p">.</span><span class="nx">Set</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+
+<span class="w">    </span><span class="nx">client</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="o">&amp;</span><span class="nx">http</span><span class="p">.</span><span class="nx">Client</span><span class="p">{}</span>
+<span class="w">    </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">client</span><span class="p">.</span><span class="nx">Do</span><span class="p">(</span><span class="nx">req</span><span class="p">)</span>
+<span class="w">    </span><span class="k">defer</span><span class="w"> </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nc">URI</span>
+<span class="k">import</span><span class="w"> </span><span class="nn">play</span><span class="p">.</span><span class="nn">api</span><span class="p">.</span><span class="nn">libs</span><span class="p">.</span><span class="nn">json</span><span class="p">.</span><span class="nc">Json</span>
+
+<span class="k">object</span><span class="w"> </span><span class="nc">UpdateLineageExample</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="nc">Array</span><span class="p">[</span><span class="nc">String</span><span class="p">]):</span><span class="w"> </span><span class="nc">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpClient</span><span class="p">.</span><span class="n">newHttpClient</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">            </span><span class="s">&quot;load_lineage&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">uri</span><span class="p">(</span><span class="nc">URI</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">method</span><span class="p">(</span><span class="s">&quot;PATCH&quot;</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="nc">BodyPublishers</span><span class="p">.</span><span class="n">ofString</span><span class="p">(</span><span class="n">json</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
+<span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
+<span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </div></div>
@@ -493,8 +1098,8 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="watermark_management.html" class="btn btn-neutral float-left" title="Watermark Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="../api/models.html" class="btn btn-neutral float-left" title="Pydantic Data Models" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="anomaly_detection.html" class="btn btn-neutral float-right" title="Anomaly Detection" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

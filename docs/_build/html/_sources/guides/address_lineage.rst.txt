@@ -74,37 +74,7 @@ Track relationships between data sources:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         lineage_data = {
-             "pipeline_id": 1,
-             "source_addresses": [
-                 {
-                     "name": "source_db.stock_prices",
-                     "address_type_name": "postgresql",
-                     "address_type_group_name": "database"
-                 }
-             ],
-             "target_addresses": [
-                 {
-                     "name": "warehouse.stock_prices",
-                     "address_type_name": "postgresql",
-                     "address_type_group_name": "database"
-                 }
-             ]
-         }
-
-         response = requests.post(
-             "http://localhost:8000/address_lineage",
-             json=lineage_data
-         )
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
@@ -128,12 +98,11 @@ Track relationships between data sources:
              ]
          }
 
-         with httpx.Client() as client:
-             response = client.post(
-                 "http://localhost:8000/address_lineage",
-                 json=lineage_data
-             )
-             print(response.json())
+         response = httpx.post(
+             "http://localhost:8000/address_lineage",
+             json=lineage_data
+         )
+         print(response.json())
 
    .. tab:: curl
 
@@ -159,14 +128,101 @@ Track relationships between data sources:
                 ]
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/address_lineage \
-              pipeline_id=1 \
-              source_addresses:='[{"name": "source_db.stock_prices", "address_type_name": "postgresql", "address_type_group_name": "database"}]' \
-              target_addresses:='[{"name": "warehouse.stock_prices", "address_type_name": "postgresql", "address_type_group_name": "database"}]'
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type Address struct {
+             Name                string `json:"name"`
+             AddressTypeName     string `json:"address_type_name"`
+             AddressTypeGroupName string `json:"address_type_group_name"`
+         }
+
+         type LineageRequest struct {
+             PipelineID      int       `json:"pipeline_id"`
+             SourceAddresses []Address `json:"source_addresses"`
+             TargetAddresses []Address `json:"target_addresses"`
+         }
+
+         func main() {
+             data := LineageRequest{
+                 PipelineID: 1,
+                 SourceAddresses: []Address{
+                     {
+                         Name:                "source_db.stock_prices",
+                         AddressTypeName:     "postgresql",
+                         AddressTypeGroupName: "database",
+                     },
+                 },
+                 TargetAddresses: []Address{
+                     {
+                         Name:                "warehouse.stock_prices",
+                         AddressTypeName:     "postgresql",
+                         AddressTypeGroupName: "database",
+                     },
+                 },
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/address_lineage", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object AddressLineageExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "pipeline_id" -> 1,
+                     "source_addresses" -> Json.arr(
+                         Json.obj(
+                             "name" -> "source_db.stock_prices",
+                             "address_type_name" -> "postgresql",
+                             "address_type_group_name" -> "database"
+                         )
+                     ),
+                     "target_addresses" -> Json.arr(
+                         Json.obj(
+                             "name" -> "warehouse.stock_prices",
+                             "address_type_name" -> "postgresql",
+                             "address_type_group_name" -> "database"
+                         )
+                     )
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/address_lineage"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 Querying Lineage
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -175,24 +231,14 @@ Get lineage information for an address:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         response = requests.get("http://localhost:8000/address_lineage/1")
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
          import httpx
 
-         with httpx.Client() as client:
-             response = client.get("http://localhost:8000/address_lineage/1")
-             print(response.json())
+         response = httpx.get("http://localhost:8000/address_lineage/1")
+         print(response.json())
 
    .. tab:: curl
 
@@ -200,11 +246,49 @@ Get lineage information for an address:
 
          curl -X GET "http://localhost:8000/address_lineage/1"
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http GET localhost:8000/address_lineage/1
+         package main
+
+         import (
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         func main() {
+             resp, _ := http.Get("http://localhost:8000/address_lineage/1")
+             defer resp.Body.Close()
+             
+             var result []map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object GetLineageExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/address_lineage/1"))
+                     .GET()
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Response:**
 
@@ -236,7 +320,7 @@ Address lineage uses a closure table pattern for efficient querying of complex l
 
 The `address_lineage_closure_rebuild_task` automatically maintains the closure table:
 
-- **Rate Limit**: 1 request per second
+- **Rate Limit**: 5 requests per second
 - **Trigger**: Runs when new lineage relationships are created
 - **Purpose**: Rebuilds all ancestor-descendant relationships
 - **Performance**: Enables efficient queries across complex lineage hierarchies
@@ -313,25 +397,7 @@ Update a pipeline's load_lineage flag:
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         # Update pipeline to enable lineage loading
-         pipeline_update = {
-             "id": 1,
-             "load_lineage": True
-         }
-
-         response = requests.patch(
-             "http://localhost:8000/pipeline",
-             json=pipeline_update
-         )
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
@@ -343,12 +409,11 @@ Update a pipeline's load_lineage flag:
              "load_lineage": True
          }
 
-         with httpx.Client() as client:
-             response = client.patch(
-                 "http://localhost:8000/pipeline",
-                 json=pipeline_update
-             )
-             print(response.json())
+         response = httpx.patch(
+             "http://localhost:8000/pipeline",
+             json=pipeline_update
+         )
+         print(response.json())
 
    .. tab:: curl
 
@@ -361,13 +426,72 @@ Update a pipeline's load_lineage flag:
                 "load_lineage": true
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http PATCH localhost:8000/pipeline \
-              id=1 \
-              load_lineage=true
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type PipelineUpdate struct {
+             ID          int  `json:"id"`
+             LoadLineage bool `json:"load_lineage"`
+         }
+
+         func main() {
+             data := PipelineUpdate{
+                 ID:          1,
+                 LoadLineage: true,
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             req, _ := http.NewRequest("PATCH", "http://localhost:8000/pipeline", 
+                 bytes.NewBuffer(jsonData))
+             req.Header.Set("Content-Type", "application/json")
+             
+             client := &http.Client{}
+             resp, _ := client.Do(req)
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object UpdateLineageExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "id" -> 1,
+                     "load_lineage" -> true
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/pipeline"))
+                     .header("Content-Type", "application/json")
+                     .method("PATCH", HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Use Cases:**
 

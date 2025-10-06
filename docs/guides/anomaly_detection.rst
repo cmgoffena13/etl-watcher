@@ -52,40 +52,23 @@ Creating Detection Rules
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-
-            response = requests.post(
-                "http://localhost:8000/anomaly_detection_rule",
-                json={
-                    "pipeline_id": 1,
-                    "metric_field": "total_rows",
-                    "z_threshold": 3.0,
-                    "minimum_executions": 30
-                }
-            )
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
             import httpx
 
-            with httpx.Client() as client:
-                response = client.post(
-                    "http://localhost:8000/anomaly_detection_rule",
-                    json={
-                        "pipeline_id": 1,
-                        "metric_field": "total_rows",
-                        "z_threshold": 3.0,
-                        "minimum_executions": 30
-                    }
-                )
-                print(response.json())
+            response = httpx.post(
+                "http://localhost:8000/anomaly_detection_rule",
+                json={
+                    "pipeline_id": 1,
+                    "metric_field": "total_rows",
+                    "z_threshold": 3.0,
+                    "lookback_days": 30,
+                    "minimum_executions": 30
+                }
+            )
+            print(response.json())
 
       .. tab:: curl
 
@@ -97,18 +80,81 @@ Creating Detection Rules
                    "pipeline_id": 1,
                    "metric_field": "total_rows",
                    "z_threshold": 3.0,
+                   "lookback_days": 30,
                    "minimum_executions": 30
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=total_rows \
-                 z_threshold=3.0 \
-                 minimum_executions=30
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type AnomalyRule struct {
+                PipelineID        int     `json:"pipeline_id"`
+                MetricField       string  `json:"metric_field"`
+                ZThreshold        float64 `json:"z_threshold"`
+                LookbackDays      int     `json:"lookback_days"`
+                MinimumExecutions int     `json:"minimum_executions"`
+            }
+
+            func main() {
+                data := AnomalyRule{
+                    PipelineID:        1,
+                    MetricField:       "total_rows",
+                    ZThreshold:        3.0,
+                    LookbackDays:      30,
+                    MinimumExecutions: 30,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/anomaly_detection_rule", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object AnomalyRuleExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "pipeline_id" -> 1,
+                        "metric_field" -> "total_rows",
+                        "z_threshold" -> 3.0,
+                        "lookback_days" -> 30,
+                        "minimum_executions" -> 30
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/anomaly_detection_rule"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 2. **Response**
 
@@ -119,9 +165,11 @@ Creating Detection Rules
         "pipeline_id": 1,
         "metric_field": "total_rows",
         "z_threshold": 2.0,
+        "lookback_days": 30,
         "minimum_executions": 5,
         "active": true,
-        "created_at": "2024-01-01T10:00:00Z"
+        "created_at": "2024-01-01T10:00:00Z",
+        "updated_at": null
       }
 
 Rule Configuration
@@ -157,43 +205,7 @@ Create multiple rules for comprehensive monitoring:
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-
-            # Define rules to create
-            rules = [
-                {
-                    "pipeline_id": 1,
-                    "metric_field": "total_rows",
-                    "z_threshold": 2.0,
-                    "minimum_executions": 5
-                },
-                {
-                    "pipeline_id": 1,
-                    "metric_field": "duration_seconds",
-                    "z_threshold": 2.5,
-                    "minimum_executions": 10
-                },
-                {
-                    "pipeline_id": 1,
-                    "metric_field": "throughput",
-                    "z_threshold": 1.8,
-                    "minimum_executions": 8
-                }
-            ]
-
-            # Create all rules
-            for rule in rules:
-                response = requests.post(
-                    "http://localhost:8000/anomaly_detection_rule",
-                    json=rule
-                )
-                print(f"{rule['metric_field']} rule:", response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -204,31 +216,33 @@ Create multiple rules for comprehensive monitoring:
                 {
                     "pipeline_id": 1,
                     "metric_field": "total_rows",
-                    "z_threshold": 3.0,
-                    "minimum_executions": 30
+                    "z_threshold": 2.0,
+                    "lookback_days": 30,
+                    "minimum_executions": 5
                 },
                 {
                     "pipeline_id": 1,
                     "metric_field": "duration_seconds",
-                    "z_threshold": 3.0,
-                    "minimum_executions": 30
+                    "z_threshold": 2.5,
+                    "lookback_days": 30,
+                    "minimum_executions": 10
                 },
                 {
                     "pipeline_id": 1,
                     "metric_field": "throughput",
-                    "z_threshold": 3.0,
-                    "minimum_executions": 30
+                    "z_threshold": 1.8,
+                    "lookback_days": 30,
+                    "minimum_executions": 8
                 }
             ]
 
             # Create all rules
-            with httpx.Client() as client:
-                for rule in rules:
-                    response = client.post(
-                        "http://localhost:8000/anomaly_detection_rule",
-                        json=rule
-                    )
-                    print(f"{rule['metric_field']} rule:", response.json())
+            for rule in rules:
+                response = httpx.post(
+                    "http://localhost:8000/anomaly_detection_rule",
+                    json=rule
+                )
+                print(f"{rule['metric_field']} rule:", response.json())
 
       .. tab:: curl
 
@@ -241,6 +255,7 @@ Create multiple rules for comprehensive monitoring:
                    "pipeline_id": 1,
                    "metric_field": "total_rows",
                    "z_threshold": 3.0,
+                   "lookback_days": 30,
                    "minimum_executions": 30
                  }'
 
@@ -251,6 +266,7 @@ Create multiple rules for comprehensive monitoring:
                    "pipeline_id": 1,
                    "metric_field": "duration_seconds",
                    "z_threshold": 3.0,
+                   "lookback_days": 30,
                    "minimum_executions": 30
                  }'
 
@@ -261,33 +277,89 @@ Create multiple rules for comprehensive monitoring:
                    "pipeline_id": 1,
                    "metric_field": "throughput",
                    "z_threshold": 3.0,
+                   "lookback_days": 30,
                    "minimum_executions": 30
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            # Monitor row count anomalies
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=total_rows \
-                 z_threshold=2.0 \
-                 minimum_executions=5
+            package main
 
-            # Monitor execution time anomalies
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=duration_seconds \
-                 z_threshold=2.5 \
-                 minimum_executions=10
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
 
-            # Monitor throughput anomalies
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=throughput \
-                 z_threshold=1.8 \
-                 minimum_executions=8
+            type AnomalyRule struct {
+                PipelineID        int     `json:"pipeline_id"`
+                MetricField       string  `json:"metric_field"`
+                ZThreshold        float64 `json:"z_threshold"`
+                LookbackDays      int     `json:"lookback_days"`
+                MinimumExecutions int     `json:"minimum_executions"`
+            }
+
+            func main() {
+                rules := []AnomalyRule{
+                    {1, "total_rows", 2.0, 30, 5},
+                    {1, "duration_seconds", 2.5, 30, 10},
+                    {1, "throughput", 1.8, 30, 8},
+                }
+                
+                for _, rule := range rules {
+                    jsonData, _ := json.Marshal(rule)
+                    resp, _ := http.Post("http://localhost:8000/anomaly_detection_rule", 
+                        "application/json", bytes.NewBuffer(jsonData))
+                    defer resp.Body.Close()
+                    
+                    var result map[string]interface{}
+                    json.NewDecoder(resp.Body).Decode(&result)
+                    fmt.Printf("%s rule: %v\n", rule.MetricField, result)
+                }
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object MultipleRulesExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val rules = List(
+                        (1, "total_rows", 2.0, 30, 5),
+                        (1, "duration_seconds", 2.5, 30, 10),
+                        (1, "throughput", 1.8, 30, 8)
+                    )
+                    
+                    rules.foreach { case (pipelineId, metricField, zThreshold, lookbackDays, minExec) =>
+                        val json = Json.obj(
+                            "pipeline_id" -> pipelineId,
+                            "metric_field" -> metricField,
+                            "z_threshold" -> zThreshold,
+                            "lookback_days" -> lookbackDays,
+                            "minimum_executions" -> minExec
+                        ).toString()
+                        
+                        val request = HttpRequest.newBuilder()
+                            .uri(URI.create("http://localhost:8000/anomaly_detection_rule"))
+                            .header("Content-Type", "application/json")
+                            .POST(HttpRequest.BodyPublishers.ofString(json))
+                            .build()
+                        
+                        val response = client.send(request, 
+                            HttpResponse.BodyHandlers.ofString())
+                        println(s"$metricField rule: ${response.body()}")
+                    }
+                }
+            }
 
 Automatic Execution
 -------------------
@@ -395,24 +467,14 @@ List all anomaly detection rules:
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-
-            response = requests.get("http://localhost:8000/anomaly_detection_rule")
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
             import httpx
 
-            with httpx.Client() as client:
-                response = client.get("http://localhost:8000/anomaly_detection_rule")
-                print(response.json())
+            response = httpx.get("http://localhost:8000/anomaly_detection_rule")
+            print(response.json())
 
       .. tab:: curl
 
@@ -420,11 +482,48 @@ List all anomaly detection rules:
 
             curl -X GET "http://localhost:8000/anomaly_detection_rule"
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http GET localhost:8000/anomaly_detection_rule
+            package main
+
+            import (
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            func main() {
+                resp, _ := http.Get("http://localhost:8000/anomaly_detection_rule")
+                defer resp.Body.Close()
+                
+                var result []map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+
+            object GetRulesExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/anomaly_detection_rule"))
+                        .GET()
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
    **Response:**
 
@@ -436,9 +535,11 @@ List all anomaly detection rules:
           "pipeline_id": 1,
           "metric_field": "total_rows",
           "z_threshold": 2.0,
+          "lookback_days": 30,
           "minimum_executions": 5,
           "active": true,
-          "created_at": "2024-01-01T10:00:00Z"
+          "created_at": "2024-01-01T10:00:00Z",
+          "updated_at": null
         }
       ]
 
@@ -446,24 +547,14 @@ Get specific rule details:
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-
-            response = requests.get("http://localhost:8000/anomaly_detection_rule/1")
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
             import httpx
 
-            with httpx.Client() as client:
-                response = client.get("http://localhost:8000/anomaly_detection_rule/1")
-                print(response.json())
+            response = httpx.get("http://localhost:8000/anomaly_detection_rule/1")
+            print(response.json())
 
       .. tab:: curl
 
@@ -471,51 +562,74 @@ Get specific rule details:
 
             curl -X GET "http://localhost:8000/anomaly_detection_rule/1"
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http GET localhost:8000/anomaly_detection_rule/1
+            package main
+
+            import (
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            func main() {
+                resp, _ := http.Get("http://localhost:8000/anomaly_detection_rule/1")
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+
+            object GetRuleExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/anomaly_detection_rule/1"))
+                        .GET()
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 Updating Rules
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Update anomaly detection rules:
 
+   **Response:** Returns the complete updated rule (full AnomalyDetectionRule model)
+
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-
-            response = requests.patch(
-                "http://localhost:8000/anomaly_detection_rule",
-                json={
-                    "id": 1,
-                    "z_threshold": 2.5,
-                    "minimum_executions": 10
-                }
-            )
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
             import httpx
 
-            with httpx.Client() as client:
-                response = client.patch(
-                    "http://localhost:8000/anomaly_detection_rule",
-                    json={
-                        "id": 1,
-                        "z_threshold": 2.5,
-                        "minimum_executions": 10
-                    }
-                )
-                print(response.json())
+            response = httpx.patch(
+                "http://localhost:8000/anomaly_detection_rule",
+                json={
+                    "id": 1,
+                    "z_threshold": 2.5,
+                    "lookback_days": 30,
+                    "minimum_executions": 10
+                }
+            )
+            print(response.json())
 
       .. tab:: curl
 
@@ -526,17 +640,98 @@ Update anomaly detection rules:
                  -d '{
                    "id": 1,
                    "z_threshold": 2.5,
+                   "lookback_days": 30,
                    "minimum_executions": 10
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http PATCH localhost:8000/anomaly_detection_rule \
-                 id=1 \
-                 z_threshold=2.5 \
-                 minimum_executions=10
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type RuleUpdate struct {
+                ID                int `json:"id"`
+                ZThreshold        float64 `json:"z_threshold"`
+                LookbackDays      int `json:"lookback_days"`
+                MinimumExecutions int `json:"minimum_executions"`
+            }
+
+            func main() {
+                data := RuleUpdate{
+                    ID:                1,
+                    ZThreshold:        2.5,
+                    LookbackDays:      30,
+                    MinimumExecutions: 10,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                req, _ := http.NewRequest("PATCH", "http://localhost:8000/anomaly_detection_rule", 
+                    bytes.NewBuffer(jsonData))
+                req.Header.Set("Content-Type", "application/json")
+                
+                client := &http.Client{}
+                resp, _ := client.Do(req)
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object UpdateRuleExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "id" -> 1,
+                        "z_threshold" -> 2.5,
+                        "lookback_days" -> 30,
+                        "minimum_executions" -> 10
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/anomaly_detection_rule"))
+                        .header("Content-Type", "application/json")
+                        .method("PATCH", HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
+
+   **Response Example:**
+
+   .. code-block:: json
+
+      {
+        "id": 1,
+        "pipeline_id": 1,
+        "metric_field": "total_rows",
+        "z_threshold": 2.5,
+        "lookback_days": 30,
+        "minimum_executions": 10,
+        "active": true,
+        "created_at": "2024-01-01T10:00:00Z",
+        "updated_at": "2024-01-01T11:30:00Z"
+      }
 
 Unflagging Anomalies
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -545,13 +740,13 @@ Unflag anomalies that are false positives:
 
    .. tabs::
 
-      .. tab:: Python - requests
+      .. tab:: Python
 
          .. code-block:: python
 
-            import requests
+            import httpx
 
-            response = requests.post(
+            response = httpx.post(
                 "http://localhost:8000/unflag_anomaly",
                 json={
                     "pipeline_id": 1,
@@ -560,23 +755,6 @@ Unflag anomalies that are false positives:
                 }
             )
             print(response.status_code)
-
-      .. tab:: Python - httpx
-
-         .. code-block:: python
-
-            import httpx
-
-            with httpx.Client() as client:
-                response = client.post(
-                    "http://localhost:8000/unflag_anomaly",
-                    json={
-                        "pipeline_id": 1,
-                        "pipeline_execution_id": 123,
-                        "metric_field": ["total_rows", "duration_seconds"]
-                    }
-                )
-                print(response.status_code)
 
       .. tab:: curl
 
@@ -590,14 +768,69 @@ Unflag anomalies that are false positives:
                    "metric_field": ["total_rows", "duration_seconds"]
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/unflag_anomaly \
-                 pipeline_id=1 \
-                 pipeline_execution_id=123 \
-                 metric_field:='["total_rows", "duration_seconds"]'
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type UnflagRequest struct {
+                PipelineID        int      `json:"pipeline_id"`
+                PipelineExecutionID int    `json:"pipeline_execution_id"`
+                MetricField       []string `json:"metric_field"`
+            }
+
+            func main() {
+                data := UnflagRequest{
+                    PipelineID:        1,
+                    PipelineExecutionID: 123,
+                    MetricField:       []string{"total_rows", "duration_seconds"},
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/unflag_anomaly", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                fmt.Println(resp.StatusCode)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object UnflagExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "pipeline_id" -> 1,
+                        "pipeline_execution_id" -> 123,
+                        "metric_field" -> Json.arr("total_rows", "duration_seconds")
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/unflag_anomaly"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.statusCode())
+                }
+            }
 
 This removes the anomaly flags and allows the execution to be included in future baseline calculations.
 
@@ -610,6 +843,7 @@ Understanding the Data
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 **Z-Score vs Z-Threshold:**
+
 - **Z-Score**: How many standard deviations the current value is from the historical mean
 - **Z-Threshold**: Your sensitivity setting (e.g., 2.0 = flag anything beyond 2 standard deviations)
 - **Relationship**: If `z_score > z_threshold` → Anomaly detected

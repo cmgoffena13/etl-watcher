@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Pydantic Data Models" href="models.html" />
-    <link rel="prev" title="Configuration" href="../getting_started/configuration.html" /> 
+    <link rel="prev" title="Celery Tasks" href="celery_tasks.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -44,12 +44,86 @@
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-1-create-your-first-pipeline">Step 1: Create Your First Pipeline</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-2-start-a-pipeline-execution">Step 2: Start a Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-3-create-address-lineage">Step 3: Create Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-4-set-up-monitoring">Step 4: Set Up Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-5-configure-anomaly-detection">Step 5: Configure Anomaly Detection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#step-6-web-pages">Step 6: Web Pages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/quick_start.html#next-steps">Next Steps</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#environment-variables">Environment Variables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#development-environment">Development Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#production-environment">Production Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#database-configuration">Database Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#connection-pool-default-settings">Connection Pool Default Settings</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#redis-configuration">Redis Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#connection-default-settings">Connection Default Settings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#celery-default-configuration">Celery Default Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#monitoring-configuration">Monitoring Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#slack-notifications">Slack Notifications</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../getting_started/configuration.html#feature-flags">Feature Flags</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#auto-create-anomaly-detection-rules">Auto-Create Anomaly Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../getting_started/configuration.html#profiling">Profiling</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#error-details">Error Details</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#queue-management">Queue Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#example-alert">Example Alert</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API Endpoints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-management">Pipeline Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#create-or-get-pipeline">Create or Get Pipeline</a></li>
@@ -102,31 +176,389 @@
 <li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#diagnostics">Diagnostics</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#diagnostics-web-page">Diagnostics Web Page</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#interactive-documentation">Interactive Documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#interactive-api-documentation">Interactive API Documentation</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#scalar-api-documentation">Scalar API Documentation</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a></li>
-<li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="models.html#pipeline-models">Pipeline Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinepostinput">PipelinePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinepostoutput">PipelinePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinepatchinput">PipelinePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelineexecutionendinput">PipelineExecutionEndInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#address-models">Address Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresspostinput">AddressPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresspostoutput">AddressPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresspatchinput">AddressPatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#address-type-models">Address Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresstypepostinput">AddressTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresstypepostoutput">AddressTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresstypepatchinput">AddressTypePatchInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#address-lineage-models">Address Lineage Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#sourceaddress">SourceAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#targetaddress">TargetAddress</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#anomaly-detection-models">Anomaly Detection Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#anomalydetectionrulepostinput">AnomalyDetectionRulePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#anomalydetectionrulepostoutput">AnomalyDetectionRulePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#anomalydetectionrulepatchinput">AnomalyDetectionRulePatchInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#unflaganomalyinput">UnflagAnomalyInput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#monitoring-models">Monitoring Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#freshnesspostoutput">FreshnessPostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#timelinesspostinput">TimelinessPostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#timelinesspostoutput">TimelinessPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#enums">Enums</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#anomalymetricfieldenum">AnomalyMetricFieldEnum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#datepartenum">DatePartEnum</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/troubleshooting.html">Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/address_lineage.html">Address Lineage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#understanding-address-lineage">Understanding Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#source-controlled-lineage">Source-Controlled Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#creating-lineage-relationships">Creating Lineage Relationships</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#querying-lineage">Querying Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#closure-table-pattern">Closure Table Pattern</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#pipeline-integration">Pipeline Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#managing-load-lineage-flag">Managing Load Lineage Flag</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#address-naming-convention">Address Naming Convention</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/address_lineage.html#address-type-organization">Address Type Organization</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/anomaly_detection.html">Anomaly Detection</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#how-it-works">How It Works</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#statistical-analysis">Statistical Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#supported-metrics">Supported Metrics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#setting-up-anomaly-detection">Setting Up Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#creating-detection-rules">Creating Detection Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#rule-configuration">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#multiple-rules">Multiple Rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#automatic-execution">Automatic Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#triggered-execution">Triggered Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#no-manual-triggering-required">No Manual Triggering Required</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#anomaly-results">Anomaly Results</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#understanding-results">Understanding Results</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#result-fields">Result Fields</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#alert-notifications">Alert Notifications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#slack-alerts">Slack Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#alert-configuration">Alert Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#managing-anomalies">Managing Anomalies</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#viewing-anomalies">Viewing Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#updating-rules">Updating Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#unflagging-anomalies">Unflagging Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#adjusting-thresholds">Adjusting Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#understanding-the-data">Understanding the Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#tuning-process">Tuning Process</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#id1">Rule Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#threshold-selection">Threshold Selection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#monitoring-strategy">Monitoring Strategy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#common-scenarios">Common Scenarios</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#data-volume-anomalies">Data Volume Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#performance-anomalies">Performance Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#throughput-anomalies">Throughput Anomalies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#dml-operation-anomalies">DML Operation Anomalies</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/anomaly_detection.html#advanced-configuration">Advanced Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/anomaly_detection.html#auto-creation-rules">Auto-Creation Rules</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/custom_querying.html">Custom Database Querying</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/custom_querying.html#index-utilization-patterns">Index Utilization Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#date-based-queries">Date-Based Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#time-based-queries">Time-Based Queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/custom_querying.html#common-query-patterns">Common Query Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#pipeline-execution-analysis">Pipeline Execution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#anomaly-detection-analysis">Anomaly Detection Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#lineage-analysis">Lineage Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#hierarchical-execution-analysis">Hierarchical Execution Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/custom_querying.html#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#query-optimization">Query Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#safety-guidelines">Safety Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/custom_querying.html#common-use-cases">Common Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#reporting-and-analytics">Reporting and Analytics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#daily-pipeline-report-materialized-view">Daily Pipeline Report Materialized View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#operational-monitoring">Operational Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#data-quality-analysis">Data Quality Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/custom_querying.html#advanced-patterns">Advanced Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/custom_querying.html#comparative-analysis">Comparative Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/log_cleanup.html#how-it-works">How It Works</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/log_cleanup.html#configuration">Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/log_cleanup.html#api-usage">API Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/log_cleanup.html#cleanup-process">Cleanup Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/log_cleanup.html#scheduled-cleanup">Scheduled Cleanup</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/monitoring.html">Monitoring &amp; Health Checks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#freshness-monitoring">Freshness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#purpose">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#supported-time-units">Supported Time Units</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#running-freshness-checks">Running Freshness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#timeliness-monitoring">Timeliness Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#id1">Purpose</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#id2">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#alerting-configuration">Alerting Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#slack-integration">Slack Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-types">Alert Types</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#load-testing">Load Testing</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#trigger-load-tests">Trigger Load Tests</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#load-test-scenarios">Load Test Scenarios</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#performance-targets">Performance Targets</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/pipeline_management.html">Pipeline Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#execution-patterns">Execution Patterns</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-updates">Pipeline Updates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#common-update-scenarios">Common Update Scenarios</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#nested-pipeline-executions">Nested Pipeline Executions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#querying-nested-executions">Querying Nested Executions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-organization">Pipeline Organization</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-type-organization">Pipeline Type Organization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-naming-convention">Pipeline Naming Convention</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#watermark-increment-logic">Watermark Increment Logic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#how-to-use-watermarks">How to Use Watermarks</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#practical-example">Practical Example</a></li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/deployment.html">Deployment Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#celery-background-processing">Celery Background Processing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#redis-message-broker">Redis Message Broker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#docker-containerization">Docker Containerization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#logfire-integration">Logfire Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#performance-design-goals">Performance Design Goals</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-type">Pipeline Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline-execution-closure">Pipeline Execution Closure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address">Address</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-type">Address Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-lineage">Address Lineage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#address-lineage-closure">Address Lineage Closure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#monitoring-tables">Monitoring Tables</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#timeliness-pipeline-execution-log">Timeliness Pipeline Execution Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#freshness-pipeline-log">Freshness Pipeline Log</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection">Anomaly Detection</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection-rule">Anomaly Detection Rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#anomaly-detection-result">Anomaly Detection Result</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#schema-evolution">Schema Evolution</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-strategy">Migration Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-best-practices">Migration Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#schema-maintenance">Schema Maintenance</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-files">Migration Files</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#current-migrations">Current Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-structure">Migration Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-commands">Migration Commands</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#basic-commands">Basic Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-current-status">Check Current Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#view-migration-history">View Migration History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#run-migrations">Run Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-migrations">Rollback Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-new-migration">Create New Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#advanced-commands">Advanced Commands</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#show-sql-for-migration">Show SQL for Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-for-pending-migrations">Check for Pending Migrations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-best-practices">Migration Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#development-workflow">Development Workflow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-migration">1. Create Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#edit-migration-file">2. Edit Migration File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#test-migration">3. Test Migration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#commit-changes">4. Commit Changes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#production-deployment">Production Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#pre-deployment">Pre-deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#post-deployment">Post-deployment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-safety">Migration Safety</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#safe-operations">Safe Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#risky-operations">Risky Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#best-practices">Best Practices</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-strategy">Rollback Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#simple-rollbacks">Simple Rollbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#complex-rollbacks">Complex Rollbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-testing">Rollback Testing</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#production-management">Production Management</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#id1">Production Deployment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-production">Rollback Production</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-troubleshooting">Migration Troubleshooting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#common-issues">Common Issues</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-conflicts">Migration Conflicts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#failed-migrations">Failed Migrations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#data-corruption">Data Corruption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#schema-drift">Schema Drift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-automation">Migration Automation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#github-actions">GitHub Actions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#docker-integration">Docker Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-logging">Migration Logging</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-tracking">Migration Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#alerting">Alerting</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -1405,21 +1837,75 @@ Returns all relationships where the address is either source or target.</p>
 
 </section>
 </section>
-<section id="diagnostics">
-<h2>Diagnostics<a class="headerlink" href="#diagnostics" title="Link to this heading"></a></h2>
+<section id="diagnostics-web-page">
+<h2>Diagnostics Web Page<a class="headerlink" href="#diagnostics-web-page" title="Link to this heading"></a></h2>
 <section id="system-diagnostics">
 <h3>System Diagnostics<a class="headerlink" href="#system-diagnostics" title="Link to this heading"></a></h3>
 <dl class="http get">
 <dt class="sig sig-object http" id="get--diagnostics">
 <span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics</span></span><a class="headerlink" href="#get--diagnostics" title="Link to this definition"></a></dt>
-<dd><p>Get comprehensive system diagnostics.</p>
-<p><strong>Response:</strong> HTML page with system health information</p>
+<dd><p>Web-based diagnostics dashboard providing comprehensive system health monitoring
+and performance analysis.</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p>Database health and connection performance testing</p></li>
+<li><p>Schema health checks and index usage statistics</p></li>
+<li><p>Celery worker status and task performance monitoring</p></li>
+<li><p>Deadlock statistics and active query analysis</p></li>
+<li><p>Long-running query identification</p></li>
+<li><p>Real-time system metrics</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<p>HTML dashboard interface</p>
+<p><strong>Sections:</strong></p>
+<ul class="simple">
+<li><p><strong>Connection Speed Test</strong> - Raw asyncpg connection performance testing and direct database connectivity validation</p></li>
+<li><p><strong>Connection Performance</strong> - Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution) and connection pool analysis</p></li>
+<li><p><strong>Schema Health Check</strong> - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics</p></li>
+<li><p><strong>Performance &amp; Locks</strong> - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (&gt;30s) identification</p></li>
+<li><p><strong>Celery Health</strong> - Worker status, task performance, queue monitoring, and background task diagnostics</p></li>
+</ul>
+<p><strong>Access:</strong>
+- <strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a>
+- <strong>Method</strong>: GET
+- <strong>Content-Type</strong>: text/html</p>
 </dd></dl>
 
 </section>
 </section>
-<section id="interactive-documentation">
-<h2>Interactive Documentation<a class="headerlink" href="#interactive-documentation" title="Link to this heading"></a></h2>
+<section id="reporting-dashboard-web-page">
+<h2>Reporting Dashboard Web Page<a class="headerlink" href="#reporting-dashboard-web-page" title="Link to this heading"></a></h2>
+<section id="pipeline-performance-dashboard">
+<h3>Pipeline Performance Dashboard<a class="headerlink" href="#pipeline-performance-dashboard" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--reporting">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting</span></span><a class="headerlink" href="#get--reporting" title="Link to this definition"></a></dt>
+<dd><p>Web-based reporting dashboard providing daily pipeline performance metrics and analytics.</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p>Daily aggregations of pipeline execution data</p></li>
+<li><p>Performance metrics (throughput, duration, error rates)</p></li>
+<li><p>Pipeline type and name filtering</p></li>
+<li><p>Time range filtering (last 1-30 days)</p></li>
+<li><p>Real-time data from materialized views</p></li>
+<li><p>Auto-refresh capabilities</p></li>
+</ul>
+<p><strong>Response:</strong></p>
+<p>HTML dashboard interface</p>
+<p><strong>Data Source:</strong></p>
+<p>Built on the <code class="docutils literal notranslate"><span class="pre">daily_pipeline_report</span></code> materialized view for fast query performance.</p>
+<p><strong>Access:</strong></p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/reporting">http://localhost:8000/reporting</a></p></li>
+<li><p><strong>Method</strong>: GET</p></li>
+<li><p><strong>Content-Type</strong>: text/html</p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+<section id="interactive-api-documentation">
+<h2>Interactive API Documentation<a class="headerlink" href="#interactive-api-documentation" title="Link to this heading"></a></h2>
 <section id="scalar-api-documentation">
 <h3>Scalar API Documentation<a class="headerlink" href="#scalar-api-documentation" title="Link to this heading"></a></h3>
 <dl class="http get">
@@ -1436,7 +1922,7 @@ Returns all relationships where the address is either source or target.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../getting_started/configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="celery_tasks.html" class="btn btn-neutral float-left" title="Celery Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="models.html" class="btn btn-neutral float-right" title="Pydantic Data Models" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

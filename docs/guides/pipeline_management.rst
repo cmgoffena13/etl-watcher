@@ -14,29 +14,7 @@ Create a pipeline (pipeline_type is automatically created if it doesn't exist):
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         pipeline_data = {
-             "name": "daily sales pipeline",
-             "pipeline_type_name": "extraction",
-             "pipeline_metadata": {
-                 "description": "Daily extraction of sales data",
-                 "owner": "data-team",
-                 "schedule": "0 2 * * *"
-             }
-         }
-
-         response = requests.post(
-             "http://localhost:8000/pipeline",
-             json=pipeline_data
-         )
-         print(response.json())
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
@@ -52,12 +30,11 @@ Create a pipeline (pipeline_type is automatically created if it doesn't exist):
              }
          }
 
-         with httpx.Client() as client:
-             response = client.post(
-                 "http://localhost:8000/pipeline",
-                 json=pipeline_data
-             )
-             print(response.json())
+         response = httpx.post(
+             "http://localhost:8000/pipeline",
+             json=pipeline_data
+         )
+         print(response.json())
 
    .. tab:: curl
 
@@ -75,14 +52,79 @@ Create a pipeline (pipeline_type is automatically created if it doesn't exist):
                 }
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/pipeline \
-              name="daily sales pipeline" \
-              pipeline_type_name=extraction \
-              pipeline_metadata:='{"description": "Daily extraction of sales data", "owner": "data-team", "schedule": "0 2 * * *"}'
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type PipelineRequest struct {
+             Name             string                 `json:"name"`
+             PipelineTypeName string                 `json:"pipeline_type_name"`
+             PipelineMetadata map[string]interface{} `json:"pipeline_metadata"`
+         }
+
+         func main() {
+             data := PipelineRequest{
+                 Name:             "daily sales pipeline",
+                 PipelineTypeName: "extraction",
+                 PipelineMetadata: map[string]interface{}{
+                     "description": "Daily extraction of sales data",
+                     "owner":       "data-team",
+                     "schedule":    "0 2 * * *",
+                 },
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/pipeline", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object PipelineExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "name" -> "daily sales pipeline",
+                     "pipeline_type_name" -> "extraction",
+                     "pipeline_metadata" -> Json.obj(
+                         "description" -> "Daily extraction of sales data",
+                         "owner" -> "data-team",
+                         "schedule" -> "0 2 * * *"
+                     )
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/pipeline"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 Pipeline Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -124,11 +166,11 @@ The `active` flag can be updated via the PATCH endpoint:
 
 .. tabs::
 
-   .. tab:: Python - requests
+   .. tab:: Python
 
       .. code-block:: python
 
-         import requests
+         import httpx
 
          # Disable a pipeline
          update_data = {
@@ -136,30 +178,11 @@ The `active` flag can be updated via the PATCH endpoint:
              "active": False
          }
          
-         response = requests.patch(
+         response = httpx.patch(
              "http://localhost:8000/pipeline",
              json=update_data
          )
          print(response.json())
-
-   .. tab:: Python - httpx
-
-      .. code-block:: python
-
-         import httpx
-
-         # Re-enable a pipeline
-         update_data = {
-             "id": 1,
-             "active": True
-         }
-         
-         with httpx.Client() as client:
-             response = client.patch(
-                 "http://localhost:8000/pipeline",
-                 json=update_data
-             )
-             print(response.json())
 
    .. tab:: curl
 
@@ -170,12 +193,72 @@ The `active` flag can be updated via the PATCH endpoint:
               -H "Content-Type: application/json" \
               -d '{"id": 1, "active": false}'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         # Re-enable pipeline
-         http PATCH localhost:8000/pipeline id:=1 active:=true
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type PipelineUpdate struct {
+             ID     int  `json:"id"`
+             Active bool `json:"active"`
+         }
+
+         func main() {
+             data := PipelineUpdate{
+                 ID:     1,
+                 Active: true,
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             req, _ := http.NewRequest("PATCH", "http://localhost:8000/pipeline", 
+                 bytes.NewBuffer(jsonData))
+             req.Header.Set("Content-Type", "application/json")
+             
+             client := &http.Client{}
+             resp, _ := client.Do(req)
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object PipelineUpdateExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "id" -> 1,
+                     "active" -> true
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/pipeline"))
+                     .header("Content-Type", "application/json")
+                     .method("PATCH", HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Practical Example:**
 
@@ -226,11 +309,11 @@ Starting and Ending Executions
 
 .. tabs::
 
-   .. tab:: Python - requests
+   .. tab:: Python
 
       .. code-block:: python
 
-         import requests
+         import httpx
 
          # Start execution
          start_data = {
@@ -239,7 +322,7 @@ Starting and Ending Executions
              "full_load": True
          }
 
-         start_response = requests.post(
+         start_response = httpx.post(
              "http://localhost:8000/start_pipeline_execution",
              json=start_data
          )
@@ -265,57 +348,11 @@ Starting and Ending Executions
              "soft_deletes": 0
          }
 
-         end_response = requests.post(
+         end_response = httpx.post(
              "http://localhost:8000/end_pipeline_execution",
              json=end_data
          )
          print(end_response.json())
-
-   .. tab:: Python - httpx
-
-      .. code-block:: python
-
-         import httpx
-
-         with httpx.Client() as client:
-             # Start execution
-             start_data = {
-                 "pipeline_id": 1,
-                 "start_date": "2024-01-01T10:00:00Z",
-                 "full_load": True
-             }
-
-             start_response = client.post(
-                 "http://localhost:8000/start_pipeline_execution",
-                 json=start_data
-             )
-             execution_id = start_response.json()["id"]
-             print(f"Execution started: {execution_id}")
-
-             # Your pipeline code executes here
-             # - Data extraction/transformation logic
-             # - Database operations
-             # - File processing
-             # - API calls
-             # - Any other business logic
-
-             # End execution
-             end_data = {
-                 "id": execution_id,
-                 "pipeline_id": 1,
-                 "end_date": "2024-01-01T10:05:00Z",
-                 "completed_successfully": True,
-                 "total_rows": 10000,
-                 "inserts": 8000,
-                 "updates": 2000,
-                 "soft_deletes": 0
-             }
-
-             end_response = client.post(
-                 "http://localhost:8000/end_pipeline_execution",
-                 json=end_data
-             )
-             print(end_response.json())
 
    .. tab:: curl
 
@@ -351,33 +388,144 @@ Starting and Ending Executions
                 "soft_deletes": 0
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         # Start execution
-         http POST localhost:8000/start_pipeline_execution \
-              pipeline_id=1 \
-              start_date="2024-01-01T10:00:00Z" \
-              full_load=true
+         package main
 
-         # Your pipeline code executes here
-         # - Data extraction/transformation logic
-         # - Database operations
-         # - File processing
-         # - API calls
-         # - Any other business logic
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
 
-         # End execution
-         http POST localhost:8000/end_pipeline_execution \
-              id=1 \
-              pipeline_id=1 \
-              end_date="2024-01-01T10:05:00Z" \
-              completed_successfully=true \
-              total_rows=10000 \
-              inserts=8000 \
-              updates=2000 \
-              soft_deletes=0
+         type StartExecution struct {
+             PipelineID int    `json:"pipeline_id"`
+             StartDate  string `json:"start_date"`
+             FullLoad   bool   `json:"full_load"`
+         }
+
+         type EndExecution struct {
+             ID                  int `json:"id"`
+             PipelineID          int `json:"pipeline_id"`
+             EndDate             string `json:"end_date"`
+             CompletedSuccessfully bool `json:"completed_successfully"`
+             TotalRows           int `json:"total_rows"`
+             Inserts             int `json:"inserts"`
+             Updates             int `json:"updates"`
+             SoftDeletes         int `json:"soft_deletes"`
+         }
+
+         func main() {
+             // Start execution
+             startData := StartExecution{
+                 PipelineID: 1,
+                 StartDate:  "2024-01-01T10:00:00Z",
+                 FullLoad:   true,
+             }
+             
+             jsonData, _ := json.Marshal(startData)
+             resp, _ := http.Post("http://localhost:8000/start_pipeline_execution", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var startResult map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&startResult)
+             executionID := int(startResult["id"].(float64))
+             fmt.Printf("Execution started: %d\n", executionID)
+
+             // Your pipeline code executes here
+             // - Data extraction/transformation logic
+             // - Database operations
+             // - File processing
+             // - API calls
+             // - Any other business logic
+
+             // End execution
+             endData := EndExecution{
+                 ID:                  executionID,
+                 PipelineID:          1,
+                 EndDate:             "2024-01-01T10:05:00Z",
+                 CompletedSuccessfully: true,
+                 TotalRows:           10000,
+                 Inserts:             8000,
+                 Updates:             2000,
+                 SoftDeletes:         0,
+             }
+             
+             jsonData, _ = json.Marshal(endData)
+             resp, _ = http.Post("http://localhost:8000/end_pipeline_execution", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var endResult map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&endResult)
+             fmt.Println(endResult)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object PipelineExecutionExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 // Start execution
+                 val startJson = Json.obj(
+                     "pipeline_id" -> 1,
+                     "start_date" -> "2024-01-01T10:00:00Z",
+                     "full_load" -> true
+                 ).toString()
+                 
+                 val startRequest = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/start_pipeline_execution"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(startJson))
+                     .build()
+                 
+                 val startResponse = client.send(startRequest, 
+                     HttpResponse.BodyHandlers.ofString())
+                 val startResult = Json.parse(startResponse.body())
+                 val executionId = (startResult \ "id").as[Int]
+                 println(s"Execution started: $executionId")
+
+                 // Your pipeline code executes here
+                 // - Data extraction/transformation logic
+                 // - Database operations
+                 // - File processing
+                 // - API calls
+                 // - Any other business logic
+
+                 // End execution
+                 val endJson = Json.obj(
+                     "id" -> executionId,
+                     "pipeline_id" -> 1,
+                     "end_date" -> "2024-01-01T10:05:00Z",
+                     "completed_successfully" -> true,
+                     "total_rows" -> 10000,
+                     "inserts" -> 8000,
+                     "updates" -> 2000,
+                     "soft_deletes" -> 0
+                 ).toString()
+                 
+                 val endRequest = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/end_pipeline_execution"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(endJson))
+                     .build()
+                 
+                 val endResponse = client.send(endRequest, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(endResponse.body())
+             }
+         }
 
 Execution Patterns
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -478,14 +626,14 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
 
 .. tabs::
 
-   .. tab:: Python - requests
+   .. tab:: Python
 
       .. code-block:: python
 
-         import requests
+         import httpx
 
          # Start main pipeline execution
-         main_response = requests.post(
+         main_response = httpx.post(
              "http://localhost:8000/start_pipeline_execution",
              json={
                  "pipeline_id": 1,
@@ -496,7 +644,7 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
          main_execution_id = main_response.json()["id"]
 
          # Start sub-pipeline with parent reference
-         sub_response = requests.post(
+         sub_response = httpx.post(
              "http://localhost:8000/start_pipeline_execution",
              json={
                  "pipeline_id": 2,
@@ -505,35 +653,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
                  "parent_id": main_execution_id
              }
          )
-
-   .. tab:: Python - httpx
-
-      .. code-block:: python
-
-         import httpx
-
-         with httpx.Client() as client:
-             # Start main pipeline execution
-             main_response = client.post(
-                 "http://localhost:8000/start_pipeline_execution",
-                 json={
-                     "pipeline_id": 1,
-                     "start_date": "2024-01-01T10:00:00Z",
-                     "full_load": True
-                 }
-             )
-             main_execution_id = main_response.json()["id"]
-
-             # Start sub-pipeline with parent reference
-             sub_response = client.post(
-                 "http://localhost:8000/start_pipeline_execution",
-                 json={
-                     "pipeline_id": 2,
-                     "start_date": "2024-01-01T10:00:00Z",
-                     "full_load": True,
-                     "parent_id": main_execution_id
-                 }
-             )
 
    .. tab:: curl
 
@@ -558,22 +677,110 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
                 "parent_id": 123
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         # Start main pipeline execution
-         http POST localhost:8000/start_pipeline_execution \
-              pipeline_id=1 \
-              start_date="2024-01-01T10:00:00Z" \
-              full_load=true
+         package main
 
-         # Start sub-pipeline with parent reference
-         http POST localhost:8000/start_pipeline_execution \
-              pipeline_id=2 \
-              start_date="2024-01-01T10:00:00Z" \
-              full_load=true \
-              parent_id=123
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type StartExecution struct {
+             PipelineID int    `json:"pipeline_id"`
+             StartDate  string `json:"start_date"`
+             FullLoad   bool   `json:"full_load"`
+             ParentID   *int   `json:"parent_id,omitempty"`
+         }
+
+         func main() {
+             // Start main pipeline execution
+             mainData := StartExecution{
+                 PipelineID: 1,
+                 StartDate:  "2024-01-01T10:00:00Z",
+                 FullLoad:   true,
+             }
+             
+             jsonData, _ := json.Marshal(mainData)
+             resp, _ := http.Post("http://localhost:8000/start_pipeline_execution", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var mainResult map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&mainResult)
+             mainExecutionID := int(mainResult["id"].(float64))
+
+             // Start sub-pipeline with parent reference
+             subData := StartExecution{
+                 PipelineID: 2,
+                 StartDate:  "2024-01-01T10:00:00Z",
+                 FullLoad:   true,
+                 ParentID:   &mainExecutionID,
+             }
+             
+             jsonData, _ = json.Marshal(subData)
+             resp, _ = http.Post("http://localhost:8000/start_pipeline_execution", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var subResult map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&subResult)
+             fmt.Println("Sub-pipeline started:", subResult)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object NestedPipelineExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 // Start main pipeline execution
+                 val mainJson = Json.obj(
+                     "pipeline_id" -> 1,
+                     "start_date" -> "2024-01-01T10:00:00Z",
+                     "full_load" -> true
+                 ).toString()
+                 
+                 val mainRequest = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/start_pipeline_execution"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(mainJson))
+                     .build()
+                 
+                 val mainResponse = client.send(mainRequest, 
+                     HttpResponse.BodyHandlers.ofString())
+                 val mainResult = Json.parse(mainResponse.body())
+                 val mainExecutionId = (mainResult \ "id").as[Int]
+
+                 // Start sub-pipeline with parent reference
+                 val subJson = Json.obj(
+                     "pipeline_id" -> 2,
+                     "start_date" -> "2024-01-01T10:00:00Z",
+                     "full_load" -> true,
+                     "parent_id" -> mainExecutionId
+                 ).toString()
+                 
+                 val subRequest = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/start_pipeline_execution"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(subJson))
+                     .build()
+                 
+                 val subResponse = client.send(subRequest, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println("Sub-pipeline started:", subResponse.body())
+             }
+         }
 
 Querying Nested Executions
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

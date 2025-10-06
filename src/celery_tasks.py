@@ -184,7 +184,7 @@ async def _run_async_freshness_check():
         await engine.dispose()
 
 
-@celery.task(bind=True, rate_limit="1/s", max_retries=3, default_retry_delay=60)
+@celery.task(bind=True, rate_limit="5/s", max_retries=3, default_retry_delay=60)
 def address_lineage_closure_rebuild_task(
     self, connected_addresses: list, pipeline_id: int
 ):

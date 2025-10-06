@@ -97,7 +97,7 @@ address_lineage_closure_rebuild_task
 
 **Purpose** Rebuild address lineage closure table relationships
 
-**Rate Limit** 1/s
+**Rate Limit** 5/s
 
 **Parameters**
 
@@ -169,7 +169,7 @@ All tasks have configurable rate limits to prevent system overload:
 - **detect_anomalies_task** 15/s (high frequency for real-time analysis)
 - **freshness_check_task** 1/s (low frequency for periodic checks)
 - **timeliness_check_task** 1/s (low frequency for periodic checks)
-- **address_lineage_closure_rebuild_task** 1/s (low frequency for maintenance)
+- **address_lineage_closure_rebuild_task** 5/s (medium frequency for maintenance)
 - **pipeline_execution_closure_maintain_task** 10/s (medium frequency for hierarchy maintenance)
 
 Retry Policies

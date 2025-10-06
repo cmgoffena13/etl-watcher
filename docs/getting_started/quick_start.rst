@@ -10,26 +10,14 @@ Step 1: Create Your First Pipeline
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/pipeline", json={
-                "name": "My Data Pipeline",
-                "pipeline_type_name": "extraction"
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
             import httpx
             
             response = httpx.post("http://localhost:8000/pipeline", json={
-                "name": "My Data Pipeline",
+                "name": "my data pipeline",
                 "pipeline_type_name": "extraction"
             })
             print(response.json())
@@ -40,15 +28,71 @@ Step 1: Create Your First Pipeline
 
             curl -X POST "http://localhost:8000/pipeline" \
                  -H "Content-Type: application/json" \
-                 -d '{"name": "My Data Pipeline", "pipeline_type_name": "extraction"}'
+                 -d '{"name": "my data pipeline", "pipeline_type_name": "extraction"}'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/pipeline \
-                 name="My Data Pipeline" \
-                 pipeline_type_name=extraction
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type PipelineRequest struct {
+                Name             string `json:"name"`
+                PipelineTypeName string `json:"pipeline_type_name"`
+            }
+
+            func main() {
+                data := PipelineRequest{
+                    Name:             "my data pipeline",
+                    PipelineTypeName: "extraction",
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/pipeline", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import scala.io.Source
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object PipelineExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "name" -> "my data pipeline",
+                        "pipeline_type_name" -> "extraction"
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/pipeline"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 Step 2: Start a Pipeline Execution
 -------------------------------
@@ -57,20 +101,7 @@ Step 2: Start a Pipeline Execution
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/start_pipeline_execution", json={
-                "pipeline_id": 1,
-                "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -95,37 +126,77 @@ Step 2: Start a Pipeline Execution
                    "full_load": true
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/start_pipeline_execution \
-                 pipeline_id=1 \
-                 start_date="2024-01-01T10:00:00Z" \
-                 full_load=true
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type StartExecutionRequest struct {
+                PipelineID int    `json:"pipeline_id"`
+                StartDate  string `json:"start_date"`
+                FullLoad   bool   `json:"full_load"`
+            }
+
+            func main() {
+                data := StartExecutionRequest{
+                    PipelineID: 1,
+                    StartDate:  "2024-01-01T10:00:00Z",
+                    FullLoad:   true,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/start_pipeline_execution", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object StartExecutionExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "pipeline_id" -> 1,
+                        "start_date" -> "2024-01-01T10:00:00Z",
+                        "full_load" -> true
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/start_pipeline_execution"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 3. **End the execution with metrics**
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/end_pipeline_execution", json={
-                "id": 1,
-                "end_date": "2024-01-01T10:05:00Z",
-                "completed_successfully": True,
-                "total_rows": 1000,
-                "inserts": 800,
-                "updates": 200,
-                "soft_deletes": 0
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -158,18 +229,83 @@ Step 2: Start a Pipeline Execution
                    "soft_deletes": 0
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/end_pipeline_execution \
-                 id=1 \
-                 end_date="2024-01-01T10:05:00Z" \
-                 completed_successfully=true \
-                 total_rows=1000 \
-                 inserts=800 \
-                 updates=200 \
-                 soft_deletes=0
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type EndExecutionRequest struct {
+                ID                   int  `json:"id"`
+                EndDate              string `json:"end_date"`
+                CompletedSuccessfully bool `json:"completed_successfully"`
+                TotalRows            int  `json:"total_rows"`
+                Inserts              int  `json:"inserts"`
+                Updates              int  `json:"updates"`
+                SoftDeletes          int  `json:"soft_deletes"`
+            }
+
+            func main() {
+                data := EndExecutionRequest{
+                    ID:                   1,
+                    EndDate:              "2024-01-01T10:05:00Z",
+                    CompletedSuccessfully: true,
+                    TotalRows:            1000,
+                    Inserts:              800,
+                    Updates:              200,
+                    SoftDeletes:          0,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/end_pipeline_execution", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object EndExecutionExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "id" -> 1,
+                        "end_date" -> "2024-01-01T10:05:00Z",
+                        "completed_successfully" -> true,
+                        "total_rows" -> 1000,
+                        "inserts" -> 800,
+                        "updates" -> 200,
+                        "soft_deletes" -> 0
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/end_pipeline_execution"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 Step 3: Create Address Lineage
 ----------------------------
@@ -178,32 +314,7 @@ Step 3: Create Address Lineage
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/address_lineage", json={
-                "pipeline_id": 1,
-                "source_addresses": [
-                    {
-                        "name": "source_db.source_schema.source_table",
-                        "address_type_name": "postgres",
-                        "address_type_group_name": "database"
-                    }
-                ],
-                "target_addresses": [
-                    {
-                        "name": "target_db.target_schema.target_table",
-                        "address_type_name": "postgres",
-                        "address_type_group_name": "database"
-                    }
-                ]
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -252,14 +363,97 @@ Step 3: Create Address Lineage
                    ]
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/address_lineage \
-                 pipeline_id=1 \
-                 source_addresses:='[{"name": "source_db.source_schema.source_table", "address_type_name": "postgres", "address_type_group_name": "database"}]' \
-                 target_addresses:='[{"name": "target_db.target_schema.target_table", "address_type_name": "postgres", "address_type_group_name": "database"}]'
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type AddressLineageRequest struct {
+                PipelineID      int `json:"pipeline_id"`
+                SourceAddresses []Address `json:"source_addresses"`
+                TargetAddresses []Address `json:"target_addresses"`
+            }
+
+            type Address struct {
+                Name                string `json:"name"`
+                AddressTypeName     string `json:"address_type_name"`
+                AddressTypeGroupName string `json:"address_type_group_name"`
+            }
+
+            func main() {
+                data := AddressLineageRequest{
+                    PipelineID: 1,
+                    SourceAddresses: []Address{{
+                        Name:                "source_db.source_schema.source_table",
+                        AddressTypeName:     "postgres",
+                        AddressTypeGroupName: "database",
+                    }},
+                    TargetAddresses: []Address{{
+                        Name:                "target_db.target_schema.target_table",
+                        AddressTypeName:     "postgres",
+                        AddressTypeGroupName: "database",
+                    }},
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/address_lineage", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object AddressLineageExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "pipeline_id" -> 1,
+                        "source_addresses" -> Json.arr(
+                            Json.obj(
+                                "name" -> "source_db.source_schema.source_table",
+                                "address_type_name" -> "postgres",
+                                "address_type_group_name" -> "database"
+                            )
+                        ),
+                        "target_addresses" -> Json.arr(
+                            Json.obj(
+                                "name" -> "target_db.target_schema.target_table",
+                                "address_type_name" -> "postgres",
+                                "address_type_group_name" -> "database"
+                            )
+                        )
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/address_lineage"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 Step 4: Set Up Monitoring
 --------------------------
@@ -268,16 +462,7 @@ Step 4: Set Up Monitoring
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/freshness")
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -292,28 +477,57 @@ Step 4: Set Up Monitoring
 
             curl -X POST "http://localhost:8000/freshness"
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/freshness
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            func main() {
+                resp, _ := http.Post("http://localhost:8000/freshness", 
+                    "application/json", bytes.NewBuffer([]byte{}))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+
+            object FreshnessExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/freshness"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 3. **Run a timeliness check**
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/timeliness", json={
-                "lookback_minutes": 60
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -334,27 +548,71 @@ Step 4: Set Up Monitoring
                    "lookback_minutes": 60
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/timeliness \
-                 lookback_minutes=60
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type TimelinessRequest struct {
+                LookbackMinutes int `json:"lookback_minutes"`
+            }
+
+            func main() {
+                data := TimelinessRequest{
+                    LookbackMinutes: 60,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/timeliness", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object TimelinessExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "lookback_minutes" -> 60
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/timeliness"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 4. **Run a Celery queue check**
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/celery/monitor-queue")
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -369,11 +627,51 @@ Step 4: Set Up Monitoring
 
             curl -X POST "http://localhost:8000/celery/monitor-queue"
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/celery/monitor-queue
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            func main() {
+                resp, _ := http.Post("http://localhost:8000/celery/monitor-queue", 
+                    "application/json", bytes.NewBuffer([]byte{}))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+
+            object CeleryMonitorExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/celery/monitor-queue"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString("{}"))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 Step 5: Configure Anomaly Detection
 -----------------------------------
@@ -385,22 +683,7 @@ Step 5: Configure Anomaly Detection
 
    .. tabs::
 
-      .. tab:: Python - requests
-
-         .. code-block:: python
-
-            import requests
-            
-            response = requests.post("http://localhost:8000/anomaly_detection_rule", json={
-                "pipeline_id": 1,
-                "metric_field": "total_rows",
-                "z_threshold": 3.0,
-                "minimum_executions": 30,
-                "lookback_days": 30
-            })
-            print(response.json())
-
-      .. tab:: Python - httpx
+      .. tab:: Python
 
          .. code-block:: python
 
@@ -429,16 +712,77 @@ Step 5: Configure Anomaly Detection
                    "lookback_days": 30
                  }'
 
-      .. tab:: HTTPie
+      .. tab:: Go
 
-         .. code-block:: bash
+         .. code-block:: go
 
-            http POST localhost:8000/anomaly_detection_rule \
-                 pipeline_id=1 \
-                 metric_field=total_rows \
-                 z_threshold=3.0 \
-                 minimum_executions=30 \
-                 lookback_days=30
+            package main
+
+            import (
+                "bytes"
+                "encoding/json"
+                "fmt"
+                "net/http"
+            )
+
+            type AnomalyRuleRequest struct {
+                PipelineID        int     `json:"pipeline_id"`
+                MetricField       string  `json:"metric_field"`
+                ZThreshold        float64 `json:"z_threshold"`
+                MinimumExecutions int     `json:"minimum_executions"`
+                LookbackDays      int     `json:"lookback_days"`
+            }
+
+            func main() {
+                data := AnomalyRuleRequest{
+                    PipelineID:        1,
+                    MetricField:       "total_rows",
+                    ZThreshold:        3.0,
+                    MinimumExecutions: 30,
+                    LookbackDays:      30,
+                }
+                
+                jsonData, _ := json.Marshal(data)
+                resp, _ := http.Post("http://localhost:8000/anomaly_detection_rule", 
+                    "application/json", bytes.NewBuffer(jsonData))
+                defer resp.Body.Close()
+                
+                var result map[string]interface{}
+                json.NewDecoder(resp.Body).Decode(&result)
+                fmt.Println(result)
+            }
+
+      .. tab:: Scala
+
+         .. code-block:: scala
+
+            import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+            import java.net.URI
+            import play.api.libs.json.Json
+
+            object AnomalyRuleExample {
+                def main(args: Array[String]): Unit = {
+                    val client = HttpClient.newHttpClient()
+                    
+                    val json = Json.obj(
+                        "pipeline_id" -> 1,
+                        "metric_field" -> "total_rows",
+                        "z_threshold" -> 3.0,
+                        "minimum_executions" -> 30,
+                        "lookback_days" -> 30
+                    ).toString()
+                    
+                    val request = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/anomaly_detection_rule"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json))
+                        .build()
+                    
+                    val response = client.send(request, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response.body())
+                }
+            }
 
 2. **Anomaly detection runs automatically** after each successful pipeline execution
 

@@ -1286,19 +1286,77 @@ Celery Queue Monitoring
    - **WARNING**: 50+ pending tasks
    - **CRITICAL**: 100+ pending tasks
 
-Diagnostics
------------
+Diagnostics Web Page
+-------------------
 
 System Diagnostics
 ~~~~~~~~~~~~~~~~~~
 
 .. http:get:: /diagnostics
 
-   Get comprehensive system diagnostics.
+   Web-based diagnostics dashboard providing comprehensive system health monitoring 
+   and performance analysis.
 
-   **Response:** HTML page with system health information
+   **Features:**
 
-Interactive Documentation
+   - Database health and connection performance testing
+   - Schema health checks and index usage statistics
+   - Celery worker status and task performance monitoring
+   - Deadlock statistics and active query analysis
+   - Long-running query identification
+   - Real-time system metrics
+
+   **Response:**
+
+   HTML dashboard interface
+
+   **Sections:**
+   
+   - **Connection Speed Test** - Raw asyncpg connection performance testing and direct database connectivity validation
+   - **Connection Performance** - Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution) and connection pool analysis
+   - **Schema Health Check** - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics
+   - **Performance & Locks** - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (>30s) identification
+   - **Celery Health** - Worker status, task performance, queue monitoring, and background task diagnostics
+
+   **Access:**
+   - **URL**: http://localhost:8000/diagnostics
+   - **Method**: GET
+   - **Content-Type**: text/html
+
+Reporting Dashboard Web Page
+----------------------------
+
+Pipeline Performance Dashboard
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /reporting
+
+   Web-based reporting dashboard providing daily pipeline performance metrics and analytics.
+
+   **Features:**
+   
+   - Daily aggregations of pipeline execution data
+   - Performance metrics (throughput, duration, error rates)
+   - Pipeline type and name filtering
+   - Time range filtering (last 1-30 days)
+   - Real-time data from materialized views
+   - Auto-refresh capabilities
+
+   **Response:**
+
+   HTML dashboard interface
+
+   **Data Source:**
+
+   Built on the ``daily_pipeline_report`` materialized view for fast query performance.
+
+   **Access:**
+
+   - **URL**: http://localhost:8000/reporting
+   - **Method**: GET
+   - **Content-Type**: text/html
+
+Interactive API Documentation
 ------------------------
 
 Scalar API Documentation

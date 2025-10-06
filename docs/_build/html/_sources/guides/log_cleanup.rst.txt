@@ -26,25 +26,7 @@ API Usage
 
 .. tabs::
 
-   .. tab:: Python - requests
-
-      .. code-block:: python
-
-         import requests
-
-         cleanup_data = {
-             "retention_days": 90,
-             "batch_size": 5000
-         }
-
-         response = requests.post(
-             "http://localhost:8000/log_cleanup",
-             json=cleanup_data
-         )
-         result = response.json()
-         print(result)
-
-   .. tab:: Python - httpx
+   .. tab:: Python
 
       .. code-block:: python
 
@@ -55,13 +37,12 @@ API Usage
              "batch_size": 5000
          }
 
-         with httpx.Client() as client:
-             response = client.post(
-                 "http://localhost:8000/log_cleanup",
-                 json=cleanup_data
-             )
-             result = response.json()
-             print(result)
+         response = httpx.post(
+             "http://localhost:8000/log_cleanup",
+             json=cleanup_data
+         )
+         result = response.json()
+         print(result)
 
    .. tab:: curl
 
@@ -74,13 +55,68 @@ API Usage
                 "batch_size": 5000
               }'
 
-   .. tab:: HTTPie
+   .. tab:: Go
 
-      .. code-block:: bash
+      .. code-block:: go
 
-         http POST localhost:8000/log_cleanup \
-              retention_days=90 \
-              batch_size=5000
+         package main
+
+         import (
+             "bytes"
+             "encoding/json"
+             "fmt"
+             "net/http"
+         )
+
+         type CleanupRequest struct {
+             RetentionDays int `json:"retention_days"`
+             BatchSize     int `json:"batch_size"`
+         }
+
+         func main() {
+             data := CleanupRequest{
+                 RetentionDays: 90,
+                 BatchSize:     5000,
+             }
+             
+             jsonData, _ := json.Marshal(data)
+             resp, _ := http.Post("http://localhost:8000/log_cleanup", 
+                 "application/json", bytes.NewBuffer(jsonData))
+             defer resp.Body.Close()
+             
+             var result map[string]interface{}
+             json.NewDecoder(resp.Body).Decode(&result)
+             fmt.Println(result)
+         }
+
+   .. tab:: Scala
+
+      .. code-block:: scala
+
+         import java.net.http.{HttpClient, HttpRequest, HttpResponse}
+         import java.net.URI
+         import play.api.libs.json.Json
+
+         object LogCleanupExample {
+             def main(args: Array[String]): Unit = {
+                 val client = HttpClient.newHttpClient()
+                 
+                 val json = Json.obj(
+                     "retention_days" -> 90,
+                     "batch_size" -> 5000
+                 ).toString()
+                 
+                 val request = HttpRequest.newBuilder()
+                     .uri(URI.create("http://localhost:8000/log_cleanup"))
+                     .header("Content-Type", "application/json")
+                     .POST(HttpRequest.BodyPublishers.ofString(json))
+                     .build()
+                 
+                 val response = client.send(request, 
+                     HttpResponse.BodyHandlers.ofString())
+                 println(response.body())
+             }
+         }
 
 **Response Example**
 
