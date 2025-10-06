@@ -105,7 +105,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ## Contributing
 
-We welcome contributions to Watcher! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, our development process, and how to submit pull requests.
+I welcome contributions to Watcher! Please see the [Contributing Guidelines](CONTRIBUTING.md) for details on how to get started, the development process, and how to submit pull requests.
 
 ### Quick Start for Contributors
 1. Fork the repository
@@ -115,4 +115,4 @@ We welcome contributions to Watcher! Please see our [Contributing Guidelines](CO
 5. Run tests with `make test`
 6. Submit a pull request
 
-For detailed information about our coding standards, testing requirements, and contribution process, please refer to the [Contributing Guidelines](CONTRIBUTING.md).
+For detailed information about the coding standards, testing requirements, and contribution process, please refer to the [Contributing Guidelines](CONTRIBUTING.md).
