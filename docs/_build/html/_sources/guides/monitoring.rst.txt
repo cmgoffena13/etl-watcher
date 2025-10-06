@@ -348,21 +348,6 @@ Configure alert thresholds for queue monitoring:
 - **WARNING** (50+ messages): Queue getting backed up
 - **CRITICAL** (100+ messages): Queue severely backed up
 
-Example Alert
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: text
-
-   🚨 CRITICAL
-   Celery Queue Alert
-   Timestamp: 2025-09-28 06:04:26 UTC
-   Message: Queue has 2367 pending tasks
-   
-   Details:
-   • Messages in queue: 2367
-   • Scheduled tasks: 0
-   • Total pending: 2367
-
 System Health Monitoring
 ------------------------
 
@@ -431,11 +416,13 @@ Slack Integration
 Configure Slack alerts for monitoring:
 
 1. **Create Slack App**
+
    - Go to https://api.slack.com/apps
    - Create new app for your workspace
    - Add Incoming Webhooks feature
 
 2. **Get Webhook URL**
+
    - Create webhook for your channel
    - Copy the webhook URL
 
@@ -495,7 +482,7 @@ Alert Types
 
 .. code-block:: text
 
-   :warning: WARNING
+   ⚠️ WARNING
    Timeliness Check - Pipeline Execution
    Timestamp: 2025-09-28 17:24:41 UTC
    Message: Pipeline Execution Timeliness Check - 2 new execution(s) overdue
@@ -509,7 +496,7 @@ Alert Types
 
 .. code-block:: text
 
-   :warning: WARNING
+   ⚠️ WARNING
    Freshness Check - Pipeline DML
    Timestamp: 2025-09-30 00:34:13 UTC
    Message: Pipeline Freshness Check - 2 NEW pipeline(s) overdue

@@ -386,7 +386,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#system-health-monitoring">System Health Monitoring</a><ul>
@@ -885,20 +884,6 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
 </ul>
 </section>
-<section id="example-alert">
-<h3>Example Alert<a class="headerlink" href="#example-alert" title="Link to this heading"></a></h3>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
-Celery Queue Alert
-Timestamp: 2025-09-28 06:04:26 UTC
-Message: Queue has 2367 pending tasks
-
-Details:
-• Messages in queue: 2367
-• Scheduled tasks: 0
-• Total pending: 2367
-</pre></div>
-</div>
-</section>
 </section>
 <section id="system-health-monitoring">
 <h2>System Health Monitoring<a class="headerlink" href="#system-health-monitoring" title="Link to this heading"></a></h2>
@@ -965,13 +950,19 @@ Details:
 <h3>Slack Integration<a class="headerlink" href="#slack-integration" title="Link to this heading"></a></h3>
 <p>Configure Slack alerts for monitoring:</p>
 <ol class="arabic">
-<li><p><strong>Create Slack App</strong>
-- Go to <a class="reference external" href="https://api.slack.com/apps">https://api.slack.com/apps</a>
-- Create new app for your workspace
-- Add Incoming Webhooks feature</p></li>
-<li><p><strong>Get Webhook URL</strong>
-- Create webhook for your channel
-- Copy the webhook URL</p></li>
+<li><p><strong>Create Slack App</strong></p>
+<ul class="simple">
+<li><p>Go to <a class="reference external" href="https://api.slack.com/apps">https://api.slack.com/apps</a></p></li>
+<li><p>Create new app for your workspace</p></li>
+<li><p>Add Incoming Webhooks feature</p></li>
+</ul>
+</li>
+<li><p><strong>Get Webhook URL</strong></p>
+<ul class="simple">
+<li><p>Create webhook for your channel</p></li>
+<li><p>Copy the webhook URL</p></li>
+</ul>
+</li>
 <li><p><strong>Configure Environment</strong></p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">SLACK_WEBHOOK_URL</span><span class="o">=</span><span class="s2">&quot;https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK&quot;</span>
 </pre></div>
@@ -1023,7 +1014,7 @@ Details:
 <li><p>Overdue pipeline executions</p></li>
 </ul>
 <p><strong>Timeliness Alert Example</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:warning: WARNING
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>⚠️ WARNING
 Timeliness Check - Pipeline Execution
 Timestamp: 2025-09-28 17:24:41 UTC
 Message: Pipeline Execution Timeliness Check - 2 new execution(s) overdue
@@ -1035,7 +1026,7 @@ Details:
 </pre></div>
 </div>
 <p><strong>Freshness Alert Example</strong></p>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>:warning: WARNING
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>⚠️ WARNING
 Freshness Check - Pipeline DML
 Timestamp: 2025-09-30 00:34:13 UTC
 Message: Pipeline Freshness Check - 2 NEW pipeline(s) overdue
