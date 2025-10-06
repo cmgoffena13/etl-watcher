@@ -15,13 +15,6 @@ Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
-
-   # Database
-   DEV_DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/watcher_dev
-   
-   # Redis
-   DEV_REDIS_URL=redis://localhost:6379/1
-   
    # Monitoring
    DEV_LOGFIRE_TOKEN=your_logfire_token_here
    DEV_LOGFIRE_CONSOLE=false
