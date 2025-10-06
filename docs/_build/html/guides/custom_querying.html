@@ -1,0 +1,394 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Custom Database Querying &mdash; Watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
+    <link rel="prev" title="Polygon Example" href="polygon_example.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="polygon_example.html">Polygon Example</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Custom Database Querying</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#index-utilization-patterns">Index Utilization Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#date-based-queries">Date-Based Queries</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#time-based-queries">Time-Based Queries</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-query-patterns">Common Query Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-execution-analysis">Pipeline Execution Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#anomaly-detection-analysis">Anomaly Detection Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#lineage-analysis">Lineage Analysis</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hierarchical-execution-analysis">Hierarchical Execution Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices">Best Practices</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#performance-considerations">Performance Considerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#query-optimization">Query Optimization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#safety-guidelines">Safety Guidelines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#common-use-cases">Common Use Cases</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#reporting-and-analytics">Reporting and Analytics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#operational-monitoring">Operational Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-quality-analysis">Data Quality Analysis</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#advanced-patterns">Advanced Patterns</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#comparative-analysis">Comparative Analysis</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Custom Database Querying</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/custom_querying.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="custom-database-querying">
+<h1>Custom Database Querying<a class="headerlink" href="#custom-database-querying" title="Link to this heading"></a></h1>
+<p>While Watcher provides comprehensive REST APIs for most operations, there are times when you need to query the database directly for investigative, reporting, or analytical purposes. This guide covers best practices and patterns for direct database access.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Be cautious when querying the <code class="docutils literal notranslate"><span class="pre">pipeline_execution</span></code> table as it will be the main target for DML operations.
+Use the provided index patterns to optimize your queries and avoid performance issues.</p>
+</div>
+<section id="index-utilization-patterns">
+<h2>Index Utilization Patterns<a class="headerlink" href="#index-utilization-patterns" title="Link to this heading"></a></h2>
+<p>Watcher includes optimized indexes for common query patterns. Use these patterns to ensure efficient database access:</p>
+<section id="date-based-queries">
+<h3>Date-Based Queries<a class="headerlink" href="#date-based-queries" title="Link to this heading"></a></h3>
+<p>For queries filtering by <code class="docutils literal notranslate"><span class="pre">date_recorded</span></code> and <code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code>, use the <code class="docutils literal notranslate"><span class="pre">ix_pipeline_execution_date_recorded_pipeline_id</span></code> index:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">WITH</span><span class="w"> </span><span class="n">CTE</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">id</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="n">date_recorded</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
+<span class="w">        </span><span class="k">AND</span><span class="w"> </span><span class="n">date_recorded</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w">  </span><span class="cm">/* Stay away from current records being inserted/updated */</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="n">pe</span><span class="p">.</span><span class="o">*</span><span class="w">  </span><span class="cm">/* Columns you want to see */</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">CTE</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">CTE</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span>
+</pre></div>
+</div>
+</section>
+<section id="time-based-queries">
+<h3>Time-Based Queries<a class="headerlink" href="#time-based-queries" title="Link to this heading"></a></h3>
+<p>For queries filtering by <code class="docutils literal notranslate"><span class="pre">start_date</span></code>, use the <code class="docutils literal notranslate"><span class="pre">ix_pipeline_execution_start_date</span></code> index:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">WITH</span><span class="w"> </span><span class="n">CTE</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">id</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;1 hour&#39;</span>
+<span class="p">)</span>
+<span class="k">SELECT</span>
+<span class="n">pe</span><span class="p">.</span><span class="o">*</span><span class="w">  </span><span class="cm">/* Columns you want to see */</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">INNER</span><span class="w"> </span><span class="k">JOIN</span><span class="w"> </span><span class="n">CTE</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">CTE</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="common-query-patterns">
+<h2>Common Query Patterns<a class="headerlink" href="#common-query-patterns" title="Link to this heading"></a></h2>
+<section id="pipeline-execution-analysis">
+<h3>Pipeline Execution Analysis<a class="headerlink" href="#pipeline-execution-analysis" title="Link to this heading"></a></h3>
+<p>Get recent executions for a specific pipeline:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">end_date</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">duration_seconds</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">total_rows</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">completed_successfully</span><span class="p">,</span>
+<span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="anomaly-detection-analysis">
+<h3>Anomaly Detection Analysis<a class="headerlink" href="#anomaly-detection-analysis" title="Link to this heading"></a></h3>
+<p>Query anomaly detection results for a specific pipeline:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">execution_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">metric_field</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">violation_value</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">z_score</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">historical_mean</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">std_deviation_value</span><span class="p">,</span>
+<span class="w">    </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">anomaly_detection_result</span><span class="w"> </span><span class="n">adr</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">pipeline_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">-- Filter to specific pipeline</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">adr</span><span class="p">.</span><span class="n">detected_at</span><span class="w"> </span><span class="k">DESC</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="lineage-analysis">
+<h3>Lineage Analysis<a class="headerlink" href="#lineage-analysis" title="Link to this heading"></a></h3>
+<p>Analyze data lineage relationships for a specific pipeline:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">al</span><span class="p">.</span><span class="n">pipeline_id</span><span class="p">,</span>
+<span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">sa</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">source_address</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ta</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">target_address</span><span class="p">,</span>
+<span class="w">    </span><span class="n">sat</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">source_type</span><span class="p">,</span>
+<span class="w">    </span><span class="n">tat</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">target_type</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">address_lineage</span><span class="w"> </span><span class="n">al</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">sa</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">source_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">address</span><span class="w"> </span><span class="n">ta</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">al</span><span class="p">.</span><span class="n">target_address_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">sat</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">sat</span><span class="p">.</span><span class="n">id</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">address_type</span><span class="w"> </span><span class="n">tat</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">ta</span><span class="p">.</span><span class="n">address_type_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tat</span><span class="p">.</span><span class="n">id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">-- Filter to specific pipeline</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">sa</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+<section id="hierarchical-execution-analysis">
+<h3>Hierarchical Execution Analysis<a class="headerlink" href="#hierarchical-execution-analysis" title="Link to this heading"></a></h3>
+<p>Query nested pipeline executions using the closure table:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Get all direct children of an execution</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+
+<span class="c1">-- Get all downstream dependencies of an execution</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">123</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+
+<span class="c1">-- Get execution family tree (root + all descendants)</span>
+<span class="k">SELECT</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="o">*</span><span class="p">,</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="k">level</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec</span>
+<span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">child_execution_id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">parent_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="c1">-- Get root execution ID</span>
+<span class="w">    </span><span class="k">SELECT</span><span class="w"> </span><span class="n">pec2</span><span class="p">.</span><span class="n">parent_execution_id</span>
+<span class="w">    </span><span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution_closure</span><span class="w"> </span><span class="n">pec2</span>
+<span class="w">    </span><span class="k">WHERE</span><span class="w"> </span><span class="n">pec2</span><span class="p">.</span><span class="n">child_execution_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">456</span>
+<span class="w">    </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pec2</span><span class="p">.</span><span class="n">depth</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">1</span>
+<span class="p">)</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">pec</span><span class="p">.</span><span class="n">depth</span><span class="p">,</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">id</span><span class="p">;</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="best-practices">
+<h2>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h2>
+<section id="performance-considerations">
+<h3>Performance Considerations<a class="headerlink" href="#performance-considerations" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Use Indexes</strong>: Always use the provided index patterns for optimal performance</p></li>
+<li><p><strong>Avoid Current Records</strong>: Stay away from records being actively inserted/updated</p></li>
+<li><p><strong>Use CTEs</strong>: Common Table Expressions help with complex queries and index utilization</p></li>
+<li><p><strong>Limit Results</strong>: Use LIMIT clauses for large result sets</p></li>
+<li><p><strong>Monitor Query Performance</strong>: Use EXPLAIN ANALYZE to understand query execution</p></li>
+</ol>
+</section>
+<section id="query-optimization">
+<h3>Query Optimization<a class="headerlink" href="#query-optimization" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Filter Early</strong>: Apply WHERE clauses as early as possible</p></li>
+<li><p><strong>Use Appropriate Joins</strong>: INNER JOIN for required relationships, LEFT JOIN for optional ones</p></li>
+<li><p><strong>Aggregate Efficiently</strong>: Use GROUP BY with appropriate indexes</p></li>
+<li><p><strong>Avoid SELECT *</strong>: Specify only the columns you need</p></li>
+</ol>
+</section>
+<section id="safety-guidelines">
+<h3>Safety Guidelines<a class="headerlink" href="#safety-guidelines" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Read-Only Operations</strong>: Avoid modifying data directly in production</p></li>
+<li><p><strong>Test Queries</strong>: Test complex queries on development/staging first</p></li>
+<li><p><strong>Monitor Impact</strong>: Watch for long-running queries that might impact performance</p></li>
+<li><p><strong>Use Transactions</strong>: Wrap complex operations in transactions when needed</p></li>
+</ol>
+</section>
+</section>
+<section id="common-use-cases">
+<h2>Common Use Cases<a class="headerlink" href="#common-use-cases" title="Link to this heading"></a></h2>
+<section id="reporting-and-analytics">
+<h3>Reporting and Analytics<a class="headerlink" href="#reporting-and-analytics" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Pipeline Performance</strong>: Track execution times, success rates, and throughput</p></li>
+<li><p><strong>Data Volume Analysis</strong>: Monitor data processing volumes over time</p></li>
+<li><p><strong>Error Analysis</strong>: Identify patterns in failed executions</p></li>
+<li><p><strong>Resource Utilization</strong>: Analyze pipeline resource consumption</p></li>
+</ul>
+</section>
+<section id="operational-monitoring">
+<h3>Operational Monitoring<a class="headerlink" href="#operational-monitoring" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>System Health</strong>: Monitor overall system performance</p></li>
+<li><p><strong>Capacity Planning</strong>: Analyze growth trends and resource needs</p></li>
+<li><p><strong>Troubleshooting</strong>: Investigate specific issues or anomalies</p></li>
+<li><p><strong>Audit Trails</strong>: Track changes and system usage</p></li>
+</ul>
+</section>
+<section id="data-quality-analysis">
+<h3>Data Quality Analysis<a class="headerlink" href="#data-quality-analysis" title="Link to this heading"></a></h3>
+<ul class="simple">
+<li><p><strong>Anomaly Patterns</strong>: Identify recurring anomaly types</p></li>
+<li><p><strong>Data Freshness</strong>: Monitor data staleness across pipelines</p></li>
+<li><p><strong>Lineage Impact</strong>: Analyze the impact of upstream changes</p></li>
+<li><p><strong>Compliance Reporting</strong>: Generate reports for regulatory requirements</p></li>
+</ul>
+</section>
+</section>
+<section id="advanced-patterns">
+<h2>Advanced Patterns<a class="headerlink" href="#advanced-patterns" title="Link to this heading"></a></h2>
+<section id="comparative-analysis">
+<h3>Comparative Analysis<a class="headerlink" href="#comparative-analysis" title="Link to this heading"></a></h3>
+<p>Compare pipeline performance across different time periods for a specific pipeline:</p>
+<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+<span class="w">    </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">pipeline_name</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">-- Current week</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">current_week_executions</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">duration_seconds</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">current_week_avg_duration</span><span class="p">,</span>
+<span class="w">    </span><span class="c1">-- Previous week</span>
+<span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;14 days&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">previous_week_executions</span><span class="p">,</span>
+<span class="w">    </span><span class="k">AVG</span><span class="p">(</span><span class="k">CASE</span><span class="w"> </span><span class="k">WHEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="k">BETWEEN</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;14 days&#39;</span><span class="w"> </span><span class="k">AND</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;7 days&#39;</span><span class="w"> </span><span class="k">THEN</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">duration_seconds</span><span class="w"> </span><span class="k">END</span><span class="p">)</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="n">previous_week_avg_duration</span>
+<span class="k">FROM</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="n">pe</span>
+<span class="k">JOIN</span><span class="w"> </span><span class="n">pipeline</span><span class="w"> </span><span class="n">p</span><span class="w"> </span><span class="k">ON</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">pipeline_id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span>
+<span class="k">WHERE</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w">  </span><span class="c1">-- Filter to specific pipeline</span>
+<span class="w">    </span><span class="k">AND</span><span class="w"> </span><span class="n">pe</span><span class="p">.</span><span class="n">start_date</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="k">CURRENT_DATE</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="nb">INTERVAL</span><span class="w"> </span><span class="s1">&#39;14 days&#39;</span>
+<span class="k">GROUP</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span>
+<span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">p</span><span class="p">.</span><span class="n">name</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This guide provides the foundation for effective database querying while maintaining system performance and data integrity.</p>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="polygon_example.html" class="btn btn-neutral float-left" title="Polygon Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

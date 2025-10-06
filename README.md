@@ -10,7 +10,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ## Table of Contents
 
 1. [Features](#features)
-2. [API Endpoints](#-api-endpoints)
 3. [Webpages](#-webpages)
 4. [Database Schema](#️-database-schema)
    - [Custom Querying](#custom-querying)
@@ -90,47 +89,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Testing Framework**: Comprehensive test suite with fixtures and async support
 - **Docker Support**: Containerized deployment with Docker
 - **Logging & Observability**: Structured logging with Logfire integration
-
-
-## 📋 API Endpoints
-
-### Pipeline Management
-- `POST /pipeline` - Create or get existing pipeline
-- `GET /pipeline` - List all pipelines
-- `GET /pipeline/{pipeline_id}` - Get specific pipeline by ID
-- `PATCH /pipeline` - Update pipeline configuration
-
-### Pipeline Execution
-- `POST /start_pipeline_execution` - Start a new pipeline execution
-- `POST /end_pipeline_execution` - End a pipeline execution with metrics
-
-### Pipeline Types
-- `POST /pipeline_type` - Create or get pipeline type
-- `GET /pipeline_type` - List all pipeline types
-- `GET /pipeline_type/{pipeline_type_id}` - Get specific pipeline type by ID
-
-### Address Management
-- `POST /address` - Create or get address
-- `GET /address` - List all addresses
-- `GET /address/{address_id}` - Get specific address by ID
-- `PATCH /address` - Update address information
-
-### Address Types
-- `POST /address_type` - Create or get address type
-- `GET /address_type` - List all address types
-- `GET /address_type/{address_type_id}` - Get specific address type by ID
-
-### Data Lineage
-- `POST /address_lineage` - Create lineage relationships between addresses
-- `GET /address_lineage/{address_id}` - Get lineage for specific address
-
-### Anomaly Detection
-- `POST /anomaly_detection_rule` - Create or get anomaly detection rule
-- `GET /anomaly_detection_rule` - List all anomaly detection rules
-- `PATCH /anomaly_detection_rule` - Update anomaly detection rule
-- `POST /unflag_anomaly` - Unflag anomalies for a pipeline execution
-
-*See [Anomaly Checks](#-anomaly-checks) section for detailed configuration and usage.*
 
 ### Monitoring & Health
 - `POST /timeliness` - Check pipeline execution timeliness (requires `lookback_minutes` parameter)

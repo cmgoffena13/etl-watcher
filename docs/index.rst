@@ -20,27 +20,29 @@ Watcher is a comprehensive data pipeline monitoring and anomaly detection system
    :maxdepth: 2
    :caption: API Reference
 
+   api/celery_tasks
    api/endpoints
    api/models
-   api/celery_tasks
 
 .. toctree::
    :maxdepth: 2
    :caption: User Guides
 
-   guides/pipeline_management
-   guides/anomaly_detection
-   guides/monitoring
-   guides/watermark_management
    guides/address_lineage
+   guides/anomaly_detection
+   guides/custom_querying
+   guides/monitoring
+   guides/pipeline_management
+   guides/polygon_example
+   guides/watermark_management
 
 .. toctree::
    :maxdepth: 2
    :caption: Reference
 
+   reference/architecture
    reference/database_schema
    reference/migrations
-   reference/architecture
 
 Key Features
 ============

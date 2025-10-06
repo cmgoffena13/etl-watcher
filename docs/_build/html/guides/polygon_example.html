@@ -1,0 +1,302 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Polygon Example &mdash; Watcher 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Schema" href="../reference/database_schema.html" />
+    <link rel="prev" title="Address Lineage" href="address_lineage.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Watcher
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Getting Started</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting_started/configuration.html">Configuration</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/models.html">Pydantic Data Models</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guides</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="pipeline_management.html">Pipeline Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="anomaly_detection.html">Anomaly Detection</a></li>
+<li class="toctree-l1"><a class="reference internal" href="monitoring.html">Monitoring &amp; Health Checks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a></li>
+<li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Polygon Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#key-features-demonstrated">Key Features Demonstrated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#best-practices-shown">Best Practices Shown</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Watcher</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Polygon Example</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/guides/polygon_example.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="polygon-example">
+<h1>Polygon Example<a class="headerlink" href="#polygon-example" title="Link to this heading"></a></h1>
+<p>This section documents a complete ETL example using Watcher and the Polygon API to extract stock market data.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
+<p>This example demonstrates a real-world ETL pipeline that:</p>
+<ul class="simple">
+<li><p>Extracts daily stock open/close data from the Polygon API</p></li>
+<li><p>Uses Watcher for pipeline execution tracking and metadata management</p></li>
+<li><p>Handles rate limiting and error scenarios</p></li>
+<li><p>Implements proper watermark management for incremental processing</p></li>
+<li><p>Creates address lineage relationships for data flow tracking</p></li>
+</ul>
+</section>
+<section id="complete-implementation">
+<h2>Complete Implementation<a class="headerlink" href="#complete-implementation" title="Link to this heading"></a></h2>
+<p>Here’s the complete working example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+
+<span class="n">current_date</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+<span class="n">pipeline</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;next_watermark&quot;</span><span class="p">:</span> <span class="n">current_date</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">(),</span>
+<span class="p">}</span>
+
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">pipeline</span><span class="p">)</span>
+<span class="n">pipeline_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+<span class="n">watermark</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;watermark&quot;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Watermark:&quot;</span><span class="p">,</span> <span class="n">watermark</span><span class="p">)</span>
+<span class="n">load_lineage</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;load_lineage&quot;</span><span class="p">]</span>
+
+<span class="n">default_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">watermark</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="n">watermark</span> <span class="o">=</span> <span class="n">default_watermark</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">watermark</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+<span class="k">if</span> <span class="n">load_lineage</span><span class="p">:</span>
+    <span class="n">lineage</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
+        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;api&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;prod.polygon.open_close&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+    <span class="p">}</span>
+    <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">lineage</span><span class="p">)</span>
+
+<span class="n">start_execution</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
+    <span class="s2">&quot;start_time&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+    <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">start_execution</span><span class="p">)</span>
+<span class="n">pipeline_execution_id</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
+
+<span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;apiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;XXXX&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">all_records</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="k">while</span> <span class="n">watermark</span> <span class="o">&lt;</span> <span class="n">current_date</span><span class="p">:</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="sa">f</span><span class="s2">&quot;https://api.polygon.io/v1/open-close/AAPL/</span><span class="si">{</span><span class="n">watermark</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">params</span><span class="o">=</span><span class="n">params</span>
+        <span class="p">)</span>
+
+        <span class="n">record</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">429</span><span class="p">:</span>
+            <span class="n">wait_time</span> <span class="o">=</span> <span class="mi">30</span>
+            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Rate limit exceeded. Waiting </span><span class="si">{</span><span class="n">wait_time</span><span class="si">}</span><span class="s2"> seconds...&quot;</span><span class="p">)</span>
+            <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="n">wait_time</span><span class="p">)</span>
+            <span class="k">continue</span>
+
+        <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">:</span>
+            <span class="n">all_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+        <span class="n">watermark</span> <span class="o">=</span> <span class="n">watermark</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="n">all_records</span><span class="p">)</span>  <span class="c1"># Save records somewhere</span>
+
+    <span class="n">end_execution</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">pipeline_execution_id</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
+        <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_records</span><span class="p">),</span>
+    <span class="p">}</span>
+    <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">end_execution</span><span class="p">)</span>
+<span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="n">end_execution</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">pipeline_execution_id</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
+        <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
+        <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/end_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">end_execution</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">e</span>
+</pre></div>
+</div>
+</section>
+<section id="key-features-demonstrated">
+<h2>Key Features Demonstrated<a class="headerlink" href="#key-features-demonstrated" title="Link to this heading"></a></h2>
+<p><strong>Pipeline Management:</strong></p>
+<ul class="simple">
+<li><p><strong>Get-or-Create Pattern</strong>: No separate creation calls needed; pipeline and pipeline_type are automatically created if they don’t exist</p></li>
+<li><p><strong>Watermark Processing</strong>: Uses watermark-based incremental processing for efficient data extraction</p></li>
+<li><p><strong>Load Scenarios</strong>: Handles both full load and incremental scenarios seamlessly</p></li>
+<li><p><strong>Easy Deployment</strong>: Same code works for first run and subsequent runs without modification</p></li>
+</ul>
+<p><strong>Address Lineage:</strong></p>
+<ul class="simple">
+<li><p>Creates source-to-target data lineage relationships</p></li>
+<li><p>Uses proper address naming conventions (API endpoint and database table)</p></li>
+<li><p>Automatically creates address types (polygon API, postgres database)</p></li>
+</ul>
+<p><strong>Execution Tracking:</strong></p>
+<ul class="simple">
+<li><p>Proper start/end execution pattern with error handling</p></li>
+<li><p>Tracks execution metrics (total_rows processed)</p></li>
+<li><p>Handles both successful and failed execution scenarios</p></li>
+</ul>
+<p><strong>Rate Limiting:</strong></p>
+<ul class="simple">
+<li><p>Implements proper rate limit handling with exponential backoff</p></li>
+<li><p>Continues processing after rate limit recovery</p></li>
+<li><p>Maintains data integrity during API throttling</p></li>
+</ul>
+<p><strong>Watermark Management:</strong></p>
+<ul class="simple">
+<li><p>Uses date-based watermarks for incremental processing</p></li>
+<li><p>Handles initial watermark setup for new pipelines</p></li>
+<li><p>Advances watermark through date range processing</p></li>
+</ul>
+<p><strong>Error Handling:</strong></p>
+<ul class="simple">
+<li><p>Comprehensive try/catch with proper execution cleanup</p></li>
+<li><p>Ensures execution is always ended, even on failure</p></li>
+<li><p>Maintains execution status accuracy</p></li>
+</ul>
+</section>
+<section id="best-practices-shown">
+<h2>Best Practices Shown<a class="headerlink" href="#best-practices-shown" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Source-Controlled Lineage</strong> - Lineage definitions are in the pipeline code</p></li>
+<li><p><strong>Proper Error Handling</strong> - Always end execution, even on failure</p></li>
+<li><p><strong>Rate Limit Management</strong> - Graceful handling of API limitations</p></li>
+<li><p><strong>Incremental Processing</strong> - Efficient watermark-based data extraction</p></li>
+<li><p><strong>Execution Metrics</strong> - Tracking of rows processed for monitoring</p></li>
+<li><p><strong>Address Naming</strong> - Clear, descriptive address names for lineage tracking</p></li>
+</ol>
+<p>This example demonstrates a production-ready-esque ETL pipeline that follows Watcher best practices for metadata management, execution tracking, and data lineage.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="address_lineage.html" class="btn btn-neutral float-left" title="Address Lineage" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../reference/database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Cortland Goffena.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
