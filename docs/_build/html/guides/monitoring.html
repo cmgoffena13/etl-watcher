@@ -51,11 +51,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -117,11 +112,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 </ul>
@@ -383,8 +373,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#running-timeliness-checks">Running Timeliness Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#queue-monitoring">Queue Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
@@ -811,10 +800,8 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <p><strong>Lookback Period</strong> How far back to look for executions (in minutes)</p>
 </section>
 </section>
-<section id="queue-monitoring">
-<h2>Queue Monitoring<a class="headerlink" href="#queue-monitoring" title="Link to this heading"></a></h2>
 <section id="celery-queue-monitoring">
-<h3>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h3>
+<h2>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h2>
 <p>Monitor Celery queue health and performance:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
@@ -874,10 +861,9 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <span class="p">}</span>
 </pre></div>
 </div>
-</section>
 <section id="alert-thresholds">
 <h3>Alert Thresholds<a class="headerlink" href="#alert-thresholds" title="Link to this heading"></a></h3>
-<p>Configure alert thresholds for queue monitoring:</p>
+<p>Default alert thresholds for Celery queue monitoring:</p>
 <ul class="simple">
 <li><p><strong>INFO</strong> (20+ messages): Queue building up</p></li>
 <li><p><strong>WARNING</strong> (50+ messages): Queue getting backed up</p></li>

@@ -49,11 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a><ul>
@@ -384,7 +379,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -597,9 +591,9 @@
 <section id="system-requirements">
 <h2>System Requirements<a class="headerlink" href="#system-requirements" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><strong>Memory</strong> Minimum 4GB RAM, 8GB recommended</p></li>
-<li><p><strong>Storage</strong> 10GB free space for logs and data</p></li>
-<li><p><strong>Network</strong> Port 8000 (FastAPI) - other services run in Docker</p></li>
+<li><p><strong>Memory</strong>: Minimum 4GB RAM, 8GB recommended</p></li>
+<li><p><strong>Storage</strong>: 10GB free space for logs and data</p></li>
+<li><p><strong>Network</strong>: Port 8000 (FastAPI) - other services run in Docker</p></li>
 </ul>
 </section>
 <section id="installation-steps">
@@ -612,7 +606,7 @@
 </div>
 </li>
 <li><p><strong>Set up environment variables</strong></p>
-<p>Create a <cite>.env</cite> file:</p>
+<p>Create a <cite>.env</cite> file (see <a class="reference internal" href="configuration.html"><span class="doc">Configuration</span></a> for complete configuration options):</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development</span>
 <span class="nv">ENV_STATE</span><span class="o">=</span>dev
 <span class="nv">TEST_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@localhost:5432/watcher_test
@@ -636,29 +630,10 @@
 <h2>Verification<a class="headerlink" href="#verification" title="Link to this heading"></a></h2>
 <p>Once running, you can verify the local development installation:</p>
 <ul class="simple">
-<li><p><strong>API Documentation</strong> <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
-<li><p><strong>Health Check</strong> <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a></p></li>
-<li><p><strong>Diagnostics</strong> <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
+<li><p><strong>API Documentation</strong>: <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
+<li><p><strong>Health Check</strong>: <a class="reference external" href="http://localhost:8000/">http://localhost:8000/</a></p></li>
+<li><p><strong>Diagnostics</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a></p></li>
 </ul>
-</section>
-<section id="environment-variables">
-<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<section id="minimum-required-production-environment-variables">
-<h3>Minimum Required Production Environment Variables<a class="headerlink" href="#minimum-required-production-environment-variables" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_DATABASE_URL</span></code> - PostgreSQL connection string</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_REDIS_URL</span></code> - Redis connection string</p></li>
-</ul>
-</section>
-<section id="optional-environment-variables">
-<h3>Optional Environment Variables<a class="headerlink" href="#optional-environment-variables" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_LOGFIRE_TOKEN</span></code> - Logfire monitoring token</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_SLACK_WEBHOOK_URL</span></code> - Slack notifications for alerting</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES</span></code> - Auto-create rules (default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">PROD_PROFILING_ENABLED</span></code> - Enable profiling (default: false)</p></li>
-</ul>
-</section>
 </section>
 </section>
 

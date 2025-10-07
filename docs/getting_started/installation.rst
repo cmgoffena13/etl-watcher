@@ -10,9 +10,9 @@ Prerequisites
 System Requirements
 -------------------
 
-- **Memory** Minimum 4GB RAM, 8GB recommended
-- **Storage** 10GB free space for logs and data
-- **Network** Port 8000 (FastAPI) - other services run in Docker
+- **Memory**: Minimum 4GB RAM, 8GB recommended
+- **Storage**: 10GB free space for logs and data
+- **Network**: Port 8000 (FastAPI) - other services run in Docker
 
 Installation Steps
 ------------------
@@ -26,7 +26,7 @@ Installation Steps
 
 2. **Set up environment variables**
 
-   Create a `.env` file:
+   Create a `.env` file (see :doc:`configuration` for complete configuration options):
 
    .. code-block:: bash
 
@@ -50,23 +50,6 @@ Verification
 
 Once running, you can verify the local development installation:
 
-- **API Documentation** http://localhost:8000/scalar
-- **Health Check** http://localhost:8000/
-- **Diagnostics** http://localhost:8000/diagnostics
-
-Environment Variables
----------------------
-
-Minimum Required Production Environment Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- ``PROD_DATABASE_URL`` - PostgreSQL connection string
-- ``PROD_REDIS_URL`` - Redis connection string
-
-Optional Environment Variables
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-- ``PROD_LOGFIRE_TOKEN`` - Logfire monitoring token
-- ``PROD_SLACK_WEBHOOK_URL`` - Slack notifications for alerting
-- ``PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES`` - Auto-create rules (default: false)
-- ``PROD_PROFILING_ENABLED`` - Enable profiling (default: false)
+- **API Documentation**: http://localhost:8000/scalar
+- **Health Check**: http://localhost:8000/
+- **Diagnostics**: http://localhost:8000/diagnostics

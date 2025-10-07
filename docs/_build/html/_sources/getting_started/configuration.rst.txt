@@ -15,11 +15,11 @@ Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
-   # Monitoring
+   # Monitoring (optional)
    DEV_LOGFIRE_TOKEN=your_logfire_token_here
    DEV_LOGFIRE_CONSOLE=false
    
-   # Notifications
+   # Notifications (optional)
    DEV_SLACK_WEBHOOK_URL=your_slack_webhook_url_here
    
    # Features
@@ -31,10 +31,10 @@ Production Environment
 
 .. code-block:: bash
 
-   # Database
+   # Database (Dev has Docker Compose)
    PROD_DATABASE_URL=postgresql+asyncpg://user:password@prod-db:5432/watcher_prod
    
-   # Redis
+   # Redis (Dev has Docker Compose)
    PROD_REDIS_URL=redis://prod-redis:6379/1
    
    # Monitoring
@@ -110,10 +110,10 @@ Configure Slack webhooks for real-time alerts:
 
 Alert Types:
 
-- **Queue Monitoring** Celery queue depth alerts
-- **Anomaly Detection** Statistical anomaly alerts
-- **Timeliness** Pipeline execution timeliness alerts
-- **Freshness** DML operation freshness alerts
+- **Queue Monitoring**: Celery queue depth alerts
+- **Anomaly Detection**: Statistical anomaly alerts
+- **Timeliness**: Pipeline execution timeliness alerts
+- **Freshness**: DML operation freshness alerts
 
 Feature Flags
 -------------

@@ -238,30 +238,3 @@ Failed tasks include detailed error information:
        "max_retries": 3
      }
    }
-
-Queue Management
-----------------
-
-Alert Thresholds
-~~~~~~~~~~~~~~~~
-
-Configure alerts for queue issues:
-
-- **WARNING** (50+ messages): Queue getting backed up
-- **CRITICAL** (100+ messages): Queue severely backed up
-
-Example Alert
-~~~~~~~~~~~~
-
-.. code-block:: text
-
-   🚨 CRITICAL
-   Celery Queue Alert
-   Timestamp: 2025-09-28 06:04:26 UTC
-   Message: Queue has 2367 pending tasks
-   
-   Details:
-   • Messages in queue: 2367
-   • Scheduled tasks: 0
-   • Workers active: 2
-   • Queue: celery

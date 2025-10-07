@@ -49,11 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="quick_start.html">Quick Start Guide</a><ul>
@@ -384,7 +379,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -603,10 +597,10 @@
 </section>
 <section id="production-environment">
 <h3>Production Environment<a class="headerlink" href="#production-environment" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Database (Dev has Docker Compose)</span>
 <span class="nv">PROD_DATABASE_URL</span><span class="o">=</span>postgresql+asyncpg://user:password@prod-db:5432/watcher_prod
 
-<span class="c1"># Redis</span>
+<span class="c1"># Redis (Dev has Docker Compose)</span>
 <span class="nv">PROD_REDIS_URL</span><span class="o">=</span>redis://prod-redis:6379/1
 
 <span class="c1"># Monitoring</span>
@@ -686,10 +680,10 @@
 </ol>
 <p>Alert Types:</p>
 <ul class="simple">
-<li><p><strong>Queue Monitoring</strong> Celery queue depth alerts</p></li>
-<li><p><strong>Anomaly Detection</strong> Statistical anomaly alerts</p></li>
-<li><p><strong>Timeliness</strong> Pipeline execution timeliness alerts</p></li>
-<li><p><strong>Freshness</strong> DML operation freshness alerts</p></li>
+<li><p><strong>Queue Monitoring</strong>: Celery queue depth alerts</p></li>
+<li><p><strong>Anomaly Detection</strong>: Statistical anomaly alerts</p></li>
+<li><p><strong>Timeliness</strong>: Pipeline execution timeliness alerts</p></li>
+<li><p><strong>Freshness</strong>: DML operation freshness alerts</p></li>
 </ul>
 </section>
 </section>

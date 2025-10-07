@@ -49,11 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -115,11 +110,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 </ul>
@@ -381,8 +371,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
@@ -483,12 +472,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#many-to-many-relationships">Many-to-Many Relationships</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#schema-evolution">Schema Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#migration-strategy">Migration Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-best-practices">Migration Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#schema-maintenance">Schema Maintenance</a></li>
 </ul>
 </li>
 </ul>
@@ -884,36 +867,6 @@
 <li><p>Pipelines can have multiple executions</p></li>
 <li><p>Executions belong to one pipeline</p></li>
 <li><p>Foreign key: <cite>pipeline_id</cite></p></li>
-</ul>
-</section>
-</section>
-<section id="schema-evolution">
-<h2>Schema Evolution<a class="headerlink" href="#schema-evolution" title="Link to this heading"></a></h2>
-<section id="migration-strategy">
-<h3>Migration Strategy<a class="headerlink" href="#migration-strategy" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Alembic</strong> Database migration management</p></li>
-<li><p><strong>Version Control</strong> Track schema changes</p></li>
-<li><p><strong>Rollback Support</strong> Revert schema changes</p></li>
-<li><p><strong>Data Preservation</strong> Maintain data integrity</p></li>
-</ul>
-</section>
-<section id="migration-best-practices">
-<h3>Migration Best Practices<a class="headerlink" href="#migration-best-practices" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Backup First</strong> Always backup before migrations</p></li>
-<li><p><strong>Test Migrations</strong> Test in development first</p></li>
-<li><p><strong>Incremental Changes</strong> Small, focused migrations</p></li>
-<li><p><strong>Documentation</strong> Document schema changes</p></li>
-</ul>
-</section>
-<section id="schema-maintenance">
-<h3>Schema Maintenance<a class="headerlink" href="#schema-maintenance" title="Link to this heading"></a></h3>
-<ul class="simple">
-<li><p><strong>Regular Cleanup</strong> Remove unused tables/columns</p></li>
-<li><p><strong>Index Optimization</strong> Monitor and optimize indexes</p></li>
-<li><p><strong>Statistics Updates</strong> Keep statistics current</p></li>
-<li><p><strong>Performance Monitoring</strong> Track query performance</p></li>
 </ul>
 </section>
 </section>

@@ -43,7 +43,6 @@ Quick Start
    :maxdepth: 2
    :caption: API Reference
 
-   api/celery_tasks
    api/endpoints
    api/models
 
@@ -65,5 +64,5 @@ Quick Start
    :caption: Reference
 
    reference/architecture
+   reference/celery_tasks
    reference/database_schema
-   reference/migrations

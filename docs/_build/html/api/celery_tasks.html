@@ -49,11 +49,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -115,11 +110,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#task-status-tracking">Task Status Tracking</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#progress-updates">Progress Updates</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#example-alert">Example Alert</a></li>
 </ul>
 </li>
 </ul>
@@ -384,7 +374,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -790,32 +779,6 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 <span class="w">    </span><span class="nt">&quot;max_retries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="queue-management">
-<h2>Queue Management<a class="headerlink" href="#queue-management" title="Link to this heading"></a></h2>
-<section id="alert-thresholds">
-<h3>Alert Thresholds<a class="headerlink" href="#alert-thresholds" title="Link to this heading"></a></h3>
-<p>Configure alerts for queue issues:</p>
-<ul class="simple">
-<li><p><strong>WARNING</strong> (50+ messages): Queue getting backed up</p></li>
-<li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
-</ul>
-</section>
-<section id="example-alert">
-<h3>Example Alert<a class="headerlink" href="#example-alert" title="Link to this heading"></a></h3>
-<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
-Celery Queue Alert
-Timestamp: 2025-09-28 06:04:26 UTC
-Message: Queue has 2367 pending tasks
-
-Details:
-• Messages in queue: 2367
-• Scheduled tasks: 0
-• Workers active: 2
-• Queue: celery
 </pre></div>
 </div>
 </section>

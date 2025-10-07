@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Database Migrations &mdash; Watcher 1.0.0 documentation</title>
+  <title>Celery Tasks &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -18,8 +18,7 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Database Schema" href="database_schema.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -90,29 +89,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-types">Task Types</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-configuration">Task Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#retry-policies">Retry Policies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-handling">Error Handling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-management">Pipeline Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline">Create or Get Pipeline</a></li>
@@ -434,7 +410,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul class="current">
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#fastapi-framework">FastAPI Framework</a></li>
@@ -475,71 +451,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Database Migrations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#migration-files">Migration Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#current-migrations">Current Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-structure">Migration Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-commands">Migration Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#basic-commands">Basic Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-current-status">Check Current Status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#view-migration-history">View Migration History</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#run-migrations">Run Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rollback-migrations">Rollback Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-new-migration">Create New Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#advanced-commands">Advanced Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#show-sql-for-migration">Show SQL for Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#check-for-pending-migrations">Check for Pending Migrations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-best-practices">Migration Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#development-workflow">Development Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#create-migration">1. Create Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#edit-migration-file">2. Edit Migration File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#test-migration">3. Test Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#commit-changes">4. Commit Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#production-deployment">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pre-deployment">Pre-deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#post-deployment">Post-deployment</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-safety">Migration Safety</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#safe-operations">Safe Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#risky-operations">Risky Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#best-practices">Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rollback-strategy">Rollback Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#simple-rollbacks">Simple Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#complex-rollbacks">Complex Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rollback-testing">Rollback Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#production-management">Production Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#id1">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#rollback-production">Rollback Production</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-troubleshooting">Migration Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#common-issues">Common Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-conflicts">Migration Conflicts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#failed-migrations">Failed Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-corruption">Data Corruption</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#schema-drift">Schema Drift</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#migration-automation">Migration Automation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#docker-integration">Docker Integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-logging">Migration Logging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#migration-tracking">Migration Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#alerting">Alerting</a></li>
-</ul>
-</li>
-</ul>
-</li>
 </ul>
 
         </div>
@@ -556,9 +467,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Database Migrations</li>
+      <li class="breadcrumb-item active">Celery Tasks</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/reference/migrations.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/reference/celery_tasks.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -566,423 +477,211 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="database-migrations">
-<h1>Database Migrations<a class="headerlink" href="#database-migrations" title="Link to this heading"></a></h1>
-<p>Watcher uses Alembic for database migration management for these features:</p>
+  <section id="celery-tasks">
+<h1>Celery Tasks<a class="headerlink" href="#celery-tasks" title="Link to this heading"></a></h1>
+<p>This section documents all Celery background tasks in Watcher. Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.</p>
+<section id="task-types">
+<h2>Task Types<a class="headerlink" href="#task-types" title="Link to this heading"></a></h2>
+<section id="detect-anomalies-task">
+<h3>detect_anomalies_task<a class="headerlink" href="#detect-anomalies-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Statistical analysis of pipeline execution patterns</p>
+<p><strong>Rate Limit</strong> 15/s</p>
+<p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><strong>Version Control</strong> Track schema changes over time</p></li>
-<li><p><strong>Rollback Support</strong> Revert schema changes when needed</p></li>
-<li><p><strong>Data Preservation</strong> Maintain data integrity during changes</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID to analyze</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_execution_id</span></code> (int): Execution ID to analyze</p></li>
 </ul>
-<section id="migration-files">
-<h2>Migration Files<a class="headerlink" href="#migration-files" title="Link to this heading"></a></h2>
-<section id="current-migrations">
-<h3>Current Migrations<a class="headerlink" href="#current-migrations" title="Link to this heading"></a></h3>
-<p><strong>Initial Migration</strong> (20251005124405_initial.py):</p>
+<p><strong>Description</strong>
+Automatically triggered after each successful pipeline execution. Performs statistical analysis on pipeline metrics to detect anomalies using z-score analysis.</p>
+<p><strong>Retry Policy</strong></p>
 <ul class="simple">
-<li><p>Creates all core tables and relationships</p></li>
-<li><p>Establishes complete database schema for Watcher</p></li>
-<li><p>Sets up indexes, constraints, and foreign keys</p></li>
-<li><p>Creates custom PostgreSQL enums (DatePartEnum, AnomalyMetricFieldEnum)</p></li>
-<li><p>Establishes closure tables for hierarchical relationships</p></li>
-<li><p>Sets up anomaly detection and monitoring infrastructure</p></li>
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
 </ul>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_anomalies_task</span>
+
+<span class="c1"># Trigger anomaly detection</span>
+<span class="n">detect_anomalies_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">pipeline_execution_id</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+</pre></div>
+</div>
 </section>
-<section id="what-the-initial-migration-establishes">
-<h3>What the Initial Migration Establishes<a class="headerlink" href="#what-the-initial-migration-establishes" title="Link to this heading"></a></h3>
-<p>The initial migration creates the complete Watcher database schema:</p>
-<p><strong>Core Tables:</strong></p>
+<section id="freshness-check-task">
+<h3>freshness_check_task<a class="headerlink" href="#freshness-check-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> DML operation monitoring and data staleness detection</p>
+<p><strong>Rate Limit</strong> 1/s</p>
+<p><strong>Parameters</strong> None</p>
+<p><strong>Description</strong>
+Monitors data modification operations (inserts, updates, soft deletes) to detect stale data. Checks when data was last modified and alerts if it’s older than expected.</p>
+<p><strong>Retry Policy</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">address_type</span></code> - Address type definitions (database, table, etc.)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type</span></code> - Pipeline type definitions with monitoring configuration</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">address</span></code> - Data source and target addresses</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline</span></code> - Pipeline definitions with lineage and monitoring settings</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_execution</span></code> - Pipeline execution records with performance metrics</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage</span></code> - Data lineage relationships between addresses</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">anomaly_detection_rule</span></code> - Anomaly detection configuration</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">anomaly_detection_result</span></code> - Anomaly detection results</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">freshness_pipeline_log</span></code> - Freshness monitoring logs</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">timeliness_pipeline_execution_log</span></code> - Timeliness monitoring logs</p></li>
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
 </ul>
-<p><strong>Closure Tables:</strong></p>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">freshness_check_task</span>
+
+<span class="c1"># Trigger freshness check</span>
+<span class="n">freshness_check_task</span><span class="o">.</span><span class="n">delay</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="timeliness-check-task">
+<h3>timeliness_check_task<a class="headerlink" href="#timeliness-check-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Pipeline execution timing validation</p>
+<p><strong>Rate Limit</strong> 1/s</p>
+<p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">address_lineage_closure</span></code> - Hierarchical address lineage relationships</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_execution_closure</span></code> - Hierarchical pipeline execution relationships</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lookback_minutes</span></code> (int): How far back to look for executions (default: 60)</p></li>
 </ul>
-<p><strong>Custom Enums:</strong></p>
+<p><strong>Description</strong>
+Validates that pipeline executions are completing within expected timeframes. Compares actual execution times against configured timeliness thresholds.</p>
+<p><strong>Retry Policy</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DatePartEnum</span></code> - Time period enums (MINUTE, HOUR, DAY, WEEK, MONTH, YEAR)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">AnomalyMetricFieldEnum</span></code> - Anomaly detection metric fields</p></li>
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
 </ul>
-<p><strong>Key Features Established:</strong></p>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">timeliness_check_task</span>
+
+<span class="c1"># Trigger timeliness check</span>
+<span class="n">timeliness_check_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span><span class="n">lookback_minutes</span><span class="o">=</span><span class="mi">120</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="address-lineage-closure-rebuild-task">
+<h3>address_lineage_closure_rebuild_task<a class="headerlink" href="#address-lineage-closure-rebuild-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Rebuild address lineage closure table relationships</p>
+<p><strong>Rate Limit</strong> 5/s</p>
+<p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p>Complete data lineage tracking system</p></li>
-<li><p>Anomaly detection infrastructure</p></li>
-<li><p>Freshness and timeliness monitoring</p></li>
-<li><p>Hierarchical execution relationships</p></li>
-<li><p>Performance metrics collection</p></li>
-<li><p>Comprehensive indexing for query optimization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">connected_addresses</span></code> (List[int]): List of address IDs to rebuild</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID for context</p></li>
 </ul>
-</section>
-<section id="migration-structure">
-<h3>Migration Structure<a class="headerlink" href="#migration-structure" title="Link to this heading"></a></h3>
-<p>Each migration file contains:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Union</span>
-<span class="kn">import</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sa</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">alembic</span><span class="w"> </span><span class="kn">import</span> <span class="n">op</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.dialects</span><span class="w"> </span><span class="kn">import</span> <span class="n">postgresql</span>
-
-<span class="n">revision</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;20250128000000&quot;</span>
-<span class="n">down_revision</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;20250927222116&quot;</span>
-<span class="n">branch_labels</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="n">depends_on</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">upgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># Migration logic here</span>
-    <span class="k">pass</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">downgrade</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="c1"># Rollback logic here</span>
-    <span class="k">pass</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="migration-commands">
-<h2>Migration Commands<a class="headerlink" href="#migration-commands" title="Link to this heading"></a></h2>
-<section id="basic-commands">
-<h3>Basic Commands<a class="headerlink" href="#basic-commands" title="Link to this heading"></a></h3>
-</section>
-<section id="check-current-status">
-<h3>Check Current Status<a class="headerlink" href="#check-current-status" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>current
-</pre></div>
-</div>
-</section>
-<section id="view-migration-history">
-<h3>View Migration History<a class="headerlink" href="#view-migration-history" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span><span class="nb">history</span>
-</pre></div>
-</div>
-</section>
-<section id="run-migrations">
-<h3>Run Migrations<a class="headerlink" href="#run-migrations" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="rollback-migrations">
-<h3>Rollback Migrations<a class="headerlink" href="#rollback-migrations" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-</pre></div>
-</div>
-</section>
-<section id="create-new-migration">
-<h3>Create New Migration<a class="headerlink" href="#create-new-migration" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>revision<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Description of changes&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="advanced-commands">
-<h3>Advanced Commands<a class="headerlink" href="#advanced-commands" title="Link to this heading"></a></h3>
-</section>
-<section id="upgrade-to-specific-version">
-<h3>Upgrade to Specific Version<a class="headerlink" href="#upgrade-to-specific-version" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span><span class="m">20250128000000</span>
-</pre></div>
-</div>
-</section>
-<section id="downgrade-to-specific-version">
-<h3>Downgrade to Specific Version<a class="headerlink" href="#downgrade-to-specific-version" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>downgrade<span class="w"> </span><span class="m">20250909185058</span>
-</pre></div>
-</div>
-</section>
-<section id="show-sql-for-migration">
-<h3>Show SQL for Migration<a class="headerlink" href="#show-sql-for-migration" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head<span class="w"> </span>--sql
-</pre></div>
-</div>
-</section>
-<section id="check-for-pending-migrations">
-<h3>Check for Pending Migrations<a class="headerlink" href="#check-for-pending-migrations" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>check
-</pre></div>
-</div>
-</section>
-</section>
-<section id="migration-best-practices">
-<h2>Migration Best Practices<a class="headerlink" href="#migration-best-practices" title="Link to this heading"></a></h2>
-<section id="development-workflow">
-<h3>Development Workflow<a class="headerlink" href="#development-workflow" title="Link to this heading"></a></h3>
-</section>
-<section id="create-migration">
-<h3>1. Create Migration<a class="headerlink" href="#create-migration" title="Link to this heading"></a></h3>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>revision<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new table&quot;</span>
-</pre></div>
-</div>
-</div></blockquote>
-</section>
-<section id="edit-migration-file">
-<h3>2. Edit Migration File<a class="headerlink" href="#edit-migration-file" title="Link to this heading"></a></h3>
-<blockquote>
-<div><ul class="simple">
-<li><p>Add upgrade logic</p></li>
-<li><p>Add downgrade logic</p></li>
-<li><p>Test migration locally</p></li>
-</ul>
-</div></blockquote>
-</section>
-<section id="test-migration">
-<h3>3. Test Migration<a class="headerlink" href="#test-migration" title="Link to this heading"></a></h3>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</div></blockquote>
-</section>
-<section id="commit-changes">
-<h3>4. Commit Changes<a class="headerlink" href="#commit-changes" title="Link to this heading"></a></h3>
-<blockquote>
-<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>migrations/
-git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Add new table migration&quot;</span>
-</pre></div>
-</div>
-</div></blockquote>
-</section>
-<section id="production-deployment">
-<h3>Production Deployment<a class="headerlink" href="#production-deployment" title="Link to this heading"></a></h3>
-</section>
-<section id="pre-deployment">
-<h3>Pre-deployment<a class="headerlink" href="#pre-deployment" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup database</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Test migration</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head<span class="w"> </span>--sql
-
-<span class="c1"># Run migration</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="post-deployment">
-<h3>Post-deployment<a class="headerlink" href="#post-deployment" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Verify migration</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Check application</span>
-curl<span class="w"> </span>http://localhost:8000
-</pre></div>
-</div>
-</section>
-</section>
-<section id="migration-safety">
-<h2>Migration Safety<a class="headerlink" href="#migration-safety" title="Link to this heading"></a></h2>
-<section id="safe-operations">
-<h3>Safe Operations<a class="headerlink" href="#safe-operations" title="Link to this heading"></a></h3>
+<p><strong>Description</strong>
+Maintains the closure table for address lineage relationships. Rebuilds the transitive closure when new lineage relationships are created.</p>
+<p><strong>Retry Policy</strong></p>
 <ul class="simple">
-<li><p>Adding new columns with defaults</p></li>
-<li><p>Adding new tables</p></li>
-<li><p>Adding indexes</p></li>
-<li><p>Adding constraints (with validation)</p></li>
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
 </ul>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">address_lineage_closure_rebuild_task</span>
+
+<span class="c1"># Rebuild closure table</span>
+<span class="n">address_lineage_closure_rebuild_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span>
+    <span class="n">connected_addresses</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="mi">1</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
-<section id="risky-operations">
-<h3>Risky Operations<a class="headerlink" href="#risky-operations" title="Link to this heading"></a></h3>
+<section id="pipeline-execution-closure-maintain-task">
+<h3>pipeline_execution_closure_maintain_task<a class="headerlink" href="#pipeline-execution-closure-maintain-task" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Maintain pipeline execution hierarchy closure table</p>
+<p><strong>Rate Limit</strong> 10/s</p>
+<p><strong>Parameters</strong></p>
 <ul class="simple">
-<li><p>Dropping columns</p></li>
-<li><p>Changing column types</p></li>
-<li><p>Dropping tables</p></li>
-<li><p>Modifying constraints</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int): Execution ID to maintain</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int, optional): Parent execution ID</p></li>
 </ul>
-</section>
-<section id="best-practices">
-<h3>Best Practices<a class="headerlink" href="#best-practices" title="Link to this heading"></a></h3>
+<p><strong>Description</strong>
+Maintains the closure table for pipeline execution hierarchies. Automatically triggered when new pipeline executions are created to track parent-child relationships.</p>
+<p><strong>Retry Policy</strong></p>
 <ul class="simple">
-<li><p>Always backup before migrations</p></li>
-<li><p>Test migrations in development</p></li>
-<li><p>Use transactions for complex changes</p></li>
-<li><p>Validate data after migrations</p></li>
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 30 seconds</p></li>
+<li><p>Exponential backoff</p></li>
 </ul>
+<p><strong>Example</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">src.celery_tasks</span><span class="w"> </span><span class="kn">import</span> <span class="n">pipeline_execution_closure_maintain_task</span>
+
+<span class="c1"># Maintain execution hierarchy</span>
+<span class="n">pipeline_execution_closure_maintain_task</span><span class="o">.</span><span class="n">delay</span><span class="p">(</span>
+    <span class="n">execution_id</span><span class="o">=</span><span class="mi">123</span><span class="p">,</span>
+    <span class="n">parent_id</span><span class="o">=</span><span class="mi">122</span>
+<span class="p">)</span>
+</pre></div>
+</div>
 </section>
-<section id="rollback-strategy">
-<h3>Rollback Strategy<a class="headerlink" href="#rollback-strategy" title="Link to this heading"></a></h3>
 </section>
-<section id="simple-rollbacks">
-<h3>Simple Rollbacks<a class="headerlink" href="#simple-rollbacks" title="Link to this heading"></a></h3>
+<section id="task-configuration">
+<h2>Task Configuration<a class="headerlink" href="#task-configuration" title="Link to this heading"></a></h2>
+<section id="rate-limiting">
+<h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
+<p>All tasks have configurable rate limits to prevent system overload:</p>
 <ul class="simple">
-<li><p>Column additions</p></li>
-<li><p>Table additions</p></li>
-<li><p>Index additions</p></li>
+<li><p><strong>detect_anomalies_task</strong> 15/s (high frequency for real-time analysis)</p></li>
+<li><p><strong>freshness_check_task</strong> 1/s (low frequency for periodic checks)</p></li>
+<li><p><strong>timeliness_check_task</strong> 1/s (low frequency for periodic checks)</p></li>
+<li><p><strong>address_lineage_closure_rebuild_task</strong> 5/s (medium frequency for maintenance)</p></li>
+<li><p><strong>pipeline_execution_closure_maintain_task</strong> 10/s (medium frequency for hierarchy maintenance)</p></li>
 </ul>
 </section>
-<section id="complex-rollbacks">
-<h3>Complex Rollbacks<a class="headerlink" href="#complex-rollbacks" title="Link to this heading"></a></h3>
+<section id="retry-policies">
+<h3>Retry Policies<a class="headerlink" href="#retry-policies" title="Link to this heading"></a></h3>
+<p>All tasks implement retry policies with exponential backoff:</p>
 <ul class="simple">
-<li><p>Data transformations</p></li>
-<li><p>Constraint changes</p></li>
-<li><p>Schema restructuring</p></li>
+<li><p><strong>Max Retries</strong> 3 attempts</p></li>
+<li><p><strong>Base Delay</strong> 30-60 seconds depending on task type</p></li>
+<li><p><strong>Exponential Backoff</strong> Delay increases with each retry</p></li>
+<li><p><strong>Final Failure</strong> Task marked as failed after max retries</p></li>
 </ul>
 </section>
-<section id="rollback-testing">
-<h3>Rollback Testing<a class="headerlink" href="#rollback-testing" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Test rollback</span>
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-
-<span class="c1"># Verify data integrity</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
+<section id="error-handling">
+<h3>Error Handling<a class="headerlink" href="#error-handling" title="Link to this heading"></a></h3>
+<p>Tasks include comprehensive error handling:</p>
+<ul class="simple">
+<li><p><strong>Database Errors</strong> Connection issues, constraint violations</p></li>
+<li><p><strong>Validation Errors</strong> Invalid input parameters</p></li>
+<li><p><strong>Timeout Errors</strong> Long-running operations</p></li>
+<li><p><strong>System Errors</strong> Memory, disk, or network issues</p></li>
+</ul>
+</section>
+</section>
+<section id="task-monitoring">
+<h2>Task Monitoring<a class="headerlink" href="#task-monitoring" title="Link to this heading"></a></h2>
+<section id="task-status-tracking">
+<h3>Task Status Tracking<a class="headerlink" href="#task-status-tracking" title="Link to this heading"></a></h3>
+<p>Each task provides status updates during execution:</p>
+<ul class="simple">
+<li><p><strong>PENDING</strong> Task queued, waiting for worker</p></li>
+<li><p><strong>PROGRESS</strong> Task running, with progress updates</p></li>
+<li><p><strong>SUCCESS</strong> Task completed successfully</p></li>
+<li><p><strong>FAILURE</strong> Task failed with error details</p></li>
+<li><p><strong>RETRY</strong> Task failed, will retry</p></li>
+</ul>
+</section>
+<section id="progress-updates">
+<h3>Progress Updates<a class="headerlink" href="#progress-updates" title="Link to this heading"></a></h3>
+<p>Tasks provide detailed progress information:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing anomaly detection...&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;current_step&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Calculating z-scores&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
-</section>
-<section id="production-management">
-<h2>Production Management<a class="headerlink" href="#production-management" title="Link to this heading"></a></h2>
-<section id="id1">
-<h3>Production Deployment<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Set production database</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">DATABASE_URL</span><span class="o">=</span><span class="s2">&quot;postgresql+asyncpg://user:password@prod-db:5432/watcher_prod&quot;</span>
-
-<span class="c1"># Backup database</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>.sql
-
-<span class="c1"># Run migrations</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-
-<span class="c1"># Verify migration</span>
-alembic<span class="w"> </span>current
-</pre></div>
-</div>
-</section>
-<section id="rollback-production">
-<h3>Rollback Production<a class="headerlink" href="#rollback-production" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rollback migration</span>
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-
-<span class="c1"># Verify rollback</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Check application</span>
-curl<span class="w"> </span>http://localhost:8000
-</pre></div>
-</div>
-</section>
-</section>
-<section id="migration-troubleshooting">
-<h2>Migration Troubleshooting<a class="headerlink" href="#migration-troubleshooting" title="Link to this heading"></a></h2>
-<section id="common-issues">
-<h3>Common Issues<a class="headerlink" href="#common-issues" title="Link to this heading"></a></h3>
-</section>
-<section id="migration-conflicts">
-<h3>Migration Conflicts<a class="headerlink" href="#migration-conflicts" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for conflicts</span>
-alembic<span class="w"> </span>check
-
-<span class="c1"># Resolve conflicts</span>
-alembic<span class="w"> </span>merge<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Resolve conflicts&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="failed-migrations">
-<h3>Failed Migrations<a class="headerlink" href="#failed-migrations" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check migration status</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Check migration history</span>
-alembic<span class="w"> </span><span class="nb">history</span>
-
-<span class="c1"># Rollback failed migration</span>
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-
-<span class="c1"># Fix migration file</span>
-<span class="c1"># Re-run migration</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="data-corruption">
-<h3>Data Corruption<a class="headerlink" href="#data-corruption" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore from backup</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Re-run migrations</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="schema-drift">
-<h3>Schema Drift<a class="headerlink" href="#schema-drift" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check schema drift</span>
-alembic<span class="w"> </span>check
-
-<span class="c1"># Generate new migration</span>
-alembic<span class="w"> </span>revision<span class="w"> </span>--autogenerate<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Fix schema drift&quot;</span>
-
-<span class="c1"># Review generated migration</span>
-<span class="c1"># Run migration</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-</section>
-<section id="migration-automation">
-<h2>Migration Automation<a class="headerlink" href="#migration-automation" title="Link to this heading"></a></h2>
-<section id="github-actions">
-<h3>GitHub Actions<a class="headerlink" href="#github-actions" title="Link to this heading"></a></h3>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="p p-Indicator">-</span><span class="w"> </span><span class="nt">name</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">Run Database Migrations</span>
-<span class="w">  </span><span class="nt">run</span><span class="p">:</span><span class="w"> </span><span class="p p-Indicator">|</span>
-<span class="w">    </span><span class="no">alembic upgrade head</span>
-<span class="w">    </span><span class="no">alembic current</span>
-</pre></div>
-</div>
-</section>
-<section id="docker-integration">
-<h3>Docker Integration<a class="headerlink" href="#docker-integration" title="Link to this heading"></a></h3>
-<div class="highlight-dockerfile notranslate"><div class="highlight"><pre><span></span><span class="c"># Run migrations in Docker</span>
-<span class="k">RUN</span><span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="migration-logging">
-<h3>Migration Logging<a class="headerlink" href="#migration-logging" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Enable migration logging</span>
-<span class="nb">export</span><span class="w"> </span><span class="nv">ALEMBIC_LOG_LEVEL</span><span class="o">=</span>INFO
-
-<span class="c1"># Run migrations with logging</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="migration-tracking">
-<h3>Migration Tracking<a class="headerlink" href="#migration-tracking" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Track migration history</span>
-alembic<span class="w"> </span><span class="nb">history</span>
-
-<span class="c1"># Check migration status</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Monitor migration performance</span>
-<span class="nb">time</span><span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="alerting">
-<h3>Alerting<a class="headerlink" href="#alerting" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check for failed migrations</span>
-<span class="k">if</span><span class="w"> </span>!<span class="w"> </span>alembic<span class="w"> </span>upgrade<span class="w"> </span>head<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Migration failed&quot;</span>
-<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
-<span class="k">fi</span>
-
-<span class="c1"># Check for pending migrations</span>
-<span class="k">if</span><span class="w"> </span>alembic<span class="w"> </span>check<span class="p">;</span><span class="w"> </span><span class="k">then</span>
-<span class="w">  </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;Pending migrations found&quot;</span>
-<span class="w">  </span><span class="nb">exit</span><span class="w"> </span><span class="m">1</span>
-<span class="k">fi</span>
+<section id="error-details">
+<h3>Error Details<a class="headerlink" href="#error-details" title="Link to this heading"></a></h3>
+<p>Failed tasks include detailed error information:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAILURE&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;exc_type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DatabaseError&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;exc_message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Connection timeout&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;retry_count&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;max_retries&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
 </pre></div>
 </div>
 </section>
@@ -992,9 +691,7 @@ alembic<span class="w"> </span>current
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="database_schema.html" class="btn btn-neutral float-left" title="Database Schema" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-    </div>
+          <footer>
 
   <hr/>
 

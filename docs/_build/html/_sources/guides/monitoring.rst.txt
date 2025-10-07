@@ -259,11 +259,8 @@ Trigger timeliness checks with lookback period:
 
 **Lookback Period** How far back to look for executions (in minutes)
 
-Queue Monitoring
-----------------
-
 Celery Queue Monitoring
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
 
 Monitor Celery queue health and performance:
 
@@ -342,7 +339,7 @@ Monitor Celery queue health and performance:
 Alert Thresholds
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Configure alert thresholds for queue monitoring:
+Default alert thresholds for Celery queue monitoring:
 
 - **INFO** (20+ messages): Queue building up
 - **WARNING** (50+ messages): Queue getting backed up

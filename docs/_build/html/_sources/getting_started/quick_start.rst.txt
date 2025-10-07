@@ -809,7 +809,11 @@ Step 6: Web Pages
 Next Steps
 ----------
 
-- **Set up scheduled monitoring** Configure cron jobs to ping the monitoring endpoints
-- **Configure Slack alerts** Add your Slack webhook URL for notifications
-- **Set up anomaly detection rules** Create rules for your specific metrics
-- **Explore the web pages** Monitor system health & performance and access reporting dashboard
+- **Set up scheduled monitoring**: Configure cron jobs to ping the monitoring endpoints 
+    - (see :doc:`../guides/monitoring` - "Scheduled Monitoring" section)
+- **Configure Slack alerts**: Add your Slack webhook URL for notifications 
+    - (see :doc:`../guides/monitoring` - "Slack Integration" section)
+- **Set up anomaly detection rules**: Create rules for your specific metrics 
+    - (see :doc:`../guides/anomaly_detection` - "Creating Detection Rules" section)
+- **Explore the web pages**: Monitor system health & performance and access reporting dashboard 
+    - (see :doc:`../api/endpoints` - "Diagnostics Web Page" and "Reporting Dashboard Web Page" sections)
