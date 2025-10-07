@@ -126,7 +126,6 @@ Here's a complete example of using watermarks in a pipeline:
    # Step 5: End execution (watermark automatically updated)
    await client.post("/end_pipeline_execution", json={
        "id": execution_id,
-       "pipeline_id": 1,
        "end_date": pendulum.now("UTC").isoformat(),
        "completed_successfully": True,
        "total_rows": 180

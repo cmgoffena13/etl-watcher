@@ -22,7 +22,6 @@ class PipelineExecutionStartOutput(ValidatorModel):
 
 class PipelineExecutionEndInput(ValidatorModel):
     id: int
-    pipeline_id: int
     end_date: DateTime
     completed_successfully: bool = Field(default=True)
     inserts: Optional[int] = Field(default=None, ge=0)

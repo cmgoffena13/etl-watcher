@@ -51,11 +51,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -98,34 +93,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-types">Task Types</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-configuration">Task Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#retry-policies">Retry Policies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-handling">Error Handling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-management">Pipeline Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline">Create or Get Pipeline</a></li>
@@ -256,7 +223,6 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="address_lineage.html">Address Lineage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="address_lineage.html#understanding-address-lineage">Understanding Address Lineage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="address_lineage.html#source-controlled-lineage">Source-Controlled Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_lineage.html#creating-lineage-relationships">Creating Lineage Relationships</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_lineage.html#querying-lineage">Querying Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="address_lineage.html#closure-table-pattern">Closure Table Pattern</a></li>
@@ -383,10 +349,8 @@
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -461,6 +425,29 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#performance-design-goals">Performance Design Goals</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-details">Error Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
@@ -486,77 +473,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#schema-evolution">Schema Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-strategy">Migration Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-best-practices">Migration Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#schema-maintenance">Schema Maintenance</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-files">Migration Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#current-migrations">Current Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-structure">Migration Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-commands">Migration Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#basic-commands">Basic Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-current-status">Check Current Status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#view-migration-history">View Migration History</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#run-migrations">Run Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-migrations">Rollback Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-new-migration">Create New Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#advanced-commands">Advanced Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#show-sql-for-migration">Show SQL for Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-for-pending-migrations">Check for Pending Migrations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-best-practices">Migration Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#development-workflow">Development Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-migration">1. Create Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#edit-migration-file">2. Edit Migration File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#test-migration">3. Test Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#commit-changes">4. Commit Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#production-deployment">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#pre-deployment">Pre-deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#post-deployment">Post-deployment</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-safety">Migration Safety</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#safe-operations">Safe Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#risky-operations">Risky Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#best-practices">Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-strategy">Rollback Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#simple-rollbacks">Simple Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#complex-rollbacks">Complex Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-testing">Rollback Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#production-management">Production Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#id1">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-production">Rollback Production</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-troubleshooting">Migration Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#common-issues">Common Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-conflicts">Migration Conflicts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#failed-migrations">Failed Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#data-corruption">Data Corruption</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#schema-drift">Schema Drift</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-automation">Migration Automation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#docker-integration">Docker Integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-logging">Migration Logging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-tracking">Migration Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#alerting">Alerting</a></li>
 </ul>
 </li>
 </ul>
@@ -886,7 +802,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </sp
 <span class="c1"># End execution</span>
 <span class="n">end_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">execution_id</span><span class="p">,</span>
-    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
     <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
     <span class="s2">&quot;total_rows&quot;</span><span class="p">:</span> <span class="mi">10000</span><span class="p">,</span>
@@ -923,7 +838,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;id&quot;: 1,</span>
-<span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;end_date&quot;: &quot;2024-01-01T10:05:00Z&quot;,</span>
 <span class="s1">       &quot;completed_successfully&quot;: true,</span>
 <span class="s1">       &quot;total_rows&quot;: 10000,</span>
@@ -1044,7 +958,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">        </span><span class="c1">// End execution</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">endJson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">executionId</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;end_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:05:00Z&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;completed_successfully&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;total_rows&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">10000</span><span class="p">,</span>

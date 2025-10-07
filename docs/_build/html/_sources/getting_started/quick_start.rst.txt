@@ -204,7 +204,6 @@ Step 2: Start a Pipeline Execution
             
             response = httpx.post("http://localhost:8000/end_pipeline_execution", json={
                 "id": 1,
-                "pipeline_id": 1,
                 "end_date": "2024-01-01T10:05:00Z",
                 "completed_successfully": True,
                 "total_rows": 1000,
@@ -222,7 +221,6 @@ Step 2: Start a Pipeline Execution
                  -H "Content-Type: application/json" \
                  -d '{
                    "id": 1,
-                   "pipeline_id": 1,
                    "end_date": "2024-01-01T10:05:00Z",
                    "completed_successfully": true,
                    "total_rows": 1000,
@@ -246,7 +244,6 @@ Step 2: Start a Pipeline Execution
 
             type EndExecutionRequest struct {
                 ID                   int  `json:"id"`
-                PipelineID           int  `json:"pipeline_id"`
                 EndDate              string `json:"end_date"`
                 CompletedSuccessfully bool `json:"completed_successfully"`
                 TotalRows            int  `json:"total_rows"`
@@ -258,7 +255,6 @@ Step 2: Start a Pipeline Execution
             func main() {
                 data := EndExecutionRequest{
                     ID:                   1,
-                    PipelineID:           1,
                     EndDate:              "2024-01-01T10:05:00Z",
                     CompletedSuccessfully: true,
                     TotalRows:            1000,
@@ -291,7 +287,6 @@ Step 2: Start a Pipeline Execution
                     
                     val json = Json.obj(
                         "id" -> 1,
-                        "pipeline_id" -> 1,
                         "end_date" -> "2024-01-01T10:05:00Z",
                         "completed_successfully" -> true,
                         "total_rows" -> 1000,

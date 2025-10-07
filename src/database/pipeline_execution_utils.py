@@ -39,7 +39,7 @@ async def db_start_pipeline_execution(
 async def db_end_pipeline_execution(
     pipeline_execution: PipelineExecutionEndInput,
     session: Session,
-) -> None:
+) -> int:
     pipeline_execution = PipelineExecution(
         **pipeline_execution.model_dump(exclude_unset=True)
     )
@@ -115,6 +115,8 @@ async def db_end_pipeline_execution(
             )
         )
         await session.exec(pipeline_update_stmt)
+
+    return pipeline_id
 
 
 async def db_maintain_pipeline_execution_closure_table(

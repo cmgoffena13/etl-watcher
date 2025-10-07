@@ -44,13 +44,13 @@ async def end_pipeline_execution(
     pipeline_execution: PipelineExecutionEndInput,
     session: SessionDep,
 ):
-    await db_end_pipeline_execution(
+    pipeline_id = await db_end_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
     )
 
     # Queue anomaly detection as a Celery task for faster response
     if pipeline_execution.completed_successfully:
         detect_anomalies_task.delay(
-            pipeline_id=pipeline_execution.pipeline_id,
+            pipeline_id=pipeline_id,
             pipeline_execution_id=pipeline_execution.id,
         )

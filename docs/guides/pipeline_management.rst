@@ -339,7 +339,6 @@ Starting and Ending Executions
          # End execution
          end_data = {
              "id": execution_id,
-             "pipeline_id": 1,
              "end_date": "2024-01-01T10:05:00Z",
              "completed_successfully": True,
              "total_rows": 10000,
@@ -379,7 +378,6 @@ Starting and Ending Executions
               -H "Content-Type: application/json" \
               -d '{
                 "id": 1,
-                "pipeline_id": 1,
                 "end_date": "2024-01-01T10:05:00Z",
                 "completed_successfully": true,
                 "total_rows": 10000,
@@ -506,7 +504,6 @@ Starting and Ending Executions
                  // End execution
                  val endJson = Json.obj(
                      "id" -> executionId,
-                     "pipeline_id" -> 1,
                      "end_date" -> "2024-01-01T10:05:00Z",
                      "completed_successfully" -> true,
                      "total_rows" -> 10000,

@@ -387,7 +387,6 @@ End Pipeline Execution
 
       {
         "id": 1,
-        "pipeline_id": 1,
         "end_date": "2024-01-01T10:05:00Z",
         "completed_successfully": true,
         "total_rows": 1000,
@@ -402,7 +401,6 @@ End Pipeline Execution
    **Request Body Fields:**
 
    - ``id`` (int): Pipeline execution ID (required)
-   - ``pipeline_id`` (int): Pipeline ID (required)
    - ``end_date`` (string): End timestamp (ISO 8601, required)
    - ``completed_successfully`` (bool): Whether execution completed successfully (optional)
    - ``total_rows`` (int): Total rows processed (optional, ≥0)
