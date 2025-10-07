@@ -15,6 +15,7 @@ Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. code-block:: bash
+   
    # Monitoring (optional)
    DEV_LOGFIRE_TOKEN=your_logfire_token_here
    DEV_LOGFIRE_CONSOLE=false
