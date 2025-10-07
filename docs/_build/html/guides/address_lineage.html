@@ -51,11 +51,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -98,34 +93,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-types">Task Types</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-configuration">Task Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#retry-policies">Retry Policies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-handling">Error Handling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-management">Pipeline Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline">Create or Get Pipeline</a></li>
@@ -256,7 +223,6 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Address Lineage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#understanding-address-lineage">Understanding Address Lineage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#source-controlled-lineage">Source-Controlled Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-lineage-relationships">Creating Lineage Relationships</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#querying-lineage">Querying Lineage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#closure-table-pattern">Closure Table Pattern</a></li>
@@ -383,10 +349,8 @@
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -461,6 +425,29 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#performance-design-goals">Performance Design Goals</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-details">Error Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
@@ -486,77 +473,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#schema-evolution">Schema Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-strategy">Migration Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#migration-best-practices">Migration Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#schema-maintenance">Schema Maintenance</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/migrations.html">Database Migrations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-files">Migration Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#current-migrations">Current Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-structure">Migration Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-commands">Migration Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#basic-commands">Basic Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-current-status">Check Current Status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#view-migration-history">View Migration History</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#run-migrations">Run Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-migrations">Rollback Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-new-migration">Create New Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#advanced-commands">Advanced Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#show-sql-for-migration">Show SQL for Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#check-for-pending-migrations">Check for Pending Migrations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-best-practices">Migration Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#development-workflow">Development Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#create-migration">1. Create Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#edit-migration-file">2. Edit Migration File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#test-migration">3. Test Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#commit-changes">4. Commit Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#production-deployment">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#pre-deployment">Pre-deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#post-deployment">Post-deployment</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-safety">Migration Safety</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#safe-operations">Safe Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#risky-operations">Risky Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#best-practices">Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-strategy">Rollback Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#simple-rollbacks">Simple Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#complex-rollbacks">Complex Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-testing">Rollback Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#production-management">Production Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#id1">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#rollback-production">Rollback Production</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-troubleshooting">Migration Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#common-issues">Common Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-conflicts">Migration Conflicts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#failed-migrations">Failed Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#data-corruption">Data Corruption</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#schema-drift">Schema Drift</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/migrations.html#migration-automation">Migration Automation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#docker-integration">Docker Integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-logging">Migration Logging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#migration-tracking">Migration Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../reference/migrations.html#alerting">Alerting</a></li>
 </ul>
 </li>
 </ul>
@@ -598,57 +514,7 @@
 <li><p><strong>Lineage Relationships</strong>: Create and maintain data flow relationships between sources and targets</p></li>
 <li><p><strong>Closure Table Pattern</strong>: Efficient querying of complex lineage hierarchies with depth tracking</p></li>
 <li><p><strong>Source Control Integration</strong>: Store lineage definitions in version control for reproducibility</p></li>
-</ul>
-</section>
-<section id="source-controlled-lineage">
-<h2>Source-Controlled Lineage<a class="headerlink" href="#source-controlled-lineage" title="Link to this heading"></a></h2>
-<p><strong>Recommended Approach</strong>: Store address lineage definitions directly in your pipeline code for version control and reproducibility.</p>
-<p><strong>Benefits:</strong></p>
-<ul class="simple">
-<li><p><strong>Version Control</strong>: Lineage definitions are tracked with your code changes</p></li>
-<li><p><strong>Reproducibility</strong>: Lineage is automatically recreated when pipelines are deployed</p></li>
-<li><p><strong>Code Review</strong>: Lineage changes are reviewed alongside code changes</p></li>
-<li><p><strong>Consistency</strong>: Ensures lineage matches the actual data flow in your code</p></li>
-</ul>
-<p><strong>Implementation Pattern:</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your pipeline code</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">():</span>
-    <span class="c1"># Your data processing logic here</span>
-
-    <span class="c1"># Define lineage relationships</span>
-    <span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
-        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.source_schema.source_raw_events&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
-            <span class="p">}</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.schema.processed_events&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span>
-            <span class="p">}</span>
-        <span class="p">]</span>
-    <span class="p">}</span>
-
-    <span class="c1"># Create lineage relationships</span>
-    <span class="k">if</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;load_lineage&#39;</span><span class="p">]:</span>
-        <span class="n">lineage_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-            <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
-            <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
-        <span class="p">)</span>
-        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lineage created: </span><span class="si">{</span><span class="n">lineage_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Best Practices:</strong></p>
-<ul class="simple">
-<li><p><strong>Store in Pipeline</strong>: Keep lineage definitions in the same file as your pipeline logic</p></li>
-<li><p><strong>Use Variables</strong>: Reference pipeline_id and other dynamic values</p></li>
-<li><p><strong>Check load_lineage</strong>: Only create lineage when the flag is enabled</p></li>
-<li><p><strong>Document Changes</strong>: Include lineage changes in your commit messages</p></li>
+<li><p><strong>Automatic Reset</strong>: <cite>load_lineage</cite> flag automatically resets to <cite>False</cite> after execution</p></li>
 </ul>
 </section>
 <section id="creating-lineage-relationships">
@@ -897,45 +763,58 @@
 <section id="pipeline-integration">
 <h2>Pipeline Integration<a class="headerlink" href="#pipeline-integration" title="Link to this heading"></a></h2>
 <p>Address lineage is commonly used in pipeline workflows. Here’s how to integrate it:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check if pipeline has load_lineage enabled</span>
-<span class="k">if</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;load_lineage&#39;</span><span class="p">]:</span>
+<p><strong>Recommended Approach</strong>: Store address lineage definitions directly in your pipeline code for version control and reproducibility.</p>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Version Control</strong>: Lineage definitions are tracked with your code changes</p></li>
+<li><p><strong>Reproducibility</strong>: Lineage is automatically recreated when pipelines are deployed</p></li>
+<li><p><strong>Code Review</strong>: Lineage changes are reviewed alongside code changes</p></li>
+<li><p><strong>Consistency</strong>: Ensures lineage matches the actual data flow in your code</p></li>
+</ul>
+<p><strong>Implementation Pattern:</strong></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># In your pipeline code</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">run_pipeline</span><span class="p">():</span>
+    <span class="c1"># Your data processing logic here</span>
+
+    <span class="c1"># Define lineage relationships</span>
     <span class="n">lineage_data</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
+        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
         <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.stock_prices&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;source_db.source_schema.source_raw_events&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
             <span class="p">}</span>
         <span class="p">],</span>
         <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
             <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.stock_prices&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse.schema.processed_events&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;snowflake&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span>
             <span class="p">}</span>
         <span class="p">]</span>
     <span class="p">}</span>
 
-    <span class="n">lineage_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-        <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
-        <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
-    <span class="p">)</span>
-    <span class="n">lineage_result</span> <span class="o">=</span> <span class="n">lineage_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lineage relationships created: </span><span class="si">{</span><span class="n">lineage_result</span><span class="p">[</span><span class="s1">&#39;lineage_relationships_created&#39;</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="c1"># Create lineage relationships</span>
+    <span class="k">if</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;load_lineage&#39;</span><span class="p">]:</span>
+        <span class="n">lineage_response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;http://localhost:8000/address_lineage&quot;</span><span class="p">,</span>
+            <span class="n">json</span><span class="o">=</span><span class="n">lineage_data</span>
+        <span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Lineage created: </span><span class="si">{</span><span class="n">lineage_response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><strong>Key Features:</strong></p>
+<p><strong>Best Practices:</strong></p>
 <ul class="simple">
-<li><p><strong>Automatic Reset</strong>: <cite>load_lineage</cite> automatically resets to <cite>False</cite> after execution</p></li>
-<li><p><strong>Source Control</strong>: Lineage definitions can be stored in version control</p></li>
-<li><p><strong>Efficient Queries</strong>: Uses closure table pattern for complex lineage hierarchies</p></li>
-<li><p><strong>Depth Tracking</strong>: Tracks relationship depth for hierarchical data flows</p></li>
+<li><p><strong>Store in Pipeline</strong>: Keep lineage definitions in the same file as your pipeline logic</p></li>
+<li><p><strong>Use Variables</strong>: Reference pipeline_id and other dynamic values</p></li>
+<li><p><strong>Check load_lineage</strong>: Only create lineage when the flag is enabled</p></li>
+<li><p><strong>Document Changes</strong>: Include lineage changes in your commit messages</p></li>
 </ul>
 </section>
 <section id="managing-load-lineage-flag">
 <h2>Managing Load Lineage Flag<a class="headerlink" href="#managing-load-lineage-flag" title="Link to this heading"></a></h2>
-<p>The <cite>load_lineage</cite> flag controls when lineage relationships are created:</p>
+<p>The <cite>load_lineage</cite> is a conditional flag that can control when lineage relationships are created:</p>
 <ul class="simple">
 <li><p><strong>Default Behavior</strong>: <cite>load_lineage</cite> is <cite>True</cite> when a pipeline is first created</p></li>
 <li><p><strong>Automatic Reset</strong>: After successful execution, <cite>load_lineage</cite> automatically resets to <cite>False</cite></p></li>

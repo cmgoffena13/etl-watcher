@@ -12,60 +12,8 @@ Address lineage tracks data flow relationships between sources and targets:
 - **Lineage Relationships**: Create and maintain data flow relationships between sources and targets
 - **Closure Table Pattern**: Efficient querying of complex lineage hierarchies with depth tracking
 - **Source Control Integration**: Store lineage definitions in version control for reproducibility
+- **Automatic Reset**: `load_lineage` flag automatically resets to `False` after execution
 
-Source-Controlled Lineage
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Recommended Approach**: Store address lineage definitions directly in your pipeline code for version control and reproducibility.
-
-**Benefits:**
-
-- **Version Control**: Lineage definitions are tracked with your code changes
-- **Reproducibility**: Lineage is automatically recreated when pipelines are deployed
-- **Code Review**: Lineage changes are reviewed alongside code changes
-- **Consistency**: Ensures lineage matches the actual data flow in your code
-
-**Implementation Pattern:**
-
-.. code-block:: python
-
-   # In your pipeline code
-   def run_pipeline():
-       # Your data processing logic here
-       
-       # Define lineage relationships
-       lineage_data = {
-           "pipeline_id": pipeline_id,
-           "source_addresses": [
-               {
-                   "name": "source_db.source_schema.source_raw_events",
-                   "address_type_name": "postgresql",
-                   "address_type_group_name": "database"
-               }
-           ],
-           "target_addresses": [
-               {
-                   "name": "warehouse.schema.processed_events",
-                   "address_type_name": "snowflake",
-                   "address_type_group_name": "warehouse"
-               }
-           ]
-       }
-       
-       # Create lineage relationships
-       if pipeline_result['load_lineage']:
-           lineage_response = requests.post(
-               "http://localhost:8000/address_lineage",
-               json=lineage_data
-           )
-           print(f"Lineage created: {lineage_response.json()}")
-
-**Best Practices:**
-
-- **Store in Pipeline**: Keep lineage definitions in the same file as your pipeline logic
-- **Use Variables**: Reference pipeline_id and other dynamic values
-- **Check load_lineage**: Only create lineage when the flag is enabled
-- **Document Changes**: Include lineage changes in your commit messages
 
 Creating Lineage Relationships
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -348,46 +296,61 @@ Pipeline Integration
 
 Address lineage is commonly used in pipeline workflows. Here's how to integrate it:
 
+**Recommended Approach**: Store address lineage definitions directly in your pipeline code for version control and reproducibility.
+
+**Benefits:**
+
+- **Version Control**: Lineage definitions are tracked with your code changes
+- **Reproducibility**: Lineage is automatically recreated when pipelines are deployed
+- **Code Review**: Lineage changes are reviewed alongside code changes
+- **Consistency**: Ensures lineage matches the actual data flow in your code
+
+**Implementation Pattern:**
+
 .. code-block:: python
 
-   # Check if pipeline has load_lineage enabled
-   if pipeline_result['load_lineage']:
+   # In your pipeline code
+   def run_pipeline():
+       # Your data processing logic here
+       
+       # Define lineage relationships
        lineage_data = {
-           "pipeline_id": pipeline_result['id'],
+           "pipeline_id": pipeline_id,
            "source_addresses": [
                {
-                   "name": "source_db.stock_prices",
+                   "name": "source_db.source_schema.source_raw_events",
                    "address_type_name": "postgresql",
                    "address_type_group_name": "database"
                }
            ],
            "target_addresses": [
                {
-                   "name": "warehouse.stock_prices",
-                   "address_type_name": "postgresql",
-                   "address_type_group_name": "database"
+                   "name": "warehouse.schema.processed_events",
+                   "address_type_name": "snowflake",
+                   "address_type_group_name": "warehouse"
                }
            ]
        }
        
-       lineage_response = await client.post(
-           "http://localhost:8000/address_lineage",
-           json=lineage_data
-       )
-       lineage_result = lineage_response.json()
-       print(f"Lineage relationships created: {lineage_result['lineage_relationships_created']}")
+       # Create lineage relationships
+       if pipeline_result['load_lineage']:
+           lineage_response = requests.post(
+               "http://localhost:8000/address_lineage",
+               json=lineage_data
+           )
+           print(f"Lineage created: {lineage_response.json()}")
 
-**Key Features:**
+**Best Practices:**
 
-- **Automatic Reset**: `load_lineage` automatically resets to `False` after execution
-- **Source Control**: Lineage definitions can be stored in version control
-- **Efficient Queries**: Uses closure table pattern for complex lineage hierarchies
-- **Depth Tracking**: Tracks relationship depth for hierarchical data flows
+- **Store in Pipeline**: Keep lineage definitions in the same file as your pipeline logic
+- **Use Variables**: Reference pipeline_id and other dynamic values
+- **Check load_lineage**: Only create lineage when the flag is enabled
+- **Document Changes**: Include lineage changes in your commit messages
 
 Managing Load Lineage Flag
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The `load_lineage` flag controls when lineage relationships are created:
+The `load_lineage` is a conditional flag that can control when lineage relationships are created:
 
 - **Default Behavior**: `load_lineage` is `True` when a pipeline is first created
 - **Automatic Reset**: After successful execution, `load_lineage` automatically resets to `False`
