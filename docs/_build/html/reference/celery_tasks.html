@@ -18,7 +18,9 @@
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Database Schema" href="database_schema.html" />
+    <link rel="prev" title="Architecture" href="architecture.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -410,7 +412,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#fastapi-framework">FastAPI Framework</a></li>
@@ -420,6 +422,29 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#docker-containerization">Docker Containerization</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#logfire-integration">Logfire Integration</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#performance-design-goals">Performance Design Goals</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#error-details">Error Details</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="database_schema.html">Database Schema</a><ul>
@@ -691,7 +716,10 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

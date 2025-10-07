@@ -1,0 +1,51 @@
+🎉 Watcher has been successfully installed!
+
+📊 **Data Pipeline Monitoring** is now running in your Kubernetes cluster.
+
+## Quick Access
+
+To access the Watcher dashboard:
+
+```bash
+# Port forward to your local machine
+kubectl port-forward service/{{ include "watcher.fullname" . }} 8000:80
+```
+
+Then open your browser to: **http://localhost:8000**
+
+## Verify Installation
+
+```bash
+# Check pod status
+kubectl get pods -l app.kubernetes.io/name={{ include "watcher.name" . }}
+
+# Check service
+kubectl get service {{ include "watcher.fullname" . }}
+
+# View app logs
+kubectl logs -l app.kubernetes.io/name={{ include "watcher.name" . }},app.kubernetes.io/component=app
+
+# View Celery worker logs
+kubectl logs -l app.kubernetes.io/name={{ include "watcher.name" . }},app.kubernetes.io/component=celery-worker
+```
+
+## Next Steps
+
+1. **API Documentation**: Visit http://localhost:8000/docs for interactive API docs
+2. **Health Check**: Visit http://localhost:8000 to verify the app is running
+3. **Monitoring**: Set up your first pipeline and configure monitoring rules
+
+## Dependencies
+
+Make sure your PostgreSQL and Redis services are running:
+```bash
+# If using docker-compose
+docker-compose ps
+```
+
+## Troubleshooting
+
+If you encounter issues:
+- Check pod logs: `kubectl logs -l app.kubernetes.io/name={{ include "watcher.name" . }}`
+- Verify database connectivity: `kubectl exec -it <pod-name> -- env | grep DATABASE`
+- Check service endpoints: `kubectl get endpoints {{ include "watcher.fullname" . }}`

@@ -47,11 +47,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#system-requirements">System Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#installation-steps">Installation Steps</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#verification">Verification</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../getting_started/installation.html#environment-variables">Environment Variables</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#minimum-required-production-environment-variables">Minimum Required Production Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../getting_started/installation.html#optional-environment-variables">Optional Environment Variables</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../getting_started/quick_start.html">Quick Start Guide</a><ul>
@@ -94,34 +89,6 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">API Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../api/celery_tasks.html">Celery Tasks</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-types">Task Types</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-configuration">Task Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#retry-policies">Retry Policies</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-handling">Error Handling</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#progress-updates">Progress Updates</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#error-details">Error Details</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/celery_tasks.html#queue-management">Queue Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/celery_tasks.html#example-alert">Example Alert</a></li>
-</ul>
-</li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../api/endpoints.html">API Endpoints</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-management">Pipeline Management</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-or-get-pipeline">Create or Get Pipeline</a></li>
@@ -379,10 +346,8 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#running-timeliness-checks">Running Timeliness Checks</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#queue-monitoring">Queue Monitoring</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#celery-queue-monitoring">Celery Queue Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#example-alert">Example Alert</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
@@ -457,6 +422,29 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#performance-design-goals">Performance Design Goals</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#retry-policies">Retry Policies</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#error-handling">Error Handling</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-monitoring">Task Monitoring</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#task-status-tracking">Task Status Tracking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#progress-updates">Progress Updates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#error-details">Error Details</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="database_schema.html">Database Schema</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="database_schema.html#core-tables">Core Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="database_schema.html#pipeline">Pipeline</a></li>
@@ -482,77 +470,6 @@
 <li class="toctree-l2"><a class="reference internal" href="database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="database_schema.html#schema-evolution">Schema Evolution</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="database_schema.html#migration-strategy">Migration Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="database_schema.html#migration-best-practices">Migration Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="database_schema.html#schema-maintenance">Schema Maintenance</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="migrations.html">Database Migrations</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-files">Migration Files</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#current-migrations">Current Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#what-the-initial-migration-establishes">What the Initial Migration Establishes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#migration-structure">Migration Structure</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-commands">Migration Commands</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#basic-commands">Basic Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#check-current-status">Check Current Status</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#view-migration-history">View Migration History</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#run-migrations">Run Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#rollback-migrations">Rollback Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#create-new-migration">Create New Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#advanced-commands">Advanced Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#upgrade-to-specific-version">Upgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#downgrade-to-specific-version">Downgrade to Specific Version</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#show-sql-for-migration">Show SQL for Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#check-for-pending-migrations">Check for Pending Migrations</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-best-practices">Migration Best Practices</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#development-workflow">Development Workflow</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#create-migration">1. Create Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#edit-migration-file">2. Edit Migration File</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#test-migration">3. Test Migration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#commit-changes">4. Commit Changes</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#production-deployment">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#pre-deployment">Pre-deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#post-deployment">Post-deployment</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-safety">Migration Safety</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#safe-operations">Safe Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#risky-operations">Risky Operations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#best-practices">Best Practices</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#rollback-strategy">Rollback Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#simple-rollbacks">Simple Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#complex-rollbacks">Complex Rollbacks</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#rollback-testing">Rollback Testing</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#production-management">Production Management</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#id1">Production Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#rollback-production">Rollback Production</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-troubleshooting">Migration Troubleshooting</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#common-issues">Common Issues</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#migration-conflicts">Migration Conflicts</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#failed-migrations">Failed Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#data-corruption">Data Corruption</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#schema-drift">Schema Drift</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="migrations.html#migration-automation">Migration Automation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#github-actions">GitHub Actions</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#docker-integration">Docker Integration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#migration-logging">Migration Logging</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#migration-tracking">Migration Tracking</a></li>
-<li class="toctree-l3"><a class="reference internal" href="migrations.html#alerting">Alerting</a></li>
 </ul>
 </li>
 </ul>
@@ -585,9 +502,26 @@
              
   <section id="deployment-guide">
 <h1>Deployment Guide<a class="headerlink" href="#deployment-guide" title="Link to this heading"></a></h1>
-<p>This section covers deployment strategies for Watcher.</p>
+<p>This section covers deployment strategies for Watcher.
+We’ll be walking through a Kubernetes deployment of Watcher utilizing Helm charts.
+You can test the deployment strategies utilizing Kubernetes in Docker Desktop.</p>
 <section id="kubernetes">
 <h2>Kubernetes<a class="headerlink" href="#kubernetes" title="Link to this heading"></a></h2>
+<section id="overview">
+<h3>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Install Docker Desktop</p></li>
+<li><p>Install Kubernetes in Docker Desktop</p></li>
+<li><p>Create a new Kubernetes cluster</p></li>
+</ol>
+</section>
+<section id="setup">
+<h3>Setup<a class="headerlink" href="#setup" title="Link to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Install Helm</p></li>
+<li><p>Check Kubernetes</p></li>
+</ol>
+</section>
 <section id="namespace">
 <h3>Namespace<a class="headerlink" href="#namespace" title="Link to this heading"></a></h3>
 <div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="nt">apiVersion</span><span class="p">:</span><span class="w"> </span><span class="l l-Scalar l-Scalar-Plain">v1</span>
@@ -722,199 +656,6 @@
 <span class="w">          </span><span class="nt">limits</span><span class="p">:</span>
 <span class="w">            </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;512Mi&quot;</span>
 <span class="w">            </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;250m&quot;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="deployment-configuration">
-<h2>Deployment Configuration<a class="headerlink" href="#deployment-configuration" title="Link to this heading"></a></h2>
-<section id="postgresql-configuration">
-<h3>PostgreSQL Configuration<a class="headerlink" href="#postgresql-configuration" title="Link to this heading"></a></h3>
-<p><strong>Connection Pooling</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Default connection pool settings</span>
-<span class="n">pool_size</span> <span class="o">=</span> <span class="mi">20</span>
-<span class="n">max_overflow</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">pool_timeout</span> <span class="o">=</span> <span class="mi">30</span>
-<span class="n">pool_recycle</span> <span class="o">=</span> <span class="mi">3600</span>
-</pre></div>
-</div>
-</section>
-<section id="alerting-setup">
-<h3>Alerting Setup<a class="headerlink" href="#alerting-setup" title="Link to this heading"></a></h3>
-<p><strong>Monitoring Checks</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Freshness monitoring</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/freshness
-
-<span class="c1"># Timeliness monitoring</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/timeliness<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
-
-<span class="c1"># Queue monitoring</span>
-curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/celery/monitor-queue
-</pre></div>
-</div>
-<p><strong>Scheduled Monitoring</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to crontab</span>
-<span class="c1"># Check freshness every hour</span>
-<span class="m">0</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/freshness
-
-<span class="c1"># Check timeliness every 30 minutes</span>
-*/30<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/timeliness<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
-
-<span class="c1"># Monitor Celery queue every 5 minutes</span>
-*/5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/celery/monitor-queue
-
-<span class="c1"># Clean up logs daily (365 days retention)</span>
-<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span>http://localhost:8000/log_cleanup<span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 365}&#39;</span>
-</pre></div>
-</div>
-</section>
-</section>
-<section id="deployment-strategy">
-<h2>Deployment Strategy<a class="headerlink" href="#deployment-strategy" title="Link to this heading"></a></h2>
-<section id="pre-deployment">
-<h3>Pre-Deployment<a class="headerlink" href="#pre-deployment" title="Link to this heading"></a></h3>
-<p><strong>Database Backup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Backup database</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d_%H%M%S<span class="k">)</span>.sql
-
-<span class="c1"># Verify backup</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="post-deployment">
-<h3>Post-Deployment<a class="headerlink" href="#post-deployment" title="Link to this heading"></a></h3>
-<p><strong>Verification</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check application health</span>
-curl<span class="w"> </span>http://localhost:8000
-
-<span class="c1"># Check database connectivity</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT 1;&quot;</span>
-
-<span class="c1"># Check Redis connectivity</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
-</pre></div>
-</div>
-</section>
-<section id="rollback-strategy">
-<h3>Rollback Strategy<a class="headerlink" href="#rollback-strategy" title="Link to this heading"></a></h3>
-<p><strong>Database Rollback</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Rollback migrations</span>
-alembic<span class="w"> </span>downgrade<span class="w"> </span>-1
-
-<span class="c1"># Verify rollback</span>
-alembic<span class="w"> </span>current
-
-<span class="c1"># Check application</span>
-curl<span class="w"> </span>http://localhost:8000
-</pre></div>
-</div>
-<p><strong>Data Rollback</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore from backup</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Verify data</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-</pre></div>
-</div>
-</section>
-<section id="recovery-procedures">
-<h3>Recovery Procedures<a class="headerlink" href="#recovery-procedures" title="Link to this heading"></a></h3>
-<p><strong>Database Recovery</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Restore database</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&lt;<span class="w"> </span>backup.sql
-
-<span class="c1"># Verify data</span>
-psql<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>-c<span class="w"> </span><span class="s2">&quot;SELECT COUNT(*) FROM pipeline;&quot;</span>
-
-<span class="c1"># Run migrations</span>
-alembic<span class="w"> </span>upgrade<span class="w"> </span>head
-</pre></div>
-</div>
-</section>
-<section id="health-checks">
-<h3>Health Checks<a class="headerlink" href="#health-checks" title="Link to this heading"></a></h3>
-<p><strong>Application Health</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Health check endpoint</span>
-curl<span class="w"> </span>http://localhost:8000
-</pre></div>
-</div>
-<p><strong>Redis Health</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Redis connectivity</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>ping
-
-<span class="c1"># Redis performance</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>--latency
-
-<span class="c1"># Redis memory</span>
-redis-cli<span class="w"> </span>-u<span class="w"> </span><span class="nv">$REDIS_URL</span><span class="w"> </span>info<span class="w"> </span>memory
-</pre></div>
-</div>
-</section>
-</section>
-<section id="production-maintenance">
-<h2>Production Maintenance<a class="headerlink" href="#production-maintenance" title="Link to this heading"></a></h2>
-<section id="database-optimization">
-<h3>Database Optimization<a class="headerlink" href="#database-optimization" title="Link to this heading"></a></h3>
-<p><strong>Query Optimization</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Check slow queries</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="n">query</span><span class="p">,</span><span class="w"> </span><span class="n">mean_time</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_stat_statements</span><span class="w"> </span><span class="k">ORDER</span><span class="w"> </span><span class="k">BY</span><span class="w"> </span><span class="n">mean_time</span><span class="w"> </span><span class="k">DESC</span><span class="w"> </span><span class="k">LIMIT</span><span class="w"> </span><span class="mi">10</span><span class="p">;</span>
-
-<span class="c1">-- Check index usage</span>
-<span class="k">SELECT</span><span class="w"> </span><span class="n">schemaname</span><span class="p">,</span><span class="w"> </span><span class="n">tablename</span><span class="p">,</span><span class="w"> </span><span class="n">indexname</span><span class="w"> </span><span class="k">FROM</span><span class="w"> </span><span class="n">pg_indexes</span><span class="p">;</span>
-
-<span class="c1">-- Analyze tables</span>
-<span class="k">ANALYZE</span><span class="p">;</span>
-</pre></div>
-</div>
-<p><strong>Index Optimization</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="c1">-- Analyze tables regularly</span>
-<span class="k">ANALYZE</span><span class="p">;</span>
-
-<span class="c1">-- Update statistics</span>
-<span class="k">UPDATE</span><span class="w"> </span><span class="n">pg_stat_user_tables</span><span class="w"> </span><span class="k">SET</span><span class="w"> </span><span class="n">n_tup_ins</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_upd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n_tup_del</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
-
-<span class="c1">-- Vacuum tables</span>
-<span class="k">VACUUM</span><span class="w"> </span><span class="k">ANALYZE</span><span class="p">;</span>
-</pre></div>
-</div>
-</section>
-<section id="redis-optimization">
-<h3>Redis Optimization<a class="headerlink" href="#redis-optimization" title="Link to this heading"></a></h3>
-<p><strong>Performance Monitoring</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Monitor Redis performance</span>
-redis-cli<span class="w"> </span>--latency
-
-<span class="c1"># Check memory usage</span>
-redis-cli<span class="w"> </span>info<span class="w"> </span>memory
-
-<span class="c1"># Monitor operations</span>
-redis-cli<span class="w"> </span>monitor
-</pre></div>
-</div>
-<p><strong>Performance Tuning</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Check Redis performance</span>
-redis-cli<span class="w"> </span>--latency
-
-<span class="c1"># Monitor memory usage</span>
-redis-cli<span class="w"> </span>info<span class="w"> </span>memory
-
-<span class="c1"># Check key count</span>
-redis-cli<span class="w"> </span>dbsize
-</pre></div>
-</div>
-</section>
-<section id="backup-strategy">
-<h3>Backup Strategy<a class="headerlink" href="#backup-strategy" title="Link to this heading"></a></h3>
-<p><strong>Database Backup</strong></p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Daily backup</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d<span class="k">)</span>.sql
-
-<span class="c1"># Weekly backup</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>gzip<span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m%d<span class="k">)</span>.sql.gz
-
-<span class="c1"># Monthly backup</span>
-pg_dump<span class="w"> </span><span class="nv">$DATABASE_URL</span><span class="w"> </span><span class="p">|</span><span class="w"> </span>gzip<span class="w"> </span>&gt;<span class="w"> </span>backup_<span class="k">$(</span>date<span class="w"> </span>+%Y%m<span class="k">)</span>.sql.gz
 </pre></div>
 </div>
 </section>

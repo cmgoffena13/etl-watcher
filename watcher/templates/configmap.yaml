@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "watcher.fullname" . }}-config
+  labels:
+    {{- include "watcher.labels" . | nindent 4 }}
+data:
+  # Environment state
+  ENV_STATE: {{ .Values.watcher.envState | quote }}
+  
+  # Database configuration
+  {{- if eq .Values.watcher.envState "dev" }}
+  DEV_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
+  DEV_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
+  DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
+  DEV_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  {{- if .Values.watcher.logfire.token }}
+  DEV_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
+  {{- end }}
+  {{- if .Values.watcher.slack.webhookUrl }}
+  DEV_SLACK_WEBHOOK_URL: {{ .Values.watcher.slack.webhookUrl | quote }}
+  {{- end }}
+  {{- else if eq .Values.watcher.envState "test" }}
+  TEST_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
+  TEST_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
+  TEST_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
+  TEST_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  {{- if .Values.watcher.logfire.token }}
+  TEST_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
+  {{- end }}
+  {{- if .Values.watcher.slack.webhookUrl }}
+  TEST_SLACK_WEBHOOK_URL: {{ .Values.watcher.slack.webhookUrl | quote }}
+  {{- end }}
+  {{- else }}
+  PROD_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
+  PROD_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
+  PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
+  PROD_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  {{- if .Values.watcher.logfire.token }}
+  PROD_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
+  {{- end }}
+  {{- if .Values.watcher.slack.webhookUrl }}
+  PROD_SLACK_WEBHOOK_URL: {{ .Values.watcher.slack.webhookUrl | quote }}
+  {{- end }}
+  {{- end }}
