@@ -73,7 +73,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **FastAPI** - Modern, fast web framework for building APIs
 - **Pydantic** - Data validation and settings management using Python type annotations
 - **SQLModel** - SQL databases in Python, designed for simplicity and compatibility
-- **PostgreSQL** - Robust relational database with JSONB support
 - **Alembic** - Database migration tool for SQLAlchemy
 - **AsyncPG** - Async PostgreSQL driver
 - **HTTPX** - Async HTTP client for external API calls (Slack)
@@ -102,6 +101,7 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Gunicorn** - WSGI server to handle mutliple Uvicorn workers
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and result backend for Celery
+- **Postgres** - Robust relational database with JSONB support
 
 ## Contributing
 
