@@ -116,7 +116,7 @@ I welcome contributions to Watcher! Please see the [Contributing Guidelines](CON
 1. Fork the repository
 2. Create a feature branch
 3. Make your changes
-4. You'll need a free postgres test database (I recommending using [SupaBase](https://supabase.com))
+4. You'll need a free postgres test database (I recommend using [SupaBase](https://supabase.com))
 5. Run tests with `make test`
 6. Submit a pull request
 
