@@ -154,8 +154,8 @@ Configure monitoring settings during pipeline creation:
 The Watcher framework is designed to represent the configuration stored in source control. 
 Any updates to your pipeline code will be automatically reflected in the Watcher framework 
 through a hash-based change detection system. 
-This ensures that your monitoring and lineage tracking 
-stays synchronized with your actual pipeline configuration.
+This ensures that the Watcher pipeline configuration
+stays synchronized with the configuration in your code.
 
 Managing Active Status
 ----------------------

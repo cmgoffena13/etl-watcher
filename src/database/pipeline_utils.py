@@ -26,11 +26,14 @@ def generate_input_hash(pipeline_input: PipelinePostInput) -> str:
     """Generate a hash of the POST input data for change detection.
 
     This detects when the hardcoded pipeline data in the pipeline code changes.
+    Excludes next_watermark as it's dynamic and changes between executions.
     """
     return str(
         hash(
             json.dumps(
-                pipeline_input.model_dump(exclude_unset=True),
+                pipeline_input.model_dump(
+                    exclude_unset=True, exclude={"next_watermark"}
+                ),
                 sort_keys=True,
                 default=str,
             )
