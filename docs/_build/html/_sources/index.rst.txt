@@ -19,7 +19,35 @@ Key Features
 - **Anomaly Detection** - Statistical analysis of pipeline patterns  
 - **Address Lineage** - Track relationships between data sources
 - **Background Processing** - Celery-based distributed task processing
+- **Source Control Integration** - Pipeline configuration and lineage stored in version control
 
+
+Source Control Integration
+===========================
+
+Watcher is designed to work seamlessly with source control systems. Your pipeline configuration and address lineage definitions should be stored alongside your ETL code in version control:
+
+**Pipeline Configuration:**
+
+- Store pipeline definitions in the same repository as your ETL code
+- Use environment variables for dynamic values (API keys, database URLs)
+- Track changes to pipeline configuration over time
+- Review pipeline changes alongside code changes
+
+**Address Lineage:**
+
+- Define lineage relationships in your pipeline code
+- Version control lineage changes with your data transformations
+- Ensure lineage stays synchronized with your actual data flow
+- Document data dependencies in your codebase
+
+**Benefits:**
+
+- **Reproducibility**: Same configuration across all environments
+- **Collaboration**: Team members can see and modify pipeline definitions
+- **Documentation**: Pipeline purpose and lineage documented in code
+- **Rollback**: Easy to revert problematic pipeline changes
+- **Code Review**: Review pipeline changes alongside code changes
 
 Quick Start
 ===========

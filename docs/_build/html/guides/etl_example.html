@@ -164,6 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -205,6 +211,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -323,6 +330,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#complete-implementation">Complete Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -378,9 +386,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -446,6 +454,14 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/design.html">Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#efficiency-performance">Efficiency / Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#scalability">Scalability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#reliability">Reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
@@ -507,7 +523,7 @@
 and the Polygon API to extract stock market data.</p>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>This example demonstrates a real-world ETL pipeline that:</p>
+<p>This example demonstrates a real-world-esque ETL pipeline that:</p>
 <ul class="simple">
 <li><p>Extracts daily stock open/close data from the Polygon API</p></li>
 <li><p>Uses Watcher for pipeline execution tracking and metadata management</p></li>
@@ -666,6 +682,50 @@ and the Polygon API to extract stock market data.</p>
 <li><p><strong>Address Naming</strong> - Clear, descriptive address names for lineage tracking</p></li>
 </ol>
 <p>This example demonstrates a production-ready-esque ETL pipeline that follows Watcher best practices for metadata management, execution tracking, and data lineage.</p>
+</section>
+<section id="source-control-integration">
+<h2>Source Control Integration<a class="headerlink" href="#source-control-integration" title="Link to this heading"></a></h2>
+<p>Store your pipeline configuration and lineage definitions alongside your ETL code in version control:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pipeline_config.py - Store in your repository</span>
+<span class="n">PIPELINE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;timeliness_number&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="s2">&quot;timeliness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;minute&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;freshness_number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="s2">&quot;freshness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily stock price extraction from Polygon API&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">LINEAGE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;external&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
+        <span class="p">}</span>
+    <span class="p">],</span>
+    <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql://localhost:5432/warehouse.public.stock_prices&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Benefits:</strong>
+- <strong>Version Control</strong>: Track pipeline changes over time
+- <strong>Code Review</strong>: Review pipeline changes alongside code changes
+- <strong>Reproducibility</strong>: Same configuration across environments
+- <strong>Documentation</strong>: Pipeline purpose documented in code
+- <strong>Rollback</strong>: Easy to revert problematic changes</p>
 </section>
 </section>
 

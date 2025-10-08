@@ -329,6 +329,7 @@
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -530,6 +531,33 @@ ensure your data pipelines are running optimally and detect issues before they i
 <li><p><strong>Anomaly Detection</strong> - Statistical analysis of pipeline patterns</p></li>
 <li><p><strong>Address Lineage</strong> - Track relationships between data sources</p></li>
 <li><p><strong>Background Processing</strong> - Celery-based distributed task processing</p></li>
+<li><p><strong>Source Control Integration</strong> - Pipeline configuration and lineage stored in version control</p></li>
+</ul>
+</section>
+<section id="source-control-integration">
+<h1>Source Control Integration<a class="headerlink" href="#source-control-integration" title="Link to this heading"></a></h1>
+<p>Watcher is designed to work seamlessly with source control systems. Your pipeline configuration and address lineage definitions should be stored alongside your ETL code in version control:</p>
+<p><strong>Pipeline Configuration:</strong></p>
+<ul class="simple">
+<li><p>Store pipeline definitions in the same repository as your ETL code</p></li>
+<li><p>Use environment variables for dynamic values (API keys, database URLs)</p></li>
+<li><p>Track changes to pipeline configuration over time</p></li>
+<li><p>Review pipeline changes alongside code changes</p></li>
+</ul>
+<p><strong>Address Lineage:</strong></p>
+<ul class="simple">
+<li><p>Define lineage relationships in your pipeline code</p></li>
+<li><p>Version control lineage changes with your data transformations</p></li>
+<li><p>Ensure lineage stays synchronized with your actual data flow</p></li>
+<li><p>Document data dependencies in your codebase</p></li>
+</ul>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Reproducibility</strong>: Same configuration across all environments</p></li>
+<li><p><strong>Collaboration</strong>: Team members can see and modify pipeline definitions</p></li>
+<li><p><strong>Documentation</strong>: Pipeline purpose and lineage documented in code</p></li>
+<li><p><strong>Rollback</strong>: Easy to revert problematic pipeline changes</p></li>
+<li><p><strong>Code Review</strong>: Review pipeline changes alongside code changes</p></li>
 </ul>
 </section>
 <section id="quick-start">
@@ -644,6 +672,7 @@ ensure your data pipelines are running optimally and detect issues before they i
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>

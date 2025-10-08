@@ -1,7 +1,7 @@
 Design
 =================
 
-This section covers the design of Watcher. The concepts behind the design are:
+This section covers the concepts behind the design of Watcher.
 
 - Configuration as Code
 - Efficiency / Performance
