@@ -93,5 +93,4 @@ Quick Start
 
    reference/architecture
    reference/celery_tasks
-   reference/design
    reference/database_schema

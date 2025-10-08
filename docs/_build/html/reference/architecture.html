@@ -6,7 +6,7 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Architecture &mdash; Watcher 1.0.0 documentation</title>
+  <title>Architecture &amp; Design &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
 
@@ -164,6 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -205,6 +211,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -323,6 +330,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -378,9 +386,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -412,7 +420,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#postgresql-database">PostgreSQL Database</a></li>
@@ -491,7 +507,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Architecture</li>
+      <li class="breadcrumb-item active">Architecture &amp; Design</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/reference/architecture.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -501,9 +517,74 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="architecture">
-<h1>Architecture<a class="headerlink" href="#architecture" title="Link to this heading"></a></h1>
-<p>Watcher is an Open Source ETL Metadata Framework designed for high-performance data pipeline monitoring and observability. Built with FastAPI and optimized for speed, it provides fast response times to ensure minimal impact on your data pipelines.</p>
+  <section id="architecture-design">
+<h1>Architecture &amp; Design<a class="headerlink" href="#architecture-design" title="Link to this heading"></a></h1>
+<p>Watcher is an Open Source ETL Metadata Framework designed for high-performance
+data pipeline monitoring and observability.
+Built with FastAPI and optimized for speed, it provides fast response times to ensure
+minimal impact on your data pipelines.</p>
+<section id="design-philosophy">
+<h2>Design Philosophy<a class="headerlink" href="#design-philosophy" title="Link to this heading"></a></h2>
+<p>Watcher is built on several core design principles
+that guide its architecture and implementation:</p>
+<section id="configuration-as-code">
+<h3>Configuration as Code<a class="headerlink" href="#configuration-as-code" title="Link to this heading"></a></h3>
+<p>Watcher is designed to reflect configuration stored in source control. Any updates to the configuration in source control will be automatically reflected in Watcher through hash-based change detection. This ensures that the Watcher configuration stays synchronized with the configuration in your code.</p>
+<p><strong>Key Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Version Control Integration</strong> - Pipeline and lineage definitions stored alongside ETL code</p></li>
+<li><p><strong>Automatic Synchronization</strong> - Changes in code automatically update Watcher configuration</p></li>
+<li><p><strong>Reproducibility</strong> - Same configuration across all environments</p></li>
+<li><p><strong>Code Review</strong> - Pipeline changes go through the same review process as code changes</p></li>
+</ul>
+<p><strong>Recommended Practice:</strong>
+Store your Pipeline configuration and Address Lineage in source control within your pipeline code for optimal integration.</p>
+</section>
+<section id="efficiency-performance">
+<h3>Efficiency &amp; Performance<a class="headerlink" href="#efficiency-performance" title="Link to this heading"></a></h3>
+<p>Watcher is designed to be efficient and performant to have minimal impact on the data pipelines it is monitoring. Any non-essential operations are designed to run in the background.</p>
+<p><strong>Performance Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Async Operations</strong> - Non-blocking I/O for maximum throughput</p></li>
+<li><p><strong>Background Processing</strong> - Heavy operations don’t impact API response times</p></li>
+<li><p><strong>Connection Pooling</strong> - Efficient database connection management</p></li>
+<li><p><strong>Optimized Queries</strong> - Minimal database round trips with strategic indexing</p></li>
+</ul>
+</section>
+<section id="scalability">
+<h3>Scalability<a class="headerlink" href="#scalability" title="Link to this heading"></a></h3>
+<p>Watcher is designed to be scalable and handle large amounts of data. It can handle thousands of pipelines and millions of executions through a single instance.</p>
+<p><strong>Scalability Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Horizontal Scaling</strong> - Multiple Celery workers for background processing</p></li>
+<li><p><strong>Database Optimization</strong> - Efficient queries and indexing for large datasets</p></li>
+<li><p><strong>Resource Management</strong> - Optimized memory and CPU usage</p></li>
+<li><p><strong>Load Distribution</strong> - Celery task distribution across multiple workers</p></li>
+</ul>
+</section>
+<section id="reliability">
+<h3>Reliability<a class="headerlink" href="#reliability" title="Link to this heading"></a></h3>
+<p>Watcher is designed to be deployed on Kubernetes to allow for replicas and failover, ensuring high availability and fault tolerance.</p>
+<p><strong>Reliability Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Container Orchestration</strong> - Kubernetes deployment for high availability</p></li>
+<li><p><strong>Task Persistence</strong> - Redis-backed queues prevent task loss</p></li>
+<li><p><strong>Error Recovery</strong> - Automatic retry logic with exponential backoff</p></li>
+<li><p><strong>Health Monitoring</strong> - Comprehensive health checks and alerting</p></li>
+</ul>
+</section>
+<section id="observability">
+<h3>Observability<a class="headerlink" href="#observability" title="Link to this heading"></a></h3>
+<p>Watcher is designed to be observable through its integration with Logfire. Having an outside service monitoring the Watcher framework is essential for active monitoring.</p>
+<p><strong>Observability Features:</strong></p>
+<ul class="simple">
+<li><p><strong>Centralized Logging</strong> - Aggregated logs from all components</p></li>
+<li><p><strong>Performance Metrics</strong> - Request/response time monitoring</p></li>
+<li><p><strong>Error Tracking</strong> - Automatic error detection and alerting</p></li>
+<li><p><strong>Debugging Support</strong> - Detailed request tracing and analysis</p></li>
+</ul>
+</section>
+</section>
 <section id="high-level-architecture">
 <h2>High-Level Architecture<a class="headerlink" href="#high-level-architecture" title="Link to this heading"></a></h2>
 <p>Watcher is built on a modern, high-performance stack designed for scalability and reliability:</p>
@@ -514,13 +595,6 @@
 <li><p><strong>Celery</strong> - Distributed task queue for background processing</p></li>
 <li><p><strong>Redis</strong> - Message broker and caching layer</p></li>
 <li><p><strong>Docker</strong> - Containerization for deployment and scaling</p></li>
-</ul>
-<p><strong>Design Philosophy:</strong></p>
-<ul class="simple">
-<li><p><strong>High Performance</strong> - Optimized for fast response times and minimal pipeline impact</p></li>
-<li><p><strong>Scalability</strong> - Designed to handle large-scale data operations</p></li>
-<li><p><strong>Reliability</strong> - Built with production-grade components and error handling</p></li>
-<li><p><strong>Observability</strong> - Comprehensive monitoring and alerting capabilities</p></li>
 </ul>
 </section>
 <section id="fastapi-framework">

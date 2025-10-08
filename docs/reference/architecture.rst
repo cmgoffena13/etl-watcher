@@ -1,7 +1,79 @@
-Architecture
+Architecture & Design
 ===============
 
-Watcher is an Open Source ETL Metadata Framework designed for high-performance data pipeline monitoring and observability. Built with FastAPI and optimized for speed, it provides fast response times to ensure minimal impact on your data pipelines.
+Watcher is an Open Source ETL Metadata Framework designed for high-performance 
+data pipeline monitoring and observability. 
+Built with FastAPI and optimized for speed, it provides fast response times to ensure 
+minimal impact on your data pipelines.
+
+Design Philosophy
+~~~~~~~~~~~~~~~~~
+
+Watcher is built on several core design principles 
+that guide its architecture and implementation:
+
+Configuration as Code
+--------------------
+
+Watcher is designed to reflect configuration stored in source control. Any updates to the configuration in source control will be automatically reflected in Watcher through hash-based change detection. This ensures that the Watcher configuration stays synchronized with the configuration in your code.
+
+**Key Benefits:**
+
+- **Version Control Integration** - Pipeline and lineage definitions stored alongside ETL code
+- **Automatic Synchronization** - Changes in code automatically update Watcher configuration
+- **Reproducibility** - Same configuration across all environments
+- **Code Review** - Pipeline changes go through the same review process as code changes
+
+**Recommended Practice:**
+Store your Pipeline configuration and Address Lineage in source control within your pipeline code for optimal integration.
+
+Efficiency & Performance
+------------------------
+
+Watcher is designed to be efficient and performant to have minimal impact on the data pipelines it is monitoring. Any non-essential operations are designed to run in the background.
+
+**Performance Features:**
+
+- **Async Operations** - Non-blocking I/O for maximum throughput
+- **Background Processing** - Heavy operations don't impact API response times
+- **Connection Pooling** - Efficient database connection management
+- **Optimized Queries** - Minimal database round trips with strategic indexing
+
+Scalability
+-----------
+
+Watcher is designed to be scalable and handle large amounts of data. It can handle thousands of pipelines and millions of executions through a single instance.
+
+**Scalability Features:**
+
+- **Horizontal Scaling** - Multiple Celery workers for background processing
+- **Database Optimization** - Efficient queries and indexing for large datasets
+- **Resource Management** - Optimized memory and CPU usage
+- **Load Distribution** - Celery task distribution across multiple workers
+
+Reliability
+-----------
+
+Watcher is designed to be deployed on Kubernetes to allow for replicas and failover, ensuring high availability and fault tolerance.
+
+**Reliability Features:**
+
+- **Container Orchestration** - Kubernetes deployment for high availability
+- **Task Persistence** - Redis-backed queues prevent task loss
+- **Error Recovery** - Automatic retry logic with exponential backoff
+- **Health Monitoring** - Comprehensive health checks and alerting
+
+Observability
+-------------
+
+Watcher is designed to be observable through its integration with Logfire. Having an outside service monitoring the Watcher framework is essential for active monitoring.
+
+**Observability Features:**
+
+- **Centralized Logging** - Aggregated logs from all components
+- **Performance Metrics** - Request/response time monitoring
+- **Error Tracking** - Automatic error detection and alerting
+- **Debugging Support** - Detailed request tracing and analysis
 
 High-Level Architecture
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -15,13 +87,6 @@ Watcher is built on a modern, high-performance stack designed for scalability an
 - **Celery** - Distributed task queue for background processing
 - **Redis** - Message broker and caching layer
 - **Docker** - Containerization for deployment and scaling
-
-**Design Philosophy:**
-
-- **High Performance** - Optimized for fast response times and minimal pipeline impact
-- **Scalability** - Designed to handle large-scale data operations
-- **Reliability** - Built with production-grade components and error handling
-- **Observability** - Comprehensive monitoring and alerting capabilities
 
 FastAPI Framework
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
