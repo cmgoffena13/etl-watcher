@@ -330,6 +330,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -385,7 +386,6 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#managing-active-status">Managing Active Status</a></li>
@@ -452,6 +452,14 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-details">Error Details</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/design.html">Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#efficiency-performance">Efficiency / Performance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#scalability">Scalability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#reliability">Reliability</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#observability">Observability</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
@@ -606,7 +614,6 @@
     <span class="n">watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">DateTime</span><span class="p">,</span> <span class="n">Date</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">parent_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-    <span class="n">execution_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </section>
@@ -627,6 +634,7 @@
     <span class="n">inserts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">updates</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">soft_deletes</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">ge</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">execution_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </section>

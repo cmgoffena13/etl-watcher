@@ -333,10 +333,7 @@ Start Pipeline Execution
         "start_date": "2024-01-01T10:00:00Z",
         "watermark": "2024-01-01T00:00:00Z",
         "next_watermark": "2024-01-01T23:59:59Z",
-        "parent_id": null,
-        "execution_metadata": {
-          "trigger": "scheduled"
-        }
+        "parent_id": null
       }
 
    **Response:**
@@ -354,7 +351,6 @@ Start Pipeline Execution
    - ``watermark`` (string|int|datetime|date): Watermark value (optional)
    - ``next_watermark`` (string|int|datetime|date): Next watermark value (optional)
    - ``parent_id`` (int): Parent execution ID for hierarchical executions (optional)
-   - ``execution_metadata`` (object): Additional execution metadata (optional)
 
    **Response Fields:**
 
@@ -382,7 +378,10 @@ End Pipeline Execution
         "total_rows": 1000,
         "inserts": 800,
         "updates": 200,
-        "soft_deletes": 0
+        "soft_deletes": 0,
+        "execution_metadata": {
+          "partition": "2025-01-05"
+        }
       }
 
    **Response:**
@@ -397,6 +396,7 @@ End Pipeline Execution
    - ``inserts`` (int): Number of inserts (optional, ≥0)
    - ``updates`` (int): Number of updates (optional, ≥0)
    - ``soft_deletes`` (int): Number of soft deletes (optional, ≥0)
+   - ``execution_metadata`` (object): Additional execution metadata (optional)
 
    **Status Codes:**
 

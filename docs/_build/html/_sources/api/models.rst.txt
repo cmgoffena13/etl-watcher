@@ -107,7 +107,6 @@ PipelineExecutionStartInput
        watermark: Optional[Union[str, int, DateTime, Date]] = None
        next_watermark: Optional[Union[str, int, DateTime, Date]] = None
        parent_id: Optional[int] = None
-       execution_metadata: Optional[dict] = None
 
 PipelineExecutionStartOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -130,6 +129,7 @@ PipelineExecutionEndInput
        inserts: Optional[int] = Field(default=None, ge=0)
        updates: Optional[int] = Field(default=None, ge=0)
        soft_deletes: Optional[int] = Field(default=None, ge=0)
+       execution_metadata: Optional[dict] = None
 
 Address Models
 --------------

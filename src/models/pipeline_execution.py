@@ -12,7 +12,6 @@ class PipelineExecutionStartInput(ValidatorModel):
     watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     parent_id: Optional[int] = None
-    execution_metadata: Optional[dict] = None
 
 
 class PipelineExecutionStartOutput(ValidatorModel):
@@ -27,3 +26,4 @@ class PipelineExecutionEndInput(ValidatorModel):
     updates: Optional[int] = Field(default=None, ge=0)
     soft_deletes: Optional[int] = Field(default=None, ge=0)
     total_rows: Optional[int] = Field(default=None, ge=0)
+    execution_metadata: Optional[dict] = None
