@@ -109,8 +109,7 @@ Step 2: Start a Pipeline Execution
             
             response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
-                "start_date": "2024-01-01T10:00:00Z",
-                "full_load": True
+                "start_date": "2024-01-01T10:00:00Z"
             })
             print(response.json())
 
@@ -122,8 +121,7 @@ Step 2: Start a Pipeline Execution
                  -H "Content-Type: application/json" \
                  -d '{
                    "pipeline_id": 1,
-                   "start_date": "2024-01-01T10:00:00Z",
-                   "full_load": true
+                   "start_date": "2024-01-01T10:00:00Z"
                  }'
 
       .. tab:: Go
@@ -142,14 +140,12 @@ Step 2: Start a Pipeline Execution
             type StartExecutionRequest struct {
                 PipelineID int    `json:"pipeline_id"`
                 StartDate  string `json:"start_date"`
-                FullLoad   bool   `json:"full_load"`
             }
 
             func main() {
                 data := StartExecutionRequest{
                     PipelineID: 1,
                     StartDate:  "2024-01-01T10:00:00Z",
-                    FullLoad:   true,
                 }
                 
                 jsonData, _ := json.Marshal(data)
@@ -176,8 +172,7 @@ Step 2: Start a Pipeline Execution
                     
                     val json = Json.obj(
                         "pipeline_id" -> 1,
-                        "start_date" -> "2024-01-01T10:00:00Z",
-                        "full_load" -> true
+                        "start_date" -> "2024-01-01T10:00:00Z"
                     ).toString()
                     
                     val request = HttpRequest.newBuilder()

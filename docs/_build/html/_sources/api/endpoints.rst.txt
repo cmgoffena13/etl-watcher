@@ -339,7 +339,6 @@ Start Pipeline Execution
       {
         "pipeline_id": 1,
         "start_date": "2024-01-01T10:00:00Z",
-        "full_load": true,
         "watermark": "2024-01-01T00:00:00Z",
         "next_watermark": "2024-01-01T23:59:59Z",
         "parent_id": null,
@@ -360,7 +359,6 @@ Start Pipeline Execution
 
    - ``pipeline_id`` (int): Pipeline ID (required)
    - ``start_date`` (string): Start timestamp (ISO 8601, required)
-   - ``full_load`` (bool): Whether this is a full load (required)
    - ``watermark`` (string|int|datetime|date): Watermark value (optional)
    - ``next_watermark`` (string|int|datetime|date): Next watermark value (optional)
    - ``parent_id`` (int): Parent execution ID for hierarchical executions (optional)

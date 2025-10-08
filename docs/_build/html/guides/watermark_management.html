@@ -585,7 +585,6 @@ twice or missed between executions.</p>
 <span class="n">pipeline_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock-price-worker&quot;</span><span class="p">,</span>
     <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;api-integration&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="s2">&quot;next_watermark&quot;</span><span class="p">:</span> <span class="n">next_watermark</span>  <span class="c1"># Converted to string</span>
 <span class="p">}</span>
 
@@ -600,7 +599,6 @@ twice or missed between executions.</p>
 <span class="n">execution_response</span> <span class="o">=</span> <span class="k">await</span> <span class="n">client</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;/start_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
     <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_result</span><span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">],</span>
     <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-    <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
     <span class="s2">&quot;watermark&quot;</span><span class="p">:</span> <span class="n">watermark</span><span class="p">,</span>
     <span class="s2">&quot;next_watermark&quot;</span><span class="p">:</span> <span class="n">max_id_from_source</span>
 <span class="p">})</span>

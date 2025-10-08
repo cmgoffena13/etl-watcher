@@ -83,7 +83,6 @@ Pipeline execution tracking.
        updates INTEGER CHECK (updates >= 0),
        soft_deletes INTEGER CHECK (soft_deletes >= 0),
        total_rows INTEGER CHECK (total_rows >= 0),
-       full_load BOOLEAN,
        watermark VARCHAR(50),
        next_watermark VARCHAR(50),
        execution_metadata JSONB,

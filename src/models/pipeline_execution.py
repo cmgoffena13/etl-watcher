@@ -9,7 +9,6 @@ from src.types import ValidatorModel
 class PipelineExecutionStartInput(ValidatorModel):
     pipeline_id: int
     start_date: DateTime
-    full_load: bool
     watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     parent_id: Optional[int] = None

@@ -40,7 +40,6 @@ class PipelineExecution(SQLModel, table=True):
     updates: Optional[int] = Field(default=None, ge=0)
     soft_deletes: Optional[int] = Field(default=None, ge=0)
     total_rows: Optional[int] = Field(default=None, ge=0)
-    full_load: Optional[bool]
     watermark: Optional[str] = Field(max_length=50)
     next_watermark: Optional[str] = Field(max_length=50)
     execution_metadata: Optional[dict] = Field(sa_column=Column(JSONB, nullable=True))

@@ -96,7 +96,6 @@ Here's a complete example of using watermarks in a pipeline:
    pipeline_data = {
        "name": "stock-price-worker",
        "pipeline_type_name": "api-integration",
-       "full_load": False,
        "next_watermark": next_watermark  # Converted to string
    }
 
@@ -111,7 +110,6 @@ Here's a complete example of using watermarks in a pipeline:
    execution_response = await client.post("/start_pipeline_execution", json={
        "pipeline_id": pipeline_result['id'],
        "start_date": pendulum.now("UTC").isoformat(),
-       "full_load": False,
        "watermark": watermark,
        "next_watermark": max_id_from_source
    })

@@ -60,7 +60,6 @@ class PipelineExecutionUser(HttpUser):
             "/start_pipeline_execution",
             json={
                 "pipeline_id": pipeline_id,
-                "full_load": False,
                 "start_date": pendulum.now("UTC").isoformat(),
             },
             catch_response=True,
@@ -110,7 +109,6 @@ class PipelineExecutionUser(HttpUser):
             "/end_pipeline_execution",
             json={
                 "id": execution_id,
-                "pipeline_id": pipeline_id,
                 "completed_successfully": random.choices(
                     [True, False], weights=[95, 5]
                 )[0],  # 95% success rate

@@ -781,8 +781,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </sp
 <span class="c1"># Start execution</span>
 <span class="n">start_data</span> <span class="o">=</span> <span class="p">{</span>
     <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+    <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="p">}</span>
 
 <span class="n">start_response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
@@ -822,8 +821,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
-<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
-<span class="s1">       &quot;full_load&quot;: true</span>
+<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="s1">     }&#39;</span>
 
 <span class="c1"># Your pipeline code executes here</span>
@@ -859,7 +857,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="kd">type</span><span class="w"> </span><span class="nx">StartExecution</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">PipelineID</span><span class="w"> </span><span class="kt">int</span><span class="w">    </span><span class="s">`json:&quot;pipeline_id&quot;`</span>
 <span class="w">    </span><span class="nx">StartDate</span><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;start_date&quot;`</span>
-<span class="w">    </span><span class="nx">FullLoad</span><span class="w">   </span><span class="kt">bool</span><span class="w">   </span><span class="s">`json:&quot;full_load&quot;`</span>
 <span class="p">}</span>
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">EndExecution</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
@@ -932,8 +929,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">        </span><span class="c1">// Start execution</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">startJson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;full_load&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
 
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">startRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
@@ -986,8 +982,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <p><strong>Full Load Pattern</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -995,7 +990,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T23:59:59Z&quot;</span>
 <span class="p">}</span>
 </pre></div>
@@ -1004,7 +998,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;start_date&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;full_load&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;parent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span>
 <span class="p">}</span>
 </pre></div>
@@ -1070,8 +1063,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
     <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span>
+        <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
     <span class="p">}</span>
 <span class="p">)</span>
 <span class="n">main_execution_id</span> <span class="o">=</span> <span class="n">main_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
@@ -1082,7 +1074,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
     <span class="n">json</span><span class="o">=</span><span class="p">{</span>
         <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span>
         <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;full_load&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
         <span class="s2">&quot;parent_id&quot;</span><span class="p">:</span> <span class="n">main_execution_id</span>
     <span class="p">}</span>
 <span class="p">)</span>
@@ -1093,8 +1084,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
-<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
-<span class="s1">       &quot;full_load&quot;: true</span>
+<span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="s1">     }&#39;</span>
 
 <span class="c1"># Start sub-pipeline with parent reference</span>
@@ -1103,7 +1093,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 2,</span>
 <span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;,</span>
-<span class="s1">       &quot;full_load&quot;: true,</span>
 <span class="s1">       &quot;parent_id&quot;: 123</span>
 <span class="s1">     }&#39;</span>
 </pre></div>
@@ -1120,7 +1109,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="kd">type</span><span class="w"> </span><span class="nx">StartExecution</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nx">PipelineID</span><span class="w"> </span><span class="kt">int</span><span class="w">    </span><span class="s">`json:&quot;pipeline_id&quot;`</span>
 <span class="w">    </span><span class="nx">StartDate</span><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;start_date&quot;`</span>
-<span class="w">    </span><span class="nx">FullLoad</span><span class="w">   </span><span class="kt">bool</span><span class="w">   </span><span class="s">`json:&quot;full_load&quot;`</span>
 <span class="w">    </span><span class="nx">ParentID</span><span class="w">   </span><span class="o">*</span><span class="kt">int</span><span class="w">   </span><span class="s">`json:&quot;parent_id,omitempty&quot;`</span>
 <span class="p">}</span>
 
@@ -1171,8 +1159,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">        </span><span class="c1">// Start main pipeline execution</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">mainJson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;full_load&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
 
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">mainRequest</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
@@ -1190,7 +1177,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">subJson</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="s">&quot;full_load&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;parent_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">mainExecutionId</span>
 <span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
 

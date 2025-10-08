@@ -318,8 +318,7 @@ Starting and Ending Executions
          # Start execution
          start_data = {
              "pipeline_id": 1,
-             "start_date": "2024-01-01T10:00:00Z",
-             "full_load": True
+             "start_date": "2024-01-01T10:00:00Z"
          }
 
          start_response = httpx.post(
@@ -362,8 +361,7 @@ Starting and Ending Executions
               -H "Content-Type: application/json" \
               -d '{
                 "pipeline_id": 1,
-                "start_date": "2024-01-01T10:00:00Z",
-                "full_load": true
+                "start_date": "2024-01-01T10:00:00Z"
               }'
 
          # Your pipeline code executes here
@@ -402,7 +400,6 @@ Starting and Ending Executions
          type StartExecution struct {
              PipelineID int    `json:"pipeline_id"`
              StartDate  string `json:"start_date"`
-             FullLoad   bool   `json:"full_load"`
          }
 
          type EndExecution struct {
@@ -478,8 +475,7 @@ Starting and Ending Executions
                  // Start execution
                  val startJson = Json.obj(
                      "pipeline_id" -> 1,
-                     "start_date" -> "2024-01-01T10:00:00Z",
-                     "full_load" -> true
+                     "start_date" -> "2024-01-01T10:00:00Z"
                  ).toString()
                  
                  val startRequest = HttpRequest.newBuilder()
@@ -533,8 +529,7 @@ Execution Patterns
 
    {
      "pipeline_id": 1,
-     "start_date": "2024-01-01T10:00:00Z",
-     "full_load": true
+     "start_date": "2024-01-01T10:00:00Z"
    }
 
 **Incremental Load Pattern**
@@ -544,7 +539,6 @@ Execution Patterns
    {
      "pipeline_id": 1,
      "start_date": "2024-01-02T10:00:00Z",
-     "full_load": false,
      "next_watermark": "2024-01-02T23:59:59Z"
    }
 
@@ -555,7 +549,6 @@ Execution Patterns
    {
      "pipeline_id": 1,
      "start_date": "2024-01-01T10:00:00Z",
-     "full_load": true,
      "parent_id": 5
    }
 
@@ -634,8 +627,7 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
              "http://localhost:8000/start_pipeline_execution",
              json={
                  "pipeline_id": 1,
-                 "start_date": "2024-01-01T10:00:00Z",
-                 "full_load": True
+                 "start_date": "2024-01-01T10:00:00Z"
              }
          )
          main_execution_id = main_response.json()["id"]
@@ -646,7 +638,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
              json={
                  "pipeline_id": 2,
                  "start_date": "2024-01-01T10:00:00Z",
-                 "full_load": True,
                  "parent_id": main_execution_id
              }
          )
@@ -660,8 +651,7 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
               -H "Content-Type: application/json" \
               -d '{
                 "pipeline_id": 1,
-                "start_date": "2024-01-01T10:00:00Z",
-                "full_load": true
+                "start_date": "2024-01-01T10:00:00Z"
               }'
 
          # Start sub-pipeline with parent reference
@@ -670,7 +660,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
               -d '{
                 "pipeline_id": 2,
                 "start_date": "2024-01-01T10:00:00Z",
-                "full_load": true,
                 "parent_id": 123
               }'
 
@@ -690,7 +679,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
          type StartExecution struct {
              PipelineID int    `json:"pipeline_id"`
              StartDate  string `json:"start_date"`
-             FullLoad   bool   `json:"full_load"`
              ParentID   *int   `json:"parent_id,omitempty"`
          }
 
@@ -744,8 +732,7 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
                  // Start main pipeline execution
                  val mainJson = Json.obj(
                      "pipeline_id" -> 1,
-                     "start_date" -> "2024-01-01T10:00:00Z",
-                     "full_load" -> true
+                     "start_date" -> "2024-01-01T10:00:00Z"
                  ).toString()
                  
                  val mainRequest = HttpRequest.newBuilder()
@@ -763,7 +750,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
                  val subJson = Json.obj(
                      "pipeline_id" -> 2,
                      "start_date" -> "2024-01-01T10:00:00Z",
-                     "full_load" -> true,
                      "parent_id" -> mainExecutionId
                  ).toString()
                  

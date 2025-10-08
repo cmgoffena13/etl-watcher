@@ -69,7 +69,6 @@ Here's the complete working example:
    start_execution = {
        "pipeline_id": pipeline_id,
        "start_time": pendulum.now().isoformat(),
-       "full_load": False,
    }
    response = httpx.post("http://localhost:8000/start_pipeline_execution", json=start_execution)
    pipeline_execution_id = response.json()["id"]

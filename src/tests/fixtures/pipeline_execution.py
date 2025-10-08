@@ -7,13 +7,11 @@ end_time = now
 
 TEST_PIPELINE_EXECUTION_START_DATA = {
     "pipeline_id": 1,
-    "full_load": False,
     "start_date": start_time.isoformat(),
 }
 
 TEST_PIPELINE_EXECUTION_END_DATA = {
     "id": 1,
-    "pipeline_id": 1,
     "end_date": end_time.isoformat(),
     "inserts": 10,
     "updates": 12,
