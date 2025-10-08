@@ -166,6 +166,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -207,6 +213,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -380,9 +387,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -811,6 +818,12 @@
 <li><p><strong>Check load_lineage</strong>: Only create lineage when the flag is enabled</p></li>
 <li><p><strong>Document Changes</strong>: Include lineage changes in your commit messages</p></li>
 </ul>
+<p><strong>Framework Design:</strong></p>
+<p>The Watcher framework is designed to represent the configuration stored in source control.
+Any updates to your pipeline code will be automatically reflected in the Watcher framework
+through delete-insert operations that ensure the latest lineage relationships are always maintained.
+This ensures that your lineage tracking stays synchronized with your
+actual pipeline implementations.</p>
 </section>
 <section id="managing-load-lineage-flag">
 <h2>Managing Load Lineage Flag<a class="headerlink" href="#managing-load-lineage-flag" title="Link to this heading"></a></h2>

@@ -166,6 +166,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -207,6 +213,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -380,9 +387,9 @@
 <li class="toctree-l2"><a class="reference internal" href="#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#execution-patterns">Execution Patterns</a></li>
@@ -624,17 +631,27 @@ including execution tracking, hierarchical workflows, and organizational best pr
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </pre></div>
 </div>
+<p><strong>Best Practices:</strong></p>
+<ul class="simple">
+<li><p><strong>Store in Source Control</strong>: Keep pipeline definitions in the same repository as your pipeline logic</p></li>
+<li><p><strong>Use Variables</strong>: Reference pipeline names and other dynamic values from environment variables</p></li>
+<li><p><strong>Documentation</strong>: Document pipeline purposes and dependencies in your code comments</p></li>
+</ul>
+<p><strong>Framework Design:</strong></p>
+<p>The Watcher framework is designed to represent the configuration stored in source control.
+Any updates to your pipeline code will be automatically reflected in the Watcher framework
+through a hash-based change detection system.
+This ensures that your monitoring and lineage tracking
+stays synchronized with your actual pipeline configuration.</p>
 </section>
-<section id="pipeline-active-flag">
-<h3>Pipeline Active Flag<a class="headerlink" href="#pipeline-active-flag" title="Link to this heading"></a></h3>
+</section>
+<section id="managing-active-status">
+<h2>Managing Active Status<a class="headerlink" href="#managing-active-status" title="Link to this heading"></a></h2>
 <p>The <cite>active</cite> flag allows you to control pipeline execution without deleting the pipeline configuration. This is useful for:</p>
 <ul class="simple">
 <li><p><strong>Temporary Disabling</strong>: Turn off pipelines during maintenance windows</p></li>
@@ -769,7 +786,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </sp
 <span class="n">run_pipeline_if_active</span><span class="p">(</span><span class="s2">&quot;daily sales pipeline&quot;</span><span class="p">,</span> <span class="s2">&quot;extraction&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
 </section>
 <section id="pipeline-execution">
 <h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>

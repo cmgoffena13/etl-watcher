@@ -164,6 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -205,6 +211,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -378,9 +385,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -516,18 +523,14 @@
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;my data pipeline&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_type_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-02T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;description&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Daily data extraction pipeline&quot;</span>
 <span class="w">  </span><span class="p">},</span>
 <span class="w">  </span><span class="nt">&quot;freshness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">24</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;freshness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_freshness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;timeliness_number&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;mute_timeliness_check&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;load_lineage&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">  </span><span class="nt">&quot;timeliness_datepart&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;hour&quot;</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -544,16 +547,12 @@
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Pipeline name (1-150 characters, required)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pipeline_type_name</span></code> (string): Pipeline type name (1-150 characters, required)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Watermark value (optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string|int|datetime|date): Next watermark value (optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">pipeline_metadata</span></code> (object): Additional pipeline metadata (optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">freshness_number</span></code> (int): Freshness check interval number (optional, &gt;0)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">freshness_datepart</span></code> (string): Freshness check date part (optional, hour, day, week, month, year)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mute_freshness_check</span></code> (bool): Whether freshness check is muted (optional, default: false)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">timeliness_number</span></code> (int): Timeliness check interval number (optional, &gt;0)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">timeliness_datepart</span></code> (string): Timeliness check date part (optional, hour, day, week, month, year)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">mute_timeliness_check</span></code> (bool): Whether timeliness check is muted (optional, default: false)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">load_lineage</span></code> (bool): Whether to load lineage (optional)</p></li>
 </ul>
 <p><strong>Response Fields:</strong></p>
 <ul class="simple">

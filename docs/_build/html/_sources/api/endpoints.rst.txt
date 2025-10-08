@@ -20,18 +20,14 @@ Create or Get Pipeline
       {
         "name": "my data pipeline",
         "pipeline_type_name": "extraction",
-        "watermark": "2024-01-01T00:00:00Z",
         "next_watermark": "2024-01-02T00:00:00Z",
         "pipeline_metadata": {
           "description": "Daily data extraction pipeline"
         },
         "freshness_number": 24,
         "freshness_datepart": "hour",
-        "mute_freshness_check": false,
         "timeliness_number": 2,
-        "timeliness_datepart": "hour",
-        "mute_timeliness_check": false,
-        "load_lineage": true
+        "timeliness_datepart": "hour"
       }
 
    **Response:**
@@ -49,16 +45,12 @@ Create or Get Pipeline
 
    - ``name`` (string): Pipeline name (1-150 characters, required)
    - ``pipeline_type_name`` (string): Pipeline type name (1-150 characters, required)
-   - ``watermark`` (string|int|datetime|date): Watermark value (optional)
    - ``next_watermark`` (string|int|datetime|date): Next watermark value (optional)
    - ``pipeline_metadata`` (object): Additional pipeline metadata (optional)
    - ``freshness_number`` (int): Freshness check interval number (optional, >0)
    - ``freshness_datepart`` (string): Freshness check date part (optional, hour, day, week, month, year)
-   - ``mute_freshness_check`` (bool): Whether freshness check is muted (optional, default: false)
    - ``timeliness_number`` (int): Timeliness check interval number (optional, >0)
    - ``timeliness_datepart`` (string): Timeliness check date part (optional, hour, day, week, month, year)
-   - ``mute_timeliness_check`` (bool): Whether timeliness check is muted (optional, default: false)
-   - ``load_lineage`` (bool): Whether to load lineage (optional)
 
    **Response Fields:**
 

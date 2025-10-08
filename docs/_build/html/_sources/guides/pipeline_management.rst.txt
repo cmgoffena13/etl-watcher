@@ -139,15 +139,26 @@ Configure monitoring settings during pipeline creation:
      "next_watermark": "2024-01-01T00:00:00Z",
      "freshness_number": 24,
      "freshness_datepart": "hour",
-     "mute_freshness_check": false,
      "timeliness_number": 2,
      "timeliness_datepart": "hour",
-     "mute_timeliness_check": false,
-     "load_lineage": true
    }
 
-Pipeline Active Flag
-~~~~~~~~~~~~~~~~~~~~
+**Best Practices:**
+
+- **Store in Source Control**: Keep pipeline definitions in the same repository as your pipeline logic
+- **Use Variables**: Reference pipeline names and other dynamic values from environment variables
+- **Documentation**: Document pipeline purposes and dependencies in your code comments
+
+**Framework Design:**
+
+The Watcher framework is designed to represent the configuration stored in source control. 
+Any updates to your pipeline code will be automatically reflected in the Watcher framework 
+through a hash-based change detection system. 
+This ensures that your monitoring and lineage tracking 
+stays synchronized with your actual pipeline configuration.
+
+Managing Active Status
+----------------------
 
 The `active` flag allows you to control pipeline execution without deleting the pipeline configuration. This is useful for:
 

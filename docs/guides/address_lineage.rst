@@ -347,6 +347,14 @@ Address lineage is commonly used in pipeline workflows. Here's how to integrate 
 - **Check load_lineage**: Only create lineage when the flag is enabled
 - **Document Changes**: Include lineage changes in your commit messages
 
+**Framework Design:**
+
+The Watcher framework is designed to represent the configuration stored in source control. 
+Any updates to your pipeline code will be automatically reflected in the Watcher framework 
+through delete-insert operations that ensure the latest lineage relationships are always maintained. 
+This ensures that your lineage tracking stays synchronized with your 
+actual pipeline implementations.
+
 Managing Load Lineage Flag
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
