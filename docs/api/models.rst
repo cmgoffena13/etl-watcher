@@ -23,7 +23,6 @@ PipelinePostInput
        timeliness_number: Optional[int] = Field(gt=0)
        timeliness_datepart: Optional[DatePartEnum] = None
        mute_timeliness_check: Optional[bool] = False
-       load_lineage: Optional[bool] = True
 
 PipelinePostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

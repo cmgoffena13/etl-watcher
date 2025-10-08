@@ -92,6 +92,7 @@ async def test_pipeline_freshness_check_failure(
         freshness_number=1,
         freshness_datepart="hour",
         mute_freshness_check=False,
+        input_hash="test_hash",  # Required for new NOT NULL constraint
     )
 
     db_session.add(pipeline)

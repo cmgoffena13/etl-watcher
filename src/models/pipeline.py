@@ -18,7 +18,6 @@ class PipelinePostInput(ValidatorModel):
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
     mute_timeliness_check: Optional[bool] = Field(default=False)
-    load_lineage: Optional[bool] = None
 
 
 class PipelinePostOutput(ValidatorModel):

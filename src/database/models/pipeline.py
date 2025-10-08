@@ -47,6 +47,7 @@ class Pipeline(SQLModel, table=True):
     active: bool = Field(
         sa_column=Column(Boolean, server_default=text("TRUE"), nullable=False)
     )
+    input_hash: str = Field(max_length=20)  # Hash of POST input data
 
     created_at: DateTime = Field(
         sa_column=Column(

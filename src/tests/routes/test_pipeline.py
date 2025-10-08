@@ -63,6 +63,77 @@ async def test_get_pipeline(async_client: AsyncClient):
 
 
 @pytest.mark.anyio
+async def test_pipeline_hash_functionality(async_client: AsyncClient):
+    """Test that pipeline hash functionality works correctly for change detection."""
+
+    # Create initial pipeline using fixture
+    response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    assert response.status_code == 201
+    pipeline_id = response.json()["id"]
+
+    # Test 1: Same data should not trigger update (hash unchanged)
+    response = await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+    assert response.status_code == 200  # Should be 200 (no change)
+
+    # Verify updated_at is still None (no change triggered)
+    response = await async_client.get(f"/pipeline/{pipeline_id}")
+    assert response.status_code == 200
+    pipeline_data = response.json()
+    assert pipeline_data["updated_at"] is None
+
+    # Test 2: Different data should trigger update (hash changed)
+    updated_data = {
+        "name": "Test Pipeline 1",
+        "pipeline_type_name": "extraction",
+        "pipeline_type_group_name": "databricks",
+        "freshness_number": 15,  # Changed from None
+        "freshness_datepart": "minute",
+        "timeliness_number": 30,  # Changed from None
+        "timeliness_datepart": "minute",
+    }
+
+    response = await async_client.post("/pipeline", json=updated_data)
+    assert response.status_code == 200  # Should be 200 (updated)
+
+    # Verify the database record was actually updated
+    response = await async_client.get(f"/pipeline/{pipeline_id}")
+    assert response.status_code == 200
+    pipeline_data = response.json()
+    assert pipeline_data["freshness_number"] == 15
+    assert pipeline_data["timeliness_number"] == 30
+    assert pipeline_data["freshness_datepart"] == "minute"
+    assert pipeline_data["timeliness_datepart"] == "minute"
+    assert pipeline_data["updated_at"] is not None  # Should be set after update
+
+    # Test 3: Update with watermark should work
+    # First, set a watermark value via PATCH
+    patch_data = {"id": pipeline_id, "watermark": "2024-01-01T10:00:00Z"}
+    response = await async_client.patch("/pipeline", json=patch_data)
+    assert response.status_code == 200
+
+    # Now test POST with next_watermark - should return watermark value too
+    watermark_data = {
+        "name": "Test Pipeline 1",
+        "pipeline_type_name": "extraction",
+        "pipeline_type_group_name": "databricks",
+        "freshness_number": 60,  # Changed again
+        "timeliness_number": 120,  # Changed again
+        "next_watermark": "2024-01-01T12:00:00Z",  # Add next_watermark
+    }
+
+    response = await async_client.post("/pipeline", json=watermark_data)
+    assert response.status_code == 200
+    assert response.json()["watermark"] is not None
+
+    # Verify the database record was updated again
+    response = await async_client.get(f"/pipeline/{pipeline_id}")
+    assert response.status_code == 200
+    pipeline_data = response.json()
+    assert pipeline_data["freshness_number"] == 60
+    assert pipeline_data["timeliness_number"] == 120
+
+
+@pytest.mark.anyio
 async def test_patch_pipeline(async_client: AsyncClient):
     # First create the pipeline to then be able to patch
     await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)

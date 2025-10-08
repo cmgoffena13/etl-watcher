@@ -1,3 +1,4 @@
+import json
 import logging
 
 import pendulum
@@ -21,6 +22,22 @@ from src.types import AnomalyMetricFieldEnum
 logger = logging.getLogger(__name__)
 
 
+def generate_input_hash(pipeline_input: PipelinePostInput) -> str:
+    """Generate a hash of the POST input data for change detection.
+
+    This detects when the hardcoded pipeline data in the pipeline code changes.
+    """
+    return str(
+        hash(
+            json.dumps(
+                pipeline_input.model_dump(exclude_unset=True),
+                sort_keys=True,
+                default=str,
+            )
+        )
+    )
+
+
 async def db_get_or_create_pipeline(
     session: Session, pipeline: PipelinePostInput, response: Response
 ) -> PipelinePostOutput:
@@ -32,12 +49,15 @@ async def db_get_or_create_pipeline(
     watermark = None
     new_pipeline = Pipeline(**pipeline.model_dump(exclude_unset=True))
 
+    # Generate hash of the input data
+    input_hash = generate_input_hash(pipeline)
+
     # Check if Pipeline record exists
     row = (
         await session.exec(
-            select(Pipeline.id, Pipeline.active, Pipeline.load_lineage).where(
-                Pipeline.name == pipeline.name
-            )
+            select(
+                Pipeline.id, Pipeline.active, Pipeline.load_lineage, Pipeline.input_hash
+            ).where(Pipeline.name == pipeline.name)
         )
     ).one_or_none()
 
@@ -61,6 +81,7 @@ async def db_get_or_create_pipeline(
             .values(
                 **new_pipeline.model_dump(exclude={"id"}),
                 pipeline_type_id=pipeline_type.id,
+                input_hash=input_hash,
             )
         )
         try:
@@ -94,18 +115,47 @@ async def db_get_or_create_pipeline(
         active = row.active
         load_lineage = row.load_lineage
 
-        # Update Next Watermark
-        if pipeline.next_watermark is not None:
-            logger.info("Next WaterMark Provided. Updating and Providing WaterMark...")
+        # Check if the input data has changed (pipeline code was updated)
+        data_changed = row.input_hash != input_hash
+        watermark_provided = pipeline.next_watermark is not None
+
+        if data_changed or watermark_provided:
+            # Build update values
+            update_values = {}
+
+            if data_changed:
+                logger.info(
+                    f"Pipeline '{pipeline.name}' input data has changed. Updating..."
+                )
+                update_values.update(
+                    **new_pipeline.model_dump(exclude={"id"}),
+                    input_hash=input_hash,
+                    updated_at=pendulum.now("UTC"),
+                )
+
+            if watermark_provided:
+                logger.info(
+                    "Next WaterMark Provided. Updating and Providing WaterMark..."
+                )
+                update_values["next_watermark"] = pipeline.next_watermark
+
+            # Single update for both data changes and watermark
             update_stmt = (
                 update(Pipeline)
                 .where(Pipeline.id == pipeline_id)
-                .values(next_watermark=pipeline.next_watermark)
-                .returning(Pipeline.watermark)
+                .values(**update_values)
             )
-            watermark = (await session.exec(update_stmt)).scalar_one()
+
+            if watermark_provided:
+                update_stmt = update_stmt.returning(Pipeline.watermark)
+                watermark = (await session.exec(update_stmt)).scalar_one()
+            else:
+                await session.exec(update_stmt)
+
             await session.commit()
-            logger.info("Updated with Next WaterMark")
+            logger.info(f"Pipeline '{pipeline.name}' successfully updated")
+        else:
+            pass  # Input data unchanged, no update needed
 
     if created:
         response.status_code = status.HTTP_201_CREATED
