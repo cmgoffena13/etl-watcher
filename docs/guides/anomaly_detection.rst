@@ -21,7 +21,7 @@ The anomaly detection system uses z-score analysis:
 5. **Anomaly Detection** Flags values that exceed the threshold
 
 .. note::
-   The system only compares executions that occurred during the same hour of day (e.g., 2 PM vs 2 PM) 
+   The system only compares successful executions that occurred during the same hour of day (e.g., 2 PM vs 2 PM) 
    to account for daily patterns, business hours, and data processing cycles. 
    This ensures more accurate anomaly detection by comparing like-with-like time periods.
 
@@ -381,10 +381,10 @@ No Manual Triggering Required
 
 Unlike monitoring checks, anomaly detection doesn't require manual triggering:
 
-- **Automatic** Runs after every successful execution
-- **Background** Processed by Celery workers
-- **Real-time** Results available immediately
-- **Persistent** Anomaly results stored in database
+- **Automatic**: Runs after every successful execution
+- **Background**: Processed by Celery workers
+- **Real-time**: Results available immediately
+- **Persistent**: Anomaly results stored in database
 
 Anomaly Results
 ---------------
@@ -417,13 +417,13 @@ When an anomaly is detected, the system stores detailed information:
 Result Fields
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **violation_value** The actual metric value that triggered the anomaly
-- **z_score** How many standard deviations from the mean
-- **historical_mean** Average value from historical data
-- **std_deviation_value** Standard deviation from historical data
-- **z_threshold** Configured threshold for this rule
-- **threshold_min_value** Minimum expected value
-- **threshold_max_value** Maximum expected value
+- **violation_value**: The actual metric value that triggered the anomaly
+- **z_score**: How many standard deviations from the mean
+- **historical_mean**: Average value from historical data
+- **std_deviation_value**: Standard deviation from historical data
+- **z_threshold**: Configured threshold for this rule
+- **threshold_min_value**: Minimum expected value
+- **threshold_max_value**: Maximum expected value
 
 Alert Notifications
 -------------------
@@ -884,10 +884,10 @@ Best Practices
 Rule Configuration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Start Conservative** Begin with higher z-thresholds (2.5-3.0)
-- **Adjust Based on Data** Lower thresholds as you understand your data patterns
-- **Multiple Metrics** Monitor different aspects of pipeline performance
-- **Sufficient History** Ensure enough historical data for stable baselines
+- **Start Conservative**: Begin with higher z-thresholds (2.5-3.0)
+- **Adjust Based on Data**: Lower thresholds as you understand your data patterns
+- **Multiple Metrics**: Monitor different aspects of pipeline performance
+- **Sufficient History**: Ensure enough historical data for stable baselines
 
 Threshold Selection
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -898,10 +898,10 @@ According to the Central Limit Theorem, 30 executions is enough to get a stable 
 Monitoring Strategy
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-- **Regular Review** Review anomaly results regularly
-- **False Positive Management** Unflag false positives promptly
-- **Threshold Tuning** Adjust thresholds based on results
-- **Alert Fatigue** Avoid overly sensitive thresholds
+- **Regular Review**: Review anomaly results regularly
+- **False Positive Management**: Unflag false positives promptly
+- **Threshold Tuning**: Adjust thresholds based on results
+- **Alert Fatigue**: Avoid overly sensitive thresholds
 
 Common Scenarios
 ----------------

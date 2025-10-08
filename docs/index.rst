@@ -82,10 +82,10 @@ Quick Start
    guides/anomaly_detection
    guides/custom_querying
    guides/etl_example
-   guides/recommended_implementation
    guides/log_cleanup
    guides/monitoring
    guides/pipeline_management
+   guides/recommended_implementation
    guides/watermark_management
 
 .. toctree::

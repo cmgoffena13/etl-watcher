@@ -166,6 +166,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -207,6 +213,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -320,11 +327,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -380,9 +387,9 @@
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -403,6 +410,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="recommended_implementation.html">Recommended Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#sync-address-lineage">Sync Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#example-implementation">Example Implementation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
@@ -414,7 +430,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -523,7 +547,7 @@ and can detect anomalies in various metrics like execution time, row counts, and
 </ol>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>The system only compares executions that occurred during the same hour of day (e.g., 2 PM vs 2 PM)
+<p>The system only compares successful executions that occurred during the same hour of day (e.g., 2 PM vs 2 PM)
 to account for daily patterns, business hours, and data processing cycles.
 This ensures more accurate anomaly detection by comparing like-with-like time periods.</p>
 </div>
@@ -861,10 +885,10 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <h3>No Manual Triggering Required<a class="headerlink" href="#no-manual-triggering-required" title="Link to this heading"></a></h3>
 <p>Unlike monitoring checks, anomaly detection doesn’t require manual triggering:</p>
 <ul class="simple">
-<li><p><strong>Automatic</strong> Runs after every successful execution</p></li>
-<li><p><strong>Background</strong> Processed by Celery workers</p></li>
-<li><p><strong>Real-time</strong> Results available immediately</p></li>
-<li><p><strong>Persistent</strong> Anomaly results stored in database</p></li>
+<li><p><strong>Automatic</strong>: Runs after every successful execution</p></li>
+<li><p><strong>Background</strong>: Processed by Celery workers</p></li>
+<li><p><strong>Real-time</strong>: Results available immediately</p></li>
+<li><p><strong>Persistent</strong>: Anomaly results stored in database</p></li>
 </ul>
 </section>
 </section>
@@ -896,13 +920,13 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <section id="result-fields">
 <h3>Result Fields<a class="headerlink" href="#result-fields" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>violation_value</strong> The actual metric value that triggered the anomaly</p></li>
-<li><p><strong>z_score</strong> How many standard deviations from the mean</p></li>
-<li><p><strong>historical_mean</strong> Average value from historical data</p></li>
-<li><p><strong>std_deviation_value</strong> Standard deviation from historical data</p></li>
-<li><p><strong>z_threshold</strong> Configured threshold for this rule</p></li>
-<li><p><strong>threshold_min_value</strong> Minimum expected value</p></li>
-<li><p><strong>threshold_max_value</strong> Maximum expected value</p></li>
+<li><p><strong>violation_value</strong>: The actual metric value that triggered the anomaly</p></li>
+<li><p><strong>z_score</strong>: How many standard deviations from the mean</p></li>
+<li><p><strong>historical_mean</strong>: Average value from historical data</p></li>
+<li><p><strong>std_deviation_value</strong>: Standard deviation from historical data</p></li>
+<li><p><strong>z_threshold</strong>: Configured threshold for this rule</p></li>
+<li><p><strong>threshold_min_value</strong>: Minimum expected value</p></li>
+<li><p><strong>threshold_max_value</strong>: Maximum expected value</p></li>
 </ul>
 </section>
 </section>
@@ -1306,10 +1330,10 @@ Details:
 <section id="id1">
 <h3>Rule Configuration<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Start Conservative</strong> Begin with higher z-thresholds (2.5-3.0)</p></li>
-<li><p><strong>Adjust Based on Data</strong> Lower thresholds as you understand your data patterns</p></li>
-<li><p><strong>Multiple Metrics</strong> Monitor different aspects of pipeline performance</p></li>
-<li><p><strong>Sufficient History</strong> Ensure enough historical data for stable baselines</p></li>
+<li><p><strong>Start Conservative</strong>: Begin with higher z-thresholds (2.5-3.0)</p></li>
+<li><p><strong>Adjust Based on Data</strong>: Lower thresholds as you understand your data patterns</p></li>
+<li><p><strong>Multiple Metrics</strong>: Monitor different aspects of pipeline performance</p></li>
+<li><p><strong>Sufficient History</strong>: Ensure enough historical data for stable baselines</p></li>
 </ul>
 </section>
 <section id="threshold-selection">
@@ -1320,10 +1344,10 @@ According to the Central Limit Theorem, 30 executions is enough to get a stable 
 <section id="monitoring-strategy">
 <h3>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h3>
 <ul class="simple">
-<li><p><strong>Regular Review</strong> Review anomaly results regularly</p></li>
-<li><p><strong>False Positive Management</strong> Unflag false positives promptly</p></li>
-<li><p><strong>Threshold Tuning</strong> Adjust thresholds based on results</p></li>
-<li><p><strong>Alert Fatigue</strong> Avoid overly sensitive thresholds</p></li>
+<li><p><strong>Regular Review</strong>: Review anomaly results regularly</p></li>
+<li><p><strong>False Positive Management</strong>: Unflag false positives promptly</p></li>
+<li><p><strong>Threshold Tuning</strong>: Adjust thresholds based on results</p></li>
+<li><p><strong>Alert Fatigue</strong>: Avoid overly sensitive thresholds</p></li>
 </ul>
 </section>
 </section>
