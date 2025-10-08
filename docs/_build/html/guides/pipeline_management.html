@@ -875,7 +875,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">    </span><span class="nx">startData</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">StartExecution</span><span class="p">{</span>
 <span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">StartDate</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">FullLoad</span><span class="p">:</span><span class="w">   </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">jsonData</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">startData</span><span class="p">)</span>
@@ -1117,7 +1116,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">    </span><span class="nx">mainData</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">StartExecution</span><span class="p">{</span>
 <span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">StartDate</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">FullLoad</span><span class="p">:</span><span class="w">   </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">jsonData</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">mainData</span><span class="p">)</span>
@@ -1133,7 +1131,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <span class="w">    </span><span class="nx">subData</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">StartExecution</span><span class="p">{</span>
 <span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">StartDate</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">FullLoad</span><span class="p">:</span><span class="w">   </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nx">ParentID</span><span class="p">:</span><span class="w">   </span><span class="o">&amp;</span><span class="nx">mainExecutionID</span><span class="p">,</span>
 <span class="w">    </span><span class="p">}</span>
 

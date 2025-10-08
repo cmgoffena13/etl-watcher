@@ -418,7 +418,6 @@ Starting and Ending Executions
              startData := StartExecution{
                  PipelineID: 1,
                  StartDate:  "2024-01-01T10:00:00Z",
-                 FullLoad:   true,
              }
              
              jsonData, _ := json.Marshal(startData)
@@ -687,7 +686,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
              mainData := StartExecution{
                  PipelineID: 1,
                  StartDate:  "2024-01-01T10:00:00Z",
-                 FullLoad:   true,
              }
              
              jsonData, _ := json.Marshal(mainData)
@@ -703,7 +701,6 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
              subData := StartExecution{
                  PipelineID: 2,
                  StartDate:  "2024-01-01T10:00:00Z",
-                 FullLoad:   true,
                  ParentID:   &mainExecutionID,
              }
              
