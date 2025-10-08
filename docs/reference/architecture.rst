@@ -119,14 +119,8 @@ PostgreSQL provides the robust, scalable foundation for Watcher's metadata stora
 - **Strategic Indexing** - Comprehensive indexing strategy designed for large table growth
 - **BIGINT Support** - Handles massive scale (beyond 2 billion records)
 - **Check Constraints** - Data quality enforcement at the database level
-- **JSONB Support** - Flexible metadata storage with efficient querying
-
-**Database Features:**
-
-- **Closure Tables** - Efficient hierarchical relationship queries for pipeline executions and address lineage
 - **Custom Enums** - Type-safe enumeration support for data validation
-- **Timezone Awareness** - Proper handling of temporal data across time zones
-- **Foreign Key Constraints** - Referential integrity enforcement
+- **JSONB Support** - Flexible metadata storage with efficient querying
 
 Celery Background Processing
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -152,12 +146,6 @@ Redis serves as the message broker and provides additional functionality:
 - **Task Duration Storage** - Performance metrics collection
 - **Queue Monitoring** - Real-time queue status and health checks
 
-**Benefits:**
-
-- **High Performance** - Fast message passing and caching
-- **Reliability** - Persistent queues prevent task loss
-- **Monitoring** - Built-in queue health and performance metrics
-
 Docker Containerization
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -171,7 +159,7 @@ Docker provides standardized deployment and development environments:
 - **Production Deployment** - Kubernetes-ready container images
 
 Logfire Integration
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~
 
 Logfire provides comprehensive logging and monitoring capabilities:
 
@@ -203,4 +191,7 @@ Watcher was designed with one primary goal: **minimal impact on your data pipeli
 - **Scalable Architecture** - Grows with your data infrastructure
 
 **Result:**
-The Watcher framework provides comprehensive metadata management and monitoring capabilities while maintaining negligible performance impact on your data pipelines. This ensures that adding observability doesn't slow down your data processing workflows.
+The Watcher framework provides comprehensive metadata management 
+and monitoring capabilities while maintaining negligible performance impact on 
+your data pipelines. This ensures that adding observability doesn't slow down your 
+data processing workflows.
