@@ -4,6 +4,16 @@ ETL Example
 This section documents a complete ETL example in Python using Watcher 
 and the Polygon API to extract stock market data.
 
+.. note::
+   This example is intentionally verbose for demonstrative purposes. In production 
+   implementations, consider proper coding practices such as:
+   
+   - Configuration management (environment variables, config files)
+   - Error handling and logging frameworks
+   - Connection pooling and retry mechanisms
+   - Data validation and schema enforcement
+   - Code organization and modularity
+
 Overview
 ~~~~~~~~~~~~
 
@@ -15,10 +25,12 @@ This example demonstrates a real-world-esque ETL pipeline that:
 - Implements proper watermark management for incremental processing
 - Creates address lineage relationships for data flow tracking
 
-Complete Implementation
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Here's the complete working example:
+
+ETL Example Script
+~~~~~~~~~~~~~~~~~~~~~~~
+
+Here's a complete ETL example script:
 
 .. code-block:: python
 
@@ -123,7 +135,6 @@ Key Features Demonstrated
 
 - **Get-or-Create Pattern**: No separate creation calls needed; pipeline and pipeline_type are automatically created if they don't exist
 - **Watermark Processing**: Uses watermark-based incremental processing for efficient data extraction
-- **Load Scenarios**: Handles both full load and incremental scenarios seamlessly
 - **Easy Deployment**: Same code works for first run and subsequent runs without modification
 
 **Address Lineage:**
@@ -138,77 +149,56 @@ Key Features Demonstrated
 - Tracks execution metrics (total_rows processed)
 - Handles both successful and failed execution scenarios
 
-**Rate Limiting:**
-
-- Implements proper rate limit handling with exponential backoff
-- Continues processing after rate limit recovery
-- Maintains data integrity during API throttling
-
 **Watermark Management:**
 
 - Uses date-based watermarks for incremental processing
 - Handles initial watermark setup for new pipelines
 - Advances watermark through date range processing
 
-**Error Handling:**
-
-- Comprehensive try/catch with proper execution cleanup
-- Ensures execution is always ended, even on failure
-- Maintains execution status accuracy
-
-Best Practices Shown
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-1. **Source-Controlled Lineage** - Lineage definitions are in the pipeline code
-2. **Proper Error Handling** - Always end execution, even on failure
-3. **Rate Limit Management** - Graceful handling of API limitations
-4. **Incremental Processing** - Efficient watermark-based data extraction
-5. **Execution Metrics** - Tracking of rows processed for monitoring
-6. **Address Naming** - Clear, descriptive address names for lineage tracking
-
-This example demonstrates a production-ready-esque ETL pipeline that follows Watcher best practices for metadata management, execution tracking, and data lineage.
-
 Source Control Integration
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Store your pipeline configuration and lineage definitions alongside your ETL code in version control:
+Store your pipeline configuration and lineage definitions alongside your ETL code 
+in version control:
 
 .. code-block:: python
 
    # pipeline_config.py - Store in your repository
    PIPELINE_CONFIG = {
-       "name": "polygon_open_close",
-       "pipeline_type_name": "extraction",
-       "timeliness_number": 20,
-       "timeliness_datepart": "minute",
-       "freshness_number": 1,
-       "freshness_datepart": "day",
-       "pipeline_metadata": {
-           "description": "Daily stock price extraction from Polygon API",
-           "owner": "data-team",
+       "pipeline": {
+           "name": "polygon_open_close",
+           "pipeline_type_name": "extraction",
+           "timeliness_number": 20,
+           "timeliness_datepart": "minute",
+           "freshness_number": 1,
+           "freshness_datepart": "day",
+           "pipeline_metadata": {
+               "description": "Daily stock price extraction from Polygon API",
+               "owner": "data-team",
+           }
+       },
+       "lineage": {
+           "source_addresses": [
+               {
+                   "name": "https://api.polygon.io/v1/open-close/",
+                   "database_name": "external",
+                   "schema_name": "polygon",
+                   "table_name": "stock_prices"
+               }
+           ],
+           "target_addresses": [
+               {
+                   "name": "postgresql://localhost:5432/warehouse.public.stock_prices",
+                   "database_name": "warehouse",
+                   "schema_name": "public", 
+                   "table_name": "stock_prices"
+               }
+           ]
        }
    }
 
-   LINEAGE_CONFIG = {
-       "source_addresses": [
-           {
-               "name": "https://api.polygon.io/v1/open-close/",
-               "database_name": "external",
-               "schema_name": "polygon",
-               "table_name": "stock_prices"
-           }
-       ],
-       "target_addresses": [
-           {
-               "name": "postgresql://localhost:5432/warehouse.public.stock_prices",
-               "database_name": "warehouse",
-               "schema_name": "public", 
-               "table_name": "stock_prices"
-           }
-       ]
-   }
-
 **Benefits:**
+
 - **Version Control**: Track pipeline changes over time
 - **Code Review**: Review pipeline changes alongside code changes  
 - **Reproducibility**: Same configuration across environments

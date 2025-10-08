@@ -327,9 +327,8 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">ETL Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#best-practices-shown">Best Practices Shown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
@@ -420,7 +419,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -452,14 +459,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-details">Error Details</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/design.html">Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#configuration-as-code">Configuration as Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#efficiency-performance">Efficiency / Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#scalability">Scalability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#reliability">Reliability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#observability">Observability</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
@@ -521,6 +520,18 @@
 <h1>ETL Example<a class="headerlink" href="#etl-example" title="Link to this heading"></a></h1>
 <p>This section documents a complete ETL example in Python using Watcher
 and the Polygon API to extract stock market data.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This example is intentionally verbose for demonstrative purposes. In production
+implementations, consider proper coding practices such as:</p>
+<ul class="simple">
+<li><p>Configuration management (environment variables, config files)</p></li>
+<li><p>Error handling and logging frameworks</p></li>
+<li><p>Connection pooling and retry mechanisms</p></li>
+<li><p>Data validation and schema enforcement</p></li>
+<li><p>Code organization and modularity</p></li>
+</ul>
+</div>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
 <p>This example demonstrates a real-world-esque ETL pipeline that:</p>
@@ -532,9 +543,9 @@ and the Polygon API to extract stock market data.</p>
 <li><p>Creates address lineage relationships for data flow tracking</p></li>
 </ul>
 </section>
-<section id="complete-implementation">
-<h2>Complete Implementation<a class="headerlink" href="#complete-implementation" title="Link to this heading"></a></h2>
-<p>Here’s the complete working example:</p>
+<section id="etl-example-script">
+<h2>ETL Example Script<a class="headerlink" href="#etl-example-script" title="Link to this heading"></a></h2>
+<p>Here’s a complete ETL example script:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
@@ -637,7 +648,6 @@ and the Polygon API to extract stock market data.</p>
 <ul class="simple">
 <li><p><strong>Get-or-Create Pattern</strong>: No separate creation calls needed; pipeline and pipeline_type are automatically created if they don’t exist</p></li>
 <li><p><strong>Watermark Processing</strong>: Uses watermark-based incremental processing for efficient data extraction</p></li>
-<li><p><strong>Load Scenarios</strong>: Handles both full load and incremental scenarios seamlessly</p></li>
 <li><p><strong>Easy Deployment</strong>: Same code works for first run and subsequent runs without modification</p></li>
 </ul>
 <p><strong>Address Lineage:</strong></p>
@@ -652,80 +662,60 @@ and the Polygon API to extract stock market data.</p>
 <li><p>Tracks execution metrics (total_rows processed)</p></li>
 <li><p>Handles both successful and failed execution scenarios</p></li>
 </ul>
-<p><strong>Rate Limiting:</strong></p>
-<ul class="simple">
-<li><p>Implements proper rate limit handling with exponential backoff</p></li>
-<li><p>Continues processing after rate limit recovery</p></li>
-<li><p>Maintains data integrity during API throttling</p></li>
-</ul>
 <p><strong>Watermark Management:</strong></p>
 <ul class="simple">
 <li><p>Uses date-based watermarks for incremental processing</p></li>
 <li><p>Handles initial watermark setup for new pipelines</p></li>
 <li><p>Advances watermark through date range processing</p></li>
 </ul>
-<p><strong>Error Handling:</strong></p>
-<ul class="simple">
-<li><p>Comprehensive try/catch with proper execution cleanup</p></li>
-<li><p>Ensures execution is always ended, even on failure</p></li>
-<li><p>Maintains execution status accuracy</p></li>
-</ul>
-</section>
-<section id="best-practices-shown">
-<h2>Best Practices Shown<a class="headerlink" href="#best-practices-shown" title="Link to this heading"></a></h2>
-<ol class="arabic simple">
-<li><p><strong>Source-Controlled Lineage</strong> - Lineage definitions are in the pipeline code</p></li>
-<li><p><strong>Proper Error Handling</strong> - Always end execution, even on failure</p></li>
-<li><p><strong>Rate Limit Management</strong> - Graceful handling of API limitations</p></li>
-<li><p><strong>Incremental Processing</strong> - Efficient watermark-based data extraction</p></li>
-<li><p><strong>Execution Metrics</strong> - Tracking of rows processed for monitoring</p></li>
-<li><p><strong>Address Naming</strong> - Clear, descriptive address names for lineage tracking</p></li>
-</ol>
-<p>This example demonstrates a production-ready-esque ETL pipeline that follows Watcher best practices for metadata management, execution tracking, and data lineage.</p>
 </section>
 <section id="source-control-integration">
 <h2>Source Control Integration<a class="headerlink" href="#source-control-integration" title="Link to this heading"></a></h2>
-<p>Store your pipeline configuration and lineage definitions alongside your ETL code in version control:</p>
+<p>Store your pipeline configuration and lineage definitions alongside your ETL code
+in version control:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pipeline_config.py - Store in your repository</span>
 <span class="n">PIPELINE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;timeliness_number&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-    <span class="s2">&quot;timeliness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;minute&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;freshness_number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-    <span class="s2">&quot;freshness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily stock price extraction from Polygon API&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;pipeline&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;timeliness_number&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
+        <span class="s2">&quot;timeliness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;minute&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;freshness_number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
+        <span class="s2">&quot;freshness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily stock price extraction from Polygon API&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;lineage&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;external&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql://localhost:5432/warehouse.public.stock_prices&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;public&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
+            <span class="p">}</span>
+        <span class="p">]</span>
     <span class="p">}</span>
-<span class="p">}</span>
-
-<span class="n">LINEAGE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;external&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
-        <span class="p">}</span>
-    <span class="p">],</span>
-    <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-        <span class="p">{</span>
-            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgresql://localhost:5432/warehouse.public.stock_prices&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;database_name&quot;</span><span class="p">:</span> <span class="s2">&quot;warehouse&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;schema_name&quot;</span><span class="p">:</span> <span class="s2">&quot;public&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;table_name&quot;</span><span class="p">:</span> <span class="s2">&quot;stock_prices&quot;</span>
-        <span class="p">}</span>
-    <span class="p">]</span>
 <span class="p">}</span>
 </pre></div>
 </div>
-<p><strong>Benefits:</strong>
-- <strong>Version Control</strong>: Track pipeline changes over time
-- <strong>Code Review</strong>: Review pipeline changes alongside code changes
-- <strong>Reproducibility</strong>: Same configuration across environments
-- <strong>Documentation</strong>: Pipeline purpose documented in code
-- <strong>Rollback</strong>: Easy to revert problematic changes</p>
+<p><strong>Benefits:</strong></p>
+<ul class="simple">
+<li><p><strong>Version Control</strong>: Track pipeline changes over time</p></li>
+<li><p><strong>Code Review</strong>: Review pipeline changes alongside code changes</p></li>
+<li><p><strong>Reproducibility</strong>: Same configuration across environments</p></li>
+<li><p><strong>Documentation</strong>: Pipeline purpose documented in code</p></li>
+<li><p><strong>Rollback</strong>: Easy to revert problematic changes</p></li>
+</ul>
 </section>
 </section>
 
