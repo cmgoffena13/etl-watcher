@@ -31,6 +31,6 @@ PIPELINE_CONFIG = {
             }
         ],
     },
-    "default_watermark": pendulum.date(2025, 1, 1),
+    "default_watermark": pendulum.date(2025, 1, 1).to_date_string(),
     "watermark": None,  # Will be set later
 }

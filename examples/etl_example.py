@@ -27,15 +27,15 @@ if pipeline_response.active is False:
     parent_pipeline_execution_id=parent_pipeline_execution_id,
 )
 def extract_data(
-    tickers: list[str], watermark: pendulum.date, current_date: pendulum.date
+    tickers: list[str], watermark: pendulum.date, next_watermark: pendulum.date
 ):
     all_records = []
     total_rows = 0
     for ticker in tickers:
         date = watermark  # Make sure we reset the watermark for each ticker
-        while date < current_date:
+        while date < next_watermark:
             response = httpx.get(
-                f"https://api.polygon.io/v1/open-close/{ticker}/{watermark}",
+                f"https://api.polygon.io/v1/open-close/{ticker}/{date}",
                 params=params,
             )
 
@@ -57,3 +57,9 @@ def extract_data(
         completed_successfully=True,
         total_rows=total_rows,
     )
+
+
+print("Extracting data...")
+watermark = pendulum.parse(PIPELINE_CONFIG["watermark"]).date()
+next_watermark = pendulum.parse(PIPELINE_CONFIG["next_watermark"]).date()
+extract_data(tickers, watermark, next_watermark)

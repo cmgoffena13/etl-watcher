@@ -96,16 +96,14 @@ def track_pipeline_execution(
 def sync_pipeline(pipeline_config: dict, next_watermark: Optional[str] = None):
     if next_watermark is not None:
         pipeline_config["pipeline"].next_watermark = next_watermark
+
     response = httpx.post(f"{base_url}/pipeline", json=pipeline_config["pipeline"])
     pipeline_response = PipelineResponse(**response.json())
+
     if pipeline_response.load_lineage:
         pipeline_config["lineage"]["pipeline_id"] = pipeline_response.id
         httpx.post(f"{base_url}/address_lineage", json=pipeline_config["lineage"])
+
     if pipeline_response.watermark is None:
         pipeline_config["watermark"] = pipeline_config["default_watermark"]
-    else:
-        # Assumes watermark will always be a date. Need to adjust.
-        pipeline_config["watermark"] = pendulum.parse(
-            pipeline_response.watermark
-        ).date()
     return pipeline_response
