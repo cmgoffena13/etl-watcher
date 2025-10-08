@@ -9,15 +9,12 @@ from src.types import DatePartEnum, ValidatorModel
 class PipelinePostInput(ValidatorModel):
     name: str = Field(max_length=150, min_length=1)
     pipeline_type_name: str = Field(max_length=150, min_length=1)
-    watermark: Optional[Union[str, int, DateTime, Date]] = None
     next_watermark: Optional[Union[str, int, DateTime, Date]] = None
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
-    mute_freshness_check: Optional[bool] = Field(default=False)
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
-    mute_timeliness_check: Optional[bool] = Field(default=False)
 
 
 class PipelinePostOutput(ValidatorModel):
