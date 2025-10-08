@@ -12,7 +12,7 @@ and the Polygon API to extract stock market data.
    - Error handling and logging frameworks
    - Connection pooling and retry mechanisms
    - Data validation and schema enforcement
-   - Code organization and modularity
+   - Code organization and modularity (configurable code rather than one-off ETL scripts)
 
 Overview
 ~~~~~~~~~~~~
@@ -25,7 +25,8 @@ This example demonstrates a real-world-esque ETL pipeline that:
 - Implements proper watermark management for incremental processing
 - Creates address lineage relationships for data flow tracking
 
-
+I created an `article series <https://example.com/article-series>`_ that slowly 
+builds up to this script to explain the features of the Watcher framework.
 
 ETL Example Script
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -39,11 +40,10 @@ Here's a complete ETL example script:
    import httpx
    import pendulum
 
-   current_date = pendulum.now().date()
    pipeline = {
        "name": "polygon_open_close",
        "pipeline_type_name": "extraction",
-       "next_watermark": current_date.to_date_string(),
+       "next_watermark": pendulum.now().date().to_date_string(),
    }
 
    response = httpx.post("http://localhost:8000/pipeline", json=pipeline)
