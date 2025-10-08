@@ -63,7 +63,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 ### 🧹 Log Cleanup
 - **Automated Maintenance**: Remove old log data to maintain database performance
 - **Batch Processing**: Safe deletion in configurable batches to avoid database locks
-- **Cascading Cleanup**: Maintains referential integrity across related tables
 - **Configurable Retention**: Set custom retention periods for different data types
 
 ### 🔧 Development & Operations
