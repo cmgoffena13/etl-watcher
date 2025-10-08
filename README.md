@@ -58,8 +58,6 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Automatic Detection**: Run anomaly detection automatically after each pipeline execution
 - **Historical Baselines**: Calculate statistical baselines from historical execution data over configurable time windows
 - **Anomaly Exclusion**: Previously flagged anomalies are excluded from future baseline calculations to prevent skewing
-- **Batched Processing**: Collect all anomalies for an execution and send a single comprehensive alert
-- **Per-Metric Tracking**: Track anomaly status per metric using JSONB flags on pipeline executions
 - **Auto-Create Rules**: Automatically create default anomaly detection rules for new pipelines
 
 ### 🧹 Log Cleanup
