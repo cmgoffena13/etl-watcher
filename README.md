@@ -9,6 +9,8 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 
 ## Table of Contents
 
+Currently developing out an [SDK](https://github.com/cmgoffena13/etl-watcher-sdk)
+
 1. [Features](#features)
 2. [Technology Stack](#️-technology-stack)
 3. [Contributing](#contributing)
