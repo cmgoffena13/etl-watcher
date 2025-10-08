@@ -34,6 +34,14 @@ A comprehensive FastAPI-based metadata management system designed to monitor dat
 - **Closure Table Pattern**: Efficient querying of complex lineage hierarchies with depth tracking
 - **Source Control Integration**: Store lineage definitions in version control for reproducibility
 
+### 📝 Configuration as Code
+- **Source Control Integration**: Store pipeline configuration and address lineage definitions in version control
+- **Hash-Based Change Detection**: Automatically detect when pipeline configuration changes and update the framework
+- **Code as Source of Truth**: Your pipeline code defines the configuration, not manual database entries
+- **Reproducible Deployments**: Same configuration across all environments through version control
+- **Code Review Integration**: Review pipeline changes alongside code changes in pull requests
+- **Rollback Capability**: Easy reversion of problematic configuration changes through git history
+
 ### 💧 Watermark Management
 - **Incremental Processing**: Support for watermark-based incremental data pipelines
 - **Flexible Watermarking**: Use any identifier (IDs, timestamps, etc.) as watermarks
