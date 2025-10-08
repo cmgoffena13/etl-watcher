@@ -1,7 +1,7 @@
-ETL Example
+ETL Script Example
 ===============
 
-This section documents a complete ETL example in Python using Watcher 
+This section documents a complete ETL script example in Python using Watcher 
 and the Polygon API to extract stock market data.
 
 .. note::
