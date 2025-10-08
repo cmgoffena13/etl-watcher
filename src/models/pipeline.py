@@ -14,10 +14,10 @@ class PipelinePostInput(ValidatorModel):
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
-    mute_freshness_check: Optional[bool] = False
+    mute_freshness_check: Optional[bool] = Field(default=False)
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
-    mute_timeliness_check: Optional[bool] = False
+    mute_timeliness_check: Optional[bool] = Field(default=False)
     load_lineage: Optional[bool] = None
 
 
@@ -37,9 +37,9 @@ class PipelinePatchInput(ValidatorModel):
     pipeline_metadata: Optional[dict] = None
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
-    mute_freshness_check: Optional[bool] = None
+    mute_freshness_check: Optional[bool] = Field(default=False)
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
-    mute_timeliness_check: Optional[bool] = None
+    mute_timeliness_check: Optional[bool] = Field(default=False)
     load_lineage: Optional[bool] = None
-    active: Optional[bool] = None
+    active: Optional[bool] = Field(default=True)

@@ -13,7 +13,7 @@ class AddressPostInput(ValidatorModel):
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)
     primary_key: Optional[str] = Field(None, max_length=50)
-    deprecated: Optional[bool] = False
+    deprecated: Optional[bool] = Field(default=False)
 
 
 class AddressPostOutput(ValidatorModel):
@@ -28,5 +28,5 @@ class AddressPatchInput(ValidatorModel):
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)
     primary_key: Optional[str] = Field(None, max_length=50)
-    deprecated: Optional[bool] = False
+    deprecated: Optional[bool] = Field(default=False)
     address_type_id: Optional[int] = None

@@ -1,13 +1,12 @@
 from typing import List, Optional
 
 from pydantic import Field
-from pydantic_extra_types.pendulum_dt import DateTime
 
 from src.types import AnomalyMetricFieldEnum, ValidatorModel
 
 
 class AnomalyDetectionRulePostInput(ValidatorModel):
-    pipeline_id: int = Field()
+    pipeline_id: int
     metric_field: AnomalyMetricFieldEnum
     z_threshold: float = Field(
         ge=1.0,
@@ -52,7 +51,7 @@ class AnomalyDetectionRulePatchInput(ValidatorModel):
         le=1000,
         description="Minimum executions needed for baseline calculation",
     )
-    active: Optional[bool] = None
+    active: Optional[bool] = Field(default=True)
 
 
 class AnomalyDetectionRulePostOutput(ValidatorModel):

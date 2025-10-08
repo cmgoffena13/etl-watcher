@@ -14,15 +14,16 @@ PipelinePostInput
    class PipelinePostInput(ValidatorModel):
        name: str = Field(max_length=150, min_length=1)
        pipeline_type_name: str = Field(max_length=150, min_length=1)
+       watermark: Optional[Union[str, int, DateTime, Date]] = None
        next_watermark: Optional[Union[str, int, DateTime, Date]] = None
        pipeline_metadata: Optional[dict] = None
-       freshness_number: Optional[int] = Field(default=None, gt=0)
+       freshness_number: Optional[int] = Field(gt=0)
        freshness_datepart: Optional[DatePartEnum] = None
        mute_freshness_check: Optional[bool] = False
-       timeliness_number: Optional[int] = Field(default=None, gt=0)
+       timeliness_number: Optional[int] = Field(gt=0)
        timeliness_datepart: Optional[DatePartEnum] = None
        mute_timeliness_check: Optional[bool] = False
-       load_lineage: Optional[bool] = None
+       load_lineage: Optional[bool] = True
 
 PipelinePostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -47,13 +48,54 @@ PipelinePatchInput
        watermark: Optional[Union[str, int, DateTime, Date]] = None
        next_watermark: Optional[Union[str, int, DateTime, Date]] = None
        pipeline_metadata: Optional[dict] = None
-       freshness_number: Optional[int] = Field(default=None, gt=0)
+       freshness_number: Optional[int] = Field(None, gt=0)
        freshness_datepart: Optional[DatePartEnum] = None
        mute_freshness_check: Optional[bool] = None
-       timeliness_number: Optional[int] = Field(default=None, gt=0)
+       timeliness_number: Optional[int] = Field(None, gt=0)
        timeliness_datepart: Optional[DatePartEnum] = None
        mute_timeliness_check: Optional[bool] = None
        load_lineage: Optional[bool] = None
+       active: Optional[bool] = None
+
+Pipeline Type Models
+--------------------
+
+PipelineTypePostInput
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   class PipelineTypePostInput(ValidatorModel):
+       name: str = Field(max_length=150, min_length=1)
+       freshness_number: Optional[int] = Field(None, gt=0)
+       freshness_datepart: Optional[DatePartEnum] = None
+       mute_freshness_check: Optional[bool] = Field(default=False)
+       timeliness_number: Optional[int] = Field(None, gt=0)
+       timeliness_datepart: Optional[DatePartEnum] = None
+       mute_timeliness_check: Optional[bool] = Field(default=False)
+
+PipelineTypePostOutput
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   class PipelineTypePostOutput(ValidatorModel):
+       id: int
+
+PipelineTypePatchInput
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   class PipelineTypePatchInput(ValidatorModel):
+       id: int
+       name: Optional[str] = Field(None, max_length=150, min_length=1)
+       freshness_number: Optional[int] = Field(None, gt=0)
+       freshness_datepart: Optional[DatePartEnum] = None
+       mute_freshness_check: Optional[bool] = None
+       timeliness_number: Optional[int] = Field(None, gt=0)
+       timeliness_datepart: Optional[DatePartEnum] = None
+       mute_timeliness_check: Optional[bool] = None
 
 Pipeline Execution Models
 -------------------------
@@ -105,6 +147,11 @@ AddressPostInput
        name: str = Field(max_length=150, min_length=1)
        address_type_name: str = Field(max_length=150, min_length=1)
        address_type_group_name: str = Field(max_length=150, min_length=1)
+       database_name: Optional[str] = Field(None, max_length=50)
+       schema_name: Optional[str] = Field(None, max_length=50)
+       table_name: Optional[str] = Field(None, max_length=50)
+       primary_key: Optional[str] = Field(None, max_length=50)
+       deprecated: Optional[bool] = Field(default=False)
 
 AddressPostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -113,9 +160,6 @@ AddressPostOutput
 
    class AddressPostOutput(ValidatorModel):
        id: int
-       active: bool
-       load_lineage: bool
-       watermark: Optional[Union[str, int, DateTime, Date]] = None
 
 AddressPatchInput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -126,6 +170,11 @@ AddressPatchInput
        id: int
        name: Optional[str] = Field(None, max_length=150, min_length=1)
        address_type_id: Optional[int] = None
+       database_name: Optional[str] = Field(None, max_length=50)
+       schema_name: Optional[str] = Field(None, max_length=50)
+       table_name: Optional[str] = Field(None, max_length=50)
+       primary_key: Optional[str] = Field(None, max_length=50)
+       deprecated: Optional[bool] = Field(default=False)
 
 Address Type Models
 -------------------
@@ -258,10 +307,27 @@ AnomalyDetectionRulePatchInput
 
    class AnomalyDetectionRulePatchInput(ValidatorModel):
        id: int
+       pipeline_id: Optional[int] = None
        metric_field: Optional[AnomalyMetricFieldEnum] = None
-       z_threshold: Optional[float] = Field(None, gt=0)
-       minimum_executions: Optional[int] = Field(None, ge=2)
-       active: Optional[bool] = None
+       z_threshold: Optional[float] = Field(
+           None,
+           ge=1.0,
+           le=10.0,
+           description="How many standard deviations above mean to trigger anomaly",
+       )
+       lookback_days: Optional[int] = Field(
+           None,
+           ge=1,
+           le=365,
+           description="Number of days of historical data to compare against",
+       )
+       minimum_executions: Optional[int] = Field(
+           None,
+           ge=5,
+           le=1000,
+           description="Minimum executions needed for baseline calculation",
+       )
+       active: Optional[bool] = Field(default=True)
 
 UnflagAnomalyInput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -290,7 +356,7 @@ TimelinessPostInput
 .. code-block:: python
 
    class TimelinessPostInput(ValidatorModel):
-       lookback_minutes: int = Field(gt=0)
+       lookback_minutes: int = Field(ge=5, default=60)
 
 TimelinessPostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -302,6 +368,15 @@ TimelinessPostOutput
 
 Log Cleanup Models
 -----------------
+
+LogCleanupPostInput
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: python
+
+   class LogCleanupPostInput(ValidatorModel):
+       retention_days: int = Field(ge=90)
+       batch_size: int = 10000
 
 LogCleanupPostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

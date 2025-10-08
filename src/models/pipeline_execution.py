@@ -22,7 +22,7 @@ class PipelineExecutionStartOutput(ValidatorModel):
 class PipelineExecutionEndInput(ValidatorModel):
     id: int
     end_date: DateTime
-    completed_successfully: bool = Field(default=True)
+    completed_successfully: bool
     inserts: Optional[int] = Field(default=None, ge=0)
     updates: Optional[int] = Field(default=None, ge=0)
     soft_deletes: Optional[int] = Field(default=None, ge=0)

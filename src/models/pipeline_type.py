@@ -24,7 +24,7 @@ class PipelineTypePatchInput(ValidatorModel):
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     freshness_number: Optional[int] = Field(default=None, gt=0)
     freshness_datepart: Optional[DatePartEnum] = None
-    mute_freshness_check: Optional[bool] = None
+    mute_freshness_check: Optional[bool] = Field(default=False)
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
-    mute_timeliness_check: Optional[bool] = None
+    mute_timeliness_check: Optional[bool] = Field(default=False)
