@@ -20,7 +20,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Database Schema" href="database_schema.html" />
-    <link rel="prev" title="Architecture" href="architecture.html" /> 
+    <link rel="prev" title="Architecture &amp; Design" href="architecture.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -164,6 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -205,6 +211,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -318,11 +325,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -378,9 +385,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -401,6 +408,15 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-address-lineage">Sync Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#example-implementation">Example Implementation</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
@@ -412,7 +428,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -682,13 +706,11 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="progress-updates">
 <h3>Progress Updates<a class="headerlink" href="#progress-updates" title="Link to this heading"></a></h3>
-<p>Tasks provide detailed progress information:</p>
+<p>Tasks provide basic progress information:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Processing anomaly detection...&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;current_step&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Calculating z-scores&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;progress&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">75</span>
+<span class="w">    </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Starting anomaly detection...&quot;</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
@@ -716,7 +738,7 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="architecture.html" class="btn btn-neutral float-left" title="Architecture &amp; Design" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="database_schema.html" class="btn btn-neutral float-right" title="Database Schema" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

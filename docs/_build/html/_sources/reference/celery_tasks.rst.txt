@@ -209,16 +209,14 @@ Each task provides status updates during execution:
 Progress Updates
 ~~~~~~~~~~~~~~~~
 
-Tasks provide detailed progress information:
+Tasks provide basic progress information:
 
 .. code-block:: json
 
    {
      "state": "PROGRESS",
      "meta": {
-       "status": "Processing anomaly detection...",
-       "current_step": "Calculating z-scores",
-       "progress": 75
+       "status": "Starting anomaly detection..."
      }
    }
 
