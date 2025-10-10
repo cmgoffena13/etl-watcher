@@ -325,11 +325,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
@@ -407,6 +406,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-naming-convention">Pipeline Naming Convention</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-address-lineage">Sync Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#example-implementation">Example Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
@@ -625,14 +633,8 @@ Store your Pipeline configuration and Address Lineage in source control within y
 <li><p><strong>Strategic Indexing</strong> - Comprehensive indexing strategy designed for large table growth</p></li>
 <li><p><strong>BIGINT Support</strong> - Handles massive scale (beyond 2 billion records)</p></li>
 <li><p><strong>Check Constraints</strong> - Data quality enforcement at the database level</p></li>
-<li><p><strong>JSONB Support</strong> - Flexible metadata storage with efficient querying</p></li>
-</ul>
-<p><strong>Database Features:</strong></p>
-<ul class="simple">
-<li><p><strong>Closure Tables</strong> - Efficient hierarchical relationship queries for pipeline executions and address lineage</p></li>
 <li><p><strong>Custom Enums</strong> - Type-safe enumeration support for data validation</p></li>
-<li><p><strong>Timezone Awareness</strong> - Proper handling of temporal data across time zones</p></li>
-<li><p><strong>Foreign Key Constraints</strong> - Referential integrity enforcement</p></li>
+<li><p><strong>JSONB Support</strong> - Flexible metadata storage with efficient querying</p></li>
 </ul>
 </section>
 <section id="celery-background-processing">
@@ -655,12 +657,6 @@ Store your Pipeline configuration and Address Lineage in source control within y
 <li><p><strong>Persistence</strong> - Queue durability for reliability</p></li>
 <li><p><strong>Task Duration Storage</strong> - Performance metrics collection</p></li>
 <li><p><strong>Queue Monitoring</strong> - Real-time queue status and health checks</p></li>
-</ul>
-<p><strong>Benefits:</strong></p>
-<ul class="simple">
-<li><p><strong>High Performance</strong> - Fast message passing and caching</p></li>
-<li><p><strong>Reliability</strong> - Persistent queues prevent task loss</p></li>
-<li><p><strong>Monitoring</strong> - Built-in queue health and performance metrics</p></li>
 </ul>
 </section>
 <section id="docker-containerization">
@@ -704,7 +700,10 @@ Store your Pipeline configuration and Address Lineage in source control within y
 <li><p><strong>Scalable Architecture</strong> - Grows with your data infrastructure</p></li>
 </ul>
 <p><strong>Result:</strong>
-The Watcher framework provides comprehensive metadata management and monitoring capabilities while maintaining negligible performance impact on your data pipelines. This ensures that adding observability doesn’t slow down your data processing workflows.</p>
+The Watcher framework provides comprehensive metadata management
+and monitoring capabilities while maintaining negligible performance impact on
+your data pipelines. This ensures that adding observability doesn’t slow down your
+data processing workflows.</p>
 </section>
 </section>
 

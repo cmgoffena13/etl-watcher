@@ -19,8 +19,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Log Cleanup &amp; Maintenance" href="log_cleanup.html" />
-    <link rel="prev" title="ETL Example" href="etl_example.html" /> 
+    <link rel="next" title="Watermark Management" href="watermark_management.html" />
+    <link rel="prev" title="Pipeline Management" href="pipeline_management.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -325,20 +325,11 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#source-control-integration">Source Control Integration</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Recommended Implementation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#key-processes">Key Processes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#watermark-management">Watermark Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sync-address-lineage">Sync Address Lineage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -415,6 +406,15 @@
 <li class="toctree-l3"><a class="reference internal" href="pipeline_management.html#pipeline-naming-convention">Pipeline Naming Convention</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Recommended Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#watermark-management">Watermark Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sync-address-lineage">Sync Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
@@ -528,6 +528,11 @@
   <section id="recommended-implementation">
 <h1>Recommended Implementation<a class="headerlink" href="#recommended-implementation" title="Link to this heading"></a></h1>
 <p>This guide covers the recommended implementation to have your code integrated with Watcher.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Currently developing out an <a class="reference external" href="https://github.com/cmgoffena13/etl-watcher-sdk">SDK</a> to simplify the implementation.
+See the docs here: <a class="reference external" href="https://etl-watcher-sdk.readthedocs.io/en/latest/">https://etl-watcher-sdk.readthedocs.io/en/latest/</a></p>
+</div>
 <section id="key-processes">
 <h2>Key Processes<a class="headerlink" href="#key-processes" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
@@ -727,8 +732,8 @@ and allow for easy integration into the Watcher framework in a scalable way.</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="etl_example.html" class="btn btn-neutral float-left" title="ETL Example" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="log_cleanup.html" class="btn btn-neutral float-right" title="Log Cleanup &amp; Maintenance" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="pipeline_management.html" class="btn btn-neutral float-left" title="Pipeline Management" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="watermark_management.html" class="btn btn-neutral float-right" title="Watermark Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

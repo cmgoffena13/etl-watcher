@@ -3,6 +3,10 @@ Recommended Implementation
 
 This guide covers the recommended implementation to have your code integrated with Watcher.
 
+.. note::
+    Currently developing out an `SDK <https://github.com/cmgoffena13/etl-watcher-sdk>`_ to simplify the implementation. 
+    See the docs here: https://etl-watcher-sdk.readthedocs.io/en/latest/
+
 Key Processes
 ~~~~~~~~~~~~~~
 
