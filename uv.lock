@@ -13,16 +13,16 @@ wheels = [
 
 [[package]]
 name = "alembic"
-version = "1.16.5"
+version = "1.17.0"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mako" },
     { name = "sqlalchemy" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/9a/ca/4dc52902cf3491892d464f5265a81e9dff094692c8a049a3ed6a05fe7ee8/alembic-1.16.5.tar.gz", hash = "sha256:a88bb7f6e513bd4301ecf4c7f2206fe93f9913f9b48dac3b78babde2d6fe765e", size = 1969868, upload-time = "2025-08-27T18:02:05.668Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/6b/45/6f4555f2039f364c3ce31399529dcf48dd60726ff3715ad67f547d87dfd2/alembic-1.17.0.tar.gz", hash = "sha256:4652a0b3e19616b57d652b82bfa5e38bf5dbea0813eed971612671cb9e90c0fe", size = 1975526, upload-time = "2025-10-11T18:40:13.585Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/39/4a/4c61d4c84cfd9befb6fa08a702535b27b21fff08c946bc2f6139decbf7f7/alembic-1.16.5-py3-none-any.whl", hash = "sha256:e845dfe090c5ffa7b92593ae6687c5cb1a101e91fa53868497dbd79847f9dbe3", size = 247355, upload-time = "2025-08-27T18:02:07.37Z" },
+    { url = "https://files.pythonhosted.org/packages/44/1f/38e29b06bfed7818ebba1f84904afdc8153ef7b6c7e0d8f3bc6643f5989c/alembic-1.17.0-py3-none-any.whl", hash = "sha256:80523bc437d41b35c5db7e525ad9d908f79de65c27d6a5a5eab6df348a352d99", size = 247449, upload-time = "2025-10-11T18:40:16.288Z" },
 ]
 
 [[package]]
@@ -395,16 +395,16 @@ wheels = [
 
 [[package]]
 name = "etl-watcher-sdk"
-version = "0.1.17"
+version = "0.1.18"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pydantic-extra-types", extra = ["pendulum"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/5f/e0/0a88b40eef07b3c607219d6fd370b09507c3428bcf32f1455e47207765ca/etl_watcher_sdk-0.1.17.tar.gz", hash = "sha256:0c2b3ba657bbfab7ee6a5f1d2fb23195067c70be29bd39f4087eb7019fd296b0", size = 5896, upload-time = "2025-10-11T20:13:43.371Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/cb/73/61b4b8c845ac27668e409949d0bbc5a7334356651d5568f594c867fe4fc4/etl_watcher_sdk-0.1.18.tar.gz", hash = "sha256:8511f145853ed018606c39fa45d1ad4b6072613f9ada2a719e445800e5ab6ac7", size = 6620, upload-time = "2025-10-11T20:42:43.869Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/83/88/a7bb20ee5d51221fe27d2c9cf68f5729dfa984419d66b61b2ae5e7ba6985/etl_watcher_sdk-0.1.17-py3-none-any.whl", hash = "sha256:edf5607b557a02aad33c1fa4de1d3599c2e572c3d3cf91e3454ebaf0ea09e601", size = 8446, upload-time = "2025-10-11T20:13:42.528Z" },
+    { url = "https://files.pythonhosted.org/packages/0c/6d/7060dce85631fd5728eb708e3a85697a710092c8142c5a86b258ec8fd5ab/etl_watcher_sdk-0.1.18-py3-none-any.whl", hash = "sha256:e49087a9d9ca564099f21d0a313a137c71b4451f1fdf198f40557bbb54162994", size = 9455, upload-time = "2025-10-11T20:42:43.073Z" },
 ]
 
 [[package]]
