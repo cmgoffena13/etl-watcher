@@ -15,7 +15,7 @@ tickers = ["AAPL", "META"]  # Dynamically passed from fake ticker script
 
 synced_config = watcher.sync_pipeline_config(POLYGON_OPEN_CLOSE_PIPELINE_CONFIG)
 params = {
-    "apiKey": "dGY9xt8fYrqpzWsT3cdPKBpSs1Pz_WSd",
+    "apiKey": "XXXXX",
 }
 
 
