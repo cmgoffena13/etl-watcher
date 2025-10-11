@@ -15,7 +15,7 @@ tickers = ["AAPL", "META"]  # Dynamically passed from fake ticker script
 
 synced_config = watcher.sync_pipeline_config(POLYGON_OPEN_CLOSE_PIPELINE_CONFIG)
 params = {
-    "apiKey": "19JretcAVLsJQDcTvwOAHfcUSMFppfX1",  # Replace with your Free Polygon API key
+    "apiKey": "XXXX",  # Replace with your Free Polygon API key
 }
 
 
@@ -40,7 +40,7 @@ def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
                 f"https://api.polygon.io/v1/open-close/{ticker}/{date}",
                 params=params,
             )
-            response.raise_for_status()
+
             if response.status_code == 429:
                 wait_time = 30
                 print(f"Rate limit exceeded. Waiting {wait_time} seconds...")
