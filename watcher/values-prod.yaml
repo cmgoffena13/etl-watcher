@@ -52,9 +52,9 @@ celery:
     maxReplicas: 8
     targetCPUUtilizationPercentage: 70
 
-# Service configuration for production
+# Service configuration for production (internal service)
 service:
-  type: LoadBalancer
+  type: ClusterIP
   port: 80
   targetPort: 8000
 
