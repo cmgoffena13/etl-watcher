@@ -14,8 +14,6 @@ from src.models.address import AddressPostInput, AddressPostOutput
 from src.models.address_lineage import (
     AddressLineagePostInput,
     AddressLineagePostOutput,
-    SourceAddress,
-    TargetAddress,
 )
 
 logger = logging.getLogger(__name__)
@@ -23,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 async def _process_address_lists(
     session: Session,
-    source_addresses: List[SourceAddress],
-    target_addresses: List[TargetAddress],
+    source_addresses: List[AddressPostInput],
+    target_addresses: List[AddressPostInput],
     response: Response,
 ) -> tuple[Set[int], Set[int]]:
     source_address_ids = set()
@@ -32,31 +30,21 @@ async def _process_address_lists(
 
     # Process source addresses
     for source_address in source_addresses:
-        source_address_input = AddressPostInput(
-            name=source_address.name,
-            address_type_name=source_address.address_type_name,
-            address_type_group_name=source_address.address_type_group_name,
-        )
-        source_address = AddressPostOutput(
+        source_address_output = AddressPostOutput(
             **await db_get_or_create_address(
-                session=session, address=source_address_input, response=response
+                session=session, address=source_address, response=response
             )
         )
-        source_address_ids.add(source_address.id)
+        source_address_ids.add(source_address_output.id)
 
     # Process target addresses
     for target_address in target_addresses:
-        target_address_input = AddressPostInput(
-            name=target_address.name,
-            address_type_name=target_address.address_type_name,
-            address_type_group_name=target_address.address_type_group_name,
-        )
-        target_address = AddressPostOutput(
+        target_address_output = AddressPostOutput(
             **await db_get_or_create_address(
-                session=session, address=target_address_input, response=response
+                session=session, address=target_address, response=response
             )
         )
-        target_address_ids.add(target_address.id)
+        target_address_ids.add(target_address_output.id)
 
     return source_address_ids, target_address_ids
 

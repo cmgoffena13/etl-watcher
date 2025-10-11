@@ -212,28 +212,8 @@ AddressLineagePostInput
 
    class AddressLineagePostInput(ValidatorModel):
        pipeline_id: int
-       source_addresses: List[SourceAddress]
-       target_addresses: List[TargetAddress]
-
-SourceAddress
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   class SourceAddress(ValidatorModel):
-       name: str = Field(max_length=150, min_length=1)
-       address_type_name: str = Field(max_length=150, min_length=1)
-       address_type_group_name: str = Field(max_length=150, min_length=1)
-
-TargetAddress
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. code-block:: python
-
-   class TargetAddress(ValidatorModel):
-       name: str = Field(max_length=150, min_length=1)
-       address_type_name: str = Field(max_length=150, min_length=1)
-       address_type_group_name: str = Field(max_length=150, min_length=1)
+       source_addresses: List[AddressPostInput]
+       target_addresses: List[AddressPostInput]
 
 AddressLineagePostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~

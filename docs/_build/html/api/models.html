@@ -190,8 +190,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#address-lineage-models">Address Lineage Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#addresslineagepostinput">AddressLineagePostInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sourceaddress">SourceAddress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#targetaddress">TargetAddress</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#addresslineagepostoutput">AddressLineagePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#addresslineagegetoutput">AddressLineageGetOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
@@ -325,12 +323,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -407,6 +403,15 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-naming-convention">Pipeline Naming Convention</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#watermark-management">Watermark Management</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-address-lineage">Sync Address Lineage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#pipeline-execution">Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#example-implementation">Example Implementation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
@@ -487,6 +492,35 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dev_kubernetes.html">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#access-the-application">Access the Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
 </ul>
 </li>
 </ul>
@@ -710,26 +744,8 @@
 <h3>AddressLineagePostInput<a class="headerlink" href="#addresslineagepostinput" title="Link to this heading"></a></h3>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">AddressLineagePostInput</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
     <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span>
-    <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">SourceAddress</span><span class="p">]</span>
-    <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">TargetAddress</span><span class="p">]</span>
-</pre></div>
-</div>
-</section>
-<section id="sourceaddress">
-<h3>SourceAddress<a class="headerlink" href="#sourceaddress" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">SourceAddress</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-</section>
-<section id="targetaddress">
-<h3>TargetAddress<a class="headerlink" href="#targetaddress" title="Link to this heading"></a></h3>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TargetAddress</span><span class="p">(</span><span class="n">ValidatorModel</span><span class="p">):</span>
-    <span class="n">name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">address_type_group_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">max_length</span><span class="o">=</span><span class="mi">150</span><span class="p">,</span> <span class="n">min_length</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">source_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AddressPostInput</span><span class="p">]</span>
+    <span class="n">target_addresses</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">AddressPostInput</span><span class="p">]</span>
 </pre></div>
 </div>
 </section>

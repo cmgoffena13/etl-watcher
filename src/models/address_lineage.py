@@ -1,26 +1,13 @@
 from typing import List, Optional
 
-from pydantic import Field
-
+from src.models.address import AddressPostInput
 from src.types import ValidatorModel
-
-
-class SourceAddress(ValidatorModel):
-    name: str = Field(max_length=150, min_length=1)
-    address_type_name: str = Field(max_length=150, min_length=1)
-    address_type_group_name: str = Field(max_length=150, min_length=1)
-
-
-class TargetAddress(ValidatorModel):
-    name: str = Field(max_length=150, min_length=1)
-    address_type_name: str = Field(max_length=150, min_length=1)
-    address_type_group_name: str = Field(max_length=150, min_length=1)
 
 
 class AddressLineagePostInput(ValidatorModel):
     pipeline_id: int
-    source_addresses: List[SourceAddress]
-    target_addresses: List[TargetAddress]
+    source_addresses: List[AddressPostInput]
+    target_addresses: List[AddressPostInput]
 
 
 class AddressLineagePostOutput(ValidatorModel):
