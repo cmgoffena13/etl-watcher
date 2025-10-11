@@ -653,7 +653,7 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
 <section id="track-pipeline-execution">
 <h2>Track Pipeline Execution<a class="headerlink" href="#track-pipeline-execution" title="Link to this heading"></a></h2>
 <p>Use the SDK’s decorator to track your ETL pipeline execution:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
 
 <span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
     <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
@@ -673,7 +673,7 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
         <span class="n">total_rows</span> <span class="o">+=</span> <span class="n">process_ticker</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">watermark</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">)</span>
 
     <span class="c1"># Return ETL results</span>
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="n">total_rows</span><span class="p">,</span>
     <span class="p">)</span>
@@ -682,7 +682,7 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
 <p>The decorator automatically handles:</p>
 <ul class="simple">
 <li><p>Starting and ending pipeline execution</p></li>
-<li><p>Updating the pipeline execution with the ETLResults</p></li>
+<li><p>Updating the pipeline execution with the ETLResult</p></li>
 <li><p>Active/Inactive pipeline management</p></li>
 <li><p>All HTTP communication with the Watcher API</p></li>
 </ul>
@@ -698,7 +698,7 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span><span class="p">,</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResult</span><span class="p">,</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
 <span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">POLYGON_OPEN_CLOSE_PIPELINE_CONFIG</span>
 
 <span class="c1"># Initialize Watcher client</span>
@@ -742,8 +742,8 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
 
         <span class="n">total_rows</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_records</span><span class="p">)</span>
 
-    <span class="c1"># Make sure to return the ETLResults</span>
-    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+    <span class="c1"># Make sure to return the ETLResult</span>
+    <span class="k">return</span> <span class="n">ETLResult</span><span class="p">(</span>
         <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">total_rows</span><span class="o">=</span><span class="n">total_rows</span><span class="p">,</span>
     <span class="p">)</span>
@@ -760,7 +760,7 @@ See the docs here: <a class="reference external" href="https://etl-watcher-sdk.r
 <li><p><strong>Simplified Integration</strong>: Abstracts away complex HTTP requests and API interactions</p></li>
 <li><p><strong>Synchronization</strong>: Automatically syncs pipeline configuration and address lineage with Watcher</p></li>
 <li><p><strong>Watermark Management</strong>: Automatically manages watermarks for each pipeline execution</p></li>
-<li><p><strong>Execution Tracking</strong>: Automatically tracks pipeline execution and updates the pipeline execution with the ETLResults</p></li>
+<li><p><strong>Execution Tracking</strong>: Automatically tracks pipeline execution and updates the pipeline execution with the ETLResult</p></li>
 <li><p><strong>Hierarchical Execution Tracking</strong>: Provides access to the <code class="docutils literal notranslate"><span class="pre">watcher_context</span></code> for hierarchical execution tracking</p></li>
 </ul>
 <p>This implementation provides a clean, maintainable way to integrate your ETL processes with

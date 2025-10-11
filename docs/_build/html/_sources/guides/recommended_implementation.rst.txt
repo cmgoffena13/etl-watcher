@@ -115,7 +115,7 @@ Use the SDK's decorator to track your ETL pipeline execution:
 
 .. code-block:: python
 
-    from watcher import ETLResults, WatcherExecutionContext
+    from watcher import ETLResult, WatcherExecutionContext
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id,
@@ -135,7 +135,7 @@ Use the SDK's decorator to track your ETL pipeline execution:
             total_rows += process_ticker(ticker, watermark, next_watermark)
         
         # Return ETL results
-        return ETLResults(
+        return ETLResult(
             completed_successfully=True,
             total_rows=total_rows,
         )
@@ -143,7 +143,7 @@ Use the SDK's decorator to track your ETL pipeline execution:
 The decorator automatically handles:
 
 - Starting and ending pipeline execution
-- Updating the pipeline execution with the ETLResults
+- Updating the pipeline execution with the ETLResult
 - Active/Inactive pipeline management
 - All HTTP communication with the Watcher API
 
@@ -162,7 +162,7 @@ Here's a complete example putting it all together:
     import time
     import httpx
     import pendulum
-    from watcher import ETLResults, Watcher, WatcherExecutionContext
+    from watcher import ETLResult, Watcher, WatcherExecutionContext
     from pipeline import POLYGON_OPEN_CLOSE_PIPELINE_CONFIG
 
     # Initialize Watcher client
@@ -206,8 +206,8 @@ Here's a complete example putting it all together:
             
             total_rows += len(all_records)
         
-        # Make sure to return the ETLResults
-        return ETLResults(
+        # Make sure to return the ETLResult
+        return ETLResult(
             completed_successfully=True,
             total_rows=total_rows,
         )
@@ -222,7 +222,7 @@ Benefits of Using the SDK
 - **Simplified Integration**: Abstracts away complex HTTP requests and API interactions
 - **Synchronization**: Automatically syncs pipeline configuration and address lineage with Watcher
 - **Watermark Management**: Automatically manages watermarks for each pipeline execution
-- **Execution Tracking**: Automatically tracks pipeline execution and updates the pipeline execution with the ETLResults
+- **Execution Tracking**: Automatically tracks pipeline execution and updates the pipeline execution with the ETLResult
 - **Hierarchical Execution Tracking**: Provides access to the ``watcher_context`` for hierarchical execution tracking
 
 This implementation provides a clean, maintainable way to integrate your ETL processes with 

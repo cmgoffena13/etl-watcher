@@ -5,7 +5,7 @@ import pendulum
 from pipeline import POLYGON_OPEN_CLOSE_PIPELINE_CONFIG
 
 # Utilizing etl-watcher-sdk
-from watcher import ETLResults, Watcher, WatcherExecutionContext
+from watcher import ETLResult, Watcher, WatcherExecutionContext
 
 # Initiate Watcher client
 watcher = Watcher("http://localhost:8000")
@@ -55,7 +55,7 @@ def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
 
         print(all_records)  # Save records somewhere for each ticker
         total_rows += len(all_records)
-    return ETLResults(
+    return ETLResult(
         completed_successfully=True,
         total_rows=total_rows,
     )
