@@ -5,7 +5,7 @@ import pendulum
 from pipeline import POLYGON_OPEN_CLOSE_PIPELINE_CONFIG
 
 # Utilizing etl-watcher-sdk
-from watcher import ETLResult, Watcher, WatcherExecutionContext
+from watcher import ETLResult, Watcher, WatcherContext
 
 # Initiate Watcher client
 watcher = Watcher("http://localhost:8000")
@@ -26,7 +26,7 @@ params = {
     watermark=synced_config.watermark,
     next_watermark=synced_config.next_watermark,
 )
-def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
+def extract_data(watcher_context: WatcherContext, tickers: list[str]):
     watermark = pendulum.parse(watcher_context.watermark).date()
     next_watermark = pendulum.parse(watcher_context.next_watermark).date()
     print(f"Watermark: {watermark}, Next Watermark: {next_watermark}")
