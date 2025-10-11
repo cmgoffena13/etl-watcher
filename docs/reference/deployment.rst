@@ -1,172 +1,71 @@
-Deployment Guide
-=================
+Kubernetes Deployment Guides
+=============================
 
-This section covers deployment strategies for Watcher. 
-We'll be walking through a Kubernetes deployment of Watcher utilizing Helm charts.
-You can test the deployment strategies utilizing Kubernetes in Docker Desktop.
-
-Kubernetes
-----------
-
-Overview
-~~~~~~~~
-
-1. Install Docker Desktop
-2. Install Kubernetes in Docker Desktop
-3. Create a new Kubernetes cluster
-
-Setup
-~~~~~
-
-1. Install Helm
-2. Check Kubernetes
+This guide covers deploying Watcher to Kubernetes using Helm charts. 
+We'll walk through the complete process from prerequisites to a fully functional 
+deployment.
 
 
+Scaling
+-------
+
+Scale Application Pods
+~~~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   kubectl scale deployment watcher --replicas=3
+
+Scale Celery Workers
+~~~~~~~~~~~~~~~~~~~~
+
+.. code-block:: bash
+
+   kubectl scale deployment watcher-celery --replicas=4
 
 
+Advanced Configuration
+----------------------
 
+Custom Values
+~~~~~~~~~~~~~
 
-
-Namespace
-~~~~~~~~~
-
-.. code-block:: yaml
-
-   apiVersion: v1
-   kind: Namespace
-   metadata:
-     name: watcher
-
-
-ConfigMap
-~~~~~~~~~
+Create a custom values file for your environment:
 
 .. code-block:: yaml
 
-   apiVersion: v1
-   kind: ConfigMap
-   metadata:
-     name: watcher-config
-     namespace: watcher
-   data:
-     PROD_DATABASE_URL: "postgresql+asyncpg://user:password@your-db-host:5432/watcher"
-     PROD_REDIS_URL: "redis://your-redis-host:6379/1"
-     PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: "true"
-     PROD_PROFILING_ENABLED: "false"
+   # custom-values.yaml
+   image:
+     repository: "your-registry/watcher"
+     tag: "v1.0.0"
+   
+   resources:
+     requests:
+       memory: "1Gi"
+       cpu: "500m"
+     limits:
+       memory: "2Gi"
+       cpu: "1000m"
 
-Secrets
-~~~~~~~
+Deploy with custom values:
 
-.. code-block:: yaml
+.. code-block:: bash
 
-   apiVersion: v1
-   kind: Secret
-   metadata:
-     name: watcher-secrets
-     namespace: watcher
-   type: Opaque
-   data:
-     PROD_LOGFIRE_TOKEN: <base64-encoded-token>
-     PROD_SLACK_WEBHOOK_URL: <base64-encoded-webhook>
+   helm install watcher ./watcher -f custom-values.yaml
 
-Watcher Application
-~~~~~~~~~~~~~~~~~~~
+Multiple Environments
+~~~~~~~~~~~~~~~~~~~~
 
-.. code-block:: yaml
+Deploy to different environments:
 
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: watcher-app
-     namespace: watcher
-   spec:
-     replicas: 2
-     selector:
-       matchLabels:
-         app: watcher-app
-     template:
-       metadata:
-         labels:
-           app: watcher-app
-       spec:
-         containers:
-         - name: watcher
-           image: watcher:latest
-           ports:
-           - containerPort: 8000
-           envFrom:
-           - configMapRef:
-               name: watcher-config
-           - secretRef:
-               name: watcher-secrets
-           livenessProbe:
-             httpGet:
-               path: /
-               port: 8000
-             initialDelaySeconds: 30
-             periodSeconds: 10
-           readinessProbe:
-             httpGet:
-               path: /
-               port: 8000
-             initialDelaySeconds: 5
-             periodSeconds: 5
-           resources:
-             requests:
-               memory: "512Mi"
-               cpu: "250m"
-             limits:
-               memory: "1Gi"
-               cpu: "500m"
+.. code-block:: bash
 
-   ---
-   apiVersion: v1
-   kind: Service
-   metadata:
-     name: watcher-service
-     namespace: watcher
-   spec:
-     selector:
-       app: watcher-app
-     ports:
-     - port: 80
-       targetPort: 8000
-     type: ClusterIP
+   # Development
+   helm install watcher-dev ./watcher -f values-dev.yaml
 
-Celery Workers
-~~~~~~~~~~~~~~
+   # Staging  
+   helm install watcher-staging ./watcher -f values-staging.yaml
 
-.. code-block:: yaml
-
-   apiVersion: apps/v1
-   kind: Deployment
-   metadata:
-     name: watcher-celery
-     namespace: watcher
-   spec:
-     replicas: 2
-     selector:
-       matchLabels:
-         app: watcher-celery
-     template:
-       metadata:
-         labels:
-           app: watcher-celery
-       spec:
-         containers:
-         - name: celery
-           image: watcher:latest
-           command: ["celery", "-A", "src.celery_app", "worker", "--loglevel=info"]
-           envFrom:
-           - configMapRef:
-               name: watcher-config
-           - secretRef:
-               name: watcher-secrets
-           resources:
-             requests:
-               memory: "256Mi"
-               cpu: "100m"
-             limits:
-               memory: "512Mi"
-               cpu: "250m"
+   # Production
+   helm install watcher-prod ./watcher -f values-prod.yaml
 

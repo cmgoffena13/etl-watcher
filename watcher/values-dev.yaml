@@ -1,0 +1,70 @@
+# Development values for Watcher
+# This file contains development-specific configuration
+
+# Override the default values for development
+replicaCount: 1
+
+# Development image settings
+image:
+  repository: watcher
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+# Development environment configuration
+watcher:
+  envState: "dev"
+  
+  # Database configuration for local development
+  database:
+    url: "postgresql+asyncpg://watcher:watcher@host.docker.internal:5432/watcher"
+  
+  # Redis configuration for local development
+  redis:
+    url: "redis://host.docker.internal:6379/1"
+  
+  # Disable monitoring in development
+  logfire:
+    token: ""
+    console: "false"
+  
+  # Disable notifications in development
+  slack:
+    webhookUrl: ""
+  
+  # Development features
+  autoCreateAnomalyDetectionRules: "false"
+  profilingEnabled: "true"
+
+# Celery worker configuration for development
+celery:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 250m
+      memory: 512Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+
+# Service configuration for development
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 8000
+
+# Resource limits for development
+resources:
+  limits:
+    cpu: 500m
+    memory: 1Gi
+  requests:
+    cpu: 250m
+    memory: 512Mi
+
+# Disable autoscaling in development
+autoscaling:
+  enabled: false
+
+# Disable ingress in development
+ingress:
+  enabled: false

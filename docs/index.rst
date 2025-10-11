@@ -95,3 +95,4 @@ Quick Start
    reference/architecture
    reference/celery_tasks
    reference/database_schema
+   reference/dev_kubernetes

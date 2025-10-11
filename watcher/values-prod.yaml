@@ -1,0 +1,93 @@
+# Production values for Watcher
+# This file contains production-specific configuration
+
+# Production replica count
+replicaCount: 3
+
+# Production image settings
+image:
+  repository: your-registry/watcher
+  tag: "v1.0.0"
+  pullPolicy: IfNotPresent
+
+# Production environment configuration
+watcher:
+  envState: "prod"
+  
+  # Database configuration for production
+  database:
+    url: "postgresql+asyncpg://watcher:${DB_PASSWORD}@${DB_HOST}:5432/watcher"
+  
+  # Redis configuration for production
+  redis:
+    url: "redis://${REDIS_HOST}:6379/1"
+  
+  # Production monitoring
+  logfire:
+    token: "${LOGFIRE_TOKEN}"
+    console: "false"
+  
+  # Production notifications
+  slack:
+    webhookUrl: "${SLACK_WEBHOOK_URL}"
+  
+  # Production features
+  autoCreateAnomalyDetectionRules: "true"
+  profilingEnabled: "false"
+
+# Celery worker configuration for production
+celery:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  # Autoscaling for Celery workers
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 8
+    targetCPUUtilizationPercentage: 70
+
+# Service configuration for production
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+
+# Resource limits for production
+resources:
+  limits:
+    cpu: 2000m
+    memory: 4Gi
+  requests:
+    cpu: 1000m
+    memory: 2Gi
+
+# Enable autoscaling in production
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+
+# Internal service - no ingress needed
+ingress:
+  enabled: false
+
+# Security context for production
+podSecurityContext:
+  fsGroup: 2000
+  runAsNonRoot: true
+  runAsUser: 1000
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 1000

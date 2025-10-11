@@ -1,7 +1,22 @@
-.PHONY: dev-compose format lint test add-migration trigger-migration load-test docs
+.PHONY: dev-compose dev-kube-stop format lint test add-migration trigger-migration load-test docs
 
 dev-compose:
 	docker compose up --build --remove-orphans
+
+dev-compose-stop:
+	docker compose down
+
+dev-kube:
+	docker build -t watcher:latest .
+	docker-compose up -d postgres redis --remove-orphans
+	sleep 10
+	helm upgrade --install watcher ./watcher -f watcher/values-dev.yaml
+	kubectl wait --for=condition=available --timeout=300s deployment/watcher
+	kubectl port-forward service/watcher 8000:80
+
+dev-kube-stop:
+	helm uninstall watcher || true
+	docker-compose down
 
 format: lint
 	uv run -- ruff format

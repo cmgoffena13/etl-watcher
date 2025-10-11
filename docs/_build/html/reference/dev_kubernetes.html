@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kubernetes Deployment Guides &mdash; Watcher 1.0.0 documentation</title>
+  <title>Development - Kubernetes &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -16,9 +17,11 @@
       <script src="../_static/documentation_options.js?v=8d563738"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Database Schema" href="database_schema.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -424,7 +427,7 @@
 </li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; Design</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#design-philosophy">Design Philosophy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="architecture.html#configuration-as-code">Configuration as Code</a></li>
@@ -496,41 +499,31 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="dev_kubernetes.html">Development - Kubernetes</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#prerequisites">Prerequisites</a></li>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#install-helm">Install Helm</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#verify-installation">Verify Installation</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#setup-local-development-environment">Setup Local Development Environment</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#quick-start-with-make-commands">Quick Start with Make Commands</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#access-your-application">Access Your Application</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup (Alternative)</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="dev_kubernetes.html#start-dependencies">Start Dependencies</a></li>
-<li class="toctree-l4"><a class="reference internal" href="dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#access-the-application">Access the Application</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#using-make-commands-recommended-for-development">Using Make Commands (Recommended for Development)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#using-helm-charts-manual-development">Using Helm Charts (Manual Development)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#deploy-the-application-manually-development">Deploy the Application Manually (Development)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#access-the-application">Access the Application</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#configuration">Configuration</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#database-migrations">Database Migrations</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#update-configuration">Update Configuration</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#cleanup">Cleanup</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#stop-dependencies">Stop Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#remove-the-deployment">Remove the Deployment</a></li>
 </ul>
 </li>
 </ul>
@@ -551,9 +544,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Kubernetes Deployment Guides</li>
+      <li class="breadcrumb-item active">Development - Kubernetes</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/reference/deployment.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/reference/dev_kubernetes.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -561,62 +554,157 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="kubernetes-deployment-guides">
-<h1>Kubernetes Deployment Guides<a class="headerlink" href="#kubernetes-deployment-guides" title="Link to this heading"></a></h1>
-<p>This guide covers deploying Watcher to Kubernetes using Helm charts.
-We’ll walk through the complete process from prerequisites to a fully functional
-deployment.</p>
-<section id="scaling">
-<h2>Scaling<a class="headerlink" href="#scaling" title="Link to this heading"></a></h2>
-<section id="scale-application-pods">
-<h3>Scale Application Pods<a class="headerlink" href="#scale-application-pods" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>scale<span class="w"> </span>deployment<span class="w"> </span>watcher<span class="w"> </span>--replicas<span class="o">=</span><span class="m">3</span>
+  <section id="development-kubernetes">
+<h1>Development - Kubernetes<a class="headerlink" href="#development-kubernetes" title="Link to this heading"></a></h1>
+<p>This guide covers deploying Watcher to Kubernetes using Helm charts for local development.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<p>Before deploying Watcher to Kubernetes for local development,
+ensure you have the following installed:</p>
+<ol class="arabic simple">
+<li><p><strong>Docker Desktop</strong> with Kubernetes enabled</p></li>
+<li><p><strong>kubectl</strong> - Kubernetes command-line tool</p></li>
+<li><p><strong>Helm</strong> - Kubernetes package manager</p></li>
+</ol>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Kubernetes Cluster Required</strong>: Make sure Docker Desktop’s Kubernetes cluster is running.
+You can enable it in Docker Desktop settings under “Kubernetes” and ensure the cluster is started.</p>
+</div>
+</section>
+<section id="installation-steps">
+<h2>Installation Steps<a class="headerlink" href="#installation-steps" title="Link to this heading"></a></h2>
+<section id="install-kubectl">
+<h3>Install kubectl<a class="headerlink" href="#install-kubectl" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">macOS (Homebrew)</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">Linux</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">Windows (Chocolatey)</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew<span class="w"> </span>install<span class="w"> </span>kubectl
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-LO<span class="w"> </span><span class="s2">&quot;https://dl.k8s.io/release/</span><span class="k">$(</span>curl<span class="w"> </span>-L<span class="w"> </span>-s<span class="w"> </span>https://dl.k8s.io/release/stable.txt<span class="k">)</span><span class="s2">/bin/linux/amd64/kubectl&quot;</span>
+sudo<span class="w"> </span>install<span class="w"> </span>-o<span class="w"> </span>root<span class="w"> </span>-g<span class="w"> </span>root<span class="w"> </span>-m<span class="w"> </span><span class="m">0755</span><span class="w"> </span>kubectl<span class="w"> </span>/usr/local/bin/kubectl
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>choco<span class="w"> </span>install<span class="w"> </span>kubernetes-cli
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="install-helm">
+<h3>Install Helm<a class="headerlink" href="#install-helm" title="Link to this heading"></a></h3>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">macOS/Linux</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">Windows (Chocolatey)</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3<span class="w"> </span><span class="p">|</span><span class="w"> </span>bash
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>choco<span class="w"> </span>install<span class="w"> </span>kubernetes-helm
+</pre></div>
+</div>
+</div></div>
+</section>
+<section id="verify-installation">
+<h3>Verify Installation<a class="headerlink" href="#verify-installation" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>version<span class="w"> </span>--client
+helm<span class="w"> </span>version
 </pre></div>
 </div>
 </section>
-<section id="scale-celery-workers">
-<h3>Scale Celery Workers<a class="headerlink" href="#scale-celery-workers" title="Link to this heading"></a></h3>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>scale<span class="w"> </span>deployment<span class="w"> </span>watcher-celery<span class="w"> </span>--replicas<span class="o">=</span><span class="m">4</span>
+</section>
+<section id="deploy-to-kubernetes">
+<h2>Deploy to Kubernetes<a class="headerlink" href="#deploy-to-kubernetes" title="Link to this heading"></a></h2>
+<section id="quick-start-with-make-commands-recommended">
+<h3>Quick Start with Make Commands (Recommended)<a class="headerlink" href="#quick-start-with-make-commands-recommended" title="Link to this heading"></a></h3>
+<p>The easiest way to deploy is using the provided Make commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Complete development deployment with one command</span>
+make<span class="w"> </span>dev-kube
+</pre></div>
+</div>
+<p>This single command will:</p>
+<ul class="simple">
+<li><p>Build the Docker image</p></li>
+<li><p>Start PostgreSQL and Redis dependencies from Docker Compose</p></li>
+<li><p>Deploy to Kubernetes with Helm</p></li>
+<li><p>Set up port forwarding</p></li>
+</ul>
+</section>
+<section id="access-your-application">
+<h3>Access Your Application<a class="headerlink" href="#access-your-application" title="Link to this heading"></a></h3>
+<p>After running <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">dev-kube</span></code>, you can access:</p>
+<ul class="simple">
+<li><p><strong>Main Application</strong>: <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p></li>
+<li><p><strong>API Documentation</strong>: <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
+</ul>
+</section>
+<section id="stop-the-development-environment">
+<h3>Stop the Development Environment<a class="headerlink" href="#stop-the-development-environment" title="Link to this heading"></a></h3>
+<p>To stop the development environment:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># In a new terminal window</span>
+make<span class="w"> </span>dev-kube-stop
+</pre></div>
+</div>
+<p>This will:</p>
+<ul class="simple">
+<li><p>Remove the Helm deployment</p></li>
+<li><p>Stop all dependencies</p></li>
+<li><p>Clean up resources</p></li>
+</ul>
+</section>
+</section>
+<section id="manual-development-setup-alternative">
+<h2>Manual Development Setup - Alternative<a class="headerlink" href="#manual-development-setup-alternative" title="Link to this heading"></a></h2>
+<p>If you prefer to run commands manually for development:</p>
+<section id="start-dependencies">
+<h3>Start Dependencies<a class="headerlink" href="#start-dependencies" title="Link to this heading"></a></h3>
+<p>Start PostgreSQL and Redis using docker-compose:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>up<span class="w"> </span>-d<span class="w"> </span>postgres<span class="w"> </span>redis
+</pre></div>
+</div>
+<p>Verify services are running:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker-compose<span class="w"> </span>ps
+</pre></div>
+</div>
+<section id="build-docker-image">
+<h4>Build Docker Image<a class="headerlink" href="#build-docker-image" title="Link to this heading"></a></h4>
+<p>Build the Watcher Docker image:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>watcher:latest<span class="w"> </span>.
 </pre></div>
 </div>
 </section>
-</section>
-<section id="advanced-configuration">
-<h2>Advanced Configuration<a class="headerlink" href="#advanced-configuration" title="Link to this heading"></a></h2>
-<section id="custom-values">
-<h3>Custom Values<a class="headerlink" href="#custom-values" title="Link to this heading"></a></h3>
-<p>Create a custom values file for your environment:</p>
-<div class="highlight-yaml notranslate"><div class="highlight"><pre><span></span><span class="c1"># custom-values.yaml</span>
-<span class="nt">image</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">repository</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;your-registry/watcher&quot;</span>
-<span class="w">  </span><span class="nt">tag</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;v1.0.0&quot;</span>
-
-<span class="nt">resources</span><span class="p">:</span>
-<span class="w">  </span><span class="nt">requests</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1Gi&quot;</span>
-<span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;500m&quot;</span>
-<span class="w">  </span><span class="nt">limits</span><span class="p">:</span>
-<span class="w">    </span><span class="nt">memory</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;2Gi&quot;</span>
-<span class="w">    </span><span class="nt">cpu</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;1000m&quot;</span>
+<section id="deploy-with-helm">
+<h4>Deploy with Helm<a class="headerlink" href="#deploy-with-helm" title="Link to this heading"></a></h4>
+<p>Deploy using Helm:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>install<span class="w"> </span>watcher<span class="w"> </span>./watcher
 </pre></div>
 </div>
-<p>Deploy with custom values:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>install<span class="w"> </span>watcher<span class="w"> </span>./watcher<span class="w"> </span>-f<span class="w"> </span>custom-values.yaml
+<p>Check deployment status:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>get<span class="w"> </span>pods
+kubectl<span class="w"> </span>get<span class="w"> </span>services
 </pre></div>
 </div>
 </section>
-<section id="multiple-environments">
-<h3>Multiple Environments<a class="headerlink" href="#multiple-environments" title="Link to this heading"></a></h3>
-<p>Deploy to different environments:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Development</span>
-helm<span class="w"> </span>install<span class="w"> </span>watcher-dev<span class="w"> </span>./watcher<span class="w"> </span>-f<span class="w"> </span>values-dev.yaml
-
-<span class="c1"># Staging</span>
-helm<span class="w"> </span>install<span class="w"> </span>watcher-staging<span class="w"> </span>./watcher<span class="w"> </span>-f<span class="w"> </span>values-staging.yaml
-
-<span class="c1"># Production</span>
-helm<span class="w"> </span>install<span class="w"> </span>watcher-prod<span class="w"> </span>./watcher<span class="w"> </span>-f<span class="w"> </span>values-prod.yaml
+<section id="access-the-application">
+<h4>Access the Application<a class="headerlink" href="#access-the-application" title="Link to this heading"></a></h4>
+<p>Port forward to access the application locally:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>port-forward<span class="w"> </span>service/watcher<span class="w"> </span><span class="m">8000</span>:80
 </pre></div>
+</div>
+<p>Then access:</p>
+<ul class="simple">
+<li><p><strong>Health Check</strong>: <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p></li>
+<li><p><strong>API Documentation</strong>: <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
+</ul>
+</section>
+</section>
+</section>
+<section id="cleanup">
+<h2>Cleanup<a class="headerlink" href="#cleanup" title="Link to this heading"></a></h2>
+<section id="remove-the-deployment">
+<h3>Remove the Deployment<a class="headerlink" href="#remove-the-deployment" title="Link to this heading"></a></h3>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>helm<span class="w"> </span>uninstall<span class="w"> </span>watcher
+docker-compose<span class="w"> </span>down
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Don’t forget to stop the Kubernetes cluster in Docker Desktop!</p>
 </div>
 </section>
 </section>
@@ -625,7 +713,9 @@ helm<span class="w"> </span>install<span class="w"> </span>watcher-prod<span cla
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="database_schema.html" class="btn btn-neutral float-left" title="Database Schema" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

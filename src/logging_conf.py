@@ -10,7 +10,42 @@ logger = logging.getLogger(__name__)
 
 
 def configure_logging() -> None:
-    logfire.configure(token=config.LOGFIRE_TOKEN, service_name="watcher")
+    if config.LOGFIRE_TOKEN:
+        logfire.configure(token=config.LOGFIRE_TOKEN, service_name="watcher")
+
+    # Build handlers based on whether Logfire is configured
+    handlers = {
+        "default": {
+            "class": "rich.logging.RichHandler",
+            "level": "DEBUG",
+            "formatter": "console",
+        }
+    }
+
+    loggers = {
+        "src": {
+            "handlers": ["default"],
+            "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
+            "propagate": False,
+        }
+    }
+
+    # Add Logfire handlers if token is provided
+    if config.LOGFIRE_TOKEN:
+        handlers["logfire_src"] = {
+            "class": LogfireLoggingHandler,
+            "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
+        }
+        handlers["logfire_sql"] = {
+            "class": LogfireLoggingHandler,
+            "level": "INFO",
+        }
+        loggers["src"]["handlers"].append("logfire_src")
+        loggers["sqlalchemy.engine"] = {
+            "handlers": ["logfire_sql"],
+            "level": "INFO",
+            "propagate": False,
+        }
 
     dictConfig(
         {
@@ -23,33 +58,8 @@ def configure_logging() -> None:
                     "format": "%(name)s:%(lineno)d - %(message)s",
                 }
             },
-            "handlers": {
-                "default": {
-                    "class": "rich.logging.RichHandler",
-                    "level": "DEBUG",
-                    "formatter": "console",
-                },
-                "logfire_src": {
-                    "class": LogfireLoggingHandler,
-                    "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
-                },
-                "logfire_sql": {
-                    "class": LogfireLoggingHandler,
-                    "level": "INFO",
-                },
-            },
-            "loggers": {
-                "src": {
-                    "handlers": ["default", "logfire_src"],
-                    "level": "DEBUG" if isinstance(config, DevConfig) else "INFO",
-                    "propagate": False,
-                },
-                "sqlalchemy.engine": {
-                    "handlers": ["logfire_sql"],
-                    "level": "INFO",
-                    "propagate": False,
-                },
-            },
+            "handlers": handlers,
+            "loggers": loggers,
         }
     )
 

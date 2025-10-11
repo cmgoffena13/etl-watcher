@@ -9,3 +9,19 @@ __pycache__
 .venv
 .gitignore
 .git
+
+# Kubernetes and Helm files (not needed in Docker image)
+watcher/
+helm/
+*.yaml
+*.yml
+
+# Documentation (not needed in production image)
+docs/
+*.md
+
+# Development files
+Makefile
+pytest.ini
+ruff.toml
+examples/
