@@ -61,3 +61,42 @@ async def test_database_address(async_client: AsyncClient):
     data = response.json()[0]
     for k, v in TEST_ADDRESS_DATABASE_GET_OUTPUT_DATA.items():
         assert data[k] == v
+
+
+@pytest.mark.anyio
+async def test_address_hash_functionality(async_client: AsyncClient):
+    """Test that address hash functionality works correctly for change detection."""
+
+    # Create initial address using fixture
+    response = await async_client.post("/address", json=TEST_ADDRESS_POST_DATA)
+    assert response.status_code == 201
+    address_id = response.json()["id"]
+
+    # Test 1: Same data should not trigger update (hash unchanged)
+    response = await async_client.post("/address", json=TEST_ADDRESS_POST_DATA)
+    assert response.status_code == 200  # Should be 200 (no change)
+
+    # Verify updated_at is still None (no change triggered)
+    response = await async_client.get(f"/address/{address_id}")
+    assert response.status_code == 200
+    address_data = response.json()
+    assert address_data["updated_at"] is None
+
+    # Test 2: Different data should trigger update (hash changed)
+    updated_data = {
+        "name": "test address",
+        "address_type_name": "database",  # Changed from "api"
+        "address_type_group_name": "external",
+        "primary_key": "id",  # Changed from None
+    }
+
+    response = await async_client.post("/address", json=updated_data)
+    assert response.status_code == 200  # Should be 200 (updated)
+
+    # Verify the database record was actually updated
+    response = await async_client.get(f"/address/{address_id}")
+    assert response.status_code == 200
+    address_data = response.json()
+    assert address_data["primary_key"] == "id"
+    assert address_data["address_type_id"] == 2  # Should be updated to new type
+    assert address_data["updated_at"] is not None  # Should be set after update

@@ -130,8 +130,22 @@ async def db_get_or_create_pipeline(
                 logger.info(
                     f"Pipeline '{pipeline.name}' input data has changed. Updating..."
                 )
+
+                # Resolve Pipeline Type Info for update
+                pipeline_type_input = PipelineTypePostInput(
+                    name=pipeline.pipeline_type_name,
+                )
+                pipeline_type = PipelineTypePostOutput(
+                    **await db_get_or_create_pipeline_type(
+                        session=session,
+                        pipeline_type=pipeline_type_input,
+                        response=response,
+                    )
+                )
+
                 update_values.update(
                     **new_pipeline.model_dump(exclude={"id"}),
+                    pipeline_type_id=pipeline_type.id,
                     input_hash=input_hash,
                     updated_at=pendulum.now("UTC"),
                 )

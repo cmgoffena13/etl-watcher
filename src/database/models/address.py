@@ -19,7 +19,7 @@ class Address(SQLModel, table=True):
     deprecated: bool = Field(
         sa_column=Column(BOOLEAN, server_default=text("FALSE"), nullable=False)
     )
-
+    input_hash: str = Field(max_length=20)
     created_at: DateTime = Field(
         sa_column=Column(
             DateTimeTZ(timezone=True),

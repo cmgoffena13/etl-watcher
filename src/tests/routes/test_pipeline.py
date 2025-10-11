@@ -84,7 +84,7 @@ async def test_pipeline_hash_functionality(async_client: AsyncClient):
     # Test 2: Different data should trigger update (hash changed)
     updated_data = {
         "name": "Test Pipeline 1",
-        "pipeline_type_name": "extraction",
+        "pipeline_type_name": "transformation",  # Changed from "extraction"
         "pipeline_type_group_name": "databricks",
         "freshness_number": 15,  # Changed from None
         "freshness_datepart": "minute",
@@ -103,6 +103,7 @@ async def test_pipeline_hash_functionality(async_client: AsyncClient):
     assert pipeline_data["timeliness_number"] == 30
     assert pipeline_data["freshness_datepart"] == "minute"
     assert pipeline_data["timeliness_datepart"] == "minute"
+    assert pipeline_data["pipeline_type_id"] == 2  # Should be updated to new type
     assert pipeline_data["updated_at"] is not None  # Should be set after update
 
     # Test 3: Update with watermark should work
