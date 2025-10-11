@@ -1,7 +1,6 @@
 from fastapi import APIRouter, status
 
 from src.celery_tasks import freshness_check_task
-from src.database.session import SessionDep
 from src.models.freshness import FreshnessPostOutput
 
 router = APIRouter()
