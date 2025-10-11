@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20251008100712
+Revision ID: 20251011103728
 Revises:
-Create Date: 2025-10-08 10:07:14.830229
+Create Date: 2025-10-11 10:37:30.672458
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20251008100712"
+revision: str = "20251011103728"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -113,6 +113,9 @@ def upgrade() -> None:
         ),
         sa.Column(
             "deprecated", sa.BOOLEAN(), server_default=sa.text("FALSE"), nullable=False
+        ),
+        sa.Column(
+            "input_hash", sqlmodel.sql.sqltypes.AutoString(length=20), nullable=False
         ),
         sa.Column(
             "created_at",
