@@ -58,7 +58,7 @@ MY_ETL_PIPELINE_CONFIG = PipelineConfig(
 
 ### Sync Configuration with Watcher Framework and increment watermarks
 ```python
-from watcher import Watcher, PipelineConfig
+from watcher import Watcher
 
 watcher = Watcher("https://api.watcher.example.com")
 
@@ -69,7 +69,7 @@ print(f"Pipeline synced!")
 
 ### Track Pipeline Executions
 ```python
-from watcher import WatcherExecutionContext
+from watcher import WatcherExecutionContext, ETLMetrics
 
 @watcher.track_pipeline_execution(
     pipeline_id=synced_config.pipeline.id, 

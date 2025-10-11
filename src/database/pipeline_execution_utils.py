@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+from asyncpg.exceptions import CheckViolationError
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Integer, Session, case, func, select, update
@@ -30,8 +31,22 @@ async def db_start_pipeline_execution(
             date_recorded=pipeline_execution.start_date.in_timezone("UTC").date(),
         )
     )
-    pipeline_execution_id = (await session.exec(execution_start_stmt)).scalar_one()
-    await session.commit()
+    try:
+        pipeline_execution_id = (await session.exec(execution_start_stmt)).scalar_one()
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if (
+            "check constraint" in str(e).lower()
+            and "ck_check_parent_not_self" in str(e).lower()
+        ):
+            raise HTTPException(
+                status_code=400,
+                detail="Pipeline execution cannot be its own parent. Check parent_id value.",
+            )
+        else:
+            logger.error(f"Database integrity error: {e}")
+            raise HTTPException(status_code=500, detail="Database integrity error")
 
     return {"id": pipeline_execution_id}
 
