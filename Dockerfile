@@ -1,7 +1,11 @@
 FROM python:3.12-slim-bookworm
 ENV PYTHONBUFFERED=1
 
-RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && apt-get upgrade -y openssl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        curl \
+        ca-certificates && \
+    apt-get upgrade -y openssl
 
 ADD https://astral.sh/uv/install.sh /uv-installer.sh
 RUN sh /uv-installer.sh && rm /uv-installer.sh
