@@ -2,33 +2,35 @@ import time
 
 import httpx
 import pendulum
-from pipeline import PIPELINE_CONFIG
-from utils import ETLMetrics, sync_pipeline, track_pipeline_execution
+from pipeline import POLYGON_OPEN_CLOSE_PIPELINE_CONFIG
 
-parent_pipeline_execution_id = 5  # Dynamically passed from fake ticker script
+# Utilizing etl-watcher-sdk
+from watcher import ETLMetrics, Watcher, WatcherExecutionContext
+
+# Initiate Watcher client
+watcher = Watcher("http://localhost:8000")
+
+parent_execution_id = 5  # Dynamically passed from fake ticker script
 tickers = ["AAPL", "META"]  # Dynamically passed from fake ticker script
 
-next_watermark = pendulum.now().date().to_date_string()
-
-pipeline_response = sync_pipeline(PIPELINE_CONFIG, next_watermark)
-
+synced_config = watcher.sync_pipeline_config(POLYGON_OPEN_CLOSE_PIPELINE_CONFIG)
 params = {
-    "apiKey": "XXXXX",
+    "apiKey": "dGY9xt8fYrqpzWsT3cdPKBpSs1Pz_WSd",
 }
 
 
-if pipeline_response.active is False:
-    print("Pipeline is not active, skipping execution")
-    exit()
-
-
-@track_pipeline_execution(
-    pipeline_id=pipeline_response.id,
-    parent_pipeline_execution_id=parent_pipeline_execution_id,
+@watcher.track_pipeline_execution(
+    pipeline_id=synced_config.id,
+    active=synced_config.active,
+    parent_execution_id=parent_execution_id,
+    watermark=synced_config.watermark,
+    next_watermark=synced_config.next_watermark,
 )
-def extract_data(
-    tickers: list[str], watermark: pendulum.date, next_watermark: pendulum.date
-):
+def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
+    watermark = pendulum.parse(watcher_context.watermark).date()
+    next_watermark = pendulum.parse(watcher_context.next_watermark).date()
+    print(f"Watermark: {watermark}, Next Watermark: {next_watermark}")
+
     all_records = []
     total_rows = 0
     for ticker in tickers:
@@ -54,12 +56,9 @@ def extract_data(
         print(all_records)  # Save records somewhere for each ticker
         total_rows += len(all_records)
     return ETLMetrics(
-        completed_successfully=True,
         total_rows=total_rows,
     )
 
 
 print("Extracting data...")
-watermark = pendulum.parse(PIPELINE_CONFIG["watermark"]).date()
-next_watermark = pendulum.parse(PIPELINE_CONFIG["next_watermark"]).date()
-extract_data(tickers, watermark, next_watermark)
+extract_data(tickers=tickers)

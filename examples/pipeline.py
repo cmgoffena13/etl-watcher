@@ -1,8 +1,10 @@
 import pendulum
-from utils import Pipeline
 
-PIPELINE_CONFIG = {
-    "pipeline": Pipeline(
+# Utilizing etl-watcher-sdk
+from watcher import Address, AddressLineage, Pipeline, PipelineConfig
+
+POLYGON_OPEN_CLOSE_PIPELINE_CONFIG = PipelineConfig(
+    pipeline=Pipeline(
         name="polygon_open_close",
         pipeline_type_name="extraction",
         timeliness_number=20,
@@ -14,23 +16,22 @@ PIPELINE_CONFIG = {
             "owner": "data-team",
         },
     ),
-    "lineage": {
-        "pipeline_id": None,  # Will be set later
-        "source_addresses": [
-            {
-                "name": "https://api.polygon.io/v1/open-close/",
-                "address_type_name": "polygon",
-                "address_type_group_name": "api",
-            }
+    address_lineage=AddressLineage(
+        source_addresses=[
+            Address(
+                name="https://api.polygon.io/v1/open-close/",
+                address_type_name="polygon",
+                address_type_group_name="api",
+            )
         ],
-        "target_addresses": [
-            {
-                "name": "prod.polygon.open_close",
-                "address_type_name": "postgres",
-                "address_type_group_name": "database",
-            }
+        target_addresses=[
+            Address(
+                name="prod.polygon.open_close",
+                address_type_name="postgres",
+                address_type_group_name="database",
+            )
         ],
-    },
-    "default_watermark": pendulum.date(2025, 1, 1).to_date_string(),
-    "watermark": None,  # Will be set later
-}
+    ),
+    default_watermark=pendulum.date(2025, 1, 1).to_date_string(),
+    next_watermark=pendulum.now().date().to_date_string(),
+)
