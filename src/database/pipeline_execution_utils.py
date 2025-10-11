@@ -1,7 +1,11 @@
 import logging
 from typing import Optional
 
-from asyncpg.exceptions import CheckViolationError
+from asyncpg.exceptions import (
+    CheckViolationError,
+    ForeignKeyViolationError,
+    UniqueViolationError,
+)
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Integer, Session, case, func, select, update
@@ -36,13 +40,26 @@ async def db_start_pipeline_execution(
         await session.commit()
     except IntegrityError as e:
         await session.rollback()
-        if (
-            "check constraint" in str(e).lower()
-            and "ck_check_parent_not_self" in str(e).lower()
-        ):
+        if isinstance(e.orig, CheckViolationError):
+            if "ck_check_parent_not_self" in str(e.orig):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Pipeline execution cannot be its own parent. Check parent_id value.",
+                )
+            else:
+                raise HTTPException(
+                    status_code=400,
+                    detail="Check constraint violation",
+                )
+        elif isinstance(e.orig, UniqueViolationError):
             raise HTTPException(
                 status_code=400,
-                detail="Pipeline execution cannot be its own parent. Check parent_id value.",
+                detail="Unique constraint violation",
+            )
+        elif isinstance(e.orig, ForeignKeyViolationError):
+            raise HTTPException(
+                status_code=400,
+                detail="Foreign key constraint violation",
             )
         else:
             logger.error(f"Database integrity error: {e}")
@@ -93,12 +110,26 @@ async def db_end_pipeline_execution(
             logger.error(f"Pipeline execution not found: {e}")
             raise HTTPException(status_code=404, detail="Pipeline execution not found")
         except IntegrityError as e:
-            if (
-                "check constraint" in str(e).lower()
-                and "pipeline_execution_check" in str(e).lower()
-            ):
+            if isinstance(e.orig, CheckViolationError):
+                if "pipeline_execution_check" in str(e.orig):
+                    raise HTTPException(
+                        status_code=400,
+                        detail="end_date must be greater than start_date",
+                    )
+                else:
+                    raise HTTPException(
+                        status_code=400,
+                        detail="Check constraint violation",
+                    )
+            elif isinstance(e.orig, UniqueViolationError):
                 raise HTTPException(
-                    status_code=400, detail="end_date must be greater than start_date"
+                    status_code=400,
+                    detail="Unique constraint violation",
+                )
+            elif isinstance(e.orig, ForeignKeyViolationError):
+                raise HTTPException(
+                    status_code=400,
+                    detail="Foreign key constraint violation",
                 )
             else:
                 logger.error(f"Database integrity error: {e}")
