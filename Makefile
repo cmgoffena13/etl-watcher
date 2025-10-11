@@ -11,8 +11,6 @@ dev-kube:
 	docker-compose up -d postgres redis --remove-orphans
 	sleep 10
 	helm upgrade --install watcher ./watcher -f watcher/values-dev.yaml
-	kubectl wait --for=condition=available --timeout=300s deployment/watcher
-	kubectl port-forward service/watcher 8000:80
 
 dev-kube-stop:
 	helm uninstall watcher || true

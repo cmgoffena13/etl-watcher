@@ -46,11 +46,12 @@ celery:
       cpu: 100m
       memory: 256Mi
 
-# Service configuration for development
+# Service configuration for development (direct access)
 service:
-  type: ClusterIP
+  type: NodePort
   port: 80
   targetPort: 8000
+  nodePort: 8000
 
 # Resource limits for development
 resources:
@@ -65,6 +66,6 @@ resources:
 autoscaling:
   enabled: false
 
-# Disable ingress in development
+# No ingress needed - using LoadBalancer for external access
 ingress:
   enabled: false

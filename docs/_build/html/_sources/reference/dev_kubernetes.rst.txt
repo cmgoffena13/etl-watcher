@@ -86,8 +86,8 @@ This single command will:
 
 - Build the Docker image
 - Start PostgreSQL and Redis dependencies from Docker Compose
-- Deploy to Kubernetes with Helm
-- Set up port forwarding
+- Deploy to Kubernetes with Helm using NodePort service
+- Expose the service on port 8000
 
 Access Your Application
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,6 +96,9 @@ After running ``make dev-kube``, you can access:
 
 - **Main Application**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/scalar
+
+.. note::
+   **NodePort Service**: The service is exposed directly on port 8000, so no port forwarding or external IP needed!
 
 Stop the Development Environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -161,16 +164,13 @@ Check deployment status:
 Access the Application
 ^^^^^^^^^^^^^^^^^^^^^^
 
-Port forward to access the application locally:
-
-.. code-block:: bash
-
-   kubectl port-forward service/watcher 8000:80
-
-Then access:
+With NodePort service configured, access the application via:
 
 - **Health Check**: http://localhost:8000
 - **API Documentation**: http://localhost:8000/scalar
+
+.. note::
+   **NodePort Service**: The service is exposed directly on port 8000, making it simple to access for development.
 
 Cleanup
 -------

@@ -621,8 +621,8 @@ make<span class="w"> </span>dev-kube
 <ul class="simple">
 <li><p>Build the Docker image</p></li>
 <li><p>Start PostgreSQL and Redis dependencies from Docker Compose</p></li>
-<li><p>Deploy to Kubernetes with Helm</p></li>
-<li><p>Set up port forwarding</p></li>
+<li><p>Deploy to Kubernetes with Helm using NodePort service</p></li>
+<li><p>Expose the service on port 8000</p></li>
 </ul>
 </section>
 <section id="access-your-application">
@@ -632,6 +632,10 @@ make<span class="w"> </span>dev-kube
 <li><p><strong>Main Application</strong>: <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p></li>
 <li><p><strong>API Documentation</strong>: <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>NodePort Service</strong>: The service is exposed directly on port 8000, so no port forwarding or external IP needed!</p>
+</div>
 </section>
 <section id="stop-the-development-environment">
 <h3>Stop the Development Environment<a class="headerlink" href="#stop-the-development-environment" title="Link to this heading"></a></h3>
@@ -682,15 +686,15 @@ kubectl<span class="w"> </span>get<span class="w"> </span>services
 </section>
 <section id="access-the-application">
 <h4>Access the Application<a class="headerlink" href="#access-the-application" title="Link to this heading"></a></h4>
-<p>Port forward to access the application locally:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>kubectl<span class="w"> </span>port-forward<span class="w"> </span>service/watcher<span class="w"> </span><span class="m">8000</span>:80
-</pre></div>
-</div>
-<p>Then access:</p>
+<p>With NodePort service configured, access the application via:</p>
 <ul class="simple">
 <li><p><strong>Health Check</strong>: <a class="reference external" href="http://localhost:8000">http://localhost:8000</a></p></li>
 <li><p><strong>API Documentation</strong>: <a class="reference external" href="http://localhost:8000/scalar">http://localhost:8000/scalar</a></p></li>
 </ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>NodePort Service</strong>: The service is exposed directly on port 8000, making it simple to access for development.</p>
+</div>
 </section>
 </section>
 </section>
