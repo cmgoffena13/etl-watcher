@@ -13,9 +13,86 @@ In simple terms: Keep track of what your pipelines are doing!
 
 Currently developing out an [SDK](https://github.com/cmgoffena13/etl-watcher-sdk)
 
-1. [Features](#features)
-2. [Technology Stack](#️-technology-stack)
-3. [Contributing](#contributing)
+1. [QuickStart](#quickstart)
+2. [Features](#features)
+3. [Technology Stack](#️-technology-stack)
+4. [Contributing](#contributing)
+
+## QuickStart
+Utilize the [SDK](https://github.com/cmgoffena13/etl-watcher-sdk) once the Watcher Framework is deployed.
+```
+uv add etl-watcher-sdk
+```
+
+### Store Pipeline Configuration, Watermark logic, and Address Lineage
+```python
+import pendulum
+from watcher import Pipeline, PipelineConfig, AddressLineage, Address
+
+MY_ETL_PIPELINE_CONFIG = PipelineConfig(
+    pipeline=Pipeline(
+        name="my-etl-pipeline",
+        pipeline_type_name="extraction",
+    ),
+    default_watermark="2024-01-01",
+    address_lineage=AddressLineage(
+        source_addresses=[
+            Address(
+                name="source_db.source_schema.source_table",
+                address_type_name="postgres",
+                address_type_group_name="database",
+            )
+        ],
+        target_addresses=[
+            Address(
+                name="target_db.target_schema.target_table",
+                address_type_name="snowflake",
+                address_type_group_name="warehouse",
+            )
+        ],
+    ),
+    default_watermark=pendulum.date(2025, 1, 1).to_date_string(),  # First Watermark is None otherwise
+    next_watermark=pendulum.now("UTC").date().to_date_string()
+)
+```
+
+### Sync Configuration with Watcher Framework and increment watermarks
+```python
+from watcher import Watcher, PipelineConfig
+
+watcher = Watcher("https://api.watcher.example.com")
+
+synced_config = watcher.sync_pipeline_config(MY_ETL_PIPELINE_CONFIG)
+
+print(f"Pipeline synced!")
+```
+
+### Track Pipeline Executions
+```python
+from watcher import WatcherExecutionContext
+
+@watcher.track_pipeline_execution(
+    pipeline_id=synced_config.pipeline.id, 
+    active=synced_config.pipeline.active,
+    watermark=synced_config.watermark,
+    next_watermark=synced_config.next_watermark
+)
+def etl_pipeline(watcher_context: WatcherExecutionContext):
+    print("Starting ETL pipeline")
+
+    print(f"Watermark: {watcher_context.watermark}")
+    print(f"Next Watermark: {watcher_context.next_watermark}")
+    
+    # Your ETL work here, skip if Pipeline Inactive
+    
+    return ETLMetrics(
+        inserts=100,
+        total_rows=100,
+        execution_metadata={"partition": "2025-01-01"},
+    )
+
+etl_pipeline()
+```
 
 ## Features
 
