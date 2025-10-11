@@ -5,6 +5,7 @@ from typing import Optional
 import pendulum
 from fastapi import HTTPException, Response, status
 from sqlalchemy import delete, func, select, update
+from sqlalchemy.exc import NoResultFound
 from sqlmodel import Session
 
 from src.database.models.anomaly_detection import (
@@ -67,12 +68,13 @@ async def db_get_or_create_anomaly_detection_rule(
 async def db_update_anomaly_detection_rule(
     session: Session, patch: AnomalyDetectionRulePatchInput
 ) -> AnomalyDetectionRule:
-    rule = (
-        await session.exec(
-            select(AnomalyDetectionRule).where(AnomalyDetectionRule.id == patch.id)
-        )
-    ).scalar_one_or_none()
-    if not rule:
+    try:
+        rule = (
+            await session.exec(
+                select(AnomalyDetectionRule).where(AnomalyDetectionRule.id == patch.id)
+            )
+        ).scalar_one()
+    except NoResultFound:
         raise HTTPException(status_code=404, detail="Anomaly detection rule not found")
 
     update_data = patch.model_dump(exclude_unset=True, exclude={"id"})

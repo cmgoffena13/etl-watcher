@@ -5,6 +5,7 @@ import pendulum
 from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select, update
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Session
 
 from src.database.models.anomaly_detection import AnomalyDetectionRule
@@ -90,12 +91,18 @@ async def db_get_or_create_pipeline(
         try:
             new_row = (await session.exec(pipeline_stmt)).one()
             await session.commit()
-        except UniqueViolationError:
+        except IntegrityError as e:
             await session.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Violated unique constraint",
-            )
+            if isinstance(e.orig, UniqueViolationError):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Unique constraint violation",
+                )
+            else:
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Database integrity error",
+                )
 
         if config.WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES:
             for value in AnomalyMetricFieldEnum:
@@ -188,10 +195,11 @@ async def db_get_or_create_pipeline(
 
 
 async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pipeline:
-    pipeline = (
-        await session.exec(select(Pipeline).where(Pipeline.id == patch.id))
-    ).scalar_one_or_none()
-    if pipeline is None:
+    try:
+        pipeline = (
+            await session.exec(select(Pipeline).where(Pipeline.id == patch.id))
+        ).scalar_one()
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Not Found"
         )

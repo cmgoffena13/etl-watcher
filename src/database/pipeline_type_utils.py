@@ -4,6 +4,7 @@ import pendulum
 from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Session
 
 from src.database.models.pipeline_type import PipelineType
@@ -39,12 +40,19 @@ async def db_get_or_create_pipeline_type(
             pipeline_type_id = (await session.exec(stmt)).scalar_one()
             await session.commit()
             created = True
-        except UniqueViolationError:
+        except IntegrityError as e:
             await session.rollback()
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Violated unique constraint",
-            )
+            if isinstance(e.orig, UniqueViolationError):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Unique constraint violation",
+                )
+            else:
+                logger.error(f"Database integrity error: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Database integrity error",
+                )
         logger.info(f"Pipeline Type '{pipeline_type.name}' Successfully Created")
 
     if created:
@@ -58,10 +66,11 @@ async def db_get_or_create_pipeline_type(
 async def db_update_pipeline_type(
     session: Session, patch: PipelineTypePatchInput
 ) -> PipelineType:
-    pipeline_type = (
-        await session.exec(select(PipelineType).where(PipelineType.id == patch.id))
-    ).scalar_one_or_none()
-    if pipeline_type is None:
+    try:
+        pipeline_type = (
+            await session.exec(select(PipelineType).where(PipelineType.id == patch.id))
+        ).scalar_one()
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Type Not Found"
         )

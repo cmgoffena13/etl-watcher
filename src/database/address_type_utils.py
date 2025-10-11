@@ -1,8 +1,10 @@
 import logging
 
 import pendulum
+from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Session
 
 from src.database.models.address_type import AddressType
@@ -34,10 +36,24 @@ async def db_get_or_create_address_type(
             .returning(AddressType.id)
             .values(**address_type.model_dump(exclude={"id"}))
         )
-        address_type_id = (await session.exec(stmt)).scalar_one()
-        await session.commit()
-        created = True
-        logger.info(f"Address Type '{address_type.name}' Successfully Created")
+        try:
+            address_type_id = (await session.exec(stmt)).scalar_one()
+            await session.commit()
+            created = True
+            logger.info(f"Address Type '{address_type.name}' Successfully Created")
+        except IntegrityError as e:
+            await session.rollback()
+            if isinstance(e.orig, UniqueViolationError):
+                raise HTTPException(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    detail="Unique constraint violation",
+                )
+            else:
+                logger.error(f"Database integrity error: {e}")
+                raise HTTPException(
+                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                    detail="Database integrity error",
+                )
 
     if created:
         response.status_code = status.HTTP_201_CREATED
@@ -50,10 +66,11 @@ async def db_get_or_create_address_type(
 async def db_update_address_type(
     session: Session, patch: AddressTypePatchInput
 ) -> AddressType:
-    address_type = (
-        await session.exec(select(AddressType).where(AddressType.id == patch.id))
-    ).scalar_one_or_none()
-    if address_type is None:
+    try:
+        address_type = (
+            await session.exec(select(AddressType).where(AddressType.id == patch.id))
+        ).scalar_one()
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Address Type Not Found"
         )
