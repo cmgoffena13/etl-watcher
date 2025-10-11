@@ -6,9 +6,10 @@
   <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Recommended Implementation &mdash; Watcher 1.0.0 documentation</title>
+  <title>Recommended Implementation - SDK &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -16,6 +17,7 @@
       <script src="../_static/documentation_options.js?v=8d563738"></script>
       <script src="../_static/doctools.js?v=9bcbadda"></script>
       <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/tabs.js?v=3030b3cb"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -190,8 +192,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-lineage-models">Address Lineage Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#sourceaddress">SourceAddress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#targetaddress">TargetAddress</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
@@ -329,7 +329,6 @@
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#source-control-integration">Source Control Integration</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -408,13 +407,15 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Recommended Implementation</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Recommended Implementation - SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-pipeline-configuration">Define Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#initialize-watcher-client">Initialize Watcher Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#watermark-management">Watermark Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#sync-address-lineage">Sync Address Lineage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pipeline-execution">Pipeline Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#example-implementation">Example Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#track-pipeline-execution">Track Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#benefits-of-using-the-sdk">Benefits of Using the SDK</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
@@ -499,6 +500,35 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dev_kubernetes.html">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#access-the-application">Access the Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -515,7 +545,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Recommended Implementation</li>
+      <li class="breadcrumb-item active">Recommended Implementation - SDK</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/guides/recommended_implementation.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -525,206 +555,216 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="recommended-implementation">
-<h1>Recommended Implementation<a class="headerlink" href="#recommended-implementation" title="Link to this heading"></a></h1>
-<p>This guide covers the recommended implementation to have your code integrated with Watcher.</p>
+  <section id="recommended-implementation-sdk">
+<h1>Recommended Implementation - SDK<a class="headerlink" href="#recommended-implementation-sdk" title="Link to this heading"></a></h1>
+<p>This guide covers the recommended implementation using the <code class="docutils literal notranslate"><span class="pre">etl-watcher-sdk</span></code> Python SDK to integrate your ETL code with Watcher.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Currently developing out an <a class="reference external" href="https://github.com/cmgoffena13/etl-watcher-sdk">SDK</a> to simplify the implementation.
+<p>The <code class="docutils literal notranslate"><span class="pre">etl-watcher-sdk</span></code> simplifies the integration process by providing a clean Python API.
 See the docs here: <a class="reference external" href="https://etl-watcher-sdk.readthedocs.io/en/latest/">https://etl-watcher-sdk.readthedocs.io/en/latest/</a></p>
 </div>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Link to this heading"></a></h2>
+<p>Install the SDK using your preferred package manager:</p>
+<div class="sphinx-tabs docutils container">
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-0-0-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-0-0-0" name="0-0" role="tab" tabindex="0">uv</button><button aria-controls="panel-0-0-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-1" name="0-1" role="tab" tabindex="-1">pip</button><button aria-controls="panel-0-0-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-0-0-2" name="0-2" role="tab" tabindex="-1">poetry</button></div><div aria-labelledby="tab-0-0-0" class="sphinx-tabs-panel" id="panel-0-0-0" name="0-0" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>uv<span class="w"> </span>add<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-1" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-1" name="0-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div><div aria-labelledby="tab-0-0-2" class="sphinx-tabs-panel" hidden="true" id="panel-0-0-2" name="0-2" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>poetry<span class="w"> </span>add<span class="w"> </span>etl-watcher-sdk
+</pre></div>
+</div>
+</div></div>
+</section>
 <section id="key-processes">
 <h2>Key Processes<a class="headerlink" href="#key-processes" title="Link to this heading"></a></h2>
 <ol class="arabic simple">
-<li><dl class="simple">
-<dt>Sync Pipeline Configuration</dt><dd><ol class="loweralpha simple">
-<li><p>Handle Watermark Management</p></li>
-</ol>
-</dd>
-</dl>
-</li>
-<li><p>Sync Address Lineage</p></li>
-<li><p>Handle Pipeline Execution</p></li>
+<li><p>Define Pipeline Configuration</p></li>
+<li><p>Initialize Watcher Client</p></li>
+<li><p>Sync Pipeline Configuration</p></li>
+<li><p>Track Pipeline Execution</p></li>
 </ol>
 </section>
-<section id="sync-pipeline-configuration">
-<h2>Sync Pipeline Configuration<a class="headerlink" href="#sync-pipeline-configuration" title="Link to this heading"></a></h2>
-<p>Store your pipeline configuration in source control. Example:</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">PIPELINE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;pipeline&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;pipeline_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;timeliness_number&quot;</span><span class="p">:</span> <span class="mi">20</span><span class="p">,</span>
-        <span class="s2">&quot;timeliness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;minute&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;freshness_number&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
-        <span class="s2">&quot;freshness_datepart&quot;</span><span class="p">:</span> <span class="s2">&quot;day&quot;</span><span class="p">,</span>
-        <span class="s2">&quot;pipeline_metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+<section id="define-pipeline-configuration">
+<h2>Define Pipeline Configuration<a class="headerlink" href="#define-pipeline-configuration" title="Link to this heading"></a></h2>
+<p>Store your pipeline configuration in source control using the SDK’s data models:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Address</span><span class="p">,</span> <span class="n">AddressLineage</span><span class="p">,</span> <span class="n">Pipeline</span><span class="p">,</span> <span class="n">PipelineConfig</span>
+
+<span class="n">POLYGON_OPEN_CLOSE_PIPELINE_CONFIG</span> <span class="o">=</span> <span class="n">PipelineConfig</span><span class="p">(</span>
+    <span class="n">pipeline</span><span class="o">=</span><span class="n">Pipeline</span><span class="p">(</span>
+        <span class="n">name</span><span class="o">=</span><span class="s2">&quot;polygon_open_close&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_type_name</span><span class="o">=</span><span class="s2">&quot;extraction&quot;</span><span class="p">,</span>
+        <span class="n">timeliness_number</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+        <span class="n">timeliness_datepart</span><span class="o">=</span><span class="s2">&quot;minute&quot;</span><span class="p">,</span>
+        <span class="n">freshness_number</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+        <span class="n">freshness_datepart</span><span class="o">=</span><span class="s2">&quot;day&quot;</span><span class="p">,</span>
+        <span class="n">pipeline_metadata</span><span class="o">=</span><span class="p">{</span>
             <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Daily stock price extraction from Polygon API&quot;</span><span class="p">,</span>
             <span class="s2">&quot;owner&quot;</span><span class="p">:</span> <span class="s2">&quot;data-team&quot;</span><span class="p">,</span>
         <span class="p">},</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;lineage&quot;</span><span class="p">:</span> <span class="p">{</span>
-        <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Will be set later</span>
-        <span class="s2">&quot;source_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;api&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">],</span>
-        <span class="s2">&quot;target_addresses&quot;</span><span class="p">:</span> <span class="p">[</span>
-            <span class="p">{</span>
-                <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;prod.polygon.open_close&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_name&quot;</span><span class="p">:</span> <span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
-                <span class="s2">&quot;address_type_group_name&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span><span class="p">,</span>
-            <span class="p">}</span>
-        <span class="p">],</span>
-    <span class="p">},</span>
-    <span class="s2">&quot;default_watermark&quot;</span><span class="p">:</span> <span class="s2">&quot;Default Watermark Value&quot;</span><span class="p">,</span>
-    <span class="s2">&quot;watermark&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>  <span class="c1"># Will be set later</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-<p>With pipeline configuration in source control, we need to create a function
-that will sync the pipeline configuration with the Watcher framework by calling the
-<code class="docutils literal notranslate"><span class="pre">/pipeline</span></code> endpoint.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000&quot;</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">sync_pipeline_configuration</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
-    <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/pipeline&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;pipeline&quot;</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
-</pre></div>
-</div>
-</section>
-<section id="watermark-management">
-<h2>Watermark Management<a class="headerlink" href="#watermark-management" title="Link to this heading"></a></h2>
-<p>Calculating the next watermark can be pipeline specific, but we can modify our function to
-handle an input argument.
-I’d recommend adding a default watermark value to your pipeline configuration.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000&quot;</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">sync_pipeline_configuration</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">next_watermark</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;pipeline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">next_watermark</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/pipeline&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;pipeline&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;watermark&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;watermark&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;default_watermark&quot;</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="n">pipeline_config</span>
-</pre></div>
-</div>
-</section>
-<section id="sync-address-lineage">
-<h2>Sync Address Lineage<a class="headerlink" href="#sync-address-lineage" title="Link to this heading"></a></h2>
-<p>We can add logic to our function to sync the address lineage if load_lineage is True.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000&quot;</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">sync_pipeline_configuration</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
-    <span class="k">if</span> <span class="n">next_watermark</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;pipeline&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">next_watermark</span> <span class="o">=</span> <span class="n">next_watermark</span>
-
-    <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/pipeline&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;pipeline&quot;</span><span class="p">])</span>
-
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;watermark&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;watermark&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;default_watermark&quot;</span><span class="p">]</span>
-
-    <span class="c1"># NEW CODE</span>
-    <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;load_lineage&quot;</span><span class="p">]:</span>
-        <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;lineage&quot;</span><span class="p">][</span><span class="s2">&quot;pipeline_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-        <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/address_lineage&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;lineage&quot;</span><span class="p">])</span>
-
-    <span class="k">return</span> <span class="n">pipeline_config</span>
-</pre></div>
-</div>
-</section>
-<section id="pipeline-execution">
-<h2>Pipeline Execution<a class="headerlink" href="#pipeline-execution" title="Link to this heading"></a></h2>
-<p>We can create a decorator function that will wrap around our ETL code to
-handle start / end pipeline execution.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">base_url</span> <span class="o">=</span> <span class="s2">&quot;http://localhost:8000&quot;</span>
-
-<span class="k">def</span><span class="w"> </span><span class="nf">track_pipeline_execution</span><span class="p">(</span>
-    <span class="n">pipeline_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">parent_execution_id</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
-<span class="p">):</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">decorator</span><span class="p">(</span><span class="n">func</span><span class="p">):</span>
-        <span class="k">def</span><span class="w"> </span><span class="nf">wrapper</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
-            <span class="n">start_execution</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="n">pipeline_id</span><span class="p">,</span>
-                <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-            <span class="p">}</span>
-            <span class="k">if</span> <span class="n">parent_execution_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">start_execution</span><span class="p">[</span><span class="s2">&quot;parent_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_execution_id</span>
-
-            <span class="n">start_response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/start_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">start_execution</span>
+    <span class="p">),</span>
+    <span class="n">address_lineage</span><span class="o">=</span><span class="n">AddressLineage</span><span class="p">(</span>
+        <span class="n">source_addresses</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Address</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;https://api.polygon.io/v1/open-close/&quot;</span><span class="p">,</span>
+                <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;polygon&quot;</span><span class="p">,</span>
+                <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;api&quot;</span><span class="p">,</span>
             <span class="p">)</span>
-            <span class="n">execution_id</span> <span class="o">=</span> <span class="n">start_response</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span>
-
-            <span class="k">try</span><span class="p">:</span>
-                <span class="n">result</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>  <span class="c1"># Runs the pipeline etl function</span>
-
-                <span class="c1"># MAKE SURE FUNCTION RETURNS A DICTIONARY</span>
-                <span class="c1"># WITH END PIPELINE EXECUTION METRICS</span>
-
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">execution_id</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;end_date&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">()</span>
-                <span class="n">result</span><span class="p">[</span><span class="s2">&quot;completed_successfully&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
-
-                <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/end_pipeline_execution&quot;</span><span class="p">,</span>
-                    <span class="n">json</span><span class="o">=</span><span class="n">result</span><span class="p">,</span>
-                <span class="p">)</span>
-
-                <span class="k">return</span> <span class="n">result</span>
-
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-                <span class="n">failure_result</span> <span class="o">=</span> <span class="p">{</span>
-                    <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="n">execution_id</span><span class="p">,</span>
-                    <span class="s2">&quot;end_date&quot;</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">(</span><span class="s2">&quot;UTC&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">isoformat</span><span class="p">(),</span>
-                    <span class="s2">&quot;completed_successfully&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
-                <span class="p">}</span>
-                <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">base_url</span><span class="si">}</span><span class="s2">/end_pipeline_execution&quot;</span><span class="p">,</span>
-                    <span class="n">json</span><span class="o">=</span><span class="n">failure_result</span><span class="p">,</span>
-                <span class="p">)</span>
-                <span class="k">raise</span> <span class="n">e</span>
-
-        <span class="k">return</span> <span class="n">wrapper</span>
-
-    <span class="k">return</span> <span class="n">decorator</span>
+        <span class="p">],</span>
+        <span class="n">target_addresses</span><span class="o">=</span><span class="p">[</span>
+            <span class="n">Address</span><span class="p">(</span>
+                <span class="n">name</span><span class="o">=</span><span class="s2">&quot;prod.polygon.open_close&quot;</span><span class="p">,</span>
+                <span class="n">address_type_name</span><span class="o">=</span><span class="s2">&quot;postgres&quot;</span><span class="p">,</span>
+                <span class="n">address_type_group_name</span><span class="o">=</span><span class="s2">&quot;database&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">],</span>
+    <span class="p">),</span>
+    <span class="n">default_watermark</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">date</span><span class="p">(</span><span class="mi">2025</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">(),</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="n">pendulum</span><span class="o">.</span><span class="n">now</span><span class="p">()</span><span class="o">.</span><span class="n">date</span><span class="p">()</span><span class="o">.</span><span class="n">to_date_string</span><span class="p">(),</span>
+<span class="p">)</span>
 </pre></div>
 </div>
 </section>
-<section id="example-implementation">
-<h2>Example Implementation<a class="headerlink" href="#example-implementation" title="Link to this heading"></a></h2>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">PIPELINE_CONFIG</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">sync_pipeline_configuration</span><span class="p">,</span> <span class="n">track_pipeline_execution</span>
+<section id="initialize-watcher-client">
+<h2>Initialize Watcher Client<a class="headerlink" href="#initialize-watcher-client" title="Link to this heading"></a></h2>
+<p>Create a Watcher client instance:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">Watcher</span>
 
-<span class="c1"># Calculate next_watermark for your specific pipeline</span>
-
-<span class="n">pipeline_config</span> <span class="o">=</span> <span class="n">sync_pipeline_configuration</span><span class="p">(</span><span class="n">PIPELINE_CONFIG</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">)</span>
-
-<span class="nd">@track_pipeline_execution</span><span class="p">(</span><span class="n">pipeline_id</span><span class="o">=</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;id&quot;</span><span class="p">],</span> <span class="n">parent_execution_id</span><span class="o">=</span><span class="kc">None</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">etl_script</span><span class="p">(</span><span class="n">watermark</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">date</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">:</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">date</span><span class="p">):</span>
-    <span class="k">pass</span>
-
-<span class="c1"># Cast watermark / next_watermark if needed</span>
-<span class="n">etl_script</span><span class="p">(</span><span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;watermark&quot;</span><span class="p">],</span> <span class="n">pipeline_config</span><span class="p">[</span><span class="s2">&quot;next_watermark&quot;</span><span class="p">])</span>
+<span class="c1"># Initialize the Watcher client</span>
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>This is an advanced implementation that is recommended to simplify your code
-and allow for easy integration into the Watcher framework in a scalable way.</p>
+</section>
+<section id="sync-pipeline-configuration">
+<h2>Sync Pipeline Configuration<a class="headerlink" href="#sync-pipeline-configuration" title="Link to this heading"></a></h2>
+<p>Use the SDK to sync your pipeline configuration and address lineage with Watcher:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Sync pipeline configuration with Watcher</span>
+<span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">POLYGON_OPEN_CLOSE_PIPELINE_CONFIG</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The synchronization also handles watermark management!</p>
+</div>
+</section>
+<section id="track-pipeline-execution">
+<h2>Track Pipeline Execution<a class="headerlink" href="#track-pipeline-execution" title="Link to this heading"></a></h2>
+<p>Use the SDK’s decorator to track your ETL pipeline execution:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+
+<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">,</span>
+    <span class="n">watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">,</span> <span class="n">tickers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="c1"># Access watermark and next_watermark from the context</span>
+    <span class="n">watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+    <span class="c1"># Your ETL logic here</span>
+    <span class="n">total_rows</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="c1"># Process each ticker...</span>
+        <span class="n">total_rows</span> <span class="o">+=</span> <span class="n">process_ticker</span><span class="p">(</span><span class="n">ticker</span><span class="p">,</span> <span class="n">watermark</span><span class="p">,</span> <span class="n">next_watermark</span><span class="p">)</span>
+
+    <span class="c1"># Return ETL results</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="n">total_rows</span><span class="p">,</span>
+    <span class="p">)</span>
+</pre></div>
+</div>
+<p>The decorator automatically handles:</p>
+<ul class="simple">
+<li><p>Starting and ending pipeline execution</p></li>
+<li><p>Updating the pipeline execution with the ETLResults</p></li>
+<li><p>Active/Inactive pipeline management</p></li>
+<li><p>All HTTP communication with the Watcher API</p></li>
+</ul>
+<p>And provides access to the <code class="docutils literal notranslate"><span class="pre">watcher_context</span></code>, allowing for:</p>
+<ul class="simple">
+<li><p>Access to the watermark and next_watermark</p></li>
+<li><p>Access to the pipeline execution context (for hiearchical execution tracking)</p></li>
+</ul>
+</section>
+<section id="complete-example">
+<h2>Complete Example<a class="headerlink" href="#complete-example" title="Link to this heading"></a></h2>
+<p>Here’s a complete example putting it all together:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">time</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pendulum</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">watcher</span><span class="w"> </span><span class="kn">import</span> <span class="n">ETLResults</span><span class="p">,</span> <span class="n">Watcher</span><span class="p">,</span> <span class="n">WatcherExecutionContext</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pipeline</span><span class="w"> </span><span class="kn">import</span> <span class="n">POLYGON_OPEN_CLOSE_PIPELINE_CONFIG</span>
+
+<span class="c1"># Initialize Watcher client</span>
+<span class="n">watcher</span> <span class="o">=</span> <span class="n">Watcher</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000&quot;</span><span class="p">)</span>
+
+<span class="c1"># Sync pipeline configuration</span>
+<span class="n">synced_config</span> <span class="o">=</span> <span class="n">watcher</span><span class="o">.</span><span class="n">sync_pipeline_config</span><span class="p">(</span><span class="n">POLYGON_OPEN_CLOSE_PIPELINE_CONFIG</span><span class="p">)</span>
+
+<span class="c1"># Define your ETL function with tracking</span>
+<span class="nd">@watcher</span><span class="o">.</span><span class="n">track_pipeline_execution</span><span class="p">(</span>
+    <span class="n">pipeline_id</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">id</span><span class="p">,</span>
+    <span class="n">active</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">pipeline</span><span class="o">.</span><span class="n">active</span><span class="p">,</span>
+    <span class="n">watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">watermark</span><span class="p">,</span>
+    <span class="n">next_watermark</span><span class="o">=</span><span class="n">synced_config</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">watcher_context</span><span class="p">:</span> <span class="n">WatcherExecutionContext</span><span class="p">,</span> <span class="n">tickers</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+    <span class="c1"># Access the watcher_context to get the watermark and next_watermark</span>
+    <span class="n">watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">watermark</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+    <span class="n">next_watermark</span> <span class="o">=</span> <span class="n">pendulum</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">watcher_context</span><span class="o">.</span><span class="n">next_watermark</span><span class="p">)</span><span class="o">.</span><span class="n">date</span><span class="p">()</span>
+
+    <span class="n">all_records</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="n">total_rows</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">for</span> <span class="n">ticker</span> <span class="ow">in</span> <span class="n">tickers</span><span class="p">:</span>
+        <span class="n">date</span> <span class="o">=</span> <span class="n">watermark</span>
+        <span class="k">while</span> <span class="n">date</span> <span class="o">&lt;</span> <span class="n">next_watermark</span><span class="p">:</span>
+            <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;https://api.polygon.io/v1/open-close/</span><span class="si">{</span><span class="n">ticker</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">date</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
+                <span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;apiKey&quot;</span><span class="p">:</span> <span class="s2">&quot;YOUR_API_KEY&quot;</span><span class="p">},</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span> <span class="o">==</span> <span class="mi">429</span><span class="p">:</span>
+                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">30</span><span class="p">)</span>  <span class="c1"># Rate limit handling</span>
+                <span class="k">continue</span>
+
+            <span class="n">record</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">record</span><span class="p">[</span><span class="s2">&quot;status&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;OK&quot;</span><span class="p">:</span>
+                <span class="n">all_records</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">)</span>
+
+            <span class="n">date</span> <span class="o">=</span> <span class="n">date</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+        <span class="n">total_rows</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_records</span><span class="p">)</span>
+
+    <span class="c1"># Make sure to return the ETLResults</span>
+    <span class="k">return</span> <span class="n">ETLResults</span><span class="p">(</span>
+        <span class="n">completed_successfully</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">total_rows</span><span class="o">=</span><span class="n">total_rows</span><span class="p">,</span>
+    <span class="p">)</span>
+
+<span class="c1"># Execute your ETL pipeline</span>
+<span class="n">tickers</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;AAPL&quot;</span><span class="p">,</span> <span class="s2">&quot;META&quot;</span><span class="p">]</span>
+<span class="n">extract_data</span><span class="p">(</span><span class="n">tickers</span><span class="o">=</span><span class="n">tickers</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="benefits-of-using-the-sdk">
+<h2>Benefits of Using the SDK<a class="headerlink" href="#benefits-of-using-the-sdk" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><strong>Simplified Integration</strong>: Abstracts away complex HTTP requests and API interactions</p></li>
+<li><p><strong>Synchronization</strong>: Automatically syncs pipeline configuration and address lineage with Watcher</p></li>
+<li><p><strong>Watermark Management</strong>: Automatically manages watermarks for each pipeline execution</p></li>
+<li><p><strong>Execution Tracking</strong>: Automatically tracks pipeline execution and updates the pipeline execution with the ETLResults</p></li>
+<li><p><strong>Hierarchical Execution Tracking</strong>: Provides access to the <code class="docutils literal notranslate"><span class="pre">watcher_context</span></code> for hierarchical execution tracking</p></li>
+</ul>
+<p>This implementation provides a clean, maintainable way to integrate your ETL processes with
+the Watcher framework.</p>
 </section>
 </section>
 
