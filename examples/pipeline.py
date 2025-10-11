@@ -32,6 +32,6 @@ POLYGON_OPEN_CLOSE_PIPELINE_CONFIG = PipelineConfig(
             )
         ],
     ),
-    default_watermark=pendulum.date(2025, 1, 1).to_date_string(),
+    default_watermark=pendulum.date(2025, 10, 1).to_date_string(),
     next_watermark=pendulum.now().date().to_date_string(),
 )

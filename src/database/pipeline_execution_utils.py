@@ -1,11 +1,7 @@
 import logging
 from typing import Optional
 
-from asyncpg.exceptions import (
-    CheckViolationError,
-    ForeignKeyViolationError,
-    UniqueViolationError,
-)
+from asyncpg.exceptions import CheckViolationError
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlmodel import Integer, Session, case, func, select, update
@@ -46,21 +42,6 @@ async def db_start_pipeline_execution(
                     status_code=400,
                     detail="Pipeline execution cannot be its own parent. Check parent_id value.",
                 )
-            else:
-                raise HTTPException(
-                    status_code=400,
-                    detail="Check constraint violation",
-                )
-        elif isinstance(e.orig, UniqueViolationError):
-            raise HTTPException(
-                status_code=400,
-                detail="Unique constraint violation",
-            )
-        elif isinstance(e.orig, ForeignKeyViolationError):
-            raise HTTPException(
-                status_code=400,
-                detail="Foreign key constraint violation",
-            )
         else:
             logger.error(f"Database integrity error: {e}")
             raise HTTPException(status_code=500, detail="Database integrity error")
@@ -116,51 +97,41 @@ async def db_end_pipeline_execution(
                         status_code=400,
                         detail="end_date must be greater than start_date",
                     )
-                else:
-                    raise HTTPException(
-                        status_code=400,
-                        detail="Check constraint violation",
-                    )
-            elif isinstance(e.orig, UniqueViolationError):
-                raise HTTPException(
-                    status_code=400,
-                    detail="Unique constraint violation",
-                )
-            elif isinstance(e.orig, ForeignKeyViolationError):
-                raise HTTPException(
-                    status_code=400,
-                    detail="Foreign key constraint violation",
-                )
             else:
                 logger.error(f"Database integrity error: {e}")
                 raise HTTPException(status_code=500, detail="Database integrity error")
 
-        pipeline_execution_inserts = pipeline_execution.inserts or 0
-        pipeline_execution_updates = pipeline_execution.updates or 0
-        pipeline_execution_soft_deletes = pipeline_execution.soft_deletes or 0
+        # Only update pipeline watermark and DML info if execution was successful
+        if pipeline_execution.completed_successfully:
+            pipeline_execution_inserts = pipeline_execution.inserts or 0
+            pipeline_execution_updates = pipeline_execution.updates or 0
+            pipeline_execution_soft_deletes = pipeline_execution.soft_deletes or 0
 
-        # Update Pipeline record with latest DML info
-        pipeline_update_stmt = (
-            update(Pipeline)
-            .where(Pipeline.id == pipeline_id)
-            .values(
-                watermark=Pipeline.next_watermark,
-                last_target_insert=case(
-                    (pipeline_execution_inserts > 0, pipeline_execution.end_date),
-                    else_=Pipeline.last_target_insert,
-                ),
-                last_target_update=case(
-                    (pipeline_execution_updates > 0, pipeline_execution.end_date),
-                    else_=Pipeline.last_target_update,
-                ),
-                last_target_soft_delete=case(
-                    (pipeline_execution_soft_deletes > 0, pipeline_execution.end_date),
-                    else_=Pipeline.last_target_soft_delete,
-                ),
-                load_lineage=False,
+            # Update Pipeline record with latest DML info
+            pipeline_update_stmt = (
+                update(Pipeline)
+                .where(Pipeline.id == pipeline_id)
+                .values(
+                    watermark=Pipeline.next_watermark,
+                    last_target_insert=case(
+                        (pipeline_execution_inserts > 0, pipeline_execution.end_date),
+                        else_=Pipeline.last_target_insert,
+                    ),
+                    last_target_update=case(
+                        (pipeline_execution_updates > 0, pipeline_execution.end_date),
+                        else_=Pipeline.last_target_update,
+                    ),
+                    last_target_soft_delete=case(
+                        (
+                            pipeline_execution_soft_deletes > 0,
+                            pipeline_execution.end_date,
+                        ),
+                        else_=Pipeline.last_target_soft_delete,
+                    ),
+                    load_lineage=False,
+                )
             )
-        )
-        await session.exec(pipeline_update_stmt)
+            await session.exec(pipeline_update_stmt)
 
     return pipeline_id
 

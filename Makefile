@@ -1,4 +1,4 @@
-.PHONY: dev-compose dev-kube-stop format lint test add-migration trigger-migration load-test docs
+.PHONY: dev-compose dev-kube-stop format lint test add-migration trigger-migration load-test docs upgrade-sdk
 
 dev-compose:
 	docker compose up --build --remove-orphans
@@ -43,3 +43,9 @@ docs-serve:
 
 docs-watch:
 	uv run sphinx-autobuild docs docs/_build/html --watch src/ --port 8080
+
+upgrade-sdk:
+	uv sync --upgrade-package etl-watcher-sdk
+
+upgrade-packages:
+	uv sync --upgrade
