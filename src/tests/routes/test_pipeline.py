@@ -118,7 +118,9 @@ async def test_pipeline_hash_functionality(async_client: AsyncClient):
         "pipeline_type_name": "extraction",
         "pipeline_type_group_name": "databricks",
         "freshness_number": 60,  # Changed again
+        "freshness_datepart": "minute",  # Required with freshness_number
         "timeliness_number": 120,  # Changed again
+        "timeliness_datepart": "minute",  # Required with timeliness_number
         "next_watermark": "2024-01-01T12:00:00Z",  # Add next_watermark
     }
 
@@ -208,3 +210,104 @@ async def test_watermark_increment_pipeline(async_client: AsyncClient):
 
     assert data.get("watermark") == str(12)
     assert data.get("next_watermark") == str(12)
+
+
+@pytest.mark.anyio
+async def test_pipeline_validation_freshness_timeliness_fields(
+    async_client: AsyncClient,
+):
+    """Test that freshness and timeliness fields must be provided together."""
+
+    # Test 1: Only freshness_number provided (should fail)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation",
+            "pipeline_type_name": "extraction",
+            "freshness_number": 5,
+        },
+    )
+    assert response.status_code == 422
+    assert (
+        "freshness_number and freshness_datepart must be provided together"
+        in response.json()["detail"][0]["msg"]
+    )
+
+    # Test 2: Only freshness_datepart provided (should fail)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation",
+            "pipeline_type_name": "extraction",
+            "freshness_datepart": "hour",
+        },
+    )
+    assert response.status_code == 422
+    assert (
+        "freshness_number and freshness_datepart must be provided together"
+        in response.json()["detail"][0]["msg"]
+    )
+
+    # Test 3: Only timeliness_number provided (should fail)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation",
+            "pipeline_type_name": "extraction",
+            "timeliness_number": 10,
+        },
+    )
+    assert response.status_code == 422
+    assert (
+        "timeliness_number and timeliness_datepart must be provided together"
+        in response.json()["detail"][0]["msg"]
+    )
+
+    # Test 4: Only timeliness_datepart provided (should fail)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation",
+            "pipeline_type_name": "extraction",
+            "timeliness_datepart": "minute",
+        },
+    )
+    assert response.status_code == 422
+    assert (
+        "timeliness_number and timeliness_datepart must be provided together"
+        in response.json()["detail"][0]["msg"]
+    )
+
+    # Test 5: Both freshness fields provided (should succeed)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation success",
+            "pipeline_type_name": "extraction",
+            "freshness_number": 5,
+            "freshness_datepart": "hour",
+        },
+    )
+    assert response.status_code == 201
+
+    # Test 6: Both timeliness fields provided (should succeed)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation success 2",
+            "pipeline_type_name": "extraction",
+            "timeliness_number": 10,
+            "timeliness_datepart": "minute",
+        },
+    )
+    assert response.status_code == 201
+
+    # Test 7: Neither field provided (should succeed)
+    response = await async_client.post(
+        "/pipeline",
+        json={
+            "name": "test pipeline validation success 3",
+            "pipeline_type_name": "extraction",
+        },
+    )
+    assert response.status_code == 201

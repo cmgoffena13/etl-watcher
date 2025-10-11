@@ -1,6 +1,6 @@
 from typing import Optional, Union
 
-from pydantic import Field
+from pydantic import Field, model_validator
 from pydantic_extra_types.pendulum_dt import Date, DateTime
 
 from src.types import DatePartEnum, ValidatorModel
@@ -15,6 +15,24 @@ class PipelinePostInput(ValidatorModel):
     freshness_datepart: Optional[DatePartEnum] = None
     timeliness_number: Optional[int] = Field(default=None, gt=0)
     timeliness_datepart: Optional[DatePartEnum] = None
+
+    @model_validator(mode="after")
+    def validate_freshness_fields(self):
+        if (self.freshness_number is not None) != (self.freshness_datepart is not None):
+            raise ValueError(
+                "Both freshness_number and freshness_datepart must be provided together"
+            )
+        return self
+
+    @model_validator(mode="after")
+    def validate_timeliness_fields(self):
+        if (self.timeliness_number is not None) != (
+            self.timeliness_datepart is not None
+        ):
+            raise ValueError(
+                "Both timeliness_number and timeliness_datepart must be provided together"
+            )
+        return self
 
 
 class PipelinePostOutput(ValidatorModel):
