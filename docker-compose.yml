@@ -35,8 +35,8 @@ services:
       - postgres
     volumes:
       - ./src:/watcher/src
-      - ./start.sh:/watcher/start.sh
-    command: ["/bin/bash", "/watcher/dev_start.sh"]
+      - ./dev_start.sh:/watcher/start.sh
+    command: ["/bin/bash", "/watcher/start.sh"]
 
   worker:
     build: .
