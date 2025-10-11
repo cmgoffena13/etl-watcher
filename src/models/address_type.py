@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, model_validator
 
 from src.types import ValidatorModel
 
@@ -15,6 +15,12 @@ class AddressTypePostOutput(ValidatorModel):
 
 
 class AddressTypePatchInput(ValidatorModel):
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     group_name: Optional[str] = Field(None, max_length=150, min_length=1)
+
+    @model_validator(mode="after")
+    def validate_id_or_name(self):
+        if self.id is None and self.name is None:
+            raise ValueError("Either 'id' or 'name' must be provided")
+        return self

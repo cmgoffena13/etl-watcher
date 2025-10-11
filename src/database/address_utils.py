@@ -151,9 +151,14 @@ async def db_get_or_create_address(
 
 async def db_update_address(session: Session, patch: AddressPatchInput) -> Address:
     try:
-        address = (
-            await session.exec(select(Address).where(Address.id == patch.id))
-        ).scalar_one()
+        if patch.id is not None:
+            address = (
+                await session.exec(select(Address).where(Address.id == patch.id))
+            ).scalar_one()
+        else:
+            address = (
+                await session.exec(select(Address).where(Address.name == patch.name))
+            ).scalar_one()
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Address not found"
@@ -166,6 +171,21 @@ async def db_update_address(session: Session, patch: AddressPatchInput) -> Addre
         setattr(address, field, value)
 
     session.add(address)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if isinstance(e.orig, UniqueViolationError):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Address name already exists",
+            )
+        else:
+            logger.error(f"Database integrity error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Database integrity error",
+            )
+
     await session.refresh(address)
     return address

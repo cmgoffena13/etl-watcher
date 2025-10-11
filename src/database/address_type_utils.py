@@ -67,9 +67,18 @@ async def db_update_address_type(
     session: Session, patch: AddressTypePatchInput
 ) -> AddressType:
     try:
-        address_type = (
-            await session.exec(select(AddressType).where(AddressType.id == patch.id))
-        ).scalar_one()
+        if patch.id is not None:
+            address_type = (
+                await session.exec(
+                    select(AddressType).where(AddressType.id == patch.id)
+                )
+            ).scalar_one()
+        else:
+            address_type = (
+                await session.exec(
+                    select(AddressType).where(AddressType.name == patch.name)
+                )
+            ).scalar_one()
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Address Type Not Found"
@@ -82,6 +91,21 @@ async def db_update_address_type(
         setattr(address_type, field, value)
 
     session.add(address_type)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if isinstance(e.orig, UniqueViolationError):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Address type name already exists",
+            )
+        else:
+            logger.error(f"Database integrity error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Database integrity error",
+            )
+
     await session.refresh(address_type)
     return address_type

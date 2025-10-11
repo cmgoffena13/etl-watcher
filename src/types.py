@@ -27,8 +27,17 @@ class AnomalyMetricFieldEnum(str, Enum):
 class ValidatorModel(BaseModel):
     @model_validator(mode="before")
     def lowercase_strings(cls, values: dict) -> dict:
+        # Ordering prevents this, but just in case
+        preserve_case_fields = {
+            "watermark",
+            "next_watermark",
+        }
+
         return {
-            k: v.lower().strip() if isinstance(v, str) else v for k, v in values.items()
+            k: v.lower().strip()
+            if isinstance(v, str) and k not in preserve_case_fields
+            else v
+            for k, v in values.items()
         }
 
     @model_validator(mode="before")

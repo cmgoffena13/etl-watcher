@@ -196,9 +196,14 @@ async def db_get_or_create_pipeline(
 
 async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pipeline:
     try:
-        pipeline = (
-            await session.exec(select(Pipeline).where(Pipeline.id == patch.id))
-        ).scalar_one()
+        if patch.id is not None:
+            pipeline = (
+                await session.exec(select(Pipeline).where(Pipeline.id == patch.id))
+            ).scalar_one()
+        else:
+            pipeline = (
+                await session.exec(select(Pipeline).where(Pipeline.name == patch.name))
+            ).scalar_one()
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Not Found"
@@ -211,6 +216,21 @@ async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pip
         setattr(pipeline, field, value)
 
     session.add(pipeline)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if isinstance(e.orig, UniqueViolationError):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Pipeline name already exists",
+            )
+        else:
+            logger.error(f"Database integrity error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Database integrity error",
+            )
+
     await session.refresh(pipeline)
     return pipeline

@@ -67,9 +67,18 @@ async def db_update_pipeline_type(
     session: Session, patch: PipelineTypePatchInput
 ) -> PipelineType:
     try:
-        pipeline_type = (
-            await session.exec(select(PipelineType).where(PipelineType.id == patch.id))
-        ).scalar_one()
+        if patch.id is not None:
+            pipeline_type = (
+                await session.exec(
+                    select(PipelineType).where(PipelineType.id == patch.id)
+                )
+            ).scalar_one()
+        else:
+            pipeline_type = (
+                await session.exec(
+                    select(PipelineType).where(PipelineType.name == patch.name)
+                )
+            ).scalar_one()
     except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Pipeline Type Not Found"
@@ -82,6 +91,21 @@ async def db_update_pipeline_type(
         setattr(pipeline_type, field, value)
 
     session.add(pipeline_type)
-    await session.commit()
+    try:
+        await session.commit()
+    except IntegrityError as e:
+        await session.rollback()
+        if isinstance(e.orig, UniqueViolationError):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Pipeline type name already exists",
+            )
+        else:
+            logger.error(f"Database integrity error: {e}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Database integrity error",
+            )
+
     await session.refresh(pipeline_type)
     return pipeline_type

@@ -43,7 +43,7 @@ class PipelinePostOutput(ValidatorModel):
 
 
 class PipelinePatchInput(ValidatorModel):
-    id: int
+    id: Optional[int] = None
     name: Optional[str] = Field(None, max_length=150, min_length=1)
     pipeline_type_id: Optional[int] = None
     watermark: Optional[Union[str, int, DateTime, Date]] = None
@@ -57,3 +57,9 @@ class PipelinePatchInput(ValidatorModel):
     mute_timeliness_check: Optional[bool] = Field(default=False)
     load_lineage: Optional[bool] = None
     active: Optional[bool] = Field(default=True)
+
+    @model_validator(mode="after")
+    def validate_id_or_name(self):
+        if self.id is None and self.name is None:
+            raise ValueError("Either 'id' or 'name' must be provided")
+        return self

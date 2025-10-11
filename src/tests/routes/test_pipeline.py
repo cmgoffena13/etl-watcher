@@ -140,6 +140,8 @@ async def test_pipeline_hash_functionality(async_client: AsyncClient):
 async def test_patch_pipeline(async_client: AsyncClient):
     # First create the pipeline to then be able to patch
     await async_client.post("/pipeline", json=TEST_PIPELINE_POST_DATA)
+
+    # Test ID-based update
     response = await async_client.patch("/pipeline", json=TEST_PIPELINE_PATCH_DATA)
     data = response.json()
     assert response.status_code == 200
@@ -147,6 +149,25 @@ async def test_patch_pipeline(async_client: AsyncClient):
         assert data[k] == v
     assert "created_at" in data
     assert "updated_at" in data
+
+    # Test name-based update
+    patch_data = {
+        "name": "pipeline_patched",  # Use the current name after the first patch
+        "watermark": "2024-01-01T10:00:00Z",
+    }
+    response = await async_client.patch("/pipeline", json=patch_data)
+    data = response.json()
+    assert response.status_code == 200
+    assert data["watermark"] == "2024-01-01T10:00:00Z"  # Preserves original case
+    assert "updated_at" in data
+
+    # Test validation error when neither ID nor name is provided
+    patch_data = {"watermark": "2024-01-01T10:00:00Z"}
+    response = await async_client.patch("/pipeline", json=patch_data)
+    assert response.status_code == 422
+    assert (
+        "Either 'id' or 'name' must be provided" in response.json()["detail"][0]["msg"]
+    )
 
 
 @pytest.mark.anyio

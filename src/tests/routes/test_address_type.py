@@ -44,6 +44,8 @@ async def test_get_address_type(async_client: AsyncClient):
 async def test_patch_address_type(async_client: AsyncClient):
     # First create the address_type to then be able to patch
     await async_client.post("/address_type", json=TEST_ADDRESS_TYPE_POST_DATA)
+
+    # Test ID-based update
     response = await async_client.patch(
         "/address_type", json=TEST_ADDRESS_TYPE_PATCH_DATA
     )
@@ -53,3 +55,22 @@ async def test_patch_address_type(async_client: AsyncClient):
         assert data[k] == v
     assert "created_at" in data
     assert "updated_at" in data
+
+    # Test name-based update
+    patch_data = {
+        "name": "iam_patched",  # Use the current name after the first patch
+        "group_name": "external",
+    }
+    response = await async_client.patch("/address_type", json=patch_data)
+    data = response.json()
+    assert response.status_code == 200
+    assert data["group_name"] == "external"
+    assert "updated_at" in data
+
+    # Test validation error when neither ID nor name is provided
+    patch_data = {"group_name": "external"}
+    response = await async_client.patch("/address_type", json=patch_data)
+    assert response.status_code == 422
+    assert (
+        "Either 'id' or 'name' must be provided" in response.json()["detail"][0]["msg"]
+    )
