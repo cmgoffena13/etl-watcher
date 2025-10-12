@@ -69,7 +69,7 @@ print(f"Pipeline synced!")
 
 ### Track Pipeline Executions
 ```python
-from watcher import WatcherExecutionContext, ETLResults
+from watcher import WatcherContext, ETLResults
 
 @watcher.track_pipeline_execution(
     pipeline_id=synced_config.pipeline.id, 
@@ -77,7 +77,7 @@ from watcher import WatcherExecutionContext, ETLResults
     watermark=synced_config.watermark,
     next_watermark=synced_config.next_watermark
 )
-def etl_pipeline(watcher_context: WatcherExecutionContext):
+def etl_pipeline(watcher_context: WatcherContext):
     print("Starting ETL pipeline")
 
     print(f"Watermark: {watcher_context.watermark}")
