@@ -9,6 +9,7 @@ from sqlmodel import Integer, Session, case, func, select, update
 from src.database.models import Pipeline, PipelineExecution, PipelineExecutionClosure
 from src.models.pipeline_execution import (
     PipelineExecutionEndInput,
+    PipelineExecutionGetOutput,
     PipelineExecutionStartInput,
     PipelineExecutionStartOutput,
 )
@@ -165,3 +166,56 @@ async def db_maintain_pipeline_execution_closure_table(
             session.add(new_relationship)
 
     await session.commit()
+
+
+async def db_get_pipeline_execution(
+    pipeline_execution_id: int, session: Session
+) -> PipelineExecutionGetOutput:
+    """Get a pipeline execution with optional child executions using closure table."""
+
+    execution = (
+        await session.exec(
+            select(PipelineExecution).where(
+                PipelineExecution.id == pipeline_execution_id
+            )
+        )
+    ).one_or_none()  # I have no clue why this returns a ScalarResult instead of ChunkedIteratorResult
+
+    if execution is None:
+        raise HTTPException(status_code=404, detail="Pipeline execution not found")
+
+    execution_output = PipelineExecutionGetOutput(
+        **execution.model_dump(exclude={"date_recorded", "hour_recorded"})
+    )
+
+    # Get direct children using closure table (depth = 1)
+    child_ids = (
+        await session.exec(
+            select(PipelineExecutionClosure.child_execution_id)
+            .where(
+                PipelineExecutionClosure.parent_execution_id == pipeline_execution_id
+            )
+            .where(PipelineExecutionClosure.depth == 1)
+        )
+    ).all()
+
+    if not child_ids:
+        execution_output.child_executions = []
+        return execution_output
+
+    child_result = await session.exec(
+        select(PipelineExecution).where(PipelineExecution.id.in_(child_ids))
+    )
+    child_executions = child_result.all()
+
+    child_outputs = []
+    for child in child_executions:
+        child_output = PipelineExecutionGetOutput(
+            **child.model_dump(exclude={"date_recorded", "hour_recorded"})
+        )
+        # Set child_executions to empty list for child executions
+        child_output.child_executions = []
+        child_outputs.append(child_output)
+
+    execution_output.child_executions = child_outputs
+    return execution_output

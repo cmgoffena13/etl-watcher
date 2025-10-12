@@ -116,3 +116,73 @@ async def test_pipeline_execution_closure_table(
         parent_child = await session.exec(parent_child_query)
         parent_child_result = parent_child.first()
         assert parent_child_result is not None
+
+
+@pytest.mark.anyio
+async def test_get_pipeline_execution(async_client: AsyncClient):
+    """Test GET pipeline execution endpoint with children"""
+
+    # Create a pipeline first
+    pipeline_response = await async_client.post(
+        "/pipeline", json=TEST_PIPELINE_POST_DATA
+    )
+    assert pipeline_response.status_code in [200, 201]
+    pipeline_id = pipeline_response.json()["id"]
+
+    # Create parent execution
+    parent_data = TEST_PIPELINE_EXECUTION_START_DATA.copy()
+    parent_data["pipeline_id"] = pipeline_id
+    parent_response = await async_client.post(
+        "/start_pipeline_execution", json=parent_data
+    )
+    assert parent_response.status_code == 201
+    parent_id = parent_response.json()["id"]
+
+    # End the parent execution
+    parent_end_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+    parent_end_data["id"] = parent_id
+    await async_client.post("/end_pipeline_execution", json=parent_end_data)
+
+    # Create child execution
+    child_data = TEST_PIPELINE_EXECUTION_START_DATA.copy()
+    child_data["pipeline_id"] = pipeline_id
+    child_data["parent_id"] = parent_id
+    child_response = await async_client.post(
+        "/start_pipeline_execution", json=child_data
+    )
+    assert child_response.status_code == 201
+    child_id = child_response.json()["id"]
+
+    # End the child execution
+    child_end_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+    child_end_data["id"] = child_id
+    await async_client.post("/end_pipeline_execution", json=child_end_data)
+
+    # Manually maintain closure table
+    async with AsyncSessionLocal() as session:
+        await db_maintain_pipeline_execution_closure_table(session, parent_id, None)
+        await db_maintain_pipeline_execution_closure_table(session, child_id, parent_id)
+
+    # Test GET parent execution (should include child)
+    response = await async_client.get(f"/pipeline_execution/{parent_id}")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["id"] == parent_id
+    assert data["parent_id"] is None
+    assert "child_executions" in data
+    assert len(data["child_executions"]) == 1
+
+    child_data = data["child_executions"][0]
+    assert child_data["id"] == child_id
+    assert child_data["parent_id"] == parent_id
+    assert child_data["child_executions"] == []
+
+    # Test GET child execution (should have no children)
+    response = await async_client.get(f"/pipeline_execution/{child_id}")
+    assert response.status_code == 200
+
+    data = response.json()
+    assert data["id"] == child_id
+    assert data["parent_id"] == parent_id
+    assert data["child_executions"] == []

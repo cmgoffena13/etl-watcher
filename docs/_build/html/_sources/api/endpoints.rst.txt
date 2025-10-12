@@ -405,6 +405,90 @@ End Pipeline Execution
    - ``404`` Not Found - Pipeline execution not found
    - ``500`` Internal Server Error - Database integrity error
 
+Get Pipeline Execution
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /pipeline_execution/{pipeline_execution_id}
+
+   Get a specific pipeline execution with hierarchical child executions using the closure table.
+
+   **Parameters:**
+   - ``pipeline_execution_id`` (int): Pipeline execution ID
+
+   **Response:**
+
+   .. code-block:: json
+
+      {
+        "id": 1,
+        "parent_id": null,
+        "pipeline_id": 1,
+        "start_date": "2024-01-01T10:00:00Z",
+        "end_date": "2024-01-01T10:05:00Z",
+        "duration_seconds": 300,
+        "completed_successfully": true,
+        "inserts": 800,
+        "updates": 200,
+        "soft_deletes": 0,
+        "total_rows": 1000,
+        "watermark": "2024-01-01T00:00:00Z",
+        "next_watermark": "2024-01-01T23:59:59Z",
+        "execution_metadata": {
+          "partition": "2025-01-05"
+        },
+        "anomaly_flags": {
+          "total_rows": true,
+          "duration_seconds": false
+        },
+        "throughput": 3.33,
+        "child_executions": [
+          {
+            "id": 2,
+            "parent_id": 1,
+            "pipeline_id": 1,
+            "start_date": "2024-01-01T10:01:00Z",
+            "end_date": "2024-01-01T10:03:00Z",
+            "duration_seconds": 120,
+            "completed_successfully": true,
+            "inserts": 400,
+            "updates": 100,
+            "soft_deletes": 0,
+            "total_rows": 500,
+            "watermark": "2024-01-01T00:00:00Z",
+            "next_watermark": "2024-01-01T23:59:59Z",
+            "execution_metadata": null,
+            "anomaly_flags": null,
+            "throughput": 4.17,
+            "child_executions": []
+          }
+        ]
+      }
+
+   **Response Fields:**
+
+   - ``id`` (int): Pipeline execution ID
+   - ``parent_id`` (int): Parent execution ID (nullable)
+   - ``pipeline_id`` (int): Pipeline ID
+   - ``start_date`` (string): Start timestamp (ISO 8601)
+   - ``end_date`` (string): End timestamp (ISO 8601, nullable)
+   - ``duration_seconds`` (int): Execution duration in seconds (nullable)
+   - ``completed_successfully`` (bool): Whether execution completed successfully (nullable)
+   - ``inserts`` (int): Number of inserts (nullable)
+   - ``updates`` (int): Number of updates (nullable)
+   - ``soft_deletes`` (int): Number of soft deletes (nullable)
+   - ``total_rows`` (int): Total rows processed (nullable)
+   - ``watermark`` (string): Watermark value (nullable)
+   - ``next_watermark`` (string): Next watermark value (nullable)
+   - ``execution_metadata`` (object): Additional execution metadata (nullable)
+   - ``anomaly_flags`` (object): Anomaly detection flags (nullable)
+   - ``throughput`` (float): Rows per second throughput (nullable)
+   - ``child_executions`` (array): Array of child execution objects (nullable)
+
+   **Status Codes:**
+
+   - ``200`` OK - Pipeline execution found
+   - ``404`` Not Found - Pipeline execution not found
+
 Pipeline Types
 --------------
 

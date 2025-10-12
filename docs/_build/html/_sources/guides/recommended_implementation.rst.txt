@@ -115,7 +115,7 @@ Use the SDK's decorator to track your ETL pipeline execution:
 
 .. code-block:: python
 
-    from watcher import ETLResult, WatcherExecutionContext
+    from watcher import ETLResult, WatcherContext
 
     @watcher.track_pipeline_execution(
         pipeline_id=synced_config.pipeline.id,
@@ -123,7 +123,7 @@ Use the SDK's decorator to track your ETL pipeline execution:
         watermark=synced_config.watermark,
         next_watermark=synced_config.next_watermark,
     )
-    def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
+    def extract_data(watcher_context: WatcherContext, tickers: list[str]):
         # Access watermark and next_watermark from the context
         watermark = pendulum.parse(watcher_context.watermark).date()
         next_watermark = pendulum.parse(watcher_context.next_watermark).date()
@@ -162,7 +162,7 @@ Here's a complete example putting it all together:
     import time
     import httpx
     import pendulum
-    from watcher import ETLResult, Watcher, WatcherExecutionContext
+    from watcher import ETLResult, Watcher, WatcherContext
     from pipeline import POLYGON_OPEN_CLOSE_PIPELINE_CONFIG
 
     # Initialize Watcher client
@@ -178,7 +178,7 @@ Here's a complete example putting it all together:
         watermark=synced_config.watermark,
         next_watermark=synced_config.next_watermark,
     )
-    def extract_data(watcher_context: WatcherExecutionContext, tickers: list[str]):
+    def extract_data(watcher_context: WatcherContext, tickers: list[str]):
         # Access the watcher_context to get the watermark and next_watermark
         watermark = pendulum.parse(watcher_context.watermark).date()
         next_watermark = pendulum.parse(watcher_context.next_watermark).date()

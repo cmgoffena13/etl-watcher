@@ -6,11 +6,13 @@ from src.celery_tasks import (
 )
 from src.database.pipeline_execution_utils import (
     db_end_pipeline_execution,
+    db_get_pipeline_execution,
     db_start_pipeline_execution,
 )
 from src.database.session import SessionDep
 from src.models.pipeline_execution import (
     PipelineExecutionEndInput,
+    PipelineExecutionGetOutput,
     PipelineExecutionStartInput,
     PipelineExecutionStartOutput,
 )
@@ -54,3 +56,17 @@ async def end_pipeline_execution(
             pipeline_id=pipeline_id,
             pipeline_execution_id=pipeline_execution.id,
         )
+
+
+@router.get(
+    "/pipeline_execution/{pipeline_execution_id}",
+    response_model=PipelineExecutionGetOutput,
+)
+async def get_pipeline_execution(
+    pipeline_execution_id: int,
+    session: SessionDep,
+):
+    return await db_get_pipeline_execution(
+        pipeline_execution_id=pipeline_execution_id,
+        session=session,
+    )
