@@ -156,7 +156,7 @@ etl_pipeline()
 ## 🛠️ Technology Stack
 
 ### Backend
-- **FastAPI** - Modern, fast web framework for building APIs
+- **FastAPI** - Modern, fast async web framework for building APIs
 - **Pydantic** - Data validation and settings management using Python type annotations
 - **SQLModel** - SQL databases in Python, designed for simplicity and compatibility
 - **Alembic** - Database migration tool for SQLAlchemy
