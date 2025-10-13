@@ -68,7 +68,7 @@ print(f"Pipeline synced!")
 
 ### Track Pipeline Executions
 ```python
-from watcher import WatcherContext, ETLResults
+from watcher import WatcherContext, ETLResult
 
 @watcher.track_pipeline_execution(
     pipeline_id=synced_config.pipeline.id, 
@@ -84,7 +84,7 @@ def etl_pipeline(watcher_context: WatcherContext):
     
     # Your ETL work here, skip if Pipeline Inactive
     
-    return ETLResults(
+    return ETLResult(
         completed_successfully=True,
         inserts=100,
         total_rows=100,
