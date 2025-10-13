@@ -144,7 +144,7 @@ etl_pipeline()
 ### 🧹 Log Cleanup
 - **Automated Maintenance**: Remove old log data to maintain database performance
 - **Batch Processing**: Safe deletion in configurable batches to avoid database locks
-- **Configurable Retention**: Set custom retention periods for different data types
+- **Configurable Retention**: Set a custom retention period
 
 ### 🔧 Development & Operations
 - **RESTful API**: Complete REST API for all operations with automatic documentation
