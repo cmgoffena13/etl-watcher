@@ -1,10 +1,11 @@
 import pytest
 from httpx import AsyncClient
+from sqlalchemy import select
 
 from src.database.address_lineage_utils import db_rebuild_closure_table_incremental
+from src.database.models.address_lineage import AddressLineageClosure
 from src.tests.conftest import AsyncSessionLocal
 from src.tests.fixtures.address_lineage import (
-    TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_AND_TARGETS_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_SOURCES_DATA,
     TEST_ADDRESS_LINEAGE_MULTIPLE_TARGETS_DATA,
@@ -33,36 +34,6 @@ async def test_create_address_lineage(async_client: AsyncClient):
     assert response.status_code == 201
     response_data = response.json()
     assert response_data == TEST_ADDRESS_LINEAGE_POST_OUTPUT_DATA
-
-
-@pytest.mark.anyio
-async def test_get_address_lineage_by_address(async_client: AsyncClient):
-    """Test getting address lineage relationships for an address"""
-    # First create a pipeline with load_lineage = True
-    pipeline_data = TEST_PIPELINE_POST_DATA.copy()
-    pipeline_data["load_lineage"] = True
-
-    pipeline_response = await async_client.post("/pipeline", json=pipeline_data)
-    assert pipeline_response.status_code == 201
-
-    # Create address lineage relationships
-    await async_client.post("/address_lineage", json=TEST_ADDRESS_LINEAGE_POST_DATA)
-
-    # Manually trigger closure table rebuild since background tasks are mocked
-    async with AsyncSessionLocal() as session:
-        await db_rebuild_closure_table_incremental(
-            session=session,
-            connected_addresses={1, 2},  # source and target address IDs
-            pipeline_id=1,
-        )
-
-    # Now get the lineage relationships for the source address (id=1)
-    response = await async_client.get("/address_lineage/1")
-    assert response.status_code == 200
-    response_data = response.json()
-
-    # The API returns a list of AddressLineageClosureOutput objects
-    assert response_data == TEST_ADDRESS_LINEAGE_GET_OUTPUT_DATA
 
 
 @pytest.mark.anyio
@@ -170,13 +141,48 @@ async def test_closure_table_rebuild_function(async_client: AsyncClient):
             pipeline_id=1,
         )
 
-    # Now test that the get endpoint works
-    get_response = await async_client.get("/address_lineage/1")
-    assert get_response.status_code == 200
-    response_data = get_response.json()
+        # Verify the closure table was populated correctly
 
-    # Should have the relationship in the closure table
-    assert isinstance(response_data, list)
-    assert len(response_data) == 1
-    assert response_data[0]["source_address_id"] == 1
-    assert response_data[0]["target_address_id"] == 2
+        # Check that we have the direct relationship (depth 1)
+        direct_relationship = (
+            await session.exec(
+                select(AddressLineageClosure)
+                .where(AddressLineageClosure.source_address_id == 1)
+                .where(AddressLineageClosure.target_address_id == 2)
+                .where(AddressLineageClosure.depth == 1)
+            )
+        ).first()
+
+        assert direct_relationship is not None, (
+            "Direct relationship should exist in closure table"
+        )
+
+        # Check that we have self-references (depth 0)
+        source_self_ref = (
+            await session.exec(
+                select(AddressLineageClosure)
+                .where(AddressLineageClosure.source_address_id == 1)
+                .where(AddressLineageClosure.target_address_id == 1)
+                .where(AddressLineageClosure.depth == 0)
+            )
+        ).first()
+
+        target_self_ref = (
+            await session.exec(
+                select(AddressLineageClosure)
+                .where(AddressLineageClosure.source_address_id == 2)
+                .where(AddressLineageClosure.target_address_id == 2)
+                .where(AddressLineageClosure.depth == 0)
+            )
+        ).first()
+
+        assert source_self_ref is not None, "Source self-reference should exist"
+        assert target_self_ref is not None, "Target self-reference should exist"
+
+        # Verify total count of closure records
+        all_closure_records = (
+            await session.exec(select(AddressLineageClosure))
+        ).fetchall()
+        assert len(all_closure_records) == 3, (
+            f"Expected 3 closure records (2 self-refs + 1 direct), got {len(all_closure_records)}"
+        )

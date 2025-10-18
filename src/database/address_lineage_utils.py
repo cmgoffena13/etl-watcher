@@ -140,63 +140,6 @@ async def db_create_address_lineage(
     )
 
 
-async def db_get_address_lineage_for_address(
-    session: Session, address_id: int
-) -> List[Tuple[int, int, int, str, str]]:
-    """
-    Get lineage for a specific address using the closure table.
-    Returns all relationships where the address is either source or target.
-    """
-
-    # Create aliases for the Address table
-    SourceAddress = alias(Address)
-    TargetAddress = alias(Address)
-
-    # Query for relationships where address is the source
-    downstream_query = (
-        select(
-            AddressLineageClosure.source_address_id,
-            AddressLineageClosure.target_address_id,
-            AddressLineageClosure.depth,
-            SourceAddress.c.name.label("source_address_name"),
-            TargetAddress.c.name.label("target_address_name"),
-        )
-        .join(
-            SourceAddress, AddressLineageClosure.source_address_id == SourceAddress.c.id
-        )
-        .join(
-            TargetAddress, AddressLineageClosure.target_address_id == TargetAddress.c.id
-        )
-        .where(AddressLineageClosure.source_address_id == address_id)
-        .where(AddressLineageClosure.depth > 0)
-    )
-
-    # Query for relationships where address is the target
-    upstream_query = (
-        select(
-            AddressLineageClosure.source_address_id,
-            AddressLineageClosure.target_address_id,
-            AddressLineageClosure.depth,
-            SourceAddress.c.name.label("source_address_name"),
-            TargetAddress.c.name.label("target_address_name"),
-        )
-        .join(
-            SourceAddress, AddressLineageClosure.source_address_id == SourceAddress.c.id
-        )
-        .join(
-            TargetAddress, AddressLineageClosure.target_address_id == TargetAddress.c.id
-        )
-        .where(AddressLineageClosure.target_address_id == address_id)
-        .where(AddressLineageClosure.depth > 0)
-    )
-
-    # Union the two queries and order by depth
-    union_query = union_all(downstream_query, upstream_query).order_by(desc("depth"))
-
-    result = await session.exec(union_query)
-    return result.fetchall()
-
-
 async def db_rebuild_closure_table_incremental(
     session: Session, connected_addresses: Set[int], pipeline_id: int
 ) -> None:

@@ -104,6 +104,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#start-pipeline-execution">Start Pipeline Execution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#end-pipeline-execution">End Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-pipeline-execution">Get Pipeline Execution</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-types">Pipeline Types</a><ul>
@@ -127,7 +128,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-address-lineage">Create Address Lineage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-lineage">Get Address Lineage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#anomaly-detection">Anomaly Detection</a><ul>
@@ -192,8 +192,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-lineage-models">Address Lineage Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#sourceaddress">SourceAddress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#targetaddress">TargetAddress</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
@@ -327,11 +325,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#best-practices-shown">Best Practices Shown</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -410,6 +407,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="recommended_implementation.html">Recommended Implementation - SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#define-pipeline-configuration">Define Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#initialize-watcher-client">Initialize Watcher Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#benefits-of-using-the-sdk">Benefits of Using the SDK</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
@@ -421,7 +429,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -480,6 +496,35 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dev_kubernetes.html">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#access-the-application">Access the Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
 </ul>
 </li>
 </ul>
@@ -670,68 +715,7 @@
 </section>
 <section id="querying-lineage">
 <h2>Querying Lineage<a class="headerlink" href="#querying-lineage" title="Link to this heading"></a></h2>
-<p>Get lineage information for an address:</p>
-<div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
-
-<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>GET<span class="w"> </span><span class="s2">&quot;http://localhost:8000/address_lineage/1&quot;</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
-
-<span class="kn">import</span><span class="w"> </span><span class="p">(</span>
-<span class="w">    </span><span class="s">&quot;encoding/json&quot;</span>
-<span class="w">    </span><span class="s">&quot;fmt&quot;</span>
-<span class="w">    </span><span class="s">&quot;net/http&quot;</span>
-<span class="p">)</span>
-
-<span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">resp</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Get</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">)</span>
-<span class="w">    </span><span class="k">defer</span><span class="w"> </span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
-
-<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="p">[]</span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
-<span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result</span><span class="p">)</span>
-<span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
-<span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nc">URI</span>
-<span class="k">import</span><span class="w"> </span><span class="nn">play</span><span class="p">.</span><span class="nn">api</span><span class="p">.</span><span class="nn">libs</span><span class="p">.</span><span class="nn">json</span><span class="p">.</span><span class="nc">Json</span>
-
-<span class="k">object</span><span class="w"> </span><span class="nc">GetLineageExample</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="nc">Array</span><span class="p">[</span><span class="nc">String</span><span class="p">]):</span><span class="w"> </span><span class="nc">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpClient</span><span class="p">.</span><span class="n">newHttpClient</span><span class="p">()</span>
-
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">request</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">uri</span><span class="p">(</span><span class="nc">URI</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/address_lineage/1&quot;</span><span class="p">))</span>
-<span class="w">            </span><span class="p">.</span><span class="nc">GET</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
-
-<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
-<span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
-<span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
-<span class="w">    </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div></div>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;source_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;target_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;depth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;source_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;raw_sales_data&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;target_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;processed_sales_data&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
-</div>
+<p>Lineage information is now accessed through the closure table using the database utilities. The GET endpoint has been removed in favor of more efficient database-level queries.</p>
 </section>
 <section id="closure-table-pattern">
 <h2>Closure Table Pattern<a class="headerlink" href="#closure-table-pattern" title="Link to this heading"></a></h2>
@@ -835,7 +819,7 @@ actual pipeline implementations.</p>
 </ul>
 <p>Update a pipeline’s load_lineage flag:</p>
 <div class="sphinx-tabs docutils container">
-<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
+<div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="c1"># Update pipeline to enable lineage loading</span>
 <span class="n">pipeline_update</span> <span class="o">=</span> <span class="p">{</span>
@@ -850,7 +834,7 @@ actual pipeline implementations.</p>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-1" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-1" name="2-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>PATCH<span class="w"> </span><span class="s2">&quot;http://localhost:8000/pipeline&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;id&quot;: 1,</span>
@@ -858,7 +842,7 @@ actual pipeline implementations.</p>
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-2" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-2" name="2-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
+</div><div aria-labelledby="tab-1-1-2" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-2" name="1-2" role="tabpanel" tabindex="0"><div class="highlight-go notranslate"><div class="highlight"><pre><span></span><span class="kn">package</span><span class="w"> </span><span class="nx">main</span>
 
 <span class="kn">import</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="s">&quot;bytes&quot;</span>
@@ -893,7 +877,7 @@ actual pipeline implementations.</p>
 <span class="p">}</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-2-2-3" class="sphinx-tabs-panel" hidden="true" id="panel-2-2-3" name="2-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
+</div><div aria-labelledby="tab-1-1-3" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-3" name="1-3" role="tabpanel" tabindex="0"><div class="highlight-scala notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nn">http</span><span class="p">.{</span><span class="nc">HttpClient</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">,</span><span class="w"> </span><span class="nc">HttpResponse</span><span class="p">}</span>
 <span class="k">import</span><span class="w"> </span><span class="nn">java</span><span class="p">.</span><span class="nn">net</span><span class="p">.</span><span class="nc">URI</span>
 <span class="k">import</span><span class="w"> </span><span class="nn">play</span><span class="p">.</span><span class="nn">api</span><span class="p">.</span><span class="nn">libs</span><span class="p">.</span><span class="nn">json</span><span class="p">.</span><span class="nc">Json</span>
 

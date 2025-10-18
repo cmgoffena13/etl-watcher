@@ -1039,39 +1039,6 @@ Create Address Lineage
    - ``201`` Created - Lineage relationships created successfully
    - ``200`` OK - Pipeline does not have load_lineage=True, no relationships created
 
-Get Address Lineage
-~~~~~~~~~~~~~~~~~~~
-
-.. http:get:: /address_lineage/{address_id}
-
-   Get lineage relationships for a specific address using the closure table.
-   Returns all relationships where the address is either source or target.
-
-   **Parameters:**
-
-   - ``address_id`` (int): Address ID to get lineage for
-
-   **Response:**
-
-   .. code-block:: json
-
-      [
-        {
-          "source_address_id": 1,
-          "target_address_id": 2,
-          "depth": 1,
-          "source_address_name": "source_table",
-          "target_address_name": "target_table"
-        }
-      ]
-
-   **Response Fields:**
-
-   - ``source_address_id`` (int): Source address ID
-   - ``target_address_id`` (int): Target address ID  
-   - ``depth`` (int): Relationship depth (0 = direct, >0 = transitive)
-   - ``source_address_name`` (string): Source address name
-   - ``target_address_name`` (string): Target address name
 
 Anomaly Detection
 -----------------

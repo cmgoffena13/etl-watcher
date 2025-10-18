@@ -126,7 +126,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#create-address-lineage">Create Address Lineage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#get-address-lineage">Get Address Lineage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#anomaly-detection">Anomaly Detection</a><ul>
@@ -1565,40 +1564,6 @@ HTTP 204 No Content</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">201</span></code> Created - Lineage relationships created successfully</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Pipeline does not have load_lineage=True, no relationships created</p></li>
-</ul>
-</dd></dl>
-
-</section>
-<section id="get-address-lineage">
-<h3>Get Address Lineage<a class="headerlink" href="#get-address-lineage" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--address_lineage-address_id">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/address_lineage/{address_id}</span></span><a class="headerlink" href="#get--address_lineage-address_id" title="Link to this definition"></a></dt>
-<dd><p>Get lineage relationships for a specific address using the closure table.
-Returns all relationships where the address is either source or target.</p>
-<p><strong>Parameters:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">address_id</span></code> (int): Address ID to get lineage for</p></li>
-</ul>
-<p><strong>Response:</strong></p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;source_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;target_address_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;depth&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;source_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;target_address_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">]</span>
-</pre></div>
-</div>
-<p><strong>Response Fields:</strong></p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">source_address_id</span></code> (int): Source address ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">target_address_id</span></code> (int): Target address ID</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">depth</span></code> (int): Relationship depth (0 = direct, &gt;0 = transitive)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">source_address_name</span></code> (string): Source address name</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">target_address_name</span></code> (string): Target address name</p></li>
 </ul>
 </dd></dl>
 
