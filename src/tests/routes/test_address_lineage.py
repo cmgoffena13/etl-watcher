@@ -230,18 +230,11 @@ async def test_closure_table_transitive_paths(async_client: AsyncClient):
 
     # Test the closure table rebuild function
     async with AsyncSessionLocal() as session:
-        # Rebuild closure table for pipeline 1 (1 -> 2)
+        # Rebuild closure table with ALL connected addresses (1, 2, 3)
         await db_rebuild_closure_table_incremental(
             session=session,
-            connected_addresses={1, 2},
+            connected_addresses={1, 2, 3},
             pipeline_id=1,
-        )
-
-        # Rebuild closure table for pipeline 2 (2 -> 3)
-        await db_rebuild_closure_table_incremental(
-            session=session,
-            connected_addresses={2, 3},
-            pipeline_id=2,
         )
 
         # Check transitive relationship 1 -> 3 (depth 2)

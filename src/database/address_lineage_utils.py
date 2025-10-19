@@ -154,7 +154,7 @@ async def db_rebuild_closure_table_incremental(
         while added:
             added = False
 
-            # Get new addresses where source is in connected_addresses
+            # Get new addresses where source is in connected_addresses - downstream edges
             forward_edges = (
                 await session.exec(
                     select(
@@ -164,7 +164,7 @@ async def db_rebuild_closure_table_incremental(
                 )
             ).all()
 
-            # Get new addresses where target is in connected_addresses
+            # Get new addresses where target is in connected_addresses - upstream edges
             backward_edges = (
                 await session.exec(
                     select(
@@ -174,20 +174,19 @@ async def db_rebuild_closure_table_incremental(
                 )
             ).all()
 
-            # Collect edges for closure building
             all_edges.update(forward_edges)
             all_edges.update(backward_edges)
 
-            # Add new connected addresses from forward traversal
-            for edge in forward_edges:
-                if edge.target_address_id not in connected_addresses:
-                    connected_addresses.add(edge.target_address_id)
+            # Add new connected addresses from forward traversal - downstream addresses
+            for source_address, target_address in forward_edges:
+                if target_address not in connected_addresses:
+                    connected_addresses.add(target_address)
                     added = True
 
-            # Add new connected addresses from backward traversal
-            for edge in backward_edges:
-                if edge.source_address_id not in connected_addresses:
-                    connected_addresses.add(edge.source_address_id)
+            # Add new connected addresses from backward traversal - upstream addresses
+            for source_address, target_address in backward_edges:
+                if source_address not in connected_addresses:
+                    connected_addresses.add(source_address)
                     added = True
 
         # Log edge collection timing
@@ -216,41 +215,61 @@ async def db_rebuild_closure_table_incremental(
         )
 
         closure_start_time = time.time()
+        # Holds records for insertion into the closure table
         closure = set()
 
-        # Add self-references (depth 0) - use tuples for hashability
+        # Add self-references (depth 0) - using tuple for hashability
         for n in connected_addresses:
             closure.add((n, n, 0, tuple([n])))
 
-        # Add direct relationships (depth 1) - use tuples for hashability
-        for edge_source, edge_target in all_edges:
+        # Add direct relationships (depth 1) - using tuples for hashability
+        for source_address, target_address in all_edges:
             closure.add(
-                (edge_source, edge_target, 1, tuple([edge_source, edge_target]))
+                (
+                    source_address,
+                    target_address,
+                    1,
+                    tuple([source_address, target_address]),
+                )
             )
 
-        # Propagate paths - extend from ALL existing paths
+        # Propagate paths - extend from existing paths
         added = True
         while added:
             added = False
+            new_transitive_paths = set()
 
-            new_paths = set()
-            # Loop through existing paths that can be extended (depth > 0)
-            for initial_source, initial_target, initial_depth, initial_path in closure:
-                if initial_depth == 0:
+            # Loop through existing paths in closure
+            for (
+                existing_source_address,
+                existing_target_address,
+                existing_depth,
+                existing_lineage_path,
+            ) in closure:
+                # Skip self-references
+                if existing_depth == 0:
                     continue
                 # Now Loop through all edges
-                for edge_source, edge_target in all_edges:
-                    # If the edge source address is the target address of an existing path, extend the lineage
-                    if edge_source == initial_target:
-                        new_target = edge_target
-                        new_depth = initial_depth + 1
+                for source_address, target_address in all_edges:
+                    # If a source address is the target address of an existing path, extend the lineage with the transitive path
+                    if source_address == existing_target_address:
+                        new_target_address = target_address
+                        new_depth = existing_depth + 1
+                        new_lineage_path = tuple(
+                            list(existing_lineage_path) + [target_address]
+                        )
+                        candidate = (
+                            existing_source_address,
+                            new_target_address,
+                            new_depth,
+                            new_lineage_path,
+                        )
 
-                        # Extend lineage path - convert to tuple for hashability
-                        new_path = tuple(list(initial_path) + [edge_target])
-                        new_paths.add((initial_source, new_target, new_depth, new_path))
-                        added = True
+                        if candidate not in closure:
+                            new_transitive_paths.add(candidate)
+                            added = True
 
-            closure.update(new_paths)
+            closure.update(new_transitive_paths)
 
         # Log closure algorithm timing
         closure_time = time.time() - closure_start_time
@@ -263,9 +282,11 @@ async def db_rebuild_closure_table_incremental(
                 source_address_id=source_address_id,
                 target_address_id=target_address_id,
                 depth=depth,
-                lineage_path=list(path),  # Convert tuple back to list for array storage
+                lineage_path=list(
+                    lineage_path
+                ),  # Convert tuple back to list for array storage
             )
-            for source_address_id, target_address_id, depth, path in closure
+            for source_address_id, target_address_id, depth, lineage_path in closure
         ]
 
         session.add_all(closure_records)

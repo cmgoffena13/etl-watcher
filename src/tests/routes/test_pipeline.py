@@ -232,6 +232,26 @@ async def test_watermark_increment_pipeline(async_client: AsyncClient):
     assert data.get("watermark") == str(12)
     assert data.get("next_watermark") == str(12)
 
+    # Test that watermarks don't increment on failed execution
+    response = await async_client.post(
+        "/start_pipeline_execution", json=TEST_PIPELINE_EXECUTION_START_DATA
+    )
+    assert response.status_code == 201
+
+    # End with failed execution
+    failed_execution_data = TEST_PIPELINE_EXECUTION_END_DATA.copy()
+    failed_execution_data["completed_successfully"] = False
+    response = await async_client.post(
+        "/end_pipeline_execution", json=failed_execution_data
+    )
+    assert response.status_code == 204
+
+    # Watermark should NOT increment after failed execution
+    response = await async_client.get("/pipeline")
+    data = response.json()[0]
+    assert data.get("watermark") == str(12)  # Should remain unchanged
+    assert data.get("next_watermark") == str(12)  # Should remain unchanged
+
 
 @pytest.mark.anyio
 async def test_pipeline_validation_freshness_timeliness_fields(

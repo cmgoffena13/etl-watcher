@@ -79,11 +79,11 @@ def get_database_config():
         config_dict["sqlalchemy.connect_args"] = {"check_same_thread": False}
     elif isinstance(db_config, TestConfig):
         # PostgreSQL settings for pgbouncer compatibility in test environment
-
         config_dict["sqlalchemy.connect_args"] = {
             "statement_cache_size": 0,
             "prepared_statement_cache_size": 0,
             "prepared_statement_name_func": lambda: f"__asyncpg_{uuid.uuid4()}__",
+            "command_timeout": 60,  # Increase timeout for test teardown
         }
 
     return config_dict

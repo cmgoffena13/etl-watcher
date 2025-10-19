@@ -186,7 +186,7 @@ async def _run_async_freshness_check():
 
 @celery.task(bind=True, rate_limit="5/s", max_retries=3, default_retry_delay=60)
 def address_lineage_closure_rebuild_task(
-    self, connected_addresses: list, pipeline_id: int
+    self, connected_addresses: list[int], pipeline_id: int
 ):
     """Rate-limited closure table rebuild task with retries"""
     try:
@@ -219,7 +219,7 @@ def address_lineage_closure_rebuild_task(
 
 
 async def _run_async_address_lineage_closure_rebuild(
-    connected_addresses: list, pipeline_id: int
+    connected_addresses: list[int], pipeline_id: int
 ):
     """Async function that creates its own database connection"""
     db_config = get_database_config()
