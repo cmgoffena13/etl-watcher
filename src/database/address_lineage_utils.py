@@ -218,26 +218,37 @@ async def db_rebuild_closure_table_incremental(
         closure_start_time = time.time()
         closure = set()
 
-        # Add self-references (depth 0)
+        # Add self-references (depth 0) - use tuples for hashability
         for n in connected_addresses:
-            closure.add((n, n, 0))
+            closure.add((n, n, 0, tuple([n])))
 
-        # Propagate paths
+        # Add direct relationships (depth 1) - use tuples for hashability
+        for edge_source, edge_target in all_edges:
+            closure.add(
+                (edge_source, edge_target, 1, tuple([edge_source, edge_target]))
+            )
+
+        # Propagate paths - extend from ALL existing paths
         added = True
         while added:
             added = False
 
             new_paths = set()
-            # Loop through Depth 0
-            for initial_source, initial_target, initial_depth in closure:
+            # Loop through existing paths that can be extended (depth > 0)
+            for initial_source, initial_target, initial_depth, initial_path in closure:
+                if initial_depth == 0:
+                    continue
                 # Now Loop through all edges
                 for edge_source, edge_target in all_edges:
-                    # If the edge source is the target of a Depth 0 record, extend the lineage
+                    # If the edge source address is the target address of an existing path, extend the lineage
                     if edge_source == initial_target:
-                        candidate = (initial_source, edge_target, initial_depth + 1)
-                        if candidate not in closure:
-                            new_paths.add(candidate)
-                            added = True
+                        new_target = edge_target
+                        new_depth = initial_depth + 1
+
+                        # Extend lineage path - convert to tuple for hashability
+                        new_path = tuple(list(initial_path) + [edge_target])
+                        new_paths.add((initial_source, new_target, new_depth, new_path))
+                        added = True
 
             closure.update(new_paths)
 
@@ -252,8 +263,9 @@ async def db_rebuild_closure_table_incremental(
                 source_address_id=source_address_id,
                 target_address_id=target_address_id,
                 depth=depth,
+                lineage_path=list(path),  # Convert tuple back to list for array storage
             )
-            for source_address_id, target_address_id, depth in closure
+            for source_address_id, target_address_id, depth, path in closure
         ]
 
         session.add_all(closure_records)

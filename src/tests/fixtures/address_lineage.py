@@ -114,3 +114,39 @@ TEST_ADDRESS_LINEAGE_UPDATE_DATA = {
         }
     ],
 }
+
+TEST_ADDRESS_LINEAGE_CHAIN_FIRST_LINK_DATA = {
+    "pipeline_id": 1,
+    "source_addresses": [
+        {
+            "name": "address1",
+            "address_type_name": "table",
+            "address_type_group_name": "database",
+        }
+    ],
+    "target_addresses": [
+        {
+            "name": "address2",
+            "address_type_name": "table",
+            "address_type_group_name": "database",
+        }
+    ],
+}
+
+TEST_ADDRESS_LINEAGE_CHAIN_SECOND_LINK_DATA = {
+    "pipeline_id": 2,
+    "source_addresses": [
+        {
+            "name": "address2",
+            "address_type_name": "table",
+            "address_type_group_name": "database",
+        }
+    ],
+    "target_addresses": [
+        {
+            "name": "address3",
+            "address_type_name": "table",
+            "address_type_group_name": "database",
+        }
+    ],
+}

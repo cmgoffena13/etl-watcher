@@ -1,4 +1,5 @@
-from sqlalchemy import BigInteger, Column, PrimaryKeyConstraint
+from sqlalchemy import BigInteger, Column, Integer, PrimaryKeyConstraint
+from sqlalchemy.dialects.postgresql import ARRAY
 from sqlmodel import Field, Index, SQLModel
 
 
@@ -38,6 +39,7 @@ class AddressLineageClosure(SQLModel, table=True):
     source_address_id: int = Field(foreign_key="address.id")
     target_address_id: int = Field(foreign_key="address.id")
     depth: int
+    lineage_path: list[int] = Field(sa_column=Column(ARRAY(Integer), nullable=False))
 
     __table_args__ = (
         PrimaryKeyConstraint("source_address_id", "target_address_id"),
@@ -45,12 +47,12 @@ class AddressLineageClosure(SQLModel, table=True):
             "ix_address_lineage_closure_depth_source_include",
             "source_address_id",
             "depth",
-            postgresql_include=["target_address_id"],
+            postgresql_include=["target_address_id", "lineage_path"],
         ),
         Index(
             "ix_address_lineage_closure_depth_target_include",
             "target_address_id",
             "depth",
-            postgresql_include=["source_address_id"],
+            postgresql_include=["source_address_id", "lineage_path"],
         ),
     )

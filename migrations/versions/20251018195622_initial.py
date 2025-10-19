@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20251011103728
+Revision ID: 20251018195622
 Revises:
-Create Date: 2025-10-11 10:37:30.672458
+Create Date: 2025-10-18 19:56:24.657786
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20251011103728"
+revision: str = "20251018195622"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -264,6 +264,7 @@ def upgrade() -> None:
         sa.Column("source_address_id", sa.Integer(), nullable=False),
         sa.Column("target_address_id", sa.Integer(), nullable=False),
         sa.Column("depth", sa.Integer(), nullable=False),
+        sa.Column("lineage_path", postgresql.ARRAY(sa.Integer()), nullable=False),
         sa.ForeignKeyConstraint(
             ["source_address_id"],
             ["address.id"],
@@ -279,14 +280,14 @@ def upgrade() -> None:
         "address_lineage_closure",
         ["source_address_id", "depth"],
         unique=False,
-        postgresql_include=["target_address_id"],
+        postgresql_include=["target_address_id", "lineage_path"],
     )
     op.create_index(
         "ix_address_lineage_closure_depth_target_include",
         "address_lineage_closure",
         ["target_address_id", "depth"],
         unique=False,
-        postgresql_include=["source_address_id"],
+        postgresql_include=["source_address_id", "lineage_path"],
     )
     op.create_table(
         "anomaly_detection_rule",
@@ -582,12 +583,12 @@ def downgrade() -> None:
     op.drop_index(
         "ix_address_lineage_closure_depth_target_include",
         table_name="address_lineage_closure",
-        postgresql_include=["source_address_id"],
+        postgresql_include=["source_address_id", "lineage_path"],
     )
     op.drop_index(
         "ix_address_lineage_closure_depth_source_include",
         table_name="address_lineage_closure",
-        postgresql_include=["target_address_id"],
+        postgresql_include=["target_address_id", "lineage_path"],
     )
     op.drop_table("address_lineage_closure")
     op.drop_index("ux_address_lineage_target_source", table_name="address_lineage")
