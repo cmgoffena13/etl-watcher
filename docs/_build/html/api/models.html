@@ -102,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="endpoints.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="endpoints.html#start-pipeline-execution">Start Pipeline Execution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="endpoints.html#end-pipeline-execution">End Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="endpoints.html#get-pipeline-execution">Get Pipeline Execution</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="endpoints.html#pipeline-types">Pipeline Types</a><ul>
@@ -125,7 +126,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="endpoints.html#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="endpoints.html#create-address-lineage">Create Address Lineage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="endpoints.html#get-address-lineage">Get Address Lineage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="endpoints.html#anomaly-detection">Anomaly Detection</a><ul>
@@ -405,13 +405,15 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation - SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#define-pipeline-configuration">Define Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#initialize-watcher-client">Initialize Watcher Client</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#watermark-management">Watermark Management</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-address-lineage">Sync Address Lineage</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#pipeline-execution">Pipeline Execution</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#example-implementation">Example Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#benefits-of-using-the-sdk">Benefits of Using the SDK</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
@@ -685,7 +687,7 @@
     <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
     <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
     <span class="n">primary_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">address_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </section>
@@ -706,7 +708,7 @@
     <span class="n">schema_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
     <span class="n">table_name</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
     <span class="n">primary_key</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
-    <span class="n">deprecated</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="n">Field</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">address_metadata</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">dict</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 </pre></div>
 </div>
 </section>

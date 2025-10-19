@@ -662,7 +662,14 @@ Create or Get Address
         "schema_name": "source_schema",
         "table_name": "source_table",
         "primary_key": "id",
-        "deprecated": false
+        "address_metadata": {
+          "external_dependencies": [
+            {
+              "type": "looker_dashboard",
+              "name": "Sales Dashboard"
+            }
+          ]
+        }
       }
 
    **Response:**
@@ -682,7 +689,7 @@ Create or Get Address
    - ``schema_name`` (string): Schema name (max 50 characters, optional)
    - ``table_name`` (string): Table name (max 50 characters, optional)
    - ``primary_key`` (string): Primary key (max 50 characters, optional)
-   - ``deprecated`` (bool): Whether address is deprecated (optional, default: false)
+   - ``address_metadata`` (object): Arbitrary JSON metadata for external dependencies (optional)
 
    **Response Fields:**
 
@@ -713,7 +720,7 @@ List Addresses
           "schema_name": "source_schema",
           "table_name": "source_table",
           "primary_key": "id",
-          "deprecated": false,
+,
           "created_at": "2024-01-01T00:00:00Z",
           "updated_at": "2024-01-01T12:00:00Z"
         },
@@ -725,7 +732,7 @@ List Addresses
           "schema_name": "target_schema",
           "table_name": "target_table",
           "primary_key": "id",
-          "deprecated": false,
+,
           "created_at": "2024-01-01T00:00:00Z",
           "updated_at": null
         }
@@ -740,7 +747,6 @@ List Addresses
    - ``schema_name`` (string): Schema name (max 50 characters)
    - ``table_name`` (string): Table name (max 50 characters)
    - ``primary_key`` (string): Primary key (max 50 characters)
-   - ``deprecated`` (bool): Whether address is deprecated
    - ``created_at`` (string): Creation timestamp (ISO 8601)
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
@@ -770,7 +776,7 @@ Get Address by ID
         "schema_name": "source_schema",
         "table_name": "source_table",
         "primary_key": "id",
-        "deprecated": false,
+,
         "created_at": "2024-01-01T00:00:00Z",
         "updated_at": "2024-01-01T12:00:00Z"
       }
@@ -784,7 +790,6 @@ Get Address by ID
    - ``schema_name`` (string): Schema name (max 50 characters)
    - ``table_name`` (string): Table name (max 50 characters)
    - ``primary_key`` (string): Primary key (max 50 characters)
-   - ``deprecated`` (bool): Whether address is deprecated
    - ``created_at`` (string): Creation timestamp (ISO 8601)
    - ``updated_at`` (string): Last update timestamp (ISO 8601, nullable)
 
@@ -811,7 +816,7 @@ Update Address
         "schema_name": "updated_schema",
         "table_name": "updated_table",
         "primary_key": "id",
-        "deprecated": false,
+,
         "address_type_id": 2
       }
 
@@ -827,7 +832,7 @@ Update Address
         "schema_name": "updated_schema",
         "table_name": "updated_table",
         "primary_key": "id",
-        "deprecated": false,
+,
         "created_at": "2024-01-01T00:00:00Z",
         "updated_at": "2024-01-01T12:00:00Z"
       }
@@ -841,7 +846,7 @@ Update Address
    - ``schema_name`` (string): Schema name (max 50 characters, optional)
    - ``table_name`` (string): Table name (max 50 characters, optional)
    - ``primary_key`` (string): Primary key (max 50 characters, optional)
-   - ``deprecated`` (bool): Whether address is deprecated (optional)
+ (optional)
 
    **Response Fields:**
 
@@ -852,7 +857,6 @@ Update Address
    - ``schema_name`` (string): Schema name
    - ``table_name`` (string): Table name
    - ``primary_key`` (string): Primary key
-   - ``deprecated`` (bool): Whether address is deprecated
    - ``created_at`` (string): Creation timestamp (ISO 8601)
    - ``updated_at`` (string): Last update timestamp (ISO 8601)
 

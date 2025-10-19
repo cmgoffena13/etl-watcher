@@ -147,7 +147,7 @@ AddressPostInput
        schema_name: Optional[str] = Field(None, max_length=50)
        table_name: Optional[str] = Field(None, max_length=50)
        primary_key: Optional[str] = Field(None, max_length=50)
-       deprecated: Optional[bool] = Field(default=False)
+       address_metadata: Optional[dict] = None
 
 AddressPostOutput
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -170,7 +170,7 @@ AddressPatchInput
        schema_name: Optional[str] = Field(None, max_length=50)
        table_name: Optional[str] = Field(None, max_length=50)
        primary_key: Optional[str] = Field(None, max_length=50)
-       deprecated: Optional[bool] = Field(default=False)
+       address_metadata: Optional[dict] = None
 
 Address Type Models
 -------------------

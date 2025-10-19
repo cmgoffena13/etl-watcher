@@ -1197,7 +1197,14 @@ HTTP 204 No Content</p>
 <span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span>
+<span class="w">  </span><span class="nt">&quot;address_metadata&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;external_dependencies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">      </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;looker_dashboard&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Sales Dashboard&quot;</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">]</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -1216,7 +1223,7 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters, optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters, optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters, optional)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated (optional, default: false)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">address_metadata</span></code> (object): Arbitrary JSON metadata for external dependencies (optional)</p></li>
 </ul>
 <p><strong>Response Fields:</strong></p>
 <ul class="simple">
@@ -1246,25 +1253,39 @@ HTTP 204 No Content</p>
 <span class="w">    </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
-<span class="w">  </span><span class="p">},</span>
-<span class="w">  </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_db.target_schema.target_table&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;database_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_db&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_schema&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;target_table&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">    </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">]</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl>
+<dt>,</dt><dd><blockquote>
+<div><p>“created_at”: “2024-01-01T00:00:00Z”,
+“updated_at”: “2024-01-01T12:00:00Z”</p>
+</div></blockquote>
+<p>},
+{</p>
+<blockquote>
+<div><p>“id”: 2,
+“name”: “target_db.target_schema.target_table”,
+“address_type_id”: 1,
+“database_name”: “target_db”,
+“schema_name”: “target_schema”,
+“table_name”: “target_table”,
+“primary_key”: “id”,</p>
+</div></blockquote>
+</dd>
+</dl>
+<dl>
+<dt>,</dt><dd><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>“created_at”: “2024-01-01T00:00:00Z”,
+“updated_at”: null</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
+<p>]</p>
+</div></blockquote>
 <p><strong>Response Fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
@@ -1274,7 +1295,6 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
 </ul>
@@ -1282,8 +1302,8 @@ HTTP 204 No Content</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Addresses retrieved successfully</p></li>
 </ul>
-</dd></dl>
-
+</dd>
+</dl>
 </section>
 <section id="get-address-by-id">
 <h3>Get Address by ID<a class="headerlink" href="#get-address-by-id" title="Link to this heading"></a></h3>
@@ -1302,12 +1322,18 @@ HTTP 204 No Content</p>
 <span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_schema&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;source_table&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
-<span class="p">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl>
+<dt>,</dt><dd><blockquote>
+<div><blockquote>
+<div><p>“created_at”: “2024-01-01T00:00:00Z”,
+“updated_at”: “2024-01-01T12:00:00Z”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
 <p><strong>Response Fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
@@ -1317,7 +1343,6 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601, nullable)</p></li>
 </ul>
@@ -1326,8 +1351,8 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address found</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Address not found</p></li>
 </ul>
-</dd></dl>
-
+</dd>
+</dl>
 </section>
 <section id="update-address">
 <h3>Update Address<a class="headerlink" href="#update-address" title="Link to this heading"></a></h3>
@@ -1343,11 +1368,17 @@ HTTP 204 No Content</p>
 <span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_schema&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;address_type_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2</span>
-<span class="p">}</span>
 </pre></div>
 </div>
+</dd></dl>
+
+<dl>
+<dt>,</dt><dd><blockquote>
+<div><blockquote>
+<div><p>“address_type_id”: 2</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -1357,12 +1388,19 @@ HTTP 204 No Content</p>
 <span class="w">  </span><span class="nt">&quot;schema_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_schema&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;table_name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;updated_table&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;primary_key&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;id&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;deprecated&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">false</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;created_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;updated_at&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T12:00:00Z&quot;</span>
-<span class="p">}</span>
 </pre></div>
 </div>
+</dd>
+</dl>
+<dl>
+<dt>,</dt><dd><blockquote>
+<div><blockquote>
+<div><blockquote>
+<div><p>“created_at”: “2024-01-01T00:00:00Z”,
+“updated_at”: “2024-01-01T12:00:00Z”</p>
+</div></blockquote>
+<p>}</p>
+</div></blockquote>
 <p><strong>Request Body Fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID (required)</p></li>
@@ -1372,9 +1410,11 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name (max 50 characters, optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name (max 50 characters, optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key (max 50 characters, optional)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated (optional)</p></li>
 </ul>
-<p><strong>Response Fields:</strong></p>
+</div></blockquote>
+<p>(optional)</p>
+<blockquote>
+<div><p><strong>Response Fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">id</span></code> (int): Address ID</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">name</span></code> (string): Address name</p></li>
@@ -1383,7 +1423,6 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">schema_name</span></code> (string): Schema name</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">table_name</span></code> (string): Table name</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">primary_key</span></code> (string): Primary key</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">deprecated</span></code> (bool): Whether address is deprecated</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">created_at</span></code> (string): Creation timestamp (ISO 8601)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">updated_at</span></code> (string): Last update timestamp (ISO 8601)</p></li>
 </ul>
@@ -1392,8 +1431,9 @@ HTTP 204 No Content</p>
 <li><p><code class="docutils literal notranslate"><span class="pre">200</span></code> OK - Address updated successfully</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">404</span></code> Not Found - Address not found</p></li>
 </ul>
-</dd></dl>
-
+</div></blockquote>
+</dd>
+</dl>
 </section>
 </section>
 <section id="address-types">

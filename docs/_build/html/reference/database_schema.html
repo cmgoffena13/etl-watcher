@@ -19,6 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development - Kubernetes" href="dev_kubernetes.html" />
     <link rel="prev" title="Celery Tasks" href="celery_tasks.html" /> 
 </head>
 
@@ -101,6 +102,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#start-pipeline-execution">Start Pipeline Execution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#end-pipeline-execution">End Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-pipeline-execution">Get Pipeline Execution</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-types">Pipeline Types</a><ul>
@@ -124,7 +126,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-address-lineage">Create Address Lineage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-lineage">Get Address Lineage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#anomaly-detection">Anomaly Detection</a><ul>
@@ -163,6 +164,12 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinepatchinput">PipelinePatchInput</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-type-models">Pipeline Type Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostinput">PipelineTypePostInput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepostoutput">PipelineTypePostOutput</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelinetypepatchinput">PipelineTypePatchInput</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#pipeline-execution-models">Pipeline Execution Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartinput">PipelineExecutionStartInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#pipelineexecutionstartoutput">PipelineExecutionStartOutput</a></li>
@@ -183,8 +190,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-lineage-models">Address Lineage Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#sourceaddress">SourceAddress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#targetaddress">TargetAddress</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
@@ -204,6 +209,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#log-cleanup-models">Log Cleanup Models</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostinput">LogCleanupPostInput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#logcleanuppostoutput">LogCleanupPostOutput</a></li>
 </ul>
 </li>
@@ -317,11 +323,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../guides/etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../guides/etl_example.html#best-practices-shown">Best Practices Shown</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -377,9 +382,9 @@
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#creating-pipelines">Creating Pipelines</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#basic-pipeline-creation">Basic Pipeline Creation</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-configuration">Pipeline Configuration</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-active-flag">Pipeline Active Flag</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#managing-active-status">Managing Active Status</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/pipeline_management.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#starting-and-ending-executions">Starting and Ending Executions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/pipeline_management.html#execution-patterns">Execution Patterns</a></li>
@@ -400,6 +405,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../guides/recommended_implementation.html">Recommended Implementation - SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#define-pipeline-configuration">Define Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#initialize-watcher-client">Initialize Watcher Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/recommended_implementation.html#benefits-of-using-the-sdk">Benefits of Using the SDK</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../guides/watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
@@ -411,7 +427,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -474,6 +498,35 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="dev_kubernetes.html">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dev_kubernetes.html#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="dev_kubernetes.html#access-the-application">Access the Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="dev_kubernetes.html#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -512,22 +565,22 @@
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">pipeline_type_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline_type</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
-<span class="w">    </span><span class="n">watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">next_watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">pipeline_metadata</span><span class="w"> </span><span class="n">JSONB</span><span class="p">,</span>
-<span class="w">    </span><span class="n">last_target_insert</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">last_target_update</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">last_target_soft_delete</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">freshness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
-<span class="w">    </span><span class="n">freshness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">next_watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">pipeline_metadata</span><span class="w"> </span><span class="n">JSONB</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">last_target_insert</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">last_target_update</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">last_target_soft_delete</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">freshness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">freshness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">mute_freshness_check</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">timeliness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
-<span class="w">    </span><span class="n">timeliness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">timeliness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">timeliness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">mute_timeliness_check</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">load_lineage</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span>
 <span class="p">);</span>
 
 <span class="c1">-- Indexes</span>
@@ -542,14 +595,14 @@
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">pipeline_type</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">freshness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
-<span class="w">    </span><span class="n">freshness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">freshness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">freshness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">mute_freshness_check</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">timeliness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
-<span class="w">    </span><span class="n">timeliness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span>
+<span class="w">    </span><span class="n">timeliness_number</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">timeliness_datepart</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">mute_timeliness_check</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span>
 <span class="p">);</span>
 
 <span class="c1">-- Indexes</span>
@@ -562,23 +615,23 @@
 <p>Pipeline execution tracking.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="w">    </span><span class="n">parent_id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
+<span class="w">    </span><span class="n">parent_id</span><span class="w"> </span><span class="nb">BIGINT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <span class="w">    </span><span class="n">pipeline_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <span class="w">    </span><span class="n">start_date</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">date_recorded</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">hour_recorded</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">end_date</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="p">,</span>
-<span class="w">    </span><span class="n">duration_seconds</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">,</span>
-<span class="w">    </span><span class="n">completed_successfully</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="p">,</span>
-<span class="w">    </span><span class="n">inserts</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">inserts</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="n">updates</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">updates</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="n">soft_deletes</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">soft_deletes</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="n">total_rows</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">total_rows</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
-<span class="w">    </span><span class="n">watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">next_watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">execution_metadata</span><span class="w"> </span><span class="n">JSONB</span><span class="p">,</span>
-<span class="w">    </span><span class="n">anomaly_flags</span><span class="w"> </span><span class="n">JSONB</span><span class="p">,</span>
-<span class="w">    </span><span class="n">throughput</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">),</span>
+<span class="w">    </span><span class="n">end_date</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">duration_seconds</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">completed_successfully</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">inserts</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">inserts</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">updates</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">updates</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">soft_deletes</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">soft_deletes</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">total_rows</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">total_rows</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">0</span><span class="p">),</span>
+<span class="w">    </span><span class="n">watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">next_watermark</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">execution_metadata</span><span class="w"> </span><span class="n">JSONB</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">anomaly_flags</span><span class="w"> </span><span class="n">JSONB</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">throughput</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 
 <span class="w">    </span><span class="c1">-- Constraints</span>
 <span class="w">    </span><span class="k">CONSTRAINT</span><span class="w"> </span><span class="n">check_end_after_start</span><span class="w"> </span><span class="k">CHECK</span><span class="w"> </span><span class="p">(</span><span class="n">end_date</span><span class="w"> </span><span class="k">IS</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="n">end_date</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">start_date</span><span class="p">),</span>
@@ -618,13 +671,13 @@
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">address_type_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">address_type</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
-<span class="w">    </span><span class="n">database_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="k">schema_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="k">table_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">primary_key</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">),</span>
-<span class="w">    </span><span class="n">deprecated</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">FALSE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">database_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">schema_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="k">table_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">primary_key</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">address_metadata</span><span class="w"> </span><span class="n">JSONB</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span>
 <span class="p">);</span>
 
 <span class="c1">-- Indexes</span>
@@ -640,7 +693,7 @@
 <span class="w">    </span><span class="n">name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">group_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">150</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span>
 <span class="p">);</span>
 
 <span class="c1">-- Indexes</span>
@@ -672,6 +725,7 @@
 <span class="w">    </span><span class="n">source_address_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">target_address_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">depth</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lineage_path</span><span class="w"> </span><span class="nb">INTEGER</span><span class="p">[]</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">source_address_id</span><span class="p">,</span><span class="w"> </span><span class="n">target_address_id</span><span class="p">),</span>
 <span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">source_address_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">address</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">target_address_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">address</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
@@ -733,12 +787,12 @@
 <span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="w">    </span><span class="n">pipeline_id</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline</span><span class="p">(</span><span class="n">id</span><span class="p">),</span>
 <span class="w">    </span><span class="n">metric_field</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">z_threshold</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="mi">0</span><span class="p">,</span>
-<span class="w">    </span><span class="n">lookback_days</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
-<span class="w">    </span><span class="n">minimum_executions</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">30</span><span class="p">,</span>
+<span class="w">    </span><span class="n">z_threshold</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">3</span><span class="p">.</span><span class="mi">0</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">lookback_days</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
+<span class="w">    </span><span class="n">minimum_executions</span><span class="w"> </span><span class="nb">INTEGER</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">30</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">active</span><span class="w"> </span><span class="nb">BOOLEAN</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">TRUE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">created_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span>
+<span class="w">    </span><span class="n">updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">NULL</span>
 <span class="p">);</span>
 
 <span class="c1">-- Indexes</span>
@@ -760,7 +814,7 @@
 <span class="w">    </span><span class="n">z_threshold</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">threshold_min_value</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">threshold_max_value</span><span class="w"> </span><span class="nb">DECIMAL</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="w">    </span><span class="n">context</span><span class="w"> </span><span class="n">JSONB</span><span class="p">,</span>
+<span class="w">    </span><span class="n">context</span><span class="w"> </span><span class="n">JSONB</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="n">detected_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">WITH</span><span class="w"> </span><span class="k">TIME</span><span class="w"> </span><span class="k">ZONE</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="k">CURRENT_TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">pipeline_execution_id</span><span class="p">,</span><span class="w"> </span><span class="n">rule_id</span><span class="p">),</span>
 <span class="w">    </span><span class="k">FOREIGN</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">pipeline_execution_id</span><span class="p">)</span><span class="w"> </span><span class="k">REFERENCES</span><span class="w"> </span><span class="n">pipeline_execution</span><span class="p">(</span><span class="n">id</span><span class="p">)</span>
@@ -809,6 +863,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="celery_tasks.html" class="btn btn-neutral float-left" title="Celery Tasks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="dev_kubernetes.html" class="btn btn-neutral float-right" title="Development - Kubernetes" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

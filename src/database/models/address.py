@@ -3,6 +3,7 @@ from typing import Optional
 from pydantic_extra_types.pendulum_dt import DateTime
 from sqlalchemy import BOOLEAN, Column, Index, text
 from sqlalchemy import DateTime as DateTimeTZ
+from sqlalchemy.dialects.postgresql import JSONB
 from sqlmodel import Field, SQLModel
 
 
@@ -16,9 +17,8 @@ class Address(SQLModel, table=True):
     schema_name: Optional[str] = Field(max_length=50)
     table_name: Optional[str] = Field(max_length=50)
     primary_key: Optional[str] = Field(max_length=50)
-    deprecated: bool = Field(
-        sa_column=Column(BOOLEAN, server_default=text("FALSE"), nullable=False)
-    )
+    address_metadata: Optional[dict] = Field(sa_column=Column(JSONB, nullable=True))
+
     input_hash: str = Field(max_length=20)
     created_at: DateTime = Field(
         sa_column=Column(

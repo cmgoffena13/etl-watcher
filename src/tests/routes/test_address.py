@@ -34,7 +34,6 @@ async def test_get_address(async_client: AsyncClient):
     assert address.name == "test address"
     assert address.id == 1
     assert address.address_type_id == 1
-    assert address.deprecated == False
 
 
 @pytest.mark.anyio
@@ -54,16 +53,16 @@ async def test_patch_address(async_client: AsyncClient):
     # Test name-based update
     patch_data = {
         "name": "test address patched",  # Use the current name after the first patch
-        "deprecated": True,
+        "primary_key": "id",
     }
     response = await async_client.patch("/address", json=patch_data)
     data = response.json()
     assert response.status_code == 200
-    assert data["deprecated"] is True
+    assert data["primary_key"] == "id"
     assert "updated_at" in data
 
     # Test validation error when neither ID nor name is provided
-    patch_data = {"deprecated": True}
+    patch_data = {"primary_key": "id"}
     response = await async_client.patch("/address", json=patch_data)
     assert response.status_code == 422
     assert (
@@ -109,6 +108,15 @@ async def test_address_hash_functionality(async_client: AsyncClient):
         "address_type_name": "database",  # Changed from "api"
         "address_type_group_name": "external",
         "primary_key": "id",  # Changed from None
+        "address_metadata": {  # Added metadata
+            "external_dependencies": [
+                {
+                    "type": "looker_dashboard",
+                    "name": "Sales Dashboard",
+                    "id": "dash_123",
+                }
+            ]
+        },
     }
 
     response = await async_client.post("/address", json=updated_data)
@@ -120,4 +128,5 @@ async def test_address_hash_functionality(async_client: AsyncClient):
     address_data = response.json()
     assert address_data["primary_key"] == "id"
     assert address_data["address_type_id"] == 2  # Should be updated to new type
+    assert address_data["address_metadata"] is not None  # Should have metadata
     assert address_data["updated_at"] is not None  # Should be set after update

@@ -13,6 +13,7 @@ class AddressPostInput(ValidatorModel):
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)
     primary_key: Optional[str] = Field(None, max_length=50)
+    address_metadata: Optional[dict] = None
 
 
 class AddressPostOutput(ValidatorModel):
@@ -27,7 +28,6 @@ class AddressPatchInput(ValidatorModel):
     schema_name: Optional[str] = Field(None, max_length=50)
     table_name: Optional[str] = Field(None, max_length=50)
     primary_key: Optional[str] = Field(None, max_length=50)
-    deprecated: Optional[bool] = Field(default=False)
 
     @model_validator(mode="after")
     def validate_id_or_name(self):

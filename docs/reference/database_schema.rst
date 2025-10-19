@@ -17,22 +17,22 @@ Primary pipeline configuration table.
        id SERIAL PRIMARY KEY,
        name VARCHAR(150) NOT NULL,
        pipeline_type_id INTEGER NOT NULL REFERENCES pipeline_type(id),
-       watermark VARCHAR(50),
-       next_watermark VARCHAR(50),
-       pipeline_metadata JSONB,
-       last_target_insert TIMESTAMP WITH TIME ZONE,
-       last_target_update TIMESTAMP WITH TIME ZONE,
-       last_target_soft_delete TIMESTAMP WITH TIME ZONE,
-       freshness_number INTEGER,
-       freshness_datepart VARCHAR(20),
+       watermark VARCHAR(50) NULL,
+       next_watermark VARCHAR(50) NULL,
+       pipeline_metadata JSONB NULL,
+       last_target_insert TIMESTAMP WITH TIME ZONE NULL,
+       last_target_update TIMESTAMP WITH TIME ZONE NULL,
+       last_target_soft_delete TIMESTAMP WITH TIME ZONE NULL,
+       freshness_number INTEGER NULL,
+       freshness_datepart VARCHAR(20) NULL,
        mute_freshness_check BOOLEAN DEFAULT FALSE NOT NULL,
-       timeliness_number INTEGER,
-       timeliness_datepart VARCHAR(20),
+       timeliness_number INTEGER NULL,
+       timeliness_datepart VARCHAR(20) NULL,
        mute_timeliness_check BOOLEAN DEFAULT FALSE NOT NULL,
        load_lineage BOOLEAN DEFAULT TRUE NOT NULL,
        active BOOLEAN DEFAULT TRUE NOT NULL,
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       updated_at TIMESTAMP WITH TIME ZONE
+       updated_at TIMESTAMP WITH TIME ZONE NULL
    );
    
    -- Indexes
@@ -49,14 +49,14 @@ Pipeline type classification.
    CREATE TABLE pipeline_type (
        id SERIAL PRIMARY KEY,
        name VARCHAR(150) NOT NULL,
-       freshness_number INTEGER,
-       freshness_datepart VARCHAR(20),
+       freshness_number INTEGER NULL,
+       freshness_datepart VARCHAR(20) NULL,
        mute_freshness_check BOOLEAN DEFAULT FALSE NOT NULL,
-       timeliness_number INTEGER,
-       timeliness_datepart VARCHAR(20),
+       timeliness_number INTEGER NULL,
+       timeliness_datepart VARCHAR(20) NULL,
        mute_timeliness_check BOOLEAN DEFAULT FALSE NOT NULL,
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       updated_at TIMESTAMP WITH TIME ZONE
+       updated_at TIMESTAMP WITH TIME ZONE NULL
    );
    
    -- Indexes
@@ -71,23 +71,23 @@ Pipeline execution tracking.
 
    CREATE TABLE pipeline_execution (
        id BIGINT PRIMARY KEY,
-       parent_id BIGINT REFERENCES pipeline_execution(id),
+       parent_id BIGINT NULL REFERENCES pipeline_execution(id),
        pipeline_id INTEGER NOT NULL REFERENCES pipeline(id),
        start_date TIMESTAMP WITH TIME ZONE NOT NULL,
        date_recorded DATE NOT NULL,
        hour_recorded INTEGER NOT NULL,
-       end_date TIMESTAMP WITH TIME ZONE,
-       duration_seconds INTEGER,
-       completed_successfully BOOLEAN,
-       inserts INTEGER CHECK (inserts >= 0),
-       updates INTEGER CHECK (updates >= 0),
-       soft_deletes INTEGER CHECK (soft_deletes >= 0),
-       total_rows INTEGER CHECK (total_rows >= 0),
-       watermark VARCHAR(50),
-       next_watermark VARCHAR(50),
-       execution_metadata JSONB,
-       anomaly_flags JSONB,
-       throughput DECIMAL(12,4),
+       end_date TIMESTAMP WITH TIME ZONE NULL,
+       duration_seconds INTEGER NULL,
+       completed_successfully BOOLEAN NULL,
+       inserts INTEGER NULL CHECK (inserts >= 0),
+       updates INTEGER NULL CHECK (updates >= 0),
+       soft_deletes INTEGER NULL CHECK (soft_deletes >= 0),
+       total_rows INTEGER NULL CHECK (total_rows >= 0),
+       watermark VARCHAR(50) NULL,
+       next_watermark VARCHAR(50) NULL,
+       execution_metadata JSONB NULL,
+       anomaly_flags JSONB NULL,
+       throughput DECIMAL(12,4) NULL,
        
        -- Constraints
        CONSTRAINT check_end_after_start CHECK (end_date IS NULL OR end_date > start_date),
@@ -131,13 +131,13 @@ Data address tracking.
        id SERIAL PRIMARY KEY,
        name VARCHAR(150) NOT NULL,
        address_type_id INTEGER NOT NULL REFERENCES address_type(id),
-       database_name VARCHAR(50),
-       schema_name VARCHAR(50),
-       table_name VARCHAR(50),
-       primary_key VARCHAR(50),
-       deprecated BOOLEAN DEFAULT FALSE NOT NULL,
+       database_name VARCHAR(50) NULL,
+       schema_name VARCHAR(50) NULL,
+       table_name VARCHAR(50) NULL,
+       primary_key VARCHAR(50) NULL,
+       address_metadata JSONB NULL,
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       updated_at TIMESTAMP WITH TIME ZONE
+       updated_at TIMESTAMP WITH TIME ZONE NULL
    );
    
    -- Indexes
@@ -155,7 +155,7 @@ Address type classification.
        name VARCHAR(150) NOT NULL,
        group_name VARCHAR(150) NOT NULL,
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       updated_at TIMESTAMP WITH TIME ZONE
+       updated_at TIMESTAMP WITH TIME ZONE NULL
    );
    
    -- Indexes
@@ -191,6 +191,7 @@ Transitive closure of address lineage relationships.
        source_address_id INTEGER NOT NULL,
        target_address_id INTEGER NOT NULL,
        depth INTEGER NOT NULL,
+       lineage_path INTEGER[] NOT NULL,
        PRIMARY KEY (source_address_id, target_address_id),
        FOREIGN KEY (source_address_id) REFERENCES address(id),
        FOREIGN KEY (target_address_id) REFERENCES address(id)
@@ -258,12 +259,12 @@ Anomaly detection configuration.
        id SERIAL PRIMARY KEY,
        pipeline_id INTEGER NOT NULL REFERENCES pipeline(id),
        metric_field VARCHAR(50) NOT NULL,
-       z_threshold DECIMAL(4,2) DEFAULT 3.0,
-       lookback_days INTEGER DEFAULT 30,
-       minimum_executions INTEGER DEFAULT 30,
+       z_threshold DECIMAL(4,2) DEFAULT 3.0 NOT NULL,
+       lookback_days INTEGER DEFAULT 30 NOT NULL,
+       minimum_executions INTEGER DEFAULT 30 NOT NULL,
        active BOOLEAN DEFAULT TRUE NOT NULL,
        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
-       updated_at TIMESTAMP WITH TIME ZONE
+       updated_at TIMESTAMP WITH TIME ZONE NULL
    );
    
    -- Indexes
@@ -287,7 +288,7 @@ Anomaly detection results.
        z_threshold DECIMAL(12,4) NOT NULL,
        threshold_min_value DECIMAL(12,4) NOT NULL,
        threshold_max_value DECIMAL(12,4) NOT NULL,
-       context JSONB,
+       context JSONB NULL,
        detected_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
        PRIMARY KEY (pipeline_execution_id, rule_id),
        FOREIGN KEY (pipeline_execution_id) REFERENCES pipeline_execution(id)
