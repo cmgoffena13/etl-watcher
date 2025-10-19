@@ -29,6 +29,11 @@ POLYGON_OPEN_CLOSE_PIPELINE_CONFIG = PipelineConfig(
                 name="prod.polygon.open_close",
                 address_type_name="postgres",
                 address_type_group_name="database",
+                address_metadata={
+                    "external_dependencies": [
+                        {"type": "looker_dashboard", "name": "Sales Dashboard"}
+                    ]
+                },
             )
         ],
     ),

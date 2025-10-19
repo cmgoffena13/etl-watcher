@@ -395,16 +395,16 @@ wheels = [
 
 [[package]]
 name = "etl-watcher-sdk"
-version = "0.1.23"
+version = "0.1.24"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
     { name = "pydantic" },
     { name = "pydantic-extra-types", extra = ["pendulum"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/33/48/2318acc8ab6b07f4b492e6d5446be1c8578bdd3fb6b2636046809747bc34/etl_watcher_sdk-0.1.23.tar.gz", hash = "sha256:f1d499ec669896660b0f2c37426356f7d7911e2965d0d181f9b5e5d078e39dfc", size = 7012, upload-time = "2025-10-12T01:16:25.628Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/05/1f/a50ab9b28e73629303b236e28edf2a11ab3ca80226c8cee2a0ea326f28bb/etl_watcher_sdk-0.1.24.tar.gz", hash = "sha256:d888ccc299fa529b556d1b1977140375e8ea25a8b73b6796438ccbecbcdf74b7", size = 7022, upload-time = "2025-10-19T20:38:16.664Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/bc/1f/1b110c585d87fa90c0902b7c84a2b98616294402a3e2d3e902b60e86b9cd/etl_watcher_sdk-0.1.23-py3-none-any.whl", hash = "sha256:6603d8a975ac8e0a585d9133f47a13dd77b024684255345863e5a49a8902d7dd", size = 9848, upload-time = "2025-10-12T01:16:24.82Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/1f/efbafa3853b41fa651adf5f7e46f801942bfb41cdf97445af2e27a57106e/etl_watcher_sdk-0.1.24-py3-none-any.whl", hash = "sha256:cc55c3a6d3a88bcc91fcc99f8685e70ed1bf222b2e01970876c57d1d19ca2396", size = 9861, upload-time = "2025-10-19T20:38:15.621Z" },
 ]
 
 [[package]]
