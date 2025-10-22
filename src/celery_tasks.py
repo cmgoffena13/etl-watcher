@@ -16,6 +16,7 @@ from src.database.pipeline_execution_utils import (
     db_maintain_pipeline_execution_closure_table,
 )
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
+from src.notifier import AlertLevel, send_slack_message
 from src.settings import config, get_database_config
 
 logger = logging.getLogger(__name__)
@@ -205,6 +206,21 @@ def address_lineage_closure_rebuild_task(
 
     except Exception as exc:
         logger.error(f"Closure table rebuild failed: {exc}")
+
+        # Send Slack notification only on final failure (no more retries left)
+        if self.request.retries >= self.max_retries - 1:
+            send_slack_message(
+                level=AlertLevel.ERROR,
+                title="Address Lineage Closure Table Rebuild Failed",
+                message=f"Pipeline {pipeline_id} failed to rebuild closure table after {self.max_retries} retries: {str(exc)}",
+                details={
+                    "pipeline_id": pipeline_id,
+                    "connected_addresses": connected_addresses,
+                    "error_type": type(exc).__name__,
+                    "retry_count": self.request.retries,
+                    "max_retries": self.max_retries,
+                },
+            )
 
         self.update_state(
             state="FAILURE",

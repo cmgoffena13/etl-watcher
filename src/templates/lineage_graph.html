@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Lineage Graph - Watcher</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label {
+            font-size: 12px;
+            font-weight: bold;
+            color: #666;
+        }
+        
+        .filter-group select, .filter-group input {
+            padding: 5px 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-size: 14px;
+        }
+        
+        .graph-container {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-height: 600px;
+            position: relative;
+        }
+        
+        .loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 18px;
+            color: #666;
+        }
+        
+        .error {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #d32f2f;
+            text-align: center;
+        }
+        
+        .node {
+            cursor: pointer;
+        }
+        
+        .node circle {
+            stroke: #333;
+            stroke-width: 2px;
+        }
+        
+        .node text {
+            font-size: 12px;
+            font-weight: bold;
+            text-anchor: middle;
+            dominant-baseline: middle;
+        }
+        
+        .link {
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 2px;
+        }
+        
+        .link.direct {
+            stroke: #2196F3;
+            stroke-width: 3px;
+        }
+        
+        .link.transitive {
+            stroke: #FF9800;
+            stroke-dasharray: 5,5;
+        }
+        
+        .tooltip {
+            position: absolute;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .tooltip pre {
+            margin: 4px 0 0 0;
+            padding: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            font-size: 10px;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-width: 300px;
+        }
+        
+        .legend {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px;
+            background: #fff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 100;
+            min-width: 150px;
+        }
+        
+        .legend h4 {
+            margin: 0 0 8px 0;
+            font-size: 12px;
+            font-weight: 600;
+            color: #333;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 6px;
+            height: 16px;
+        }
+        
+        .legend-item:last-child {
+            margin-bottom: 0;
+        }
+        
+        .legend-circle {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .legend-circle.selected {
+            background-color: #FF0000;
+        }
+        
+        .legend-circle.normal {
+            background-color: #336791;
+        }
+        
+        .legend-rect {
+            width: 16px;
+            height: 10px;
+            background-color: #90EE90;
+            border: 1px solid #4CAF50;
+            border-radius: 2px;
+            margin-right: 8px;
+            flex-shrink: 0;
+        }
+        
+        .legend-item span {
+            font-size: 11px;
+            color: #555;
+        }
+        
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Data Lineage Graph</h1>
+        </div>
+        
+        <div class="filters">
+            <div class="filter-group">
+                <label>Selected Address</label>
+                <select id="centerNodeFilter" onchange="applyFilters()">
+                    <option value="">Select Address</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Target Address</label>
+                <select id="targetNodeFilter" onchange="applyFilters()">
+                    <option value="">All Addresses</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Depth</label>
+                <select id="depthFilter" onchange="applyFilters()">
+                    <option value="">All Depths</option>
+                    <option value="1">Direct Only</option>
+                    <option value="2" selected>Transitive (2+)</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label>Direction</label>
+                <select id="directionFilter" onchange="applyFilters()">
+                    <option value="both" selected>Both</option>
+                    <option value="upstream">Upstream</option>
+                    <option value="downstream">Downstream</option>
+                </select>
+            </div>
+            
+        </div>
+        
+        <div class="graph-container">
+            <div class="loading" id="loading">Loading lineage graph...</div>
+            <div class="error" id="error" style="display: none;"></div>
+            <svg id="graph" width="100%" height="600"></svg>
+            
+            <div class="legend">
+                <h4>Legend</h4>
+                <div class="legend-item">
+                    <div class="legend-circle selected"></div>
+                    <span>Selected Address</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-circle normal"></div>
+                    <span>Address</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-rect"></div>
+                    <span>Pipeline</span>
+                </div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="tooltip" id="tooltip" style="display: none;"></div>
+
+    <script>
+        let graphData = null;
+        let filteredData = null;
+        
+        // Initialize page on load
+        document.addEventListener('DOMContentLoaded', function() {
+            showEmptyState();
+            refreshMaterializedView();
+            loadGraphData();
+        });
+        
+        async function loadGraphData() {
+            try {
+                showLoading(true);
+                const response = await fetch('/lineage-graph/');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                graphData = await response.json();
+                populateFilters();
+                showEmptyState();
+                showLoading(false);
+            } catch (error) {
+                showError('Failed to load lineage graph: ' + error.message);
+            }
+        }
+        
+        function populateFilters() {
+            if (!graphData || !graphData.nodes) return;
+            
+            // Clear existing options (except the first option)
+            const centerSelect = document.getElementById('centerNodeFilter');
+            
+            // Clear all options except the first one
+            while (centerSelect.children.length > 1) {
+                centerSelect.removeChild(centerSelect.lastChild);
+            }
+            
+            // Get unique addresses from nodes
+            const addresses = [...new Set(graphData.nodes.map(n => n.name))].sort();
+            
+            addresses.forEach(addr => {
+                const option = document.createElement('option');
+                option.value = addr;
+                option.textContent = addr;
+                centerSelect.appendChild(option);
+            });
+            
+            // Populate depth filter with actual depth values
+            const depthSelect = document.getElementById('depthFilter');
+            const currentValue = depthSelect.value; // Save current selection
+            depthSelect.innerHTML = '<option value="">All Depths</option>';
+            
+            const uniqueDepths = [...new Set(graphData.edges.map(edge => edge.depth))].sort();
+            
+            uniqueDepths.forEach(depth => {
+                const option = document.createElement('option');
+                option.value = depth;
+                option.textContent = `Depth ${depth}`;
+                if (depth === 2) option.selected = true; // Default to depth 2
+                depthSelect.appendChild(option);
+            });
+            
+            // Restore previous selection if it was valid
+            if (currentValue && uniqueDepths.includes(parseInt(currentValue))) {
+                depthSelect.value = currentValue;
+            }
+        }
+        
+        function populateTargetDropdown(centerNodeId) {
+            if (!graphData || !centerNodeId) return;
+            
+            const targetSelect = document.getElementById('targetNodeFilter');
+            const currentValue = targetSelect.value; // Save current selection
+            targetSelect.innerHTML = '<option value="">All Addresses</option>';
+            
+            // Find all downstream target addresses from the center node
+            const downstreamTargets = new Set();
+            
+            graphData.edges.forEach(edge => {
+                if (edge.source_address_id === centerNodeId) {
+                    // Direct downstream targets
+                    downstreamTargets.add(edge.target_address_id);
+                } else if (edge.lineage_path && edge.lineage_path.includes(centerNodeId)) {
+                    const centerIndex = edge.lineage_path.indexOf(centerNodeId);
+                    // Add all addresses that come after the center node in the path
+                    for (let i = centerIndex + 1; i < edge.lineage_path.length; i++) {
+                        downstreamTargets.add(edge.lineage_path[i]);
+                    }
+                }
+            });
+            
+            // Convert to node names and sort
+            const targetNames = Array.from(downstreamTargets)
+                .map(nodeId => graphData.nodes.find(n => n.id === nodeId)?.name)
+                .filter(name => name)
+                .sort();
+            
+            targetNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                targetSelect.appendChild(option);
+            });
+            
+            // Restore previous selection if it still exists
+            if (currentValue && targetNames.includes(currentValue)) {
+                targetSelect.value = currentValue;
+            }
+        }
+        
+        function applyFilters() {
+            if (!graphData || !graphData.nodes) return;
+            
+            const centerNodeFilter = document.getElementById('centerNodeFilter').value;
+            const targetNodeFilter = document.getElementById('targetNodeFilter').value;
+            const depthFilter = document.getElementById('depthFilter').value;
+            const directionFilter = document.getElementById('directionFilter').value;
+            
+            // If no center node is selected, show empty state
+            if (!centerNodeFilter) {
+                showEmptyState();
+                return;
+            }
+            
+            let filteredNodes = graphData.nodes;
+            let filteredEdges = graphData.edges;
+            
+            // Apply center node filter - show only nodes connected to the selected center node
+            const centerNodeId = graphData.nodes.find(n => n.name === centerNodeFilter)?.id;
+            if (centerNodeId) {
+                // Populate target address dropdown with downstream addresses
+                populateTargetDropdown(centerNodeId);
+                // Find direct relationships from the center node
+                const connectedNodeIds = new Set();
+                const connectedEdges = [];
+                
+                // Add the center node itself
+                connectedNodeIds.add(centerNodeId);
+                
+                // Find all edges connected to the center node and create direct relationships
+                graphData.edges.forEach(edge => {
+                    if (edge.source_address_id === centerNodeId || edge.target_address_id === centerNodeId) {
+                        // Add all nodes in the lineage path
+                        if (edge.lineage_path) {
+                            edge.lineage_path.forEach(nodeId => connectedNodeIds.add(nodeId));
+                        } else {
+                            connectedNodeIds.add(edge.source_address_id);
+                            connectedNodeIds.add(edge.target_address_id);
+                        }
+                        
+                           // Create direct relationships from lineage path
+                           if (edge.lineage_path && edge.lineage_path.length > 1) {
+                               for (let i = 0; i < edge.lineage_path.length - 1; i++) {
+                                   const sourceId = edge.lineage_path[i];
+                                   const targetId = edge.lineage_path[i + 1];
+                                   
+                                   // Find the actual pipeline info for this direct relationship
+                                   const directEdge = graphData.edges.find(e => 
+                                       e.source_address_id === sourceId && 
+                                       e.target_address_id === targetId && 
+                                       e.depth === 1
+                                   );
+                                   
+                                   connectedEdges.push({
+                                       source_address_id: sourceId,
+                                       target_address_id: targetId,
+                                       depth: 1, // These are direct relationships
+                                       lineage_path: edge.lineage_path,
+                                       pipeline_id: directEdge?.pipeline_id || null,
+                                       pipeline_name: directEdge?.pipeline_name || null,
+                                       pipeline_type_name: directEdge?.pipeline_type_name || null,
+                                       pipeline_metadata: directEdge?.pipeline_metadata || null,
+                                       pipeline_active: directEdge?.pipeline_active || null
+                                   });
+                               }
+                           } else {
+                               connectedEdges.push(edge);
+                           }
+                    }
+                });
+                
+                // Filter nodes to only show directly connected ones
+                filteredNodes = graphData.nodes.filter(node => connectedNodeIds.has(node.id));
+                filteredEdges = connectedEdges;
+            }
+            
+            // Apply depth filter based on center node
+            
+            if (depthFilter && depthFilter !== "" && centerNodeId) {
+                const maxDepth = parseInt(depthFilter);
+                
+                // First, find all nodes within the depth limit from the center node
+                const nodesWithinDepth = new Set();
+                nodesWithinDepth.add(centerNodeId); // Always include the center node
+                
+                // Look at all edges to find paths that include the center node
+                graphData.edges.forEach(edge => {
+                    if (edge.lineage_path && edge.lineage_path.includes(centerNodeId)) {
+                        const centerIndex = edge.lineage_path.indexOf(centerNodeId);
+                        
+                        // Check if this path respects the direction filter
+                        let shouldIncludePath = true;
+                        if (directionFilter && directionFilter !== "both") {
+                            if (directionFilter === "upstream") {
+                                // Only include if center node is at the end of the path (target)
+                                shouldIncludePath = centerIndex === edge.lineage_path.length - 1;
+                            } else if (directionFilter === "downstream") {
+                                // Only include if center node is at the start of the path (source)
+                                shouldIncludePath = centerIndex === 0;
+                            }
+                        }
+                        
+                        if (shouldIncludePath) {
+                            // Add all nodes in the lineage path that are within the depth limit
+                            edge.lineage_path.forEach((nodeId, index) => {
+                                const depthFromCenter = Math.abs(index - centerIndex);
+                                if (depthFromCenter <= maxDepth) {
+                                    nodesWithinDepth.add(nodeId);
+                                }
+                            });
+                        }
+                    } else {
+                        // For direct edges, check if they involve the center node and respect direction
+                        let shouldIncludeEdge = false;
+                        if (edge.source_address_id === centerNodeId || edge.target_address_id === centerNodeId) {
+                            if (!directionFilter || directionFilter === "both") {
+                                shouldIncludeEdge = true;
+                            } else if (directionFilter === "upstream" && edge.target_address_id === centerNodeId) {
+                                shouldIncludeEdge = true;
+                            } else if (directionFilter === "downstream" && edge.source_address_id === centerNodeId) {
+                                shouldIncludeEdge = true;
+                            }
+                        }
+                        
+                        if (shouldIncludeEdge) {
+                            nodesWithinDepth.add(edge.source_address_id);
+                            nodesWithinDepth.add(edge.target_address_id);
+                        }
+                    }
+                });
+                
+                
+                // Filter nodes to only show those within depth
+                filteredNodes = filteredNodes.filter(node => nodesWithinDepth.has(node.id));
+                
+                // Keep all edges that connect nodes within depth
+                filteredEdges = filteredEdges.filter(edge => {
+                    const keep = nodesWithinDepth.has(edge.source_address_id) && nodesWithinDepth.has(edge.target_address_id);
+                    return keep;
+                });
+                
+            } else if (directionFilter && directionFilter !== "both" && centerNodeId) {
+                // Apply only direction filter if no depth filter
+                if (directionFilter === "upstream") {
+                    // Only show edges where center node is the target (upstream sources)
+                    filteredEdges = filteredEdges.filter(edge => edge.target_address_id === centerNodeId);
+                } else if (directionFilter === "downstream") {
+                    // Only show edges where center node is the source (downstream targets)
+                    filteredEdges = filteredEdges.filter(edge => edge.source_address_id === centerNodeId);
+                }
+                
+                // Update nodes to only include those connected by the filtered edges
+                const connectedNodeIds = new Set();
+                filteredEdges.forEach(edge => {
+                    connectedNodeIds.add(edge.source_address_id);
+                    connectedNodeIds.add(edge.target_address_id);
+                });
+                filteredNodes = filteredNodes.filter(node => connectedNodeIds.has(node.id));
+            }
+            
+            // Apply target address filter
+            if (targetNodeFilter && targetNodeFilter !== "" && centerNodeId) {
+                const targetNodeId = graphData.nodes.find(n => n.name === targetNodeFilter)?.id;
+                if (targetNodeId) {
+                    // Only show edges that connect to the selected target address
+                    filteredEdges = filteredEdges.filter(edge => 
+                        edge.target_address_id === targetNodeId || 
+                        (edge.lineage_path && edge.lineage_path.includes(targetNodeId))
+                    );
+                    
+                    // Update nodes to only include those connected by the filtered edges
+                    const connectedNodeIds = new Set();
+                    filteredEdges.forEach(edge => {
+                        connectedNodeIds.add(edge.source_address_id);
+                        connectedNodeIds.add(edge.target_address_id);
+                    });
+                    filteredNodes = filteredNodes.filter(node => connectedNodeIds.has(node.id));
+                }
+            }
+            
+            filteredData = {
+                nodes: filteredNodes,
+                edges: filteredEdges
+            };
+            
+            renderGraph();
+        }
+        
+        function renderGraph() {
+            if (!filteredData || !filteredData.nodes) return;
+            
+            const svg = d3.select('#graph');
+            svg.selectAll('*').remove();
+            
+            // Get the container width or use a default
+            const containerWidth = svg.node().parentElement.getBoundingClientRect().width;
+            const width = containerWidth > 0 ? containerWidth : 800;
+            const height = 600;
+            
+            
+            svg.attr('width', width).attr('height', height);
+            
+            const g = svg.append('g');
+            
+            // Ensure edges only reference existing nodes and transform for D3
+            const validNodeIds = new Set(filteredData.nodes.map(n => n.id));
+            const validEdges = filteredData.edges.filter(e => 
+                validNodeIds.has(e.source_address_id) && validNodeIds.has(e.target_address_id)
+            );
+            
+            // Transform edges for D3 force simulation (D3 expects source/target to be node objects)
+            const nodeMap = new Map(filteredData.nodes.map(n => [n.id, n]));
+            
+            const d3Edges = validEdges.map(edge => ({
+                ...edge,
+                source: nodeMap.get(edge.source_address_id),
+                target: nodeMap.get(edge.target_address_id)
+            }));
+            
+            
+            // Calculate hierarchical positions
+            const positions = calculateHierarchicalLayout(filteredData.nodes, validEdges, width, height);
+            
+            
+            // Apply calculated positions to nodes
+            filteredData.nodes.forEach(node => {
+                const pos = positions.get(node.id);
+                if (pos) {
+                    node.x = pos.x;
+                    node.y = pos.y;
+                    node.fx = pos.x; // Fix position
+                    node.fy = pos.y;
+                } else {
+                    console.warn(`No position calculated for node ${node.id} (${node.name})`);
+                }
+            });
+            
+            // Create links
+            const link = g.append('g')
+                .selectAll('line')
+                .data(d3Edges)
+                .enter().append('line')
+                .attr('x1', d => d.source.x)
+                .attr('y1', d => d.source.y)
+                .attr('x2', d => d.target.x)
+                .attr('y2', d => d.target.y)
+                .attr('stroke', '#999')
+                .attr('stroke-opacity', 0.6)
+                .attr('stroke-width', 2);
+            
+            // Create pipeline info rectangles on edges
+            const pipelineRects = g.append('g')
+                .selectAll('rect')
+                .data(d3Edges.filter(d => d.pipeline_name)) // Only show for edges with pipeline info
+                .enter().append('rect')
+                .attr('x', d => (d.source.x + d.target.x) / 2 - 20) // Center on the line
+                .attr('y', d => (d.source.y + d.target.y) / 2 - 8)  // Center on the line
+                .attr('width', 40)
+                .attr('height', 16)
+                .attr('fill', '#90EE90') // Light green
+                .attr('stroke', '#4CAF50') // Darker green border
+                .attr('stroke-width', 1)
+                .attr('rx', 3) // Rounded corners
+                .style('cursor', 'pointer')
+                .on('mouseover', function(event, d) {
+                    d3.select(this).style('fill', '#7ED321'); // Darker green on hover
+                    const tooltip = d3.select('#tooltip');
+                    tooltip.style('display', 'block')
+                        .html(`
+                            <strong>Pipeline: ${d.pipeline_name || 'Unknown'}</strong><br/>
+                            Type: ${d.pipeline_type_name || 'Unknown'}<br/>
+                            Active: ${d.pipeline_active ? 'Yes' : 'No'}
+                            ${d.pipeline_metadata ? '<br/>Metadata:<br/><pre>' + JSON.stringify(d.pipeline_metadata, null, 2) + '</pre>' : ''}
+                        `);
+                })
+                .on('mousemove', function(event) {
+                    d3.select('#tooltip')
+                        .style('left', (event.pageX + 10) + 'px')
+                        .style('top', (event.pageY - 10) + 'px');
+                })
+                .on('mouseout', function() {
+                    d3.select('#tooltip').style('display', 'none');
+                    d3.select(this).style('fill', '#90EE90'); // Reset to light green
+                });
+            
+            // Add pipeline name text above the rectangles
+            const pipelineText = g.append('g')
+                .selectAll('text')
+                .data(d3Edges.filter(d => d.pipeline_name))
+                .enter().append('text')
+                .attr('x', d => (d.source.x + d.target.x) / 2)
+                .attr('y', d => (d.source.y + d.target.y) / 2 - 14)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '12px')
+                .attr('fill', '#333')
+                .text(d => d.pipeline_name);
+            
+            // Create nodes
+            const node = g.append('g')
+                .selectAll('g')
+                .data(filteredData.nodes)
+                .enter().append('g')
+                .attr('class', 'node')
+                .attr('transform', d => `translate(${d.x},${d.y})`)
+                .call(d3.drag()
+                    .on('start', dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended));
+            
+            const selectedCenterNode = document.getElementById('centerNodeFilter').value;
+            
+            const circles = node.append('circle')
+                .attr('r', 20)
+                .attr('fill', d => d.name === selectedCenterNode ? '#FF0000' : '#336791')
+                .attr('stroke', d => d.name === selectedCenterNode ? '#000000' : '#fff')
+                .attr('stroke-width', d => d.name === selectedCenterNode ? 8 : 2)
+                .attr('class', d => d.name === selectedCenterNode ? 'selected-node' : 'normal-node');
+            
+            node.append('text')
+                .text(d => d.name)
+                .attr('dy', -30)
+                .attr('text-anchor', 'middle')
+                .attr('font-size', '14px');
+            
+            // Add tooltips and click handlers
+            node            .on('mouseover', function(event, d) {
+                const tooltip = d3.select('#tooltip');
+                tooltip.style('display', 'block')
+                    .html(`
+                        <strong>Address: ${d.name}</strong><br/>
+                        Type: ${d.address_type_name}<br/>
+                        Group: ${d.address_type_group_name}
+                        ${d.address_metadata ? '<br/>Metadata:<br/><pre>' + JSON.stringify(d.address_metadata, null, 2) + '</pre>' : ''}
+                    `);
+            })
+            .on('mousemove', function(event) {
+                d3.select('#tooltip')
+                    .style('left', (event.pageX + 10) + 'px')
+                    .style('top', (event.pageY - 10) + 'px');
+            })
+            .on('mouseout', function() {
+                d3.select('#tooltip').style('display', 'none');
+            })
+            .on('click', function(event, d) {
+                // Set the center node filter to the clicked address
+                document.getElementById('centerNodeFilter').value = d.name;
+                // Apply the filters to show lineage for this address
+                applyFilters();
+            });
+            
+            // Drag functions
+            function dragstarted(event, d) {
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+            
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+                d3.select(this).attr('transform', `translate(${d.fx},${d.fy})`);
+            }
+            
+            function dragended(event, d) {
+                d.fx = null;
+                d.fy = null;
+            }
+        }
+        
+        function calculateHierarchicalLayout(nodes, edges, width, height) {
+            const positions = new Map();
+            const nodeMap = new Map();
+            nodes.forEach(node => nodeMap.set(node.id, node));
+            
+            // Find center node (the one selected)
+            const centerNodeName = document.getElementById('centerNodeFilter').value;
+            const centerNode = nodes.find(n => n.name === centerNodeName);
+            if (!centerNode) {
+                return positions;
+            }
+            
+            
+            // Calculate depths from center node using BFS
+            const depths = new Map();
+            const visited = new Set();
+            
+            const queue = [{ node: centerNode, depth: 0 }];
+            depths.set(centerNode.id, 0);
+            visited.add(centerNode.id);
+            
+            while (queue.length > 0) {
+                const { node, depth } = queue.shift();
+                
+                // Find connected nodes
+                edges.forEach(edge => {
+                    let connectedNode = null;
+                    if (edge.source_address_id === node.id) {
+                        connectedNode = nodeMap.get(edge.target_address_id);
+                    } else if (edge.target_address_id === node.id) {
+                        connectedNode = nodeMap.get(edge.source_address_id);
+                    }
+                    
+                    if (connectedNode && !visited.has(connectedNode.id)) {
+                        const newDepth = edge.source_address_id === node.id ? depth + 1 : depth - 1;
+                        depths.set(connectedNode.id, newDepth);
+                        visited.add(connectedNode.id);
+                        queue.push({ node: connectedNode, depth: newDepth });
+                    }
+                });
+            }
+            
+            // Group nodes by depth
+            const depthGroups = new Map();
+            nodes.forEach(node => {
+                const depth = depths.get(node.id) || 0;
+                if (!depthGroups.has(depth)) {
+                    depthGroups.set(depth, []);
+                }
+                depthGroups.get(depth).push(node);
+            });
+            
+            // Calculate positions
+            const minDepth = Math.min(...depths.values());
+            const maxDepth = Math.max(...depths.values());
+            const depthRange = maxDepth - minDepth;
+            const xSpacing = depthRange > 0 ? (width - 300) / depthRange : 0; // Leave 150px margin on each side
+            const ySpacing = 80;
+            
+            depthGroups.forEach((groupNodes, depth) => {
+                const x = depthRange > 0 ? 150 + (depth - minDepth) * xSpacing : width / 2;
+                const startY = (height - (groupNodes.length - 1) * ySpacing) / 2;
+                
+                groupNodes.forEach((node, index) => {
+                    const y = startY + index * ySpacing;
+                    positions.set(node.id, { x, y });
+                });
+            });
+            
+            
+            return positions;
+        }
+        
+        function showEmptyState() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('graph').style.display = 'block';
+            
+            const svg = d3.select('#graph');
+            svg.selectAll('*').remove();
+            svg.append('text')
+                .attr('x', '50%')
+                .attr('y', '50%')
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .style('font-size', '18px')
+                .style('fill', '#666')
+                .text('Select an address to view lineage');
+        }
+        
+        function showLoading(show) {
+            document.getElementById('loading').style.display = show ? 'block' : 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('graph').style.display = show ? 'none' : 'block';
+        }
+        
+        function showError(message) {
+            document.getElementById('error').textContent = message;
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('graph').style.display = 'none';
+        }
+        
+        async function refreshMaterializedView() {
+            try {
+                const response = await fetch('/lineage-graph/refresh', {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Failed to refresh materialized view:', error);
+            }
+        }
+        
+    </script>
+</body>
+</html>

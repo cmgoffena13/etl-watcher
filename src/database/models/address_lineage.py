@@ -42,7 +42,7 @@ class AddressLineageClosure(SQLModel, table=True):
     lineage_path: list[int] = Field(sa_column=Column(ARRAY(Integer), nullable=False))
 
     __table_args__ = (
-        PrimaryKeyConstraint("source_address_id", "target_address_id"),
+        PrimaryKeyConstraint("source_address_id", "target_address_id", "depth"),
         Index(
             "ix_address_lineage_closure_depth_source_include",
             "source_address_id",

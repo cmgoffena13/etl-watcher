@@ -1,8 +1,8 @@
 """initial
 
-Revision ID: 20251019142513
+Revision ID: 20251021195850
 Revises:
-Create Date: 2025-10-19 14:25:15.697592
+Create Date: 2025-10-21 19:58:52.927499
 
 """
 
@@ -14,7 +14,7 @@ from alembic import op
 from sqlalchemy.dialects import postgresql
 
 # revision identifiers, used by Alembic.
-revision: str = "20251019142513"
+revision: str = "20251021195850"
 down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -273,7 +273,7 @@ def upgrade() -> None:
             ["target_address_id"],
             ["address.id"],
         ),
-        sa.PrimaryKeyConstraint("source_address_id", "target_address_id"),
+        sa.PrimaryKeyConstraint("source_address_id", "target_address_id", "depth"),
     )
     op.create_index(
         "ix_address_lineage_closure_depth_source_include",

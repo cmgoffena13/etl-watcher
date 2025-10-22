@@ -47,6 +47,9 @@ async def reset_database():
         await conn.execute(
             text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
         )
+        await conn.execute(
+            text("DROP MATERIALIZED VIEW IF EXISTS lineage_graph_report")
+        )
         # Drop dependent tables (tables with foreign keys)
         await conn.execute(text("DROP TABLE IF EXISTS anomaly_detection_result"))
         await conn.execute(

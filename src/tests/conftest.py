@@ -15,6 +15,7 @@ from sqlmodel import SQLModel
 from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.app import app
+from src.database.db import setup_reporting
 from src.database.models import *  # To add to SQLModel metadata
 from src.database.session import create_async_engine, get_session
 from src.settings import config, get_database_config
@@ -106,11 +107,17 @@ async def setup_teardown():
             await conn.execute(
                 text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
             )
+            await conn.execute(
+                text("DROP MATERIALIZED VIEW IF EXISTS lineage_graph_report")
+            )
             await conn.execute(text("DROP TYPE IF EXISTS datepartenum CASCADE"))
             await conn.execute(
                 text("DROP TYPE IF EXISTS anomalymetricfieldenum CASCADE")
             )
             await conn.run_sync(SQLModel.metadata.create_all)
+
+        # Create materialized views after tables are created (same as app startup)
+        await setup_reporting()
 
         yield
 
@@ -118,6 +125,9 @@ async def setup_teardown():
         async with test_engine.begin() as conn:
             await conn.execute(
                 text("DROP MATERIALIZED VIEW IF EXISTS daily_pipeline_report")
+            )
+            await conn.execute(
+                text("DROP MATERIALIZED VIEW IF EXISTS lineage_graph_report")
             )
             await conn.run_sync(SQLModel.metadata.drop_all)
             await conn.execute(text("DROP TYPE IF EXISTS datepartenum CASCADE"))
