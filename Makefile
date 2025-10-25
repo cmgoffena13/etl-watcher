@@ -47,5 +47,5 @@ docs-watch:
 upgrade-sdk:
 	uv sync --upgrade-package etl-watcher-sdk
 
-upgrade-packages:
+upgrade:
 	uv sync --upgrade

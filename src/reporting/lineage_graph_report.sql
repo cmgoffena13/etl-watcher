@@ -44,3 +44,7 @@ WHERE alc.depth > 0;
 
 CREATE INDEX IF NOT EXISTS ix_lineage_graph_report_lineage_path_filtered
     ON lineage_graph_report USING GIN (lineage_path) WHERE depth = 1;
+CREATE INDEX IF NOT EXISTS ix_lineage_graph_report_target_source
+    ON lineage_graph_report (target_address_id, source_address_id);
+CREATE INDEX IF NOT EXISTS ix_lineage_graph_report_source_target
+    ON lineage_graph_report (source_address_id, target_address_id);
