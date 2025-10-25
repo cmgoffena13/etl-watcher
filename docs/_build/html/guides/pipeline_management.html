@@ -10,6 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -21,7 +22,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Watermark Management" href="watermark_management.html" />
+    <link rel="next" title="Recommended Implementation - SDK" href="recommended_implementation.html" />
     <link rel="prev" title="Monitoring &amp; Health Checks" href="monitoring.html" /> 
 </head>
 
@@ -104,6 +105,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-execution">Pipeline Execution</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#start-pipeline-execution">Start Pipeline Execution</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#end-pipeline-execution">End Pipeline Execution</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-pipeline-execution">Get Pipeline Execution</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#pipeline-types">Pipeline Types</a><ul>
@@ -127,7 +129,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#address-lineage">Address Lineage</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#create-address-lineage">Create Address Lineage</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#get-address-lineage">Get Address Lineage</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#anomaly-detection">Anomaly Detection</a><ul>
@@ -143,18 +144,6 @@
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#check-freshness">Check Freshness</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#log-cleanup">Log Cleanup</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#diagnostics-web-page">Diagnostics Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#system-diagnostics">System Diagnostics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="../api/endpoints.html#interactive-api-documentation">Interactive API Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../api/endpoints.html#scalar-api-documentation">Scalar API Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -192,8 +181,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#address-lineage-models">Address Lineage Models</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostinput">AddressLineagePostInput</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#sourceaddress">SourceAddress</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../api/models.html#targetaddress">TargetAddress</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagepostoutput">AddressLineagePostOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineagegetoutput">AddressLineageGetOutput</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../api/models.html#addresslineageclosuregetoutput">AddressLineageClosureGetOutput</a></li>
@@ -223,6 +210,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../api/models.html#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Interface</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/pages.html">Web Pages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#diagnostics-web-page">Diagnostics Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#lineage-graph-web-page">Lineage Graph Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#interactive-api-documentation">Interactive API Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -327,11 +324,10 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Example</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="etl_example.html">ETL Script Example</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#overview">Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#complete-implementation">Complete Implementation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="etl_example.html#etl-example-script">ETL Example Script</a></li>
 <li class="toctree-l2"><a class="reference internal" href="etl_example.html#key-features-demonstrated">Key Features Demonstrated</a></li>
-<li class="toctree-l2"><a class="reference internal" href="etl_example.html#best-practices-shown">Best Practices Shown</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a><ul>
@@ -410,6 +406,17 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="recommended_implementation.html">Recommended Implementation - SDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#key-processes">Key Processes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#define-pipeline-configuration">Define Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#initialize-watcher-client">Initialize Watcher Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#sync-pipeline-configuration">Sync Pipeline Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#track-pipeline-execution">Track Pipeline Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#complete-example">Complete Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="recommended_implementation.html#benefits-of-using-the-sdk">Benefits of Using the SDK</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="watermark_management.html">Watermark Management</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#understanding-watermarks">Understanding Watermarks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="watermark_management.html#watermark-patterns">Watermark Patterns</a></li>
@@ -421,7 +428,15 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="../reference/architecture.html">Architecture &amp; Design</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#design-philosophy">Design Philosophy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#configuration-as-code">Configuration as Code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#efficiency-performance">Efficiency &amp; Performance</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#scalability">Scalability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#reliability">Reliability</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/architecture.html#observability">Observability</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#high-level-architecture">High-Level Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#fastapi-framework">FastAPI Framework</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/architecture.html#postgresql-database">PostgreSQL Database</a></li>
@@ -455,14 +470,6 @@
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../reference/design.html">Design</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#configuration-as-code">Configuration as Code</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#efficiency-performance">Efficiency / Performance</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#scalability">Scalability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#reliability">Reliability</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../reference/design.html#observability">Observability</a></li>
-</ul>
-</li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/database_schema.html">Database Schema</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#core-tables">Core Tables</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#pipeline">Pipeline</a></li>
@@ -488,6 +495,35 @@
 <li class="toctree-l2"><a class="reference internal" href="../reference/database_schema.html#data-relationships">Data Relationships</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#hierarchical-relationships">Hierarchical Relationships</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/database_schema.html#many-to-many-relationships">Many-to-Many Relationships</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../reference/dev_kubernetes.html">Development - Kubernetes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#installation-steps">Installation Steps</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-kubectl">Install kubectl</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#install-helm">Install Helm</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#verify-installation">Verify Installation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-to-kubernetes">Deploy to Kubernetes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#quick-start-with-make-commands-recommended">Quick Start with Make Commands (Recommended)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#access-your-application">Access Your Application</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#stop-the-development-environment">Stop the Development Environment</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#manual-development-setup-alternative">Manual Development Setup - Alternative</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#start-dependencies">Start Dependencies</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#build-docker-image">Build Docker Image</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#deploy-with-helm">Deploy with Helm</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../reference/dev_kubernetes.html#access-the-application">Access the Application</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../reference/dev_kubernetes.html#cleanup">Cleanup</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/dev_kubernetes.html#remove-the-deployment">Remove the Deployment</a></li>
 </ul>
 </li>
 </ul>
@@ -1315,7 +1351,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="monitoring.html" class="btn btn-neutral float-left" title="Monitoring &amp; Health Checks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="watermark_management.html" class="btn btn-neutral float-right" title="Watermark Management" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="recommended_implementation.html" class="btn btn-neutral float-right" title="Recommended Implementation - SDK" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

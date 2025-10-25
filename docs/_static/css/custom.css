@@ -1,0 +1,506 @@
+/* Custom color theme for Watcher documentation */
+/* Color palette: #011F26, #013A40, #EBF2F2, #4F8C8C, #260A08 */
+
+/* Global overrides */
+body {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* TEST: Add a visible border to confirm CSS is loading */
+body::after {
+    content: "CSS LOADED";
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    background: #260A08;
+    color: #EBF2F2;
+    padding: 5px 10px;
+    font-size: 12px;
+    z-index: 9999;
+    border: 2px solid #4F8C8C;
+}
+
+html {
+    background-color: #EBF2F2 !important;
+}
+
+/* Navigation */
+.wy-side-nav-search {
+    background-color: #013A40 !important;
+}
+
+.wy-side-nav-search input[type="text"] {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #011F26 !important;
+}
+
+.wy-nav-top {
+    background-color: #013A40 !important;
+}
+
+.wy-nav-side {
+    background-color: #EBF2F2 !important;
+}
+
+.wy-menu-vertical a {
+    color: #011F26 !important;
+}
+
+.wy-menu-vertical a:hover {
+    background-color: #013A40 !important;
+    color: #EBF2F2 !important;
+}
+
+.wy-menu-vertical li.current > a {
+    background-color: #011F26 !important;
+    color: #EBF2F2 !important;
+}
+
+.wy-menu-vertical li.current > a:hover {
+    background-color: #013A40 !important;
+    color: #EBF2F2 !important;
+}
+
+/* Content area */
+.wy-nav-content {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+.wy-nav-content-wrap {
+    background-color: #EBF2F2 !important;
+}
+
+.rst-content {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Headers - force override Sphinx defaults with maximum specificity */
+h1, h2, h3, h4, h5, h6 {
+    color: #011F26 !important;
+}
+
+.rst-content h1,
+.rst-content h2,
+.rst-content h3,
+.rst-content h4,
+.rst-content h5,
+.rst-content h6 {
+    color: #011F26 !important;
+}
+
+/* Nuclear option - override everything */
+body h1,
+body h2,
+body h3,
+body h4,
+body h5,
+body h6,
+html h1,
+html h2,
+html h3,
+html h4,
+html h5,
+html h6 {
+    color: #011F26 !important;
+}
+
+/* Override page titles specifically */
+.wy-nav-content h1 {
+    color: #011F26 !important;
+}
+
+/* Override any RTD theme title styling */
+.rst-content .section h1 {
+    color: #011F26 !important;
+}
+
+/* Force override for all possible title selectors */
+.document h1,
+.documentwrapper h1,
+.wy-nav-content-wrap h1 {
+    color: #011F26 !important;
+}
+
+/* Target specific RTD theme classes */
+.wy-nav-content .rst-content h1,
+.wy-nav-content .rst-content h2,
+.wy-nav-content .rst-content h3,
+.wy-nav-content .rst-content h4,
+.wy-nav-content .rst-content h5,
+.wy-nav-content .rst-content h6 {
+    color: #011F26 !important;
+}
+
+/* Override any inherited styles */
+* h1,
+* h2,
+* h3,
+* h4,
+* h5,
+* h6 {
+    color: #011F26 !important;
+}
+
+/* Links */
+.rst-content a {
+    color: #4F8C8C !important;
+}
+
+.rst-content a:hover {
+    color: #011F26 !important;
+}
+
+.rst-content a:visited {
+    color: #4F8C8C !important;
+}
+
+/* Code blocks - more aggressive styling */
+.rst-content pre {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+.rst-content code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+/* Force all code elements to have better colors */
+pre, code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Target any code that might be inside pre tags */
+pre code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Override any inherited code styling */
+.rst-content pre code,
+.rst-content code,
+.rst-content .highlight pre,
+.rst-content .highlight code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Override any syntax highlighting that might be overriding */
+.rst-content pre .highlight {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Syntax highlighting colors */
+.rst-content pre .highlight .k {
+    color: #4F8C8C !important; /* Keywords - lighter teal */
+    font-weight: bold;
+}
+
+.rst-content pre .highlight .s {
+    color: #260A08 !important; /* Strings - dark red */
+}
+
+.rst-content pre .highlight .c {
+    color: #011F26 !important; /* Comments - dark blue-green */
+    font-style: italic;
+}
+
+.rst-content pre .highlight .n {
+    color: #011F26 !important; /* Names - dark blue-green */
+}
+
+.rst-content pre .highlight .o {
+    color: #4F8C8C !important; /* Operators - lighter teal */
+}
+
+.rst-content pre .highlight .p {
+    color: #011F26 !important; /* Punctuation - dark blue-green */
+}
+
+.rst-content pre .highlight .nb {
+    color: #4F8C8C !important; /* Built-in names - lighter teal */
+    font-weight: bold;
+}
+
+.rst-content pre .highlight .s1 {
+    color: #260A08 !important; /* Single quotes - dark red */
+}
+
+.rst-content pre .highlight .s2 {
+    color: #260A08 !important; /* Double quotes - dark red */
+}
+
+.rst-content pre .highlight .mi {
+    color: #011F26 !important; /* Numbers - dark blue-green */
+}
+
+.rst-content pre .highlight .mf {
+    color: #011F26 !important; /* Float numbers - dark blue-green */
+}
+
+.rst-content pre .highlight .mh {
+    color: #011F26 !important; /* Hex numbers - dark blue-green */
+}
+
+.rst-content pre .highlight .c1 {
+    color: #011F26 !important; /* Single line comments - dark blue-green */
+    font-style: italic;
+}
+
+.rst-content pre .highlight .cm {
+    color: #011F26 !important; /* Multi-line comments - dark blue-green */
+    font-style: italic;
+}
+
+/* Tables */
+.rst-content table.docutils {
+    border: 1px solid #4F8C8C !important;
+}
+
+.rst-content table.docutils th {
+    background-color: #4F8C8C !important;
+    color: #EBF2F2 !important;
+}
+
+.rst-content table.docutils td {
+    border: 1px solid #4F8C8C !important;
+}
+
+/* Admonitions */
+.rst-content .admonition {
+    border-left: 4px solid #4F8C8C !important;
+    background-color: #EBF2F2 !important;
+}
+
+.rst-content .admonition-title {
+    background-color: #4F8C8C !important;
+    color: #EBF2F2 !important;
+}
+
+.rst-content .admonition.note {
+    border-left-color: #260A08 !important;
+    border: 1px solid #260A08 !important;
+}
+
+.rst-content .admonition.note .admonition-title {
+    background-color: #260A08 !important;
+    color: #EBF2F2 !important;
+}
+
+.rst-content .admonition.warning {
+    border-left-color: #260A08 !important;
+}
+
+.rst-content .admonition.warning .admonition-title {
+    background-color: #260A08 !important;
+}
+
+.rst-content .admonition.error {
+    border-left-color: #260A08 !important;
+}
+
+.rst-content .admonition.error .admonition-title {
+    background-color: #260A08 !important;
+}
+
+/* Sphinx tabs */
+.sphinx-tabs-tab {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+.sphinx-tabs-tab[aria-selected="true"] {
+    background-color: #4F8C8C !important;
+    color: #EBF2F2 !important;
+}
+
+.sphinx-tabs-tab:hover {
+    background-color: #011F26 !important;
+    color: #EBF2F2 !important;
+}
+
+.sphinx-tabs-panel {
+    border: 1px solid #4F8C8C !important;
+    background-color: #EBF2F2 !important;
+}
+
+/* Footer and breadcrumbs */
+.rst-footer-buttons {
+    border-top: 1px solid #4F8C8C !important;
+}
+
+.rst-breadcrumbs {
+    background-color: #EBF2F2 !important;
+    border-bottom: 1px solid #4F8C8C !important;
+}
+
+.rst-breadcrumbs a {
+    color: #4F8C8C !important;
+}
+
+/* Search */
+.wy-side-nav-search .wy-dropdown .caption {
+    color: #EBF2F2 !important;
+}
+
+/* Mobile responsiveness */
+@media screen and (max-width: 768px) {
+    .wy-nav-side {
+        background-color: #EBF2F2 !important;
+    }
+    
+    .wy-nav-top {
+        background-color: #013A40 !important;
+    }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #EBF2F2;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #4F8C8C;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #011F26;
+}
+
+/* Toctree caption overrides */
+/* Sidebar caption color override */
+.wy-menu > .caption > span.caption-text {
+    color: #011F26 !important; /* Dark blue-green for sidebar captions */
+}
+
+/* Toctree caption inside page content */
+div.toctree-wrapper p.caption[role=heading] {
+    color: #011F26 !important; /* Dark blue-green for main content captions */
+    font-weight: bold;
+}
+
+/* Additional toctree caption selectors for comprehensive coverage */
+.toctree-wrapper .caption {
+    color: #011F26 !important;
+}
+
+.toctree-wrapper .caption-text {
+    color: #011F26 !important;
+}
+
+/* Target any remaining caption elements */
+.caption {
+    color: #011F26 !important;
+}
+
+.caption-text {
+    color: #011F26 !important;
+}
+
+/* Code block and inline code overrides */
+/* Inline code color */
+code, tt {
+    color: #011F26 !important;               /* Dark blue-green text */
+    background-color: #EBF2F2 !important;    /* Light background */
+    border-radius: 3px;
+    padding: 2px 4px;
+    border: 1px solid #4F8C8C !important;
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
+
+/* Code block background and text color */
+div.highlight pre {
+    background-color: #EBF2F2 !important;  /* Light background */
+    color: #011F26 !important;             /* Dark blue-green text */
+    border-radius: 6px;
+    padding: 1em;
+    font-size: 0.95em;
+    border: 1px solid #4F8C8C !important;
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
+
+/* Override RTD theme code styling */
+.rst-content div.highlight pre {
+    background: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+/* Line number styling if used */
+.highlighttable td.linenos pre {
+    color: #011F26 !important;
+    background-color: #EBF2F2 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+/* Additional code block selectors for comprehensive coverage */
+.rst-content .highlight {
+    background-color: #EBF2F2 !important;
+    border: 1px solid #4F8C8C !important;
+}
+
+.rst-content .highlight pre {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Force override for any remaining code elements */
+pre code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+.highlight pre code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+}
+
+/* Theme-specific selectors for comprehensive coverage */
+/* For pydata-sphinx-theme */
+.bd-article-content pre, 
+.bd-content pre code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
+
+/* Universal code styling */
+pre, code {
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
+
+/* Additional RTD theme specific overrides */
+.rst-content pre {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
+
+.rst-content code {
+    background-color: #EBF2F2 !important;
+    color: #011F26 !important;
+    border: 1px solid #4F8C8C !important;
+    font-family: "Fira Code", "Source Code Pro", "Consolas", "Monaco", monospace !important;
+    line-height: 1.4;
+}
