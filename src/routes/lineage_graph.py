@@ -14,24 +14,14 @@ router = APIRouter()
 )
 async def get_lineage_graph(
     session: SessionDep,
-    source_address_id: int | None = None,
-    target_address_id: int | None = None,
-    depth: int | None = None,
-    pipeline_id: int | None = None,
-    pipeline_type_name: str | None = None,
-    pipeline_active: bool | None = None,
+    source_address_id: int,
 ) -> LineageGraphResponse:
-    """Get lineage graph data with optional filters."""
+    """Get lineage graph data filtered by source address."""
 
     try:
         return await db_get_lineage_graph(
             session=session,
             source_address_id=source_address_id,
-            target_address_id=target_address_id,
-            depth=depth,
-            pipeline_id=pipeline_id,
-            pipeline_type_name=pipeline_type_name,
-            pipeline_active=pipeline_active,
         )
     except Exception as e:
         raise HTTPException(

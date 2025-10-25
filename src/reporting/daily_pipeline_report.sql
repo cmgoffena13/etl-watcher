@@ -36,5 +36,7 @@ inner join pipeline_type pt
 group by
 pe.date_recorded, pt.name, p.name;
 
-CREATE INDEX IF NOT EXISTS idx_daily_pipeline_report_date_recorded ON daily_pipeline_report(date_recorded, pipeline_name, pipeline_type_name);
-CREATE INDEX IF NOT EXISTS idx_daily_pipeline_report_pipeline_type_name ON daily_pipeline_report(date_recorded, pipeline_type_name, pipeline_name);
+CREATE INDEX IF NOT EXISTS idx_daily_pipeline_report_date_recorded 
+	ON daily_pipeline_report(date_recorded, pipeline_name, pipeline_type_name);
+CREATE INDEX IF NOT EXISTS idx_daily_pipeline_report_pipeline_type_name 
+	ON daily_pipeline_report(date_recorded, pipeline_type_name, pipeline_name);

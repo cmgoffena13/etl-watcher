@@ -212,24 +212,23 @@
         <div class="filters">
             <div class="filter-group">
                 <label>Selected Address</label>
-                <select id="centerNodeFilter" onchange="applyFilters()">
+                <select id="selectedAddressFilter">
                     <option value="">Select Address</option>
                 </select>
             </div>
             
             <div class="filter-group">
                 <label>Target Address</label>
-                <select id="targetNodeFilter" onchange="applyFilters()">
+                <select id="targetAddressFilter" onchange="applyFilters()">
                     <option value="">All Addresses</option>
                 </select>
             </div>
+            
             
             <div class="filter-group">
                 <label>Depth</label>
                 <select id="depthFilter" onchange="applyFilters()">
                     <option value="">All Depths</option>
-                    <option value="1">Direct Only</option>
-                    <option value="2" selected>Transitive (2+)</option>
                 </select>
             </div>
             
@@ -271,306 +270,426 @@
     <div class="tooltip" id="tooltip" style="display: none;"></div>
 
     <script>
+        let addressesData = null;
         let graphData = null;
         let filteredData = null;
-        
+
+        function showEmptyState() {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'none';
+            document.getElementById('graph').style.display = 'block';
+            
+            const svg = d3.select('#graph');
+            svg.selectAll('*').remove();
+            svg.append('text')
+                .attr('x', '50%')
+                .attr('y', '50%')
+                .attr('text-anchor', 'middle')
+                .attr('dominant-baseline', 'middle')
+                .style('font-size', '18px')
+                .style('fill', '#666')
+                .text('Select an address to view lineage');
+        }
+
+        function showLoading(show) {
+            if (show) {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+                document.getElementById('graph').style.display = 'none';
+            } else {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('graph').style.display = 'block';
+            }
+        }
+
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('graph').style.display = 'none';
+            document.getElementById('error').textContent = message;
+        }
+
+        async function refreshMaterializedView() {
+            try {
+                const response = await fetch('/lineage-graph/refresh', {
+                    method: 'POST'
+                });
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+            } catch (error) {
+                console.error('Failed to refresh materialized view:', error);
+            }
+        }
+
         // Initialize page on load
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', async function() {
             showEmptyState();
-            refreshMaterializedView();
-            loadGraphData();
+            await loadAddresses();
+            await refreshMaterializedView();
+
+            // Listen for changes to the selected address filter
+            document.getElementById('selectedAddressFilter').addEventListener('change', async function() {
+                const selectedAddress = this.value;
+                if (selectedAddress) {
+                    const selectedAddressId = getAddressIdByName(selectedAddress);
+                    if (selectedAddressId) {
+                        await loadGraphData(selectedAddressId);
+                        populateDropdowns(graphData, selectedAddressId);
+                        applyFilters();
+                    } else {
+                        showError('Address not found');
+                    }
+                } else {
+                    showEmptyState();
+                }
+            });
         });
-        
-        async function loadGraphData() {
+
+        // Fetch addresses data to populate the selected address dropdown
+        async function loadAddresses() {
+            try {
+                const response = await fetch('/address');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const addresses = await response.json();
+                // Store only id and name for efficiency
+                addressesData = addresses.map(addr => ({
+                    id: addr.id,
+                    name: addr.name
+                }));
+                populateAddresses(addresses);
+            } catch (error) {
+                showError('Failed to load addresses: ' + error.message);
+            }
+        }
+
+        async function populateAddresses(addresses) {
+            const selectedAddress = document.getElementById('selectedAddressFilter');
+            selectedAddress.innerHTML = '<option value="">Select Address</option>';
+            // Populate addresses dropdown with address names
+            addresses.forEach(address => {
+                const option = document.createElement('option');
+                option.value = address.name;
+                option.textContent = address.name;
+                selectedAddress.appendChild(option);
+            });
+        }
+
+        function getAddressIdByName(addressName) {
+            // If no addresses data or it's not an array, return
+            if (!addressesData || !Array.isArray(addressesData)) {
+                console.error('Addresses data not available');
+                return null;
+            }
+            
+            const address = addressesData.find(addr => addr && addr.name === addressName);
+            if (!address) {
+                console.error(`Address not found: ${addressName}`);
+                return null;
+            }
+            
+            if (!address.id || typeof address.id !== 'number') {
+                console.error(`Invalid address ID for ${addressName}:`, address.id);
+                return null;
+            }
+            
+            return address.id;
+        }
+
+        // Once an Address is selected
+
+        // Step1: Load the graph data for the selected address
+        async function loadGraphData(selectedAddressId) {
             try {
                 showLoading(true);
-                const response = await fetch('/lineage-graph/');
+                const response = await fetch(`/lineage-graph/?source_address_id=${selectedAddressId}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
                 graphData = await response.json();
-                populateFilters();
-                showEmptyState();
                 showLoading(false);
             } catch (error) {
                 showError('Failed to load lineage graph: ' + error.message);
             }
         }
-        
-        function populateFilters() {
+
+        // Step2: Populate the drop downs with the data from the graph data
+        function populateDropdowns(graphData, selectedAddressId) {
+            // If no graph data or nodes, return
             if (!graphData || !graphData.nodes) return;
+
+            const selectedTargetAddress = document.getElementById('targetAddressFilter');
+            const previouslySelectedTargetAddress = selectedTargetAddress.value; // Save current selection
+            selectedTargetAddress.innerHTML = '<option value="">All Addresses</option>';
             
-            // Clear existing options (except the first option)
-            const centerSelect = document.getElementById('centerNodeFilter');
+            // Get all target addresses from the edges
+            const downstreamTargetAddresses = new Set();
             
-            // Clear all options except the first one
-            while (centerSelect.children.length > 1) {
-                centerSelect.removeChild(centerSelect.lastChild);
-            }
-            
-            // Get unique addresses from nodes
-            const addresses = [...new Set(graphData.nodes.map(n => n.name))].sort();
-            
-            addresses.forEach(addr => {
-                const option = document.createElement('option');
-                option.value = addr;
-                option.textContent = addr;
-                centerSelect.appendChild(option);
+            graphData.edges.forEach(edge => {
+                downstreamTargetAddresses.add(edge.target_address_id);
             });
             
-            // Populate depth filter with actual depth values
-            const depthSelect = document.getElementById('depthFilter');
-            const currentValue = depthSelect.value; // Save current selection
-            depthSelect.innerHTML = '<option value="">All Depths</option>';
+            // Convert to node names and sort
+            const targetAddressNames = Array.from(downstreamTargetAddresses)
+                .map(nodeId => graphData.nodes.find(n => n.id === nodeId)?.name)
+                .filter(name => name)
+                .sort();
             
-            const uniqueDepths = [...new Set(graphData.edges.map(edge => edge.depth))].sort();
+            // Populate target address dropdown with downstream addresses
+            targetAddressNames.forEach(name => {
+                const option = document.createElement('option');
+                option.value = name;
+                option.textContent = name;
+                selectedTargetAddress.appendChild(option);
+            });
+            
+            // Restore previous selection if it still exists
+            if (previouslySelectedTargetAddress && targetAddressNames.includes(previouslySelectedTargetAddress)) {
+                selectedTargetAddress.value = previouslySelectedTargetAddress;
+            }
+            
+            // Populate depth dropdown
+            const depthFilter = document.getElementById('depthFilter');
+            const previouslySelectedDepth = depthFilter.value;
+            depthFilter.innerHTML = '<option value="">All Depths</option>';
+            
+            // Calculate depths to get available depth options
+            const depths = new Map();
+            const visited = new Set();
+            const queue = [{ node: { id: selectedAddressId }, depth: 0 }];
+            depths.set(selectedAddressId, 0);
+            visited.add(selectedAddressId);
+            
+            while (queue.length > 0) {
+                const { node, depth } = queue.shift();
+                
+                graphData.edges.forEach(edge => {
+                    let connectedNode = null;
+                    if (edge.source_address_id === node.id) {
+                        connectedNode = { id: edge.target_address_id };
+                    } else if (edge.target_address_id === node.id) {
+                        connectedNode = { id: edge.source_address_id };
+                    }
+                    
+                    if (connectedNode && !visited.has(connectedNode.id)) {
+                        const newDepth = edge.source_address_id === node.id ? depth + 1 : depth - 1;
+                        depths.set(connectedNode.id, newDepth);
+                        visited.add(connectedNode.id);
+                        queue.push({ node: connectedNode, depth: newDepth });
+                    }
+                });
+            }
+            
+            // Get unique depths and sort them
+            const uniqueDepths = [...new Set(depths.values())].map(d => Math.abs(d)).sort();
             
             uniqueDepths.forEach(depth => {
                 const option = document.createElement('option');
                 option.value = depth;
                 option.textContent = `Depth ${depth}`;
                 if (depth === 2) option.selected = true; // Default to depth 2
-                depthSelect.appendChild(option);
+                depthFilter.appendChild(option);
             });
             
-            // Restore previous selection if it was valid
-            if (currentValue && uniqueDepths.includes(parseInt(currentValue))) {
-                depthSelect.value = currentValue;
+            // Restore previous selection or set default
+            if (previouslySelectedDepth && uniqueDepths.includes(parseInt(previouslySelectedDepth))) {
+                depthFilter.value = previouslySelectedDepth;
+            } else if (uniqueDepths.includes(2)) {
+                depthFilter.value = 2;
             }
         }
-        
-        function populateTargetDropdown(centerNodeId) {
-            if (!graphData || !centerNodeId) return;
-            
-            const targetSelect = document.getElementById('targetNodeFilter');
-            const currentValue = targetSelect.value; // Save current selection
-            targetSelect.innerHTML = '<option value="">All Addresses</option>';
-            
-            // Find all downstream target addresses from the center node
-            const downstreamTargets = new Set();
-            
-            graphData.edges.forEach(edge => {
-                if (edge.source_address_id === centerNodeId) {
-                    // Direct downstream targets
-                    downstreamTargets.add(edge.target_address_id);
-                } else if (edge.lineage_path && edge.lineage_path.includes(centerNodeId)) {
-                    const centerIndex = edge.lineage_path.indexOf(centerNodeId);
-                    // Add all addresses that come after the center node in the path
-                    for (let i = centerIndex + 1; i < edge.lineage_path.length; i++) {
-                        downstreamTargets.add(edge.lineage_path[i]);
-                    }
-                }
-            });
-            
-            // Convert to node names and sort
-            const targetNames = Array.from(downstreamTargets)
-                .map(nodeId => graphData.nodes.find(n => n.id === nodeId)?.name)
-                .filter(name => name)
-                .sort();
-            
-            targetNames.forEach(name => {
-                const option = document.createElement('option');
-                option.value = name;
-                option.textContent = name;
-                targetSelect.appendChild(option);
-            });
-            
-            // Restore previous selection if it still exists
-            if (currentValue && targetNames.includes(currentValue)) {
-                targetSelect.value = currentValue;
-            }
-        }
-        
+
+        // Step3: Apply the filters to the graph data (also triggered by other dropdowns)
         function applyFilters() {
-            if (!graphData || !graphData.nodes) return;
+            if (!graphData) return;
             
-            const centerNodeFilter = document.getElementById('centerNodeFilter').value;
-            const targetNodeFilter = document.getElementById('targetNodeFilter').value;
+            const selectedAddress = document.getElementById('selectedAddressFilter').value;
+            const selectedAddressId = getAddressIdByName(selectedAddress);
+            const selectedTargetAddress = document.getElementById('targetAddressFilter').value;
             const depthFilter = document.getElementById('depthFilter').value;
             const directionFilter = document.getElementById('directionFilter').value;
             
             // If no center node is selected, show empty state
-            if (!centerNodeFilter) {
+            if (!selectedAddressId) {
                 showEmptyState();
                 return;
             }
+        
+            let nodes = graphData.nodes;
+            let edges = graphData.edges;
             
-            let filteredNodes = graphData.nodes;
-            let filteredEdges = graphData.edges;
-            
-            // Apply center node filter - show only nodes connected to the selected center node
-            const centerNodeId = graphData.nodes.find(n => n.name === centerNodeFilter)?.id;
-            if (centerNodeId) {
-                // Populate target address dropdown with downstream addresses
-                populateTargetDropdown(centerNodeId);
-                // Find direct relationships from the center node
-                const connectedNodeIds = new Set();
-                const connectedEdges = [];
-                
-                // Add the center node itself
-                connectedNodeIds.add(centerNodeId);
-                
-                // Find all edges connected to the center node and create direct relationships
-                graphData.edges.forEach(edge => {
-                    if (edge.source_address_id === centerNodeId || edge.target_address_id === centerNodeId) {
-                        // Add all nodes in the lineage path
-                        if (edge.lineage_path) {
-                            edge.lineage_path.forEach(nodeId => connectedNodeIds.add(nodeId));
-                        } else {
-                            connectedNodeIds.add(edge.source_address_id);
-                            connectedNodeIds.add(edge.target_address_id);
+            // Apply target address filter
+            if (selectedTargetAddress && selectedTargetAddress !== "") {
+                const targetNodeId = getAddressIdByName(selectedTargetAddress);
+                if (targetNodeId) {
+                    // Find path from selected address to target address
+                    const pathEdges = [];
+                    const pathNodes = new Set();
+                    pathNodes.add(selectedAddressId); // Always include the center
+                    pathNodes.add(targetNodeId); // Always include the target
+                    
+                    // Use BFS to find path from center to target
+                    const queue = [{ nodeId: selectedAddressId, path: [] }];
+                    const visited = new Set();
+                    
+                    while (queue.length > 0) {
+                        const { nodeId, path } = queue.shift();
+                        if (visited.has(nodeId)) continue;
+                        visited.add(nodeId);
+                        
+                        // If we reached the target, add all edges in the path
+                        if (nodeId === targetNodeId) {
+                            path.forEach(edge => {
+                                pathEdges.push(edge);
+                                pathNodes.add(edge.source_address_id);
+                                pathNodes.add(edge.target_address_id);
+                            });
+                            break;
                         }
                         
-                           // Create direct relationships from lineage path
-                           if (edge.lineage_path && edge.lineage_path.length > 1) {
-                               for (let i = 0; i < edge.lineage_path.length - 1; i++) {
-                                   const sourceId = edge.lineage_path[i];
-                                   const targetId = edge.lineage_path[i + 1];
-                                   
-                                   // Find the actual pipeline info for this direct relationship
-                                   const directEdge = graphData.edges.find(e => 
-                                       e.source_address_id === sourceId && 
-                                       e.target_address_id === targetId && 
-                                       e.depth === 1
-                                   );
-                                   
-                                   connectedEdges.push({
-                                       source_address_id: sourceId,
-                                       target_address_id: targetId,
-                                       depth: 1, // These are direct relationships
-                                       lineage_path: edge.lineage_path,
-                                       pipeline_id: directEdge?.pipeline_id || null,
-                                       pipeline_name: directEdge?.pipeline_name || null,
-                                       pipeline_type_name: directEdge?.pipeline_type_name || null,
-                                       pipeline_metadata: directEdge?.pipeline_metadata || null,
-                                       pipeline_active: directEdge?.pipeline_active || null
-                                   });
-                               }
-                           } else {
-                               connectedEdges.push(edge);
-                           }
+                        // Find all edges from this node
+                        edges.forEach(edge => {
+                            if (edge.source_address_id === nodeId && !visited.has(edge.target_address_id)) {
+                                queue.push({ 
+                                    nodeId: edge.target_address_id, 
+                                    path: [...path, edge] 
+                                });
+                            }
+                        });
                     }
-                });
-                
-                // Filter nodes to only show directly connected ones
-                filteredNodes = graphData.nodes.filter(node => connectedNodeIds.has(node.id));
-                filteredEdges = connectedEdges;
+                    
+                    edges = pathEdges;
+                    nodes = nodes.filter(node => pathNodes.has(node.id));
+                }
             }
             
-            // Apply depth filter based on center node
-            
-            if (depthFilter && depthFilter !== "" && centerNodeId) {
-                const maxDepth = parseInt(depthFilter);
+            // Apply direction filter
+            if (directionFilter && directionFilter !== "both" && selectedAddressId) {
+                const connectedNodeIds = new Set();
+                connectedNodeIds.add(selectedAddressId); // Always include the center node
                 
-                // First, find all nodes within the depth limit from the center node
-                const nodesWithinDepth = new Set();
-                nodesWithinDepth.add(centerNodeId); // Always include the center node
-                
-                // Look at all edges to find paths that include the center node
-                graphData.edges.forEach(edge => {
-                    if (edge.lineage_path && edge.lineage_path.includes(centerNodeId)) {
-                        const centerIndex = edge.lineage_path.indexOf(centerNodeId);
-                        
-                        // Check if this path respects the direction filter
-                        let shouldIncludePath = true;
-                        if (directionFilter && directionFilter !== "both") {
-                            if (directionFilter === "upstream") {
-                                // Only include if center node is at the end of the path (target)
-                                shouldIncludePath = centerIndex === edge.lineage_path.length - 1;
-                            } else if (directionFilter === "downstream") {
-                                // Only include if center node is at the start of the path (source)
-                                shouldIncludePath = centerIndex === 0;
-                            }
-                        }
-                        
-                        if (shouldIncludePath) {
-                            // Add all nodes in the lineage path that are within the depth limit
-                            edge.lineage_path.forEach((nodeId, index) => {
-                                const depthFromCenter = Math.abs(index - centerIndex);
-                                if (depthFromCenter <= maxDepth) {
-                                    nodesWithinDepth.add(nodeId);
-                                }
-                            });
-                        }
-                    } else {
-                        // For direct edges, check if they involve the center node and respect direction
-                        let shouldIncludeEdge = false;
-                        if (edge.source_address_id === centerNodeId || edge.target_address_id === centerNodeId) {
-                            if (!directionFilter || directionFilter === "both") {
-                                shouldIncludeEdge = true;
-                            } else if (directionFilter === "upstream" && edge.target_address_id === centerNodeId) {
-                                shouldIncludeEdge = true;
-                            } else if (directionFilter === "downstream" && edge.source_address_id === centerNodeId) {
-                                shouldIncludeEdge = true;
-                            }
-                        }
-                        
-                        if (shouldIncludeEdge) {
-                            nodesWithinDepth.add(edge.source_address_id);
-                            nodesWithinDepth.add(edge.target_address_id);
-                        }
-                    }
-                });
-                
-                
-                // Filter nodes to only show those within depth
-                filteredNodes = filteredNodes.filter(node => nodesWithinDepth.has(node.id));
-                
-                // Keep all edges that connect nodes within depth
-                filteredEdges = filteredEdges.filter(edge => {
-                    const keep = nodesWithinDepth.has(edge.source_address_id) && nodesWithinDepth.has(edge.target_address_id);
-                    return keep;
-                });
-                
-            } else if (directionFilter && directionFilter !== "both" && centerNodeId) {
-                // Apply only direction filter if no depth filter
                 if (directionFilter === "upstream") {
-                    // Only show edges where center node is the target (upstream sources)
-                    filteredEdges = filteredEdges.filter(edge => edge.target_address_id === centerNodeId);
+                    // Find all upstream nodes and edges
+                    const upstreamNodes = new Set();
+                    const upstreamEdges = [];
+                    
+                    // Start with direct upstream connections
+                    const directUpstream = edges.filter(edge => edge.target_address_id === selectedAddressId);
+                    directUpstream.forEach(edge => {
+                        upstreamNodes.add(edge.source_address_id);
+                        upstreamEdges.push(edge);
+                    });
+                    
+                    // Recursively find all upstream connections
+                    let foundNew = true;
+                    while (foundNew) {
+                        foundNew = false;
+                        edges.forEach(edge => {
+                            if (upstreamNodes.has(edge.target_address_id) && !upstreamNodes.has(edge.source_address_id)) {
+                                upstreamNodes.add(edge.source_address_id);
+                                upstreamEdges.push(edge);
+                                foundNew = true;
+                            }
+                        });
+                    }
+                    
+                    edges = upstreamEdges;
+                    upstreamNodes.forEach(id => connectedNodeIds.add(id));
+                    
                 } else if (directionFilter === "downstream") {
-                    // Only show edges where center node is the source (downstream targets)
-                    filteredEdges = filteredEdges.filter(edge => edge.source_address_id === centerNodeId);
+                    // Find all downstream nodes and edges
+                    const downstreamNodes = new Set();
+                    const downstreamEdges = [];
+                    
+                    // Start with direct downstream connections
+                    const directDownstream = edges.filter(edge => edge.source_address_id === selectedAddressId);
+                    directDownstream.forEach(edge => {
+                        downstreamNodes.add(edge.target_address_id);
+                        downstreamEdges.push(edge);
+                    });
+                    
+                    // Recursively find all downstream connections
+                    let foundNew = true;
+                    while (foundNew) {
+                        foundNew = false;
+                        edges.forEach(edge => {
+                            if (downstreamNodes.has(edge.source_address_id) && !downstreamNodes.has(edge.target_address_id)) {
+                                downstreamNodes.add(edge.target_address_id);
+                                downstreamEdges.push(edge);
+                                foundNew = true;
+                            }
+                        });
+                    }
+                    
+                    edges = downstreamEdges;
+                    downstreamNodes.forEach(id => connectedNodeIds.add(id));
                 }
                 
-                // Update nodes to only include those connected by the filtered edges
+                // Filter nodes to only include those in the connected set
+                nodes = nodes.filter(node => connectedNodeIds.has(node.id));
+            }
+            
+            // Apply depth filter using the same algorithm as layout
+            if (depthFilter && depthFilter !== "" && selectedAddressId) {
+                const maxDepth = parseInt(depthFilter);
+                
+                // Calculate depths using the same BFS as layout
+                const depths = new Map();
+                const visited = new Set();
+                const queue = [{ node: { id: selectedAddressId }, depth: 0 }];
+                depths.set(selectedAddressId, 0);
+                visited.add(selectedAddressId);
+                
+                while (queue.length > 0) {
+                    const { node, depth } = queue.shift();
+                    
+                    edges.forEach(edge => {
+                        let connectedNode = null;
+                        if (edge.source_address_id === node.id) {
+                            connectedNode = { id: edge.target_address_id };
+                        } else if (edge.target_address_id === node.id) {
+                            connectedNode = { id: edge.source_address_id };
+                        }
+                        
+                        if (connectedNode && !visited.has(connectedNode.id)) {
+                            const newDepth = edge.source_address_id === node.id ? depth + 1 : depth - 1;
+                            depths.set(connectedNode.id, newDepth);
+                            visited.add(connectedNode.id);
+                            queue.push({ node: connectedNode, depth: newDepth });
+                        }
+                    });
+                }
+                
+                // Filter edges based on depth
+                edges = edges.filter(edge => {
+                    const sourceDepth = Math.abs(depths.get(edge.source_address_id) || 0);
+                    const targetDepth = Math.abs(depths.get(edge.target_address_id) || 0);
+                    return sourceDepth <= maxDepth && targetDepth <= maxDepth;
+                });
+                
+                // Filter nodes to only include those connected by remaining edges
                 const connectedNodeIds = new Set();
-                filteredEdges.forEach(edge => {
+                connectedNodeIds.add(selectedAddressId);
+                edges.forEach(edge => {
                     connectedNodeIds.add(edge.source_address_id);
                     connectedNodeIds.add(edge.target_address_id);
                 });
-                filteredNodes = filteredNodes.filter(node => connectedNodeIds.has(node.id));
-            }
-            
-            // Apply target address filter
-            if (targetNodeFilter && targetNodeFilter !== "" && centerNodeId) {
-                const targetNodeId = graphData.nodes.find(n => n.name === targetNodeFilter)?.id;
-                if (targetNodeId) {
-                    // Only show edges that connect to the selected target address
-                    filteredEdges = filteredEdges.filter(edge => 
-                        edge.target_address_id === targetNodeId || 
-                        (edge.lineage_path && edge.lineage_path.includes(targetNodeId))
-                    );
-                    
-                    // Update nodes to only include those connected by the filtered edges
-                    const connectedNodeIds = new Set();
-                    filteredEdges.forEach(edge => {
-                        connectedNodeIds.add(edge.source_address_id);
-                        connectedNodeIds.add(edge.target_address_id);
-                    });
-                    filteredNodes = filteredNodes.filter(node => connectedNodeIds.has(node.id));
-                }
+                nodes = nodes.filter(node => connectedNodeIds.has(node.id));
             }
             
             filteredData = {
-                nodes: filteredNodes,
-                edges: filteredEdges
+                nodes: nodes,
+                edges: edges
             };
             
             renderGraph();
         }
-        
+
+        // Graph Rendering
         function renderGraph() {
-            if (!filteredData || !filteredData.nodes) return;
+            if (!filteredData) return;
             
             const svg = d3.select('#graph');
             svg.selectAll('*').remove();
@@ -580,30 +699,21 @@
             const width = containerWidth > 0 ? containerWidth : 800;
             const height = 600;
             
-            
             svg.attr('width', width).attr('height', height);
             
             const g = svg.append('g');
             
-            // Ensure edges only reference existing nodes and transform for D3
-            const validNodeIds = new Set(filteredData.nodes.map(n => n.id));
-            const validEdges = filteredData.edges.filter(e => 
-                validNodeIds.has(e.source_address_id) && validNodeIds.has(e.target_address_id)
-            );
-            
             // Transform edges for D3 force simulation (D3 expects source/target to be node objects)
             const nodeMap = new Map(filteredData.nodes.map(n => [n.id, n]));
             
-            const d3Edges = validEdges.map(edge => ({
+            const d3Edges = filteredData.edges.map(edge => ({
                 ...edge,
                 source: nodeMap.get(edge.source_address_id),
                 target: nodeMap.get(edge.target_address_id)
             }));
             
-            
             // Calculate hierarchical positions
-            const positions = calculateHierarchicalLayout(filteredData.nodes, validEdges, width, height);
-            
+            const positions = calculateHierarchicalLayout(filteredData.nodes, d3Edges, width, height);
             
             // Apply calculated positions to nodes
             filteredData.nodes.forEach(node => {
@@ -690,14 +800,14 @@
                     .on('drag', dragged)
                     .on('end', dragended));
             
-            const selectedCenterNode = document.getElementById('centerNodeFilter').value;
+            const selectedAddress = document.getElementById('selectedAddressFilter').value;
             
             const circles = node.append('circle')
                 .attr('r', 20)
-                .attr('fill', d => d.name === selectedCenterNode ? '#FF0000' : '#336791')
-                .attr('stroke', d => d.name === selectedCenterNode ? '#000000' : '#fff')
-                .attr('stroke-width', d => d.name === selectedCenterNode ? 8 : 2)
-                .attr('class', d => d.name === selectedCenterNode ? 'selected-node' : 'normal-node');
+                .attr('fill', d => d.name === selectedAddress ? '#FF0000' : '#336791')
+                .attr('stroke', d => d.name === selectedAddress ? '#000000' : '#fff')
+                .attr('stroke-width', d => d.name === selectedAddress ? 8 : 2)
+                .attr('class', d => d.name === selectedAddress ? 'selected-node' : 'normal-node');
             
             node.append('text')
                 .text(d => d.name)
@@ -706,7 +816,7 @@
                 .attr('font-size', '14px');
             
             // Add tooltips and click handlers
-            node            .on('mouseover', function(event, d) {
+            node.on('mouseover', function(event, d) {
                 const tooltip = d3.select('#tooltip');
                 tooltip.style('display', 'block')
                     .html(`
@@ -726,9 +836,10 @@
             })
             .on('click', function(event, d) {
                 // Set the center node filter to the clicked address
-                document.getElementById('centerNodeFilter').value = d.name;
+                document.getElementById('selectedAddressFilter').value = d.name;
                 // Apply the filters to show lineage for this address
-                applyFilters();
+                const selectedAddressId = d.id;
+                applyFilters(selectedAddressId);
             });
             
             // Drag functions
@@ -748,19 +859,18 @@
                 d.fy = null;
             }
         }
-        
+
         function calculateHierarchicalLayout(nodes, edges, width, height) {
             const positions = new Map();
             const nodeMap = new Map();
             nodes.forEach(node => nodeMap.set(node.id, node));
             
             // Find center node (the one selected)
-            const centerNodeName = document.getElementById('centerNodeFilter').value;
+            const centerNodeName = document.getElementById('selectedAddressFilter').value;
             const centerNode = nodes.find(n => n.name === centerNodeName);
             if (!centerNode) {
                 return positions;
             }
-            
             
             // Calculate depths from center node using BFS
             const depths = new Map();
@@ -821,50 +931,7 @@
             
             return positions;
         }
-        
-        function showEmptyState() {
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('graph').style.display = 'block';
-            
-            const svg = d3.select('#graph');
-            svg.selectAll('*').remove();
-            svg.append('text')
-                .attr('x', '50%')
-                .attr('y', '50%')
-                .attr('text-anchor', 'middle')
-                .attr('dominant-baseline', 'middle')
-                .style('font-size', '18px')
-                .style('fill', '#666')
-                .text('Select an address to view lineage');
-        }
-        
-        function showLoading(show) {
-            document.getElementById('loading').style.display = show ? 'block' : 'none';
-            document.getElementById('error').style.display = 'none';
-            document.getElementById('graph').style.display = show ? 'none' : 'block';
-        }
-        
-        function showError(message) {
-            document.getElementById('error').textContent = message;
-            document.getElementById('error').style.display = 'block';
-            document.getElementById('loading').style.display = 'none';
-            document.getElementById('graph').style.display = 'none';
-        }
-        
-        async function refreshMaterializedView() {
-            try {
-                const response = await fetch('/lineage-graph/refresh', {
-                    method: 'POST'
-                });
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-            } catch (error) {
-                console.error('Failed to refresh materialized view:', error);
-            }
-        }
-        
+
     </script>
 </body>
 </html>

@@ -147,6 +147,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#lineage-graph-web-page">Lineage Graph Web Page</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#interactive-lineage-visualization">Interactive Lineage Visualization</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
 </ul>
@@ -1914,6 +1918,56 @@ and performance analysis.</p>
 - <strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a>
 - <strong>Method</strong>: GET
 - <strong>Content-Type</strong>: text/html</p>
+</dd></dl>
+
+</section>
+</section>
+<section id="lineage-graph-web-page">
+<h2>Lineage Graph Web Page<a class="headerlink" href="#lineage-graph-web-page" title="Link to this heading"></a></h2>
+<section id="interactive-lineage-visualization">
+<h3>Interactive Lineage Visualization<a class="headerlink" href="#interactive-lineage-visualization" title="Link to this heading"></a></h3>
+<dl class="http get">
+<dt class="sig sig-object http" id="get--lineage-graph">
+<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/lineage-graph</span></span><a class="headerlink" href="#get--lineage-graph" title="Link to this definition"></a></dt>
+<dd><p>Web-based interactive lineage graph providing visual representation of data flow relationships between addresses.</p>
+<p><strong>Features:</strong></p>
+<ul class="simple">
+<li><p>Interactive graph visualization with drag-and-drop nodes</p></li>
+<li><p>Hierarchical layout based on data flow depth from selected address</p></li>
+<li><p>Advanced filtering by target address, direction (upstream/downstream), and depth</p></li>
+<li><p>Real-time graph updates when filters change</p></li>
+<li><p>Pipeline information display on edge hover</p></li>
+<li><p>Click-to-navigate functionality for changing center address</p></li>
+</ul>
+<p><strong>Usage:</strong></p>
+<ol class="arabic simple">
+<li><p><strong>Select Address</strong>: Choose a source address from the dropdown to center the graph</p></li>
+<li><p><strong>Filter by Target</strong>: Select a specific target address to show only paths to that address</p></li>
+<li><p><strong>Direction Filter</strong>: Choose “Upstream” to see data sources, “Downstream” to see data targets, or “Both”</p></li>
+<li><p><strong>Depth Filter</strong>: Limit the graph to show only relationships within a certain depth (default: 2)</p></li>
+<li><p><strong>Interactive Navigation</strong>: Click on nodes to change the center address and reload the graph</p></li>
+</ol>
+<p><strong>Graph Layout:</strong></p>
+<p>The graph uses a hierarchical layout algorithm that:</p>
+<ul class="simple">
+<li><p>Centers the graph around your selected address</p></li>
+<li><p>Positions nodes based on their depth from the center</p></li>
+<li><p>Arranges nodes horizontally by depth level</p></li>
+<li><p>Vertically distributes nodes at the same depth level</p></li>
+</ul>
+<p><strong>Visual Elements:</strong></p>
+<ul class="simple">
+<li><p><strong>Nodes</strong>: Represent addresses with different colors for the selected address (red) and others (blue)</p></li>
+<li><p><strong>Edges</strong>: Show relationships between addresses with pipeline information on hover</p></li>
+<li><p><strong>Pipeline Details</strong>: Hover over edges to see pipeline name, type, status, and metadata</p></li>
+<li><p><strong>Interactive</strong>: Drag nodes to reposition, click to change center address</p></li>
+</ul>
+<p><strong>Access:</strong></p>
+<ul class="simple">
+<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/lineage-graph">http://localhost:8000/lineage-graph</a></p></li>
+<li><p><strong>Method</strong>: GET</p></li>
+<li><p><strong>Content-Type</strong>: text/html</p></li>
+</ul>
 </dd></dl>
 
 </section>

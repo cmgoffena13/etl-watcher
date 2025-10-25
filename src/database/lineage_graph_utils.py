@@ -15,48 +15,18 @@ logger = logging.getLogger(__name__)
 
 async def db_get_lineage_graph(
     session: AsyncSession,
-    source_address_id: Optional[int] = None,
-    target_address_id: Optional[int] = None,
-    depth: Optional[int] = None,
-    pipeline_id: Optional[int] = None,
-    pipeline_type_name: Optional[str] = None,
-    pipeline_active: Optional[bool] = None,
+    source_address_id: int,
 ) -> LineageGraphResponse:
     """Get lineage graph data from materialized view."""
 
-    # Build WHERE clause based on filters
-    where_conditions = []
-    params = {}
-
-    if source_address_id is not None:
-        where_conditions.append("source_address_id = :source_address_id")
-        params["source_address_id"] = source_address_id
-
-    if target_address_id is not None:
-        where_conditions.append("target_address_id = :target_address_id")
-        params["target_address_id"] = target_address_id
-
-    if depth is not None:
-        where_conditions.append("depth = :depth")
-        params["depth"] = depth
-
-    if pipeline_id is not None:
-        where_conditions.append("pipeline_id = :pipeline_id")
-        params["pipeline_id"] = pipeline_id
-
-    if pipeline_type_name is not None:
-        where_conditions.append("pipeline_type_name = :pipeline_type_name")
-        params["pipeline_type_name"] = pipeline_type_name
-
-    if pipeline_active is not None:
-        where_conditions.append("pipeline_active = :pipeline_active")
-        params["pipeline_active"] = pipeline_active
-
-    where_clause = ""
-    if where_conditions:
-        where_clause = "WHERE " + " AND ".join(where_conditions)
-
-    query = f"""
+    query = """
+    WITH all_address_ids AS (
+        SELECT target_address_id as address_id
+        FROM lineage_graph_report 
+        WHERE source_address_id = :source_address_id
+        UNION ALL
+        SELECT :source_address_id as address_id
+    )
     SELECT 
         source_address_id,
         target_address_id,
@@ -76,9 +46,10 @@ async def db_get_lineage_graph(
         pipeline_metadata,
         pipeline_active
     FROM lineage_graph_report
-    {where_clause}
-    ORDER BY source_address_id, target_address_id, depth
+    WHERE lineage_path && (SELECT ARRAY_AGG(address_id) FROM all_address_ids)
+        AND depth = 1
     """
+    params = {"source_address_id": source_address_id}
 
     try:
         logger.info(f"Executing query: {query}")

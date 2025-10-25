@@ -1366,6 +1366,55 @@ System Diagnostics
    - **Method**: GET
    - **Content-Type**: text/html
 
+Lineage Graph Web Page
+-----------------------
+
+Interactive Lineage Visualization
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. http:get:: /lineage-graph
+
+   Web-based interactive lineage graph providing visual representation of data flow relationships between addresses.
+
+   **Features:**
+
+   - Interactive graph visualization with drag-and-drop nodes
+   - Hierarchical layout based on data flow depth from selected address
+   - Advanced filtering by target address, direction (upstream/downstream), and depth
+   - Real-time graph updates when filters change
+   - Pipeline information display on edge hover
+   - Click-to-navigate functionality for changing center address
+
+   **Usage:**
+
+   1. **Select Address**: Choose a source address from the dropdown to center the graph
+   2. **Filter by Target**: Select a specific target address to show only paths to that address
+   3. **Direction Filter**: Choose "Upstream" to see data sources, "Downstream" to see data targets, or "Both"
+   4. **Depth Filter**: Limit the graph to show only relationships within a certain depth (default: 2)
+   5. **Interactive Navigation**: Click on nodes to change the center address and reload the graph
+
+   **Graph Layout:**
+
+   The graph uses a hierarchical layout algorithm that:
+   
+   - Centers the graph around your selected address
+   - Positions nodes based on their depth from the center
+   - Arranges nodes horizontally by depth level
+   - Vertically distributes nodes at the same depth level
+
+   **Visual Elements:**
+
+   - **Nodes**: Represent addresses with different colors for the selected address (red) and others (blue)
+   - **Edges**: Show relationships between addresses with pipeline information on hover
+   - **Pipeline Details**: Hover over edges to see pipeline name, type, status, and metadata
+   - **Interactive**: Drag nodes to reposition, click to change center address
+
+   **Access:**
+
+   - **URL**: http://localhost:8000/lineage-graph
+   - **Method**: GET
+   - **Content-Type**: text/html
+
 Reporting Dashboard Web Page
 ----------------------------
 
