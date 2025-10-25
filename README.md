@@ -114,6 +114,7 @@ etl_pipeline()
 - **Lineage Relationships**: Create and maintain data flow relationships between sources and targets
 - **Closure Table Pattern**: Efficient querying of complex lineage hierarchies with depth tracking
 - **Source Control Integration**: Store lineage definitions in version control for reproducibility
+- **Interactive Lineage Graph**: Visually explore lineage through addresses (nodes) and pipelines (edges)
 
 ### 📝 Configuration as Code
 - **Source Control Integration**: Store pipeline configuration and address lineage definitions in version control
