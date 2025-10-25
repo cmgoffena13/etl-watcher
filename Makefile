@@ -41,9 +41,6 @@ docs:
 docs-serve:
 	uv run sphinx-autobuild docs docs/_build/html --open-browser --port 8080
 
-docs-watch:
-	uv run sphinx-autobuild docs docs/_build/html --watch src/ --port 8080
-
 upgrade-sdk:
 	uv sync --upgrade-package etl-watcher-sdk
 
