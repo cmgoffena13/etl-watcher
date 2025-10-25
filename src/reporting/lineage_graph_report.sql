@@ -42,5 +42,5 @@ LEFT JOIN pipeline_type pt
     ON p.pipeline_type_id = pt.id
 WHERE alc.depth > 0;
 
-CREATE INDEX IF NOT EXISTS idx_lineage_graph_report_lineage_path_depth1 
+CREATE INDEX IF NOT EXISTS ix_lineage_graph_report_lineage_path_filtered
     ON lineage_graph_report USING GIN (lineage_path) WHERE depth = 1;
