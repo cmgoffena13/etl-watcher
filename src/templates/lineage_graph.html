@@ -211,6 +211,15 @@
         
         <div class="filters">
             <div class="filter-group">
+                <label>Search Address</label>
+                <div style="position: relative;">
+                    <input type="text" id="addressSearch" placeholder="Type to search addresses..." onkeyup="showSearchSuggestions()" onfocus="showSearchSuggestions()" onblur="hideSearchSuggestions()">
+                    <div id="searchSuggestions" style="position: absolute; top: 100%; left: 0; right: 0; background: white; border: 1px solid #ccc; border-top: none; max-height: 200px; overflow-y: auto; z-index: 1000; display: none;">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-group">
                 <label>Selected Address</label>
                 <select id="selectedAddressFilter">
                     <option value="">Select Address</option>
@@ -321,7 +330,7 @@
                 console.error('Failed to refresh materialized view:', error);
             }
         }
-
+        
         // Initialize page on load
         document.addEventListener('DOMContentLoaded', async function() {
             showEmptyState();
@@ -375,6 +384,66 @@
                 option.textContent = address.name;
                 selectedAddress.appendChild(option);
             });
+        }
+
+        // Show search suggestions dropdown
+        function showSearchSuggestions() {
+            const searchTerm = document.getElementById('addressSearch').value.toLowerCase();
+            const suggestionsDiv = document.getElementById('searchSuggestions');
+            
+            if (searchTerm.length === 0) {
+                suggestionsDiv.style.display = 'none';
+                return;
+            }
+            
+            // Filter addresses based on search term
+            const filteredAddresses = addressesData.filter(addr => 
+                addr.name.toLowerCase().includes(searchTerm)
+            ).slice(0, 10); // Limit to 10 suggestions
+            
+            // Clear previous suggestions
+            suggestionsDiv.innerHTML = '';
+            
+            if (filteredAddresses.length === 0) {
+                suggestionsDiv.innerHTML = '<div style="padding: 8px; color: #666;">No addresses found</div>';
+            } else {
+                filteredAddresses.forEach(address => {
+                    const suggestionDiv = document.createElement('div');
+                    suggestionDiv.style.padding = '8px';
+                    suggestionDiv.style.cursor = 'pointer';
+                    suggestionDiv.style.borderBottom = '1px solid #eee';
+                    suggestionDiv.textContent = address.name;
+                    suggestionDiv.onmouseover = function() { this.style.backgroundColor = '#f0f0f0'; };
+                    suggestionDiv.onmouseout = function() { this.style.backgroundColor = 'white'; };
+                    suggestionDiv.onclick = function() {
+                        selectAddressFromSearch(address.name);
+                    };
+                    suggestionsDiv.appendChild(suggestionDiv);
+                });
+            }
+            
+            suggestionsDiv.style.display = 'block';
+        }
+
+        // Hide search suggestions
+        function hideSearchSuggestions() {
+            // Add a small delay to allow clicking on suggestions
+            setTimeout(() => {
+                document.getElementById('searchSuggestions').style.display = 'none';
+            }, 200);
+        }
+
+        // Select address from search suggestions
+        function selectAddressFromSearch(addressName) {
+            // Set the selected address in the dropdown
+            document.getElementById('selectedAddressFilter').value = addressName;
+            document.getElementById('searchSuggestions').style.display = 'none';
+            
+            // Clear the search box after selection
+            document.getElementById('addressSearch').value = '';
+            
+            // Manually trigger the change event to activate the existing listener
+            document.getElementById('selectedAddressFilter').dispatchEvent(new Event('change'));
         }
 
         function getAddressIdByName(addressName) {
@@ -492,15 +561,16 @@
                 const option = document.createElement('option');
                 option.value = depth;
                 option.textContent = `Depth ${depth}`;
-                if (depth === 2) option.selected = true; // Default to depth 2
                 depthFilter.appendChild(option);
             });
             
             // Restore previous selection or set default
             if (previouslySelectedDepth && uniqueDepths.includes(parseInt(previouslySelectedDepth))) {
                 depthFilter.value = previouslySelectedDepth;
-            } else if (uniqueDepths.includes(2)) {
-                depthFilter.value = 2;
+            } else if (uniqueDepths.length > 0) {
+                // Default to the highest available depth, or depth 2 if available, otherwise the first available
+                const defaultDepth = uniqueDepths.includes(2) ? 2 : uniqueDepths[uniqueDepths.length - 1];
+                depthFilter.value = defaultDepth;
             }
         }
 
@@ -519,7 +589,7 @@
                 showEmptyState();
                 return;
             }
-        
+            
             let nodes = graphData.nodes;
             let edges = graphData.edges;
             
@@ -622,9 +692,9 @@
                                 downstreamNodes.add(edge.target_address_id);
                                 downstreamEdges.push(edge);
                                 foundNew = true;
-                            }
-                        });
-                    }
+                                }
+                            });
+                        }
                     
                     edges = downstreamEdges;
                     downstreamNodes.forEach(id => connectedNodeIds.add(id));
@@ -673,12 +743,12 @@
                 });
                 
                 // Filter nodes to only include those connected by remaining edges
-                const connectedNodeIds = new Set();
+                    const connectedNodeIds = new Set();
                 connectedNodeIds.add(selectedAddressId);
                 edges.forEach(edge => {
-                    connectedNodeIds.add(edge.source_address_id);
-                    connectedNodeIds.add(edge.target_address_id);
-                });
+                        connectedNodeIds.add(edge.source_address_id);
+                        connectedNodeIds.add(edge.target_address_id);
+                    });
                 nodes = nodes.filter(node => connectedNodeIds.has(node.id));
             }
             
@@ -689,7 +759,7 @@
             
             renderGraph();
         }
-
+        
         // Graph Rendering
         function renderGraph() {
             if (!filteredData) return;
@@ -862,7 +932,7 @@
                 d.fy = null;
             }
         }
-
+        
         function calculateHierarchicalLayout(nodes, edges, width, height) {
             const positions = new Map();
             const nodeMap = new Map();
@@ -934,7 +1004,7 @@
             
             return positions;
         }
-
+        
     </script>
 </body>
 </html>

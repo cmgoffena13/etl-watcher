@@ -1,5 +1,4 @@
 import logging
-from typing import Optional
 
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -26,6 +25,10 @@ async def db_get_lineage_graph(
         WHERE source_address_id = :source_address_id
         UNION ALL
         SELECT :source_address_id as address_id
+        UNION ALL
+        SELECT source_address_id as address_id
+        FROM lineage_graph_report
+        WHERE target_address_id = :source_address_id
     )
     SELECT 
         source_address_id,
