@@ -100,6 +100,74 @@ async def check_celery_health():
         except Exception as redis_e:
             console.print(f"[yellow]Redis check failed: {redis_e}[/yellow]")
 
+        # Queue Analysis
+        console.print("\n[bold green]Queue Analysis[/bold green]")
+        try:
+            # Get all messages from the queue to analyze task types
+            messages = redis_client.lrange(queue_name, 0, -1)
+
+            # Count tasks by type
+            task_counts = {
+                "detect_anomalies_task": 0,
+                "timeliness_check_task": 0,
+                "freshness_check_task": 0,
+                "address_lineage_closure_rebuild_task": 0,
+                "pipeline_execution_closure_maintain_task": 0,
+                "unknown": 0,
+            }
+
+            # Analyze queued messages to count by task type
+            for message in messages:
+                try:
+                    task_data = json.loads(message)
+
+                    # Task name is in headers.task, not at the root level
+                    headers = task_data.get("headers", {})
+                    task_name = headers.get("task", "unknown")
+
+                    # Map task names to our known tasks
+                    if "detect_anomalies_task" in task_name:
+                        task_counts["detect_anomalies_task"] += 1
+                    elif "timeliness_check_task" in task_name:
+                        task_counts["timeliness_check_task"] += 1
+                    elif "freshness_check_task" in task_name:
+                        task_counts["freshness_check_task"] += 1
+                    elif "address_lineage_closure_rebuild_task" in task_name:
+                        task_counts["address_lineage_closure_rebuild_task"] += 1
+                    elif "pipeline_execution_closure_maintain_task" in task_name:
+                        task_counts["pipeline_execution_closure_maintain_task"] += 1
+                    else:
+                        task_counts["unknown"] += 1
+                except (json.JSONDecodeError, KeyError):
+                    task_counts["unknown"] += 1
+
+            # Create queue analysis table
+            breakdown_table = Table(
+                show_header=True, header_style="bold green", box=box.ROUNDED
+            )
+            breakdown_table.add_column("Task Type", style="cyan")
+            breakdown_table.add_column("Count", style="green", justify="right")
+            breakdown_table.add_column("Percentage", style="blue", justify="right")
+
+            total_tasks = sum(task_counts.values())
+
+            for task_name, count in task_counts.items():
+                if count > 0:
+                    # Convert snake_case to readable format
+                    readable_name = task_name.replace("_", " ").title()
+                    percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
+                    breakdown_table.add_row(
+                        readable_name, str(count), f"{percentage:.1f}%"
+                    )
+
+            if total_tasks > 0:
+                console.print(breakdown_table)
+            else:
+                console.print("[dim]No tasks currently in queue[/dim]")
+
+        except Exception as e:
+            console.print(f"[yellow]Queue analysis failed: {e}[/yellow]")
+
         # Worker Activity Summary
         console.print("\n[bold magenta]Worker Activity Summary[/bold magenta]")
         try:

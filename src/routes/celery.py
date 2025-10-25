@@ -23,11 +23,55 @@ async def check_celery_queue():
 
         # Run Redis operations in thread pool to avoid blocking
         loop = asyncio.get_event_loop()
-        messages = await loop.run_in_executor(None, redis_client.llen, queue_name)
+
+        # Get all messages from the queue to analyze task types
+        messages = await loop.run_in_executor(
+            None, redis_client.lrange, queue_name, 0, -1
+        )
         scheduled = await loop.run_in_executor(
             None, redis_client.zcard, f"{queue_name}:scheduled"
         )
-        total_pending = messages + scheduled
+
+        # Count tasks by type
+        task_counts = {
+            "detect_anomalies_task": 0,
+            "timeliness_check_task": 0,
+            "freshness_check_task": 0,
+            "address_lineage_closure_rebuild_task": 0,
+            "pipeline_execution_closure_maintain_task": 0,
+            "unknown": 0,
+        }
+
+        # Analyze queued messages to count by task type
+        for message in messages:
+            try:
+                import json
+
+                task_data = json.loads(message)
+
+                # Task name is in headers.task, not at the root level
+                headers = task_data.get("headers", {})
+                task_name = headers.get("task", "unknown")
+
+                # Map task names to our known tasks
+                # Celery uses full module paths like 'src.celery_tasks.detect_anomalies_task'
+                if "detect_anomalies_task" in task_name:
+                    task_counts["detect_anomalies_task"] += 1
+                elif "timeliness_check_task" in task_name:
+                    task_counts["timeliness_check_task"] += 1
+                elif "freshness_check_task" in task_name:
+                    task_counts["freshness_check_task"] += 1
+                elif "address_lineage_closure_rebuild_task" in task_name:
+                    task_counts["address_lineage_closure_rebuild_task"] += 1
+                elif "pipeline_execution_closure_maintain_task" in task_name:
+                    task_counts["pipeline_execution_closure_maintain_task"] += 1
+                else:
+                    task_counts["unknown"] += 1
+            except (json.JSONDecodeError, KeyError) as e:
+                logger.warning(f"Failed to parse task message: {e}")
+                task_counts["unknown"] += 1
+
+        total_pending = len(messages) + scheduled
 
         if total_pending >= 100:
             alert_level = AlertLevel.CRITICAL
@@ -37,13 +81,35 @@ async def check_celery_queue():
             logger.info(
                 f"Queue monitoring completed - {total_pending} tasks in queue (healthy)"
             )
-            return {"status": "success"}
+            # Format task breakdown for better readability
+            task_breakdown_formatted = []
+            for task_name, count in task_counts.items():
+                if count > 0:
+                    # Convert snake_case to readable format
+                    readable_name = task_name.replace("_", " ").title()
+                    task_breakdown_formatted.append(f"{readable_name}: {count}")
+
+            return {
+                "status": "success",
+                "total_pending": total_pending,
+                "scheduled_tasks": scheduled,
+                "task_breakdown": task_breakdown_formatted,
+                "task_breakdown_raw": task_counts,  # Keep raw data for programmatic use
+            }
 
         try:
+            # Format task breakdown for better readability
+            task_breakdown_formatted = []
+            for task_name, count in task_counts.items():
+                if count > 0:
+                    # Convert snake_case to readable format
+                    readable_name = task_name.replace("_", " ").title()
+                    task_breakdown_formatted.append(f"{readable_name}: {count}")
+
             details = {
-                "Messages in queue": messages,
-                "Scheduled tasks": scheduled,
                 "Total pending": total_pending,
+                "Scheduled tasks": scheduled,
+                "Task breakdown": task_breakdown_formatted,
             }
 
             await send_slack_message(
@@ -65,4 +131,18 @@ async def check_celery_queue():
         logger.error(f"Queue monitoring failed: {e}")
         return {"status": "error"}
 
-    return {"status": "success"}
+    # Format task breakdown for better readability
+    task_breakdown_formatted = []
+    for task_name, count in task_counts.items():
+        if count > 0:
+            # Convert snake_case to readable format
+            readable_name = task_name.replace("_", " ").title()
+            task_breakdown_formatted.append(f"{readable_name}: {count}")
+
+    return {
+        "status": "success",
+        "total_pending": total_pending,
+        "scheduled_tasks": scheduled,
+        "task_breakdown": task_breakdown_formatted,
+        "task_breakdown_raw": task_counts,  # Keep raw data for programmatic use
+    }

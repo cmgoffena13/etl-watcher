@@ -93,7 +93,11 @@ async def db_get_or_create_pipeline(
             await session.commit()
         except IntegrityError as e:
             await session.rollback()
-            if isinstance(e.orig, UniqueViolationError):
+            if (
+                hasattr(e, "orig")
+                and hasattr(e.orig, "orig")
+                and isinstance(e.orig.orig, UniqueViolationError)
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Unique constraint violation",
@@ -220,7 +224,11 @@ async def db_update_pipeline(session: Session, patch: PipelinePatchInput) -> Pip
         await session.commit()
     except IntegrityError as e:
         await session.rollback()
-        if isinstance(e.orig, UniqueViolationError):
+        if (
+            hasattr(e, "orig")
+            and hasattr(e.orig, "orig")
+            and isinstance(e.orig.orig, UniqueViolationError)
+        ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Pipeline name already exists",

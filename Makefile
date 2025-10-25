@@ -25,6 +25,9 @@ lint:
 test:
 	uv run -- pytest -vv --tb=short
 
+install:
+	uv sync --frozen --compile-bytecode
+
 add-migration:
 	# Example: make add-migration msg="I am a message" 
 	uv run -- alembic revision --rev-id $(shell date +%Y%m%d%H%M%S) --autogenerate -m "$(msg)"

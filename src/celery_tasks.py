@@ -17,7 +17,7 @@ from src.database.pipeline_execution_utils import (
 )
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
 from src.notifier import AlertLevel, send_slack_message
-from src.settings import config, get_database_config
+from src.settings import get_database_config
 
 logger = logging.getLogger(__name__)
 
@@ -261,7 +261,7 @@ async def _run_async_address_lineage_closure_rebuild(
         await engine.dispose()
 
 
-@celery.task(bind=True, rate_limit="10/s", max_retries=3, default_retry_delay=30)
+@celery.task(bind=True, max_retries=3, default_retry_delay=30)
 def pipeline_execution_closure_maintain_task(
     self, execution_id: int, parent_id: int = None
 ):

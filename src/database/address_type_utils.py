@@ -43,7 +43,11 @@ async def db_get_or_create_address_type(
             logger.info(f"Address Type '{address_type.name}' Successfully Created")
         except IntegrityError as e:
             await session.rollback()
-            if isinstance(e.orig, UniqueViolationError):
+            if (
+                hasattr(e, "orig")
+                and hasattr(e.orig, "orig")
+                and isinstance(e.orig.orig, UniqueViolationError)
+            ):
                 raise HTTPException(
                     status_code=status.HTTP_400_BAD_REQUEST,
                     detail="Unique constraint violation",
@@ -95,7 +99,11 @@ async def db_update_address_type(
         await session.commit()
     except IntegrityError as e:
         await session.rollback()
-        if isinstance(e.orig, UniqueViolationError):
+        if (
+            hasattr(e, "orig")
+            and hasattr(e.orig, "orig")
+            and isinstance(e.orig.orig, UniqueViolationError)
+        ):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Address type name already exists",
