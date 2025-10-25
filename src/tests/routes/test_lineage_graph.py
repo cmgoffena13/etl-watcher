@@ -50,7 +50,9 @@ async def test_get_lineage_graph_endpoint(async_client: AsyncClient):
     await async_client.post("/lineage-graph/refresh")
 
     # Test lineage graph endpoint
-    response = await async_client.get("/lineage-graph/")
+    response = await async_client.get(
+        f"/lineage-graph/?source_address_id={address1_id}"
+    )
     assert response.status_code == 200
 
     data = response.json()
