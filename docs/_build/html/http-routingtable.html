@@ -147,22 +147,6 @@
 <li class="toctree-l3"><a class="reference internal" href="api/endpoints.html#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="api/endpoints.html#diagnostics-web-page">Diagnostics Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/endpoints.html#system-diagnostics">System Diagnostics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/endpoints.html#lineage-graph-web-page">Lineage Graph Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/endpoints.html#interactive-lineage-visualization">Interactive Lineage Visualization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/endpoints.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/endpoints.html#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="api/endpoints.html#interactive-api-documentation">Interactive API Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="api/endpoints.html#scalar-api-documentation">Scalar API Documentation</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="api/models.html">Pydantic Data Models</a><ul>
@@ -227,6 +211,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="api/models.html#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Interface</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="user/pages.html">Web Pages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="user/pages.html#diagnostics-web-page">Diagnostics Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/pages.html#lineage-graph-web-page">Lineage Graph Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/pages.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="user/pages.html#interactive-api-documentation">Interactive API Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -569,16 +563,12 @@
    <a href="#cap-/address_type"><strong>/address_type</strong></a> | 
    <a href="#cap-/anomaly_detection_rule"><strong>/anomaly_detection_rule</strong></a> | 
    <a href="#cap-/celery"><strong>/celery</strong></a> | 
-   <a href="#cap-/diagnostics"><strong>/diagnostics</strong></a> | 
    <a href="#cap-/end_pipeline_execution"><strong>/end_pipeline_execution</strong></a> | 
    <a href="#cap-/freshness"><strong>/freshness</strong></a> | 
-   <a href="#cap-/lineage-graph"><strong>/lineage-graph</strong></a> | 
    <a href="#cap-/log_cleanup"><strong>/log_cleanup</strong></a> | 
    <a href="#cap-/pipeline"><strong>/pipeline</strong></a> | 
    <a href="#cap-/pipeline_execution"><strong>/pipeline_execution</strong></a> | 
    <a href="#cap-/pipeline_type"><strong>/pipeline_type</strong></a> | 
-   <a href="#cap-/reporting"><strong>/reporting</strong></a> | 
-   <a href="#cap-/scalar"><strong>/scalar</strong></a> | 
    <a href="#cap-/start_pipeline_execution"><strong>/start_pipeline_execution</strong></a> | 
    <a href="#cap-/timeliness"><strong>/timeliness</strong></a> | 
    <a href="#cap-/unflag_anomaly"><strong>/unflag_anomaly</strong></a>
@@ -666,14 +656,6 @@
        <a href="api/endpoints.html#post--celery-monitor-queue"><code class="xref">POST /celery/monitor-queue</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/diagnostics"><td></td><td>
-       <strong>/diagnostics</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="api/endpoints.html#get--diagnostics"><code class="xref">GET /diagnostics</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/end_pipeline_execution"><td></td><td>
        <strong>/end_pipeline_execution</strong></td><td></td></tr>
      <tr>
@@ -688,14 +670,6 @@
        <td></td>
        <td>
        <a href="api/endpoints.html#post--freshness"><code class="xref">POST /freshness</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/lineage-graph"><td></td><td>
-       <strong>/lineage-graph</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="api/endpoints.html#get--lineage-graph"><code class="xref">GET /lineage-graph</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/log_cleanup"><td></td><td>
@@ -753,22 +727,6 @@
        <td></td>
        <td>
        <a href="api/endpoints.html#post--pipeline_type"><code class="xref">POST /pipeline_type</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/reporting"><td></td><td>
-       <strong>/reporting</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="api/endpoints.html#get--reporting"><code class="xref">GET /reporting</code></a></td><td>
-       <em></em></td></tr>
-     <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
-     <tr class="cap" id="cap-/scalar"><td></td><td>
-       <strong>/scalar</strong></td><td></td></tr>
-     <tr>
-       <td></td>
-       <td>
-       <a href="api/endpoints.html#get--scalar"><code class="xref">GET /scalar</code></a></td><td>
        <em></em></td></tr>
      <tr class="pcap"><td></td><td>&#160;</td><td></td></tr>
      <tr class="cap" id="cap-/start_pipeline_execution"><td></td><td>

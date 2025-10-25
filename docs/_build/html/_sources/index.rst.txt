@@ -76,6 +76,12 @@ Quick Start
 
 .. toctree::
    :maxdepth: 2
+   :caption: User Interface
+
+   user/pages
+
+.. toctree::
+   :maxdepth: 2
    :caption: User Guides
 
    guides/address_lineage

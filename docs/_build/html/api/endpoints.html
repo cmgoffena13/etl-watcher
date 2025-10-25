@@ -143,22 +143,6 @@
 <li class="toctree-l3"><a class="reference internal" href="#celery-queue-monitoring">Celery Queue Monitoring</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#diagnostics-web-page">Diagnostics Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#system-diagnostics">System Diagnostics</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#lineage-graph-web-page">Lineage Graph Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#interactive-lineage-visualization">Interactive Lineage Visualization</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#reporting-dashboard-web-page">Reporting Dashboard Web Page</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#pipeline-performance-dashboard">Pipeline Performance Dashboard</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#interactive-api-documentation">Interactive API Documentation</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#scalar-api-documentation">Scalar API Documentation</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="models.html">Pydantic Data Models</a><ul>
@@ -223,6 +207,16 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="models.html#validatormodel">ValidatorModel</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Interface</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../user/pages.html">Web Pages</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#diagnostics-web-page">Diagnostics Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#lineage-graph-web-page">Lineage Graph Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#reporting-dashboard-web-page">Reporting Dashboard Web Page</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../user/pages.html#interactive-api-documentation">Interactive API Documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -1882,137 +1876,6 @@ HTTP 204 No Content</p>
 <li><p><strong>WARNING</strong>: 50+ pending tasks</p></li>
 <li><p><strong>CRITICAL</strong>: 100+ pending tasks</p></li>
 </ul>
-</dd></dl>
-
-</section>
-</section>
-<section id="diagnostics-web-page">
-<h2>Diagnostics Web Page<a class="headerlink" href="#diagnostics-web-page" title="Link to this heading"></a></h2>
-<section id="system-diagnostics">
-<h3>System Diagnostics<a class="headerlink" href="#system-diagnostics" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--diagnostics">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/diagnostics</span></span><a class="headerlink" href="#get--diagnostics" title="Link to this definition"></a></dt>
-<dd><p>Web-based diagnostics dashboard providing comprehensive system health monitoring
-and performance analysis.</p>
-<p><strong>Features:</strong></p>
-<ul class="simple">
-<li><p>Database health and connection performance testing</p></li>
-<li><p>Schema health checks and index usage statistics</p></li>
-<li><p>Celery worker status and task performance monitoring</p></li>
-<li><p>Deadlock statistics and active query analysis</p></li>
-<li><p>Long-running query identification</p></li>
-<li><p>Real-time system metrics</p></li>
-</ul>
-<p><strong>Response:</strong></p>
-<p>HTML dashboard interface</p>
-<p><strong>Sections:</strong></p>
-<ul class="simple">
-<li><p><strong>Connection Speed Test</strong> - Raw asyncpg connection performance testing and direct database connectivity validation</p></li>
-<li><p><strong>Connection Performance</strong> - Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution) and connection pool analysis</p></li>
-<li><p><strong>Schema Health Check</strong> - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics</p></li>
-<li><p><strong>Performance &amp; Locks</strong> - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (&gt;30s) identification</p></li>
-<li><p><strong>Celery Health</strong> - Worker status, task performance, queue monitoring, and background task diagnostics</p></li>
-</ul>
-<p><strong>Access:</strong>
-- <strong>URL</strong>: <a class="reference external" href="http://localhost:8000/diagnostics">http://localhost:8000/diagnostics</a>
-- <strong>Method</strong>: GET
-- <strong>Content-Type</strong>: text/html</p>
-</dd></dl>
-
-</section>
-</section>
-<section id="lineage-graph-web-page">
-<h2>Lineage Graph Web Page<a class="headerlink" href="#lineage-graph-web-page" title="Link to this heading"></a></h2>
-<section id="interactive-lineage-visualization">
-<h3>Interactive Lineage Visualization<a class="headerlink" href="#interactive-lineage-visualization" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--lineage-graph">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/lineage-graph</span></span><a class="headerlink" href="#get--lineage-graph" title="Link to this definition"></a></dt>
-<dd><p>Web-based interactive lineage graph providing visual representation of data flow relationships between addresses.</p>
-<p><strong>Features:</strong></p>
-<ul class="simple">
-<li><p>Interactive graph visualization with drag-and-drop nodes</p></li>
-<li><p>Hierarchical layout based on data flow depth from selected address</p></li>
-<li><p>Advanced filtering by target address, direction (upstream/downstream), and depth</p></li>
-<li><p>Real-time graph updates when filters change</p></li>
-<li><p>Pipeline information display on edge hover</p></li>
-<li><p>Click-to-navigate functionality for changing center address</p></li>
-<li><p>Address search with autocomplete suggestions</p></li>
-</ul>
-<p><strong>Usage:</strong></p>
-<ol class="arabic simple">
-<li><p><strong>Select Address</strong>: Choose a source address from the dropdown to center the graph</p></li>
-<li><p><strong>Search Address</strong>: Type in the search box to find addresses with autocomplete suggestions</p></li>
-<li><p><strong>Filter by Target</strong>: Select a specific target address to show only paths to that address</p></li>
-<li><p><strong>Direction Filter</strong>: Choose “Upstream” to see data sources, “Downstream” to see data targets, or “Both”</p></li>
-<li><p><strong>Depth Filter</strong>: Limit the graph to show only relationships within a certain depth (default: 2)</p></li>
-<li><p><strong>Interactive Navigation</strong>: Click on nodes to change the center address and reload the graph</p></li>
-</ol>
-<p><strong>Graph Layout:</strong></p>
-<p>The graph uses a hierarchical layout algorithm that:</p>
-<ul class="simple">
-<li><p>Centers the graph around your selected address</p></li>
-<li><p>Positions nodes based on their depth from the center</p></li>
-<li><p>Arranges nodes horizontally by depth level</p></li>
-<li><p>Vertically distributes nodes at the same depth level</p></li>
-</ul>
-<p><strong>Visual Elements:</strong></p>
-<ul class="simple">
-<li><p><strong>Nodes</strong>: Represent addresses with different colors for the selected address (red) and others (blue)</p></li>
-<li><p><strong>Edges</strong>: Show relationships between addresses with pipeline information on hover</p></li>
-<li><p><strong>Pipeline Details</strong>: Hover over edges to see pipeline name, type, status, and metadata</p></li>
-<li><p><strong>Interactive</strong>: Drag nodes to reposition, click to change center address</p></li>
-</ul>
-<p><strong>Access:</strong></p>
-<ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/lineage-graph">http://localhost:8000/lineage-graph</a></p></li>
-<li><p><strong>Method</strong>: GET</p></li>
-<li><p><strong>Content-Type</strong>: text/html</p></li>
-</ul>
-</dd></dl>
-
-</section>
-</section>
-<section id="reporting-dashboard-web-page">
-<h2>Reporting Dashboard Web Page<a class="headerlink" href="#reporting-dashboard-web-page" title="Link to this heading"></a></h2>
-<section id="pipeline-performance-dashboard">
-<h3>Pipeline Performance Dashboard<a class="headerlink" href="#pipeline-performance-dashboard" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--reporting">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/reporting</span></span><a class="headerlink" href="#get--reporting" title="Link to this definition"></a></dt>
-<dd><p>Web-based reporting dashboard providing daily pipeline performance metrics and analytics.</p>
-<p><strong>Features:</strong></p>
-<ul class="simple">
-<li><p>Daily aggregations of pipeline execution data</p></li>
-<li><p>Performance metrics (throughput, duration, error rates)</p></li>
-<li><p>Pipeline type and name filtering</p></li>
-<li><p>Time range filtering (last 1-30 days)</p></li>
-<li><p>Real-time data from materialized views</p></li>
-<li><p>Auto-refresh capabilities</p></li>
-</ul>
-<p><strong>Response:</strong></p>
-<p>HTML dashboard interface</p>
-<p><strong>Data Source:</strong></p>
-<p>Built on the <code class="docutils literal notranslate"><span class="pre">daily_pipeline_report</span></code> materialized view for fast query performance.</p>
-<p><strong>Access:</strong></p>
-<ul class="simple">
-<li><p><strong>URL</strong>: <a class="reference external" href="http://localhost:8000/reporting">http://localhost:8000/reporting</a></p></li>
-<li><p><strong>Method</strong>: GET</p></li>
-<li><p><strong>Content-Type</strong>: text/html</p></li>
-</ul>
-</dd></dl>
-
-</section>
-</section>
-<section id="interactive-api-documentation">
-<h2>Interactive API Documentation<a class="headerlink" href="#interactive-api-documentation" title="Link to this heading"></a></h2>
-<section id="scalar-api-documentation">
-<h3>Scalar API Documentation<a class="headerlink" href="#scalar-api-documentation" title="Link to this heading"></a></h3>
-<dl class="http get">
-<dt class="sig sig-object http" id="get--scalar">
-<span class="sig-name descname"><span class="pre">GET</span> </span><span class="sig-name descname"><span class="pre">/scalar</span></span><a class="headerlink" href="#get--scalar" title="Link to this definition"></a></dt>
-<dd><p>Interactive API documentation using Scalar for an intuitive interface to explore and test all available endpoints.</p>
 </dd></dl>
 
 </section>
