@@ -28,6 +28,13 @@ Web-based diagnostics interface providing system health monitoring and performan
    - **Celery Workers** - Worker status, task performance, queue monitoring, and background task diagnostics
    - **Redis Connection** - Redis server health, memory usage, connection performance, and server information
 
+   **Example:**
+
+   .. image:: /_static/images/diagnostics.png
+      :alt: Lineage Graph Interface
+      :width: 100%
+      :align: center
+
 
 Lineage Graph Web Page
 ~~~~~~~~~~~~~~~~~~~~~~
@@ -71,6 +78,10 @@ Web-based interactive lineage graph providing visual representation of data flow
    - **Pipeline Details**: Hover over edges to see pipeline name, type, status, and metadata
    - **Interactive**: Drag nodes to reposition, click to change center address
 
+   **Data Source:**
+
+   Built on the ``lineage_graph_report`` materialized view for fast query performance.
+
    **Example:**
 
    .. image:: /_static/images/lineage_graph.png
@@ -106,3 +117,10 @@ Interactive API Documentation
 **URL**: http://localhost:8000/scalar
 
 Interactive API documentation using Scalar for an intuitive interface to explore and test all available endpoints.
+
+   **Example:**
+
+   .. image:: /_static/images/scalar.png
+      :alt: Lineage Graph Interface
+      :width: 100%
+      :align: center
