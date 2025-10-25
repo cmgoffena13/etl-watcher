@@ -482,8 +482,11 @@
                 });
             }
             
-            // Get unique depths and sort them
-            const uniqueDepths = [...new Set(depths.values())].map(d => Math.abs(d)).sort();
+            // Get unique depths and sort them, excluding depth 0 (center node)
+            const uniqueDepths = [...new Set(depths.values())]
+                .map(d => Math.abs(d))
+                .filter(d => d > 0)  // Exclude depth 0 (center node)
+                .sort();
             
             uniqueDepths.forEach(depth => {
                 const option = document.createElement('option');
