@@ -8,10 +8,12 @@ from rich.console import Console
 import src.diagnostics.diagnose_celery as celery_module
 import src.diagnostics.diagnose_connection as conn_module
 import src.diagnostics.diagnose_performance as perf_module
+import src.diagnostics.diagnose_redis as redis_module
 import src.diagnostics.diagnose_schema as schema_module
 from src.diagnostics.diagnose_celery import check_celery_health
 from src.diagnostics.diagnose_connection import test_connection_scenarios
 from src.diagnostics.diagnose_performance import check_performance_health
+from src.diagnostics.diagnose_redis import check_redis_health
 from src.diagnostics.diagnose_schema import check_schema_health
 
 router = APIRouter()
@@ -232,4 +234,16 @@ async def get_diagnostics_celery():
     except Exception as e:
         raise HTTPException(
             status_code=500, detail=f"Celery diagnostics failed: {str(e)}"
+        )
+
+
+@router.get("/diagnostics/redis", include_in_schema=False)
+async def get_diagnostics_redis():
+    """Get Redis connection and health diagnostics"""
+    try:
+        output = await capture_rich_output(check_redis_health, redis_module)
+        return {"status": "success", "output": output, "type": "redis"}
+    except Exception as e:
+        raise HTTPException(
+            status_code=500, detail=f"Redis diagnostics failed: {str(e)}"
         )

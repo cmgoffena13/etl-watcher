@@ -95,6 +95,7 @@
             <button onclick="loadDiagnostic('connection-performance')" class="active">DB Connection</button>
             <button onclick="loadDiagnostic('schema-health')">DB Schema Health</button>
             <button onclick="loadDiagnostic('performance')">DB Performance & Locks</button>
+            <button onclick="loadDiagnostic('redis')">Redis Connection</button>
             <button onclick="loadDiagnostic('celery')">Celery Workers</button>
         </div>
         
@@ -109,7 +110,8 @@
             updateActiveButton(type);
             
             const output = document.getElementById('output');
-            output.innerHTML = '<div class="loading">Loading ' + type.replace('-', ' ') + ' diagnostics...</div>';
+            let loadingMessage = 'Loading ' + type.replace('-', ' ') + ' diagnostics...<br><small style="color: #888;">This may take a few seconds...</small>';
+            output.innerHTML = '<div class="loading">' + loadingMessage + '</div>';
             
             try {
                 const response = await fetch(`/diagnostics/${type}`);

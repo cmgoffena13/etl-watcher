@@ -15,17 +15,18 @@ Web-based diagnostics interface providing system health monitoring and performan
    - Database health and connection performance testing
    - Schema health checks and index usage statistics
    - Celery worker status and task performance monitoring
+   - Redis connection health and performance metrics
    - Deadlock statistics and active query analysis
    - Long-running query identification
    - Real-time system metrics
 
    **Sections:**
    
-   - **Connection Speed Test** - Raw asyncpg connection performance testing and direct database connectivity validation
-   - **Connection Performance** - Comprehensive connection scenarios (raw asyncpg, SQLAlchemy engine, pool behavior, DNS resolution) and connection pool analysis
-   - **Schema Health Check** - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics
-   - **Performance & Locks** - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (>30s) identification
-   - **Celery Health** - Worker status, task performance, queue monitoring, and background task diagnostics
+   - **DB Connection** - Raw asyncpg connection performance testing and direct database connectivity validation
+   - **DB Schema Health** - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics
+   - **DB Performance & Locks** - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (>30s) identification
+   - **Celery Workers** - Worker status, task performance, queue monitoring, and background task diagnostics
+   - **Redis Connection** - Redis server health, memory usage, connection performance, and server information
 
 
 Lineage Graph Web Page
