@@ -806,4 +806,4 @@ Next Steps
 - **Set up anomaly detection rules**: Create rules for your specific metrics 
     - (see :doc:`../guides/anomaly_detection` - "Creating Detection Rules" section)
 - **Explore the web pages**: Monitor system health & performance and access reporting dashboard 
-    - (see :doc:`../api/endpoints` - "Diagnostics Web Page" and "Reporting Dashboard Web Page" sections)
+   - (see :doc:`../user/pages` - "Diagnostics Web Page" and "Reporting Dashboard Web Page" sections)
