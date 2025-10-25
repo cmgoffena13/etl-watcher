@@ -1,8 +1,9 @@
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import HTMLResponse
-from sqlalchemy import text
+from sqlalchemy import select, text
 
 from src.database.lineage_graph_utils import db_get_lineage_graph
+from src.database.models.address import Address
 from src.database.session import SessionDep
 from src.models.lineage_graph import LineageGraphResponse
 
@@ -45,6 +46,15 @@ async def refresh_lineage_graph_view(session: SessionDep):
             "status": "error",
             "message": f"Failed to refresh materialized view: {str(e)}",
         }
+
+
+@router.get("/lineage-graph/addresses", include_in_schema=False)
+async def get_lineage_addresses(session: SessionDep):
+    """Get only id and name for all addresses - hidden endpoint for lineage graph."""
+    return [
+        {"id": row.id, "name": row.name}
+        for row in (await session.exec(select(Address.id, Address.name))).all()
+    ]
 
 
 @router.get("/lineage-graph", response_class=HTMLResponse, include_in_schema=False)

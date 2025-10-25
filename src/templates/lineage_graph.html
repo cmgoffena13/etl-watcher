@@ -358,17 +358,12 @@
         // Fetch addresses data to populate the selected address dropdown
         async function loadAddresses() {
             try {
-                const response = await fetch('/address');
+                const response = await fetch('/lineage-graph/addresses');
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }
-                const addresses = await response.json();
-                // Store only id and name for efficiency
-                addressesData = addresses.map(addr => ({
-                    id: addr.id,
-                    name: addr.name
-                }));
-                populateAddresses(addresses);
+                addressesData = await response.json();
+                populateAddresses(addressesData);
             } catch (error) {
                 showError('Failed to load addresses: ' + error.message);
             }

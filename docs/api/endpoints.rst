@@ -1384,14 +1384,16 @@ Interactive Lineage Visualization
    - Real-time graph updates when filters change
    - Pipeline information display on edge hover
    - Click-to-navigate functionality for changing center address
+   - Address search with autocomplete suggestions
 
    **Usage:**
 
    1. **Select Address**: Choose a source address from the dropdown to center the graph
-   2. **Filter by Target**: Select a specific target address to show only paths to that address
-   3. **Direction Filter**: Choose "Upstream" to see data sources, "Downstream" to see data targets, or "Both"
-   4. **Depth Filter**: Limit the graph to show only relationships within a certain depth (default: 2)
-   5. **Interactive Navigation**: Click on nodes to change the center address and reload the graph
+   2. **Search Address**: Type in the search box to find addresses with autocomplete suggestions
+   3. **Filter by Target**: Select a specific target address to show only paths to that address
+   4. **Direction Filter**: Choose "Upstream" to see data sources, "Downstream" to see data targets, or "Both"
+   5. **Depth Filter**: Limit the graph to show only relationships within a certain depth (default: 2)
+   6. **Interactive Navigation**: Click on nodes to change the center address and reload the graph
 
    **Graph Layout:**
 
