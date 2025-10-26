@@ -9,7 +9,7 @@
   <title>Celery Tasks &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -354,6 +354,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -365,8 +366,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#automated-monitoring">Automated Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#load-testing">Load Testing</a><ul>
@@ -447,15 +447,22 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#error-handling">Error Handling</a></li>
 </ul>
@@ -557,6 +564,10 @@
 <p>This section documents all Celery background tasks in Watcher. Watcher uses Celery for distributed background task processing, providing reliable execution of monitoring checks, anomaly detection, and data processing tasks.</p>
 <section id="task-types">
 <h2>Task Types<a class="headerlink" href="#task-types" title="Link to this heading"></a></h2>
+<section id="regular-tasks">
+<h3>Regular Tasks<a class="headerlink" href="#regular-tasks" title="Link to this heading"></a></h3>
+<p>These tasks are triggered by API calls or other events and run in the main <code class="docutils literal notranslate"><span class="pre">celery</span></code> queue.</p>
+</section>
 <section id="detect-anomalies-task">
 <h3>detect_anomalies_task<a class="headerlink" href="#detect-anomalies-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Statistical analysis of pipeline execution patterns</p>
@@ -658,7 +669,7 @@ Maintains the closure table for address lineage relationships. Rebuilds the tran
 <section id="pipeline-execution-closure-maintain-task">
 <h3>pipeline_execution_closure_maintain_task<a class="headerlink" href="#pipeline-execution-closure-maintain-task" title="Link to this heading"></a></h3>
 <p><strong>Purpose</strong> Maintain pipeline execution hierarchy closure table</p>
-<p><strong>Rate Limit</strong> 10/s</p>
+<p><strong>Rate Limit</strong> - No rate limit (Needs to keep up with pipeline execution creation rate)</p>
 <p><strong>Parameters</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">execution_id</span></code> (int): Execution ID to maintain</p></li>
@@ -683,18 +694,119 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </pre></div>
 </div>
 </section>
+<section id="scheduled-tasks">
+<h3>Scheduled Tasks<a class="headerlink" href="#scheduled-tasks" title="Link to this heading"></a></h3>
+<p>These tasks are automatically scheduled by Celery Beat and run in the <code class="docutils literal notranslate"><span class="pre">scheduled</span></code> queue. They provide automated monitoring and maintenance without manual intervention.</p>
+</section>
+<section id="scheduled-freshness-check">
+<h3>scheduled_freshness_check<a class="headerlink" href="#scheduled-freshness-check" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Automated freshness monitoring for all active pipelines</p>
+<p><strong>Queue</strong> scheduled</p>
+<p><strong>Schedule</strong> Configurable via <code class="docutils literal notranslate"><span class="pre">WATCHER_FRESHNESS_CHECK_SCHEDULE</span></code> (default: <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span></code> - hourly)</p>
+<p><strong>Parameters</strong> None</p>
+<p><strong>Description</strong>
+Automatically triggers freshness checks for all active pipelines on a configurable schedule. Delegates to the regular <code class="docutils literal notranslate"><span class="pre">freshness_check_task</span></code>.</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
+<p><strong>Configuration</strong></p>
+<p>Set the schedule using environment variable:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WATCHER_FRESHNESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;0 * * * *&quot;</span><span class="w">  </span><span class="c1"># Every hour</span>
+</pre></div>
+</div>
+</section>
+<section id="scheduled-timeliness-check">
+<h3>scheduled_timeliness_check<a class="headerlink" href="#scheduled-timeliness-check" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Automated timeliness monitoring for all active pipelines</p>
+<p><strong>Queue</strong> scheduled</p>
+<p><strong>Schedule</strong> Configurable via <code class="docutils literal notranslate"><span class="pre">WATCHER_TIMELINESS_CHECK_SCHEDULE</span></code> (default: <code class="docutils literal notranslate"><span class="pre">*/15</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span></code> - every 15 minutes)</p>
+<p><strong>Parameters</strong> None (uses <code class="docutils literal notranslate"><span class="pre">WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</span></code> for lookback)</p>
+<p><strong>Description</strong>
+Automatically triggers timeliness checks for all active pipelines on a configurable schedule. Delegates to the regular <code class="docutils literal notranslate"><span class="pre">timeliness_check_task</span></code> with configured lookback period.</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
+<p><strong>Configuration</strong></p>
+<p>Set the schedule and lookback period:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WATCHER_TIMELINESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/15 * * * *&quot;</span><span class="w">  </span><span class="c1"># Every 15 minutes</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</span><span class="o">=</span><span class="m">60</span><span class="w">      </span><span class="c1"># Look back 60 minutes</span>
+</pre></div>
+</div>
+</section>
+<section id="scheduled-celery-queue-health-check">
+<h3>scheduled_celery_queue_health_check<a class="headerlink" href="#scheduled-celery-queue-health-check" title="Link to this heading"></a></h3>
+<p><strong>Purpose</strong> Automated Celery queue health monitoring and alerting</p>
+<p><strong>Queue</strong> scheduled</p>
+<p><strong>Schedule</strong> Configurable via <code class="docutils literal notranslate"><span class="pre">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span></code> (default: <code class="docutils literal notranslate"><span class="pre">*/5</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span> <span class="pre">*</span></code> - every 5 minutes)</p>
+<p><strong>Parameters</strong> None</p>
+<p><strong>Description</strong>
+Automatically monitors Celery queue health, including task counts, queue depths, and scheduled tasks. Sends Slack alerts when thresholds are exceeded. Delegates to the <code class="docutils literal notranslate"><span class="pre">check_celery_queue</span></code> function.</p>
+<p><strong>Retry Policy</strong></p>
+<ul class="simple">
+<li><p>Max retries: 3</p></li>
+<li><p>Retry delay: 60 seconds</p></li>
+<li><p>Exponential backoff</p></li>
+</ul>
+<p><strong>Configuration</strong></p>
+<p>Set the schedule:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nv">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/5 * * * *&quot;</span><span class="w">  </span><span class="c1"># Every 5 minutes</span>
+</pre></div>
+</div>
+</section>
 </section>
 <section id="task-configuration">
 <h2>Task Configuration<a class="headerlink" href="#task-configuration" title="Link to this heading"></a></h2>
+<section id="queue-management">
+<h3>Queue Management<a class="headerlink" href="#queue-management" title="Link to this heading"></a></h3>
+<p>Watcher uses two separate Celery queues for task isolation:</p>
+<ul class="simple">
+<li><p><strong>celery</strong> - Main queue for regular tasks triggered by API calls</p></li>
+<li><p><strong>scheduled</strong> - Dedicated queue for automated scheduled tasks</p></li>
+</ul>
+<p>This separation prevents scheduled monitoring tasks from being delayed by high-volume regular tasks.</p>
+</section>
 <section id="rate-limiting">
 <h3>Rate Limiting<a class="headerlink" href="#rate-limiting" title="Link to this heading"></a></h3>
-<p>All tasks have configurable rate limits to prevent system overload:</p>
+<p>Regular tasks have configurable rate limits to prevent system overload:</p>
 <ul class="simple">
 <li><p><strong>detect_anomalies_task</strong> 15/s (high frequency for real-time analysis)</p></li>
 <li><p><strong>freshness_check_task</strong> 1/s (low frequency for periodic checks)</p></li>
 <li><p><strong>timeliness_check_task</strong> 1/s (low frequency for periodic checks)</p></li>
 <li><p><strong>address_lineage_closure_rebuild_task</strong> 5/s (medium frequency for maintenance)</p></li>
-<li><p><strong>pipeline_execution_closure_maintain_task</strong> 10/s (medium frequency for hierarchy maintenance)</p></li>
+<li><p><strong>pipeline_execution_closure_maintain_task</strong> No rate limit (must keep up with execution rate)</p></li>
+</ul>
+<p>Scheduled tasks have no rate limits as they are controlled by Celery Beat scheduling.</p>
+</section>
+<section id="celery-beat-configuration">
+<h3>Celery Beat Configuration<a class="headerlink" href="#celery-beat-configuration" title="Link to this heading"></a></h3>
+<p>Celery Beat is configured with the following default schedules:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">celery</span><span class="o">.</span><span class="n">conf</span><span class="o">.</span><span class="n">beat_schedule</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;scheduled-freshness-check&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;src.celery_tasks.scheduled_freshness_check&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>  <span class="c1"># Every hour</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;scheduled-timeliness-check&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;src.celery_tasks.scheduled_timeliness_check&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="s2">&quot;*/15&quot;</span><span class="p">),</span>  <span class="c1"># Every 15 minutes</span>
+    <span class="p">},</span>
+    <span class="s2">&quot;scheduled-celery-queue-health-check&quot;</span><span class="p">:</span> <span class="p">{</span>
+        <span class="s2">&quot;task&quot;</span><span class="p">:</span> <span class="s2">&quot;src.celery_tasks.scheduled_celery_queue_health_check&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;schedule&quot;</span><span class="p">:</span> <span class="n">crontab</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="s2">&quot;*/5&quot;</span><span class="p">),</span>  <span class="c1"># Every 5 minutes</span>
+    <span class="p">},</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>Schedules are configurable via environment variables:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">WATCHER_FRESHNESS_CHECK_SCHEDULE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WATCHER_TIMELINESS_CHECK_SCHEDULE</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span></code></p></li>
 </ul>
 </section>
 <section id="retry-policies">
@@ -733,7 +845,7 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="progress-updates">
 <h3>Progress Updates<a class="headerlink" href="#progress-updates" title="Link to this heading"></a></h3>
-<p>Tasks provide basic progress information:</p>
+<p>Tasks provide detailed progress information:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;PROGRESS&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -745,7 +857,7 @@ Maintains the closure table for pipeline execution hierarchies. Automatically tr
 </section>
 <section id="error-details">
 <h3>Error Details<a class="headerlink" href="#error-details" title="Link to this heading"></a></h3>
-<p>Failed tasks include detailed error information:</p>
+<p>Failed tasks include comprehensive error information:</p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;FAILURE&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;meta&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>

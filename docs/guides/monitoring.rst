@@ -608,25 +608,6 @@ For additional monitoring or custom schedules, you can still trigger checks manu
    # Log cleanup (run as needed)
    curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
 
-Monitoring Frequency
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-**Default Automated Frequencies:**
-
-- **Freshness** Every hour
-- **Timeliness** Every 15 minutes  
-- **Queue Monitoring** Every 5 minutes
-
-**Customization:**
-
-Configure different schedules via environment variables:
-
-.. code-block:: bash
-
-   # More frequent monitoring
-   WATCHER_FRESHNESS_CHECK_SCHEDULE="*/30 * * * *"    # Every 30 minutes
-   WATCHER_TIMELINESS_CHECK_SCHEDULE="*/5 * * * *"    # Every 5 minutes
-   WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE="*/2 * * * *"  # Every 2 minutes
 
 Load Testing
 ------------

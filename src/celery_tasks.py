@@ -262,9 +262,7 @@ async def _run_async_address_lineage_closure_rebuild(
 
 
 @celery.task(bind=True, max_retries=3, default_retry_delay=30)
-def pipeline_execution_closure_maintain_task(
-    self, execution_id: int, parent_id: int = None
-):
+def pipeline_execution_closure_maintain_task(self, execution_id: int, parent_id: int):
     """Maintain pipeline execution closure table for a new execution"""
     try:
         self.update_state(
@@ -296,7 +294,7 @@ def pipeline_execution_closure_maintain_task(
 
 
 async def _run_async_pipeline_execution_closure_maintenance(
-    execution_id: int, parent_id: int = None
+    execution_id: int, parent_id: int
 ):
     """Async function that maintains execution closure table"""
 

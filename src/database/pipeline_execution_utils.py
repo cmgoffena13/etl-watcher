@@ -138,7 +138,7 @@ async def db_end_pipeline_execution(
 
 
 async def db_maintain_pipeline_execution_closure_table(
-    session: Session, execution_id: int, parent_id: Optional[int]
+    session: Session, execution_id: int, parent_id: int
 ) -> None:
     """Maintain the closure table when a new execution is created."""
     # Add self-reference (depth 0)
@@ -147,23 +147,22 @@ async def db_maintain_pipeline_execution_closure_table(
     )
     session.add(self_reference)
 
-    # If there's a parent, copy all ancestor relationships and increment depth by 1
-    if parent_id:
-        # Get all ancestor relationships from parent
-        parent_relationships = await session.exec(
-            select(PipelineExecutionClosure).where(
-                PipelineExecutionClosure.child_execution_id == parent_id
-            )
+    # Copy all ancestor relationships and increment depth by 1
+    # Get all ancestor relationships from parent
+    parent_relationships = await session.exec(
+        select(PipelineExecutionClosure).where(
+            PipelineExecutionClosure.child_execution_id == parent_id
         )
+    )
 
-        # Create new relationships for this execution
-        for relationship in parent_relationships:
-            new_relationship = PipelineExecutionClosure(
-                parent_execution_id=relationship.parent_execution_id,
-                child_execution_id=execution_id,
-                depth=relationship.depth + 1,
-            )
-            session.add(new_relationship)
+    # Create new relationships for this execution
+    for relationship in parent_relationships:
+        new_relationship = PipelineExecutionClosure(
+            parent_execution_id=relationship.parent_execution_id,
+            child_execution_id=execution_id,
+            depth=relationship.depth + 1,
+        )
+        session.add(new_relationship)
 
     await session.commit()
 

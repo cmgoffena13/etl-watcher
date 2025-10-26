@@ -33,10 +33,11 @@ async def start_pipeline_execution(
         pipeline_execution=pipeline_execution, session=session
     )
 
-    # Queue closure table maintenance task
-    pipeline_execution_closure_maintain_task.delay(
-        execution_id=result["id"], parent_id=pipeline_execution.parent_id
-    )
+    if pipeline_execution.parent_id:
+        # Queue closure table maintenance task
+        pipeline_execution_closure_maintain_task.delay(
+            execution_id=result["id"], parent_id=pipeline_execution.parent_id
+        )
 
     return result
 

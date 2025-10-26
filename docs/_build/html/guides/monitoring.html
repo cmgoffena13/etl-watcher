@@ -369,7 +369,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#automated-monitoring">Automated Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#monitoring-frequency">Monitoring Frequency</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#load-testing">Load Testing</a><ul>
@@ -450,15 +449,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
 </ul>
@@ -1096,23 +1102,6 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 
 <span class="c1"># Log cleanup (run as needed)</span>
 curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/log_cleanup&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 365}&#39;</span>
-</pre></div>
-</div>
-</section>
-<section id="monitoring-frequency">
-<h3>Monitoring Frequency<a class="headerlink" href="#monitoring-frequency" title="Link to this heading"></a></h3>
-<p><strong>Default Automated Frequencies:</strong></p>
-<ul class="simple">
-<li><p><strong>Freshness</strong> Every hour</p></li>
-<li><p><strong>Timeliness</strong> Every 15 minutes</p></li>
-<li><p><strong>Queue Monitoring</strong> Every 5 minutes</p></li>
-</ul>
-<p><strong>Customization:</strong></p>
-<p>Configure different schedules via environment variables:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># More frequent monitoring</span>
-<span class="nv">WATCHER_FRESHNESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/30 * * * *&quot;</span><span class="w">    </span><span class="c1"># Every 30 minutes</span>
-<span class="nv">WATCHER_TIMELINESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/5 * * * *&quot;</span><span class="w">    </span><span class="c1"># Every 5 minutes</span>
-<span class="nv">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/2 * * * *&quot;</span><span class="w">  </span><span class="c1"># Every 2 minutes</span>
 </pre></div>
 </div>
 </section>
