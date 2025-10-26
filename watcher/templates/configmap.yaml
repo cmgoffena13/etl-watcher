@@ -12,8 +12,12 @@ data:
   {{- if eq .Values.watcher.envState "dev" }}
   DEV_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
   DEV_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
-  DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
-  DEV_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  DEV_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.watcherAutoCreateAnomalyDetectionRules | quote }}
+  DEV_PROFILING_ENABLED: {{ .Values.watcher.watcherProfilingEnabled | quote }}
+  DEV_WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: {{ .Values.watcher.watcherTimelinessCheckLookbackMinutes | quote }}
+  DEV_WATCHER_TIMELINESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherTimelinessCheckSchedule | quote }}
+  DEV_WATCHER_FRESHNESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherFreshnessCheckSchedule | quote }}
+  DEV_WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE: {{ .Values.watcher.watcherCeleryQueueHealthCheckSchedule | quote }}
   {{- if .Values.watcher.logfire.token }}
   DEV_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
   {{- end }}
@@ -23,8 +27,12 @@ data:
   {{- else if eq .Values.watcher.envState "test" }}
   TEST_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
   TEST_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
-  TEST_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
-  TEST_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  TEST_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.watcherAutoCreateAnomalyDetectionRules | quote }}
+  TEST_PROFILING_ENABLED: {{ .Values.watcher.watcherProfilingEnabled | quote }}
+  TEST_WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: {{ .Values.watcher.watcherTimelinessCheckLookbackMinutes | quote }}
+  TEST_WATCHER_TIMELINESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherTimelinessCheckSchedule | quote }}
+  TEST_WATCHER_FRESHNESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherFreshnessCheckSchedule | quote }}
+  TEST_WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE: {{ .Values.watcher.watcherCeleryQueueHealthCheckSchedule | quote }}
   {{- if .Values.watcher.logfire.token }}
   TEST_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
   {{- end }}
@@ -34,8 +42,12 @@ data:
   {{- else }}
   PROD_DATABASE_URL: {{ .Values.watcher.database.url | quote }}
   PROD_REDIS_URL: {{ .Values.watcher.redis.url | quote }}
-  PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.autoCreateAnomalyDetectionRules | quote }}
-  PROD_PROFILING_ENABLED: {{ .Values.watcher.profilingEnabled | quote }}
+  PROD_WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: {{ .Values.watcher.watcherAutoCreateAnomalyDetectionRules | quote }}
+  PROD_PROFILING_ENABLED: {{ .Values.watcher.watcherProfilingEnabled | quote }}
+  PROD_WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: {{ .Values.watcher.watcherTimelinessCheckLookbackMinutes | quote }}
+  PROD_WATCHER_TIMELINESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherTimelinessCheckSchedule | quote }}
+  PROD_WATCHER_FRESHNESS_CHECK_SCHEDULE: {{ .Values.watcher.watcherFreshnessCheckSchedule | quote }}
+  PROD_WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE: {{ .Values.watcher.watcherCeleryQueueHealthCheckSchedule | quote }}
   {{- if .Values.watcher.logfire.token }}
   PROD_LOGFIRE_TOKEN: {{ .Values.watcher.logfire.token | quote }}
   {{- end }}

@@ -4,6 +4,10 @@
 # Override the default values for development
 replicaCount: 1
 
+# Autoscaling configuration
+autoscaling:
+  enabled: false
+
 # Development image settings
 image:
   repository: watcher
@@ -31,9 +35,15 @@ watcher:
   slack:
     webhookUrl: ""
   
-  # Development features
-  autoCreateAnomalyDetectionRules: "false"
-  profilingEnabled: "true"
+  # Development features (using watcher-prefixed versions below)
+  
+  # Watcher feature flags for development
+  watcherAutoCreateAnomalyDetectionRules: "false"
+  watcherProfilingEnabled: "true"
+  watcherTimelinessCheckLookbackMinutes: "60"
+  watcherTimelinessCheckSchedule: "*/15 * * * *"
+  watcherFreshnessCheckSchedule: "0 * * * *"
+  watcherCeleryQueueHealthCheckSchedule: "*/5 * * * *"
 
 # Celery worker configuration for development
 celery:
@@ -74,6 +84,11 @@ resources:
 # Disable autoscaling in development
 autoscaling:
   enabled: false
+
+# GCP configuration (disabled for local dev)
+gcp:
+  secretManager:
+    enabled: false
 
 # No ingress needed - using LoadBalancer for external access
 ingress:

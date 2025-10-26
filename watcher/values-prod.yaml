@@ -4,11 +4,53 @@
 # Production replica count
 replicaCount: 3
 
+# Autoscaling configuration
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
 # Production image settings
 image:
   repository: your-registry/watcher
   tag: "v1.0.0"
   pullPolicy: IfNotPresent
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 8000
+  targetPort: 8000
+
+# Health check probes
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Resource limits
+resources:
+  limits:
+    cpu: 4000m
+    memory: 8Gi
+  requests:
+    cpu: 2000m
+    memory: 4Gi
 
 # Production environment configuration
 watcher:
@@ -31,9 +73,15 @@ watcher:
   slack:
     webhookUrl: "${SLACK_WEBHOOK_URL}"
   
-  # Production features
-  autoCreateAnomalyDetectionRules: "true"
-  profilingEnabled: "false"
+  # Production features (using watcher-prefixed versions below)
+  
+  # Watcher feature flags for production
+  watcherAutoCreateAnomalyDetectionRules: "true"
+  watcherProfilingEnabled: "false"
+  watcherTimelinessCheckLookbackMinutes: "60"
+  watcherTimelinessCheckSchedule: "*/15 * * * *"
+  watcherFreshnessCheckSchedule: "0 * * * *"
+  watcherCeleryQueueHealthCheckSchedule: "*/5 * * * *"
 
 # Celery worker configuration for production
 celery:

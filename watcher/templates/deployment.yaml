@@ -24,6 +24,9 @@ spec:
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
+      {{- if .Values.gcp.secretManager.enabled }}
+      serviceAccountName: {{ .Values.gcp.secretManager.serviceAccount.name }}
+      {{- end }}
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
@@ -47,6 +50,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "watcher.fullname" . }}-config
+            {{- if .Values.gcp.secretManager.enabled }}
+            {{- range $key, $secret := .Values.gcp.secretManager.secrets }}
+            - secretRef:
+                name: {{ include "watcher.fullname" $ }}-{{ $key }}
+            {{- end }}
+            {{- end }}
           {{- with .Values.livenessProbe }}
           livenessProbe:
             {{- toYaml . | nindent 12 }}

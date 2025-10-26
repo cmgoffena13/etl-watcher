@@ -1,0 +1,219 @@
+# GCP Production values for Watcher
+# This file contains GCP-specific configuration for production environments
+#
+# SETUP REQUIREMENTS:
+# 1. Create a GCP project and enable required APIs:
+#    - Cloud SQL Admin API
+#    - Memorystore Redis API  
+#    - Secret Manager API
+#    - Container Registry API
+# 2. Create Cloud SQL PostgreSQL instance (production grade)
+# 3. Create Memorystore Redis instance (production grade)
+# 4. Create secrets in GCP Secret Manager (see secrets section below)
+# 5. Build and push Docker image to GCR with production tag
+# 6. Update projectId and image repository below
+# 7. Configure proper security policies and IAM roles
+
+# Production replica count
+replicaCount: 3
+
+# Autoscaling configuration
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+# GCP Container Registry image settings
+image:
+  repository: "gcr.io/YOUR_PROJECT_ID/watcher"  # Replace YOUR_PROJECT_ID with your actual GCP project ID
+  tag: "sha256:abc123def456..."  # Use specific image hash for production (immutable)
+  pullPolicy: Always  # Always pull to ensure exact image version is used
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 8000
+  targetPort: 8000
+
+# Health check probes
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Resource limits
+resources:
+  limits:
+    cpu: 4000m
+    memory: 8Gi
+  requests:
+    cpu: 2000m
+    memory: 4Gi
+
+# GCP production environment configuration
+watcher:
+  envState: "prod"
+  
+  # Cloud SQL configuration for production
+  database:
+    # Connection string for Cloud SQL PostgreSQL instance (production)
+    # DB_PASSWORD and DB_HOST will be populated from GCP Secret Manager
+    url: "postgresql+asyncpg://watcher:${DB_PASSWORD}@${DB_HOST}:5432/watcher"
+  
+  # Memorystore (Redis) configuration for production
+  redis:
+    # Connection string for Memorystore Redis instance (production)
+    # REDIS_HOST will be populated from GCP Secret Manager
+    url: "redis://${REDIS_HOST}:6379/1"
+  
+  # Production monitoring
+  logfire:
+    token: "${LOGFIRE_TOKEN}"
+    console: "false"
+  
+  # Production notifications
+  slack:
+    webhookUrl: "${SLACK_WEBHOOK_URL}"
+  
+  # Production features (using watcher-prefixed versions below)
+  
+  # Watcher feature flags for production
+  watcherAutoCreateAnomalyDetectionRules: "true"
+  watcherProfilingEnabled: "false"
+  watcherTimelinessCheckLookbackMinutes: "60"
+  watcherTimelinessCheckSchedule: "*/15 * * * *"
+  watcherFreshnessCheckSchedule: "0 * * * *"
+  watcherCeleryQueueHealthCheckSchedule: "*/5 * * * *"
+
+# GCP Secret Manager configuration
+gcp:
+  secretManager:
+    enabled: true
+    # Service account for accessing GCP Secret Manager
+    serviceAccount:
+      create: true
+      name: "etl-watcher-prod"
+      annotations:
+        # Replace PROJECT_ID with your actual GCP project ID
+        iam.gke.io/gcp-service-account: "etl-watcher-prod@YOUR_PROJECT_ID.iam.gserviceaccount.com"
+    # GCP Secret Manager secret names and URLs
+    projectId: "YOUR_PROJECT_ID"
+    secrets:
+      # Database credentials (production)
+      databasePassword:
+        name: "watcher-db-password-prod"  # Production-specific secret name
+        version: "latest"  # Use 'latest' for most recent version, or specific version number
+      databaseHost:
+        name: "watcher-db-host-prod"  # Production Cloud SQL instance connection name
+        version: "latest"
+      
+      # Redis configuration (production)
+      redisHost:
+        name: "watcher-redis-host-prod"  # Production Memorystore Redis instance IP
+        version: "latest"
+      
+      # Monitoring and logging (production)
+      logfireToken:
+        name: "watcher-logfire-token-prod"  # Production Logfire API token
+        version: "latest"
+      
+      # Notifications (production)
+      slackWebhookUrl:
+        name: "watcher-slack-webhook-prod"  # Production Slack webhook URL
+        version: "latest"
+
+# Celery worker configuration for GCP production
+celery:
+  replicaCount: 2
+  resources:
+    limits:
+      cpu: 2000m
+      memory: 4Gi
+    requests:
+      cpu: 1000m
+      memory: 2Gi
+  # Autoscaling for GCP production
+  autoscaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+  # Celery Beat configuration for GCP production
+  beat:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
+
+# GCP Load Balancer configuration for production
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+  annotations:
+    cloud.google.com/load-balancer-type: "External"
+    # Optional: Add backend-config if you need custom load balancer settings
+    # cloud.google.com/backend-config: '{"default": "watcher-backend-config"}'
+
+# Resource limits for GCP production
+resources:
+  limits:
+    cpu: 4000m
+    memory: 8Gi
+  requests:
+    cpu: 2000m
+    memory: 4Gi
+
+# GCP autoscaling for production
+autoscaling:
+  enabled: true
+  minReplicas: 3
+  maxReplicas: 15
+  targetCPUUtilizationPercentage: 70
+
+# No ingress needed - using LoadBalancer for external access
+ingress:
+  enabled: false
+
+# Security context for GCP production
+podSecurityContext:
+  fsGroup: 999
+  runAsNonRoot: true
+  runAsUser: 999
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: true
+  runAsNonRoot: true
+  runAsUser: 999
+
+# GCP-specific node affinity (optional)
+nodeSelector:
+  cloud.google.com/gke-nodepool: "default-pool"
+
+# GCP-specific tolerations (optional)
+tolerations:
+  - key: "cloud.google.com/gke-nodepool"
+    operator: "Equal"
+    value: "default-pool"
+    effect: "NoSchedule"

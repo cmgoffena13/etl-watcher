@@ -1,0 +1,197 @@
+# GCP Development values for Watcher
+# This file contains GCP-specific configuration for development environments
+#
+# SETUP REQUIREMENTS:
+# 1. Create a GCP project and enable required APIs:
+#    - Cloud SQL Admin API
+#    - Memorystore Redis API  
+#    - Secret Manager API
+#    - Container Registry API
+# 2. Create Cloud SQL PostgreSQL instance
+# 3. Create Memorystore Redis instance
+# 4. Create secrets in GCP Secret Manager (see secrets section below)
+# 5. Build and push Docker image to GCR
+# 6. Update projectId and image repository below
+
+# Development replica count
+replicaCount: 1
+
+# Autoscaling configuration
+autoscaling:
+  enabled: false
+
+# GCP Container Registry image settings
+image:
+  repository: "gcr.io/YOUR_PROJECT_ID/watcher"  # Replace YOUR_PROJECT_ID with your actual GCP project ID
+  tag: "dev"  # Use 'dev' for development, 'latest' for latest, or specific version tags
+  pullPolicy: Always  # Always pull latest image for development
+
+# Service configuration
+service:
+  type: LoadBalancer
+  port: 8000
+  targetPort: 8000
+
+# Health check probes
+livenessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 5
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /health
+    port: 8000
+  initialDelaySeconds: 5
+  periodSeconds: 5
+  timeoutSeconds: 3
+  failureThreshold: 3
+
+# Resource limits
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# GCP development environment configuration
+watcher:
+  envState: "dev"
+  
+  # Cloud SQL configuration for development
+  database:
+    # Connection string for Cloud SQL PostgreSQL instance
+    # DB_PASSWORD and DB_HOST will be populated from GCP Secret Manager
+    url: "postgresql+asyncpg://watcher:${DB_PASSWORD}@${DB_HOST}:5432/watcher"
+  
+  # Memorystore (Redis) configuration for development
+  redis:
+    # Connection string for Memorystore Redis instance
+    # REDIS_HOST will be populated from GCP Secret Manager
+    url: "redis://${REDIS_HOST}:6379/1"
+  
+  # Development monitoring (optional)
+  logfire:
+    token: "${LOGFIRE_TOKEN}"
+    console: "true"  # Enable console logging for dev
+  
+  # Development notifications (optional)
+  slack:
+    webhookUrl: "${SLACK_WEBHOOK_URL}"
+  
+  # Development features (using watcher-prefixed versions below)
+  
+  # Watcher feature flags for development
+  watcherAutoCreateAnomalyDetectionRules: "true"
+  watcherProfilingEnabled: "true"
+  watcherTimelinessCheckLookbackMinutes: "60"
+  watcherTimelinessCheckSchedule: "*/15 * * * *"
+  watcherFreshnessCheckSchedule: "0 * * * *"
+  watcherCeleryQueueHealthCheckSchedule: "*/5 * * * *"
+
+# GCP Secret Manager configuration
+gcp:
+  secretManager:
+    enabled: true
+    # Service account for accessing GCP Secret Manager
+    serviceAccount:
+      create: true
+      name: "etl-watcher-dev"
+      annotations:
+        # Format: SERVICE_ACCOUNT_NAME@PROJECT_ID.iam.gserviceaccount.com
+        # Replace PROJECT_ID with your actual GCP project ID
+        iam.gke.io/gcp-service-account: "etl-watcher-dev@YOUR_PROJECT_ID.iam.gserviceaccount.com"
+    # GCP Secret Manager secret names and URLs
+    projectId: "YOUR_PROJECT_ID"
+    secrets:
+      # Database credentials
+      databasePassword:
+        name: "watcher-db-password"  # Secret name in GCP Secret Manager
+        version: "latest"  # Use 'latest' for most recent version, or specific version number
+      databaseHost:
+        name: "watcher-db-host"  # Cloud SQL instance connection name (e.g., "project:region:instance")
+        version: "latest"
+      
+      # Redis configuration
+      redisHost:
+        name: "watcher-redis-host"  # Memorystore Redis instance IP address
+        version: "latest"
+      
+      # Monitoring and logging
+      logfireToken:
+        name: "watcher-logfire-token"  # Logfire API token for observability
+        version: "latest"
+      
+      # Notifications
+      slackWebhookUrl:
+        name: "watcher-slack-webhook"  # Slack webhook URL for alerts
+        version: "latest"
+
+# Celery worker configuration for GCP development
+celery:
+  replicaCount: 1
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1Gi
+    requests:
+      cpu: 250m
+      memory: 512Mi
+  # No autoscaling for dev
+  autoscaling:
+    enabled: false
+  # Celery Beat configuration for GCP development
+  beat:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
+
+# GCP Load Balancer configuration for development
+service:
+  type: LoadBalancer
+  port: 80
+  targetPort: 8000
+  annotations:
+    cloud.google.com/load-balancer-type: "External"
+    cloud.google.com/neg: '{"ingress": true}'
+
+# Resource limits for GCP development
+resources:
+  limits:
+    cpu: 1000m
+    memory: 2Gi
+  requests:
+    cpu: 500m
+    memory: 1Gi
+
+# No autoscaling for development
+autoscaling:
+  enabled: false
+
+# No ingress needed - using LoadBalancer for external access
+ingress:
+  enabled: false
+
+# Security context for GCP development
+podSecurityContext:
+  fsGroup: 999
+  runAsNonRoot: true
+  runAsUser: 999
+
+securityContext:
+  capabilities:
+    drop:
+    - ALL
+  readOnlyRootFilesystem: false  # Allow writes for development
+  runAsNonRoot: true
+  runAsUser: 999

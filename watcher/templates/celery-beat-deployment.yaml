@@ -40,6 +40,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: {{ include "watcher.fullname" . }}-config
+            {{- if .Values.gcp.secretManager.enabled }}
+            {{- range $key, $secret := .Values.gcp.secretManager.secrets }}
+            - secretRef:
+                name: {{ include "watcher.fullname" $ }}-{{ $key }}
+            {{- end }}
+            {{- end }}
           {{- with .Values.celery.beat.resources }}
           resources:
             {{- toYaml . | nindent 12 }}

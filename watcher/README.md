@@ -48,8 +48,6 @@ kubectl get pods
 # Check services
 kubectl get services
 
-# Port forward to access the app
-kubectl port-forward service/watcher 8000:80
 ```
 
 Then visit http://localhost:8000
