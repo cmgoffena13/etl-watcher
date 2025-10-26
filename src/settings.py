@@ -18,6 +18,14 @@ class GlobalConfig(BaseConfig):
     LOGFIRE_IGNORE_NO_CONFIG: Optional[bool] = False
     SLACK_WEBHOOK_URL: Optional[str] = None
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
+    WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: Optional[int] = 60
+    WATCHER_TIMELINESS_CHECK_SCHEDULE: Optional[str] = (
+        "*/15 * * * *"  # Every 15 minutes
+    )
+    WATCHER_FRESHNESS_CHECK_SCHEDULE: Optional[str] = "0 * * * *"  # Every hour at :00
+    WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE: Optional[str] = (
+        "*/5 * * * *"  # Every 5 minutes
+    )
     PROFILING_ENABLED: Optional[bool] = False
     REDIS_URL: Optional[str] = None
 

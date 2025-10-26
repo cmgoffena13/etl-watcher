@@ -51,6 +51,15 @@ celery:
     minReplicas: 2
     maxReplicas: 8
     targetCPUUtilizationPercentage: 70
+  # Celery Beat configuration for production
+  beat:
+    resources:
+      limits:
+        cpu: 200m
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 256Mi
 
 # Service configuration for production (external access)
 service:

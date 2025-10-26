@@ -4,6 +4,7 @@
 import asyncio
 import json
 
+import pendulum
 import redis
 from rich import box
 from rich.console import Console
@@ -63,6 +64,9 @@ async def check_celery_health():
         except Exception as e:
             console.print(f"[red]Failed to get worker stats: {e}[/red]")
 
+        # Initialize variables
+        redis_client = None
+
         # Queue Information
         console.print("\n[bold yellow]Queue Information[/bold yellow]")
         try:
@@ -73,51 +77,76 @@ async def check_celery_health():
             )
             redis_table.add_column("Queue", style="cyan")
             redis_table.add_column("Tasks in Queue", style="green", justify="right")
-            redis_table.add_column("Scheduled", style="blue", justify="right")
             redis_table.add_column("Status", style="yellow")
 
-            # Only check the celery queue since that's where the actual tasks are
-            queue_name = "celery"
-            queued_count = redis_client.llen(queue_name)
-            scheduled_count = redis_client.zcard(f"{queue_name}:scheduled")
+            # Check both celery and scheduled queues
+            queues_to_check = ["celery", "scheduled"]
 
-            # Determine status based on queue depth (same thresholds as alert system)
-            if queued_count >= 100:
-                status = "🚨 Critical"
-            elif queued_count >= 50:
-                status = "⚠️  Warning"
-            elif queued_count > 0:
-                status = "ℹ️  Low"
-            else:
-                status = "✅ Empty"
+            for queue_name in queues_to_check:
+                queued_count = redis_client.llen(queue_name)
 
-            redis_table.add_row(
-                queue_name, str(queued_count), str(scheduled_count), status
-            )
+                # Determine status based on queue depth (same thresholds as alert system)
+                if queued_count >= 100:
+                    status = "🚨 Critical"
+                elif queued_count >= 50:
+                    status = "⚠️  Warning"
+                elif queued_count > 0:
+                    status = "ℹ️  Low"
+                else:
+                    status = "✅ Empty"
+
+                redis_table.add_row(queue_name, str(queued_count), status)
 
             console.print(redis_table)
 
         except Exception as redis_e:
             console.print(f"[yellow]Redis check failed: {redis_e}[/yellow]")
 
+        # Scheduled Tasks
+        console.print("\n[bold magenta]Scheduled Tasks[/bold magenta]")
+        console.print("[bold]Beat Schedule Configuration:[/bold]")
+        console.print(
+            f"  [cyan]Freshness Check:[/cyan] {config.WATCHER_FRESHNESS_CHECK_SCHEDULE}"
+        )
+        console.print(
+            f"  [cyan]Timeliness Check:[/cyan] {config.WATCHER_TIMELINESS_CHECK_SCHEDULE}"
+        )
+        console.print(
+            f"  [cyan]Celery Queue Health Check:[/cyan] {config.WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE}"
+        )
+
         # Queue Analysis
         console.print("\n[bold green]Queue Analysis[/bold green]")
         try:
-            # Get all messages from the queue to analyze task types
-            messages = redis_client.lrange(queue_name, 0, -1)
+            if redis_client is None:
+                console.print(
+                    "[yellow]Redis client not available - skipping queue analysis[/yellow]"
+                )
+                return
 
-            # Count tasks by type
+            # Check both regular and scheduled queues
+            regular_queue = "celery"
+            scheduled_queue = "scheduled"
+
+            # Get messages from both queues
+            regular_messages = redis_client.lrange(regular_queue, 0, -1)
+            scheduled_messages = redis_client.lrange(scheduled_queue, 0, -1)
+
+            # Count tasks by type for both queues
             task_counts = {
                 "detect_anomalies_task": 0,
                 "timeliness_check_task": 0,
                 "freshness_check_task": 0,
                 "address_lineage_closure_rebuild_task": 0,
                 "pipeline_execution_closure_maintain_task": 0,
+                "scheduled_freshness_check": 0,
+                "scheduled_timeliness_check": 0,
+                "scheduled_celery_queue_health_check": 0,
                 "unknown": 0,
             }
 
-            # Analyze queued messages to count by task type
-            for message in messages:
+            # Analyze regular queue messages
+            for message in regular_messages:
                 try:
                     task_data = json.loads(message)
 
@@ -141,6 +170,27 @@ async def check_celery_health():
                 except (json.JSONDecodeError, KeyError):
                     task_counts["unknown"] += 1
 
+            # Analyze scheduled queue messages
+            for message in scheduled_messages:
+                try:
+                    task_data = json.loads(message)
+
+                    # Task name is in headers.task, not at the root level
+                    headers = task_data.get("headers", {})
+                    task_name = headers.get("task", "unknown")
+
+                    # Map scheduled task names
+                    if "scheduled_freshness_check" in task_name:
+                        task_counts["scheduled_freshness_check"] += 1
+                    elif "scheduled_timeliness_check" in task_name:
+                        task_counts["scheduled_timeliness_check"] += 1
+                    elif "scheduled_celery_queue_health_check" in task_name:
+                        task_counts["scheduled_celery_queue_health_check"] += 1
+                    else:
+                        task_counts["unknown"] += 1
+                except (json.JSONDecodeError, KeyError):
+                    task_counts["unknown"] += 1
+
             # Create queue analysis table
             breakdown_table = Table(
                 show_header=True, header_style="bold green", box=box.ROUNDED
@@ -151,16 +201,37 @@ async def check_celery_health():
 
             total_tasks = sum(task_counts.values())
 
-            for task_name, count in task_counts.items():
-                if count > 0:
-                    # Convert snake_case to readable format
-                    readable_name = task_name.replace("_", " ").title()
-                    percentage = (count / total_tasks * 100) if total_tasks > 0 else 0
-                    breakdown_table.add_row(
-                        readable_name, str(count), f"{percentage:.1f}%"
-                    )
+            # Show queue summary
+            console.print(
+                f"[green]Regular queue: {len(regular_messages)} tasks[/green]"
+            )
+            console.print(
+                f"[blue]Scheduled queue: {len(scheduled_messages)} tasks[/blue]"
+            )
+            console.print(f"[yellow]Total: {total_tasks} tasks[/yellow]")
+            console.print()
 
             if total_tasks > 0:
+                for task_name, count in task_counts.items():
+                    if count > 0:
+                        # Convert snake_case to readable format with custom mappings
+                        readable_name = task_name.replace("_", " ").title()
+
+                        # Custom mappings for better readability
+                        if task_name == "scheduled_celery_queue_health_check":
+                            readable_name = "Scheduled Celery Queue Health Check"
+                        elif task_name == "scheduled_freshness_check":
+                            readable_name = "Scheduled Freshness Check"
+                        elif task_name == "scheduled_timeliness_check":
+                            readable_name = "Scheduled Timeliness Check"
+
+                        percentage = (
+                            (count / total_tasks * 100) if total_tasks > 0 else 0
+                        )
+                        breakdown_table.add_row(
+                            readable_name, str(count), f"{percentage:.1f}%"
+                        )
+
                 console.print(breakdown_table)
             else:
                 console.print("[dim]No tasks currently in queue[/dim]")
@@ -241,36 +312,6 @@ async def check_celery_health():
         except Exception as e:
             console.print(f"[red]Failed to get active tasks: {e}[/red]")
 
-        # Scheduled Tasks
-        console.print("\n[bold yellow]Scheduled Tasks[/bold yellow]")
-        try:
-            scheduled_tasks = inspect.scheduled()
-            if not scheduled_tasks:
-                console.print("[dim]No scheduled tasks found[/dim]")
-            else:
-                scheduled_table = Table(
-                    show_header=True, header_style="bold yellow", box=box.ROUNDED
-                )
-                scheduled_table.add_column("Worker", style="cyan")
-                scheduled_table.add_column("Task Name", style="green")
-                scheduled_table.add_column("ETA", style="blue")
-                scheduled_table.add_column("Priority", style="purple")
-
-                for worker_name, tasks in scheduled_tasks.items():
-                    for task in tasks:
-                        task_name = task.get("name", "Unknown")
-                        eta = task.get("eta", "Unknown")
-                        priority = task.get("priority", "Unknown")
-
-                        scheduled_table.add_row(
-                            worker_name, task_name, str(eta), str(priority)
-                        )
-
-                console.print(scheduled_table)
-
-        except Exception as e:
-            console.print(f"[red]Failed to get scheduled tasks: {e}[/red]")
-
         # Task Performance Summary
         console.print("\n[bold blue]Task Performance Summary[/bold blue]")
         try:
@@ -293,6 +334,8 @@ async def check_celery_health():
 
                 task_durations = []
                 total_executions = 0
+                overall_durations = []  # For overall summary, excludes trigger tasks
+                overall_executions = 0
 
                 for task_name_bytes, avg_data_bytes in task_averages.items():
                     task_name = task_name_bytes.decode()
@@ -315,17 +358,27 @@ async def check_celery_health():
                         task_durations.append(avg_duration)
                         total_executions += count
 
+                        # For overall summary, skip scheduled tasks that are just triggers
+                        if not task_name.endswith(
+                            "scheduled_freshness_check"
+                        ) and not task_name.endswith("scheduled_timeliness_check"):
+                            overall_durations.append(avg_duration)
+                            overall_executions += count
+
                     except (ValueError, IndexError) as e:
                         console.print(f"  Error parsing data for {task_name}: {e}")
                         continue
 
                 console.print(task_table)
 
-                if task_durations:
+                if overall_durations:
                     console.print("\n[bold blue]Task Overall Summary[/bold blue]")
-                    overall_avg = sum(task_durations) / len(task_durations)
-                    min_avg = min(task_durations)
-                    max_avg = max(task_durations)
+                    console.print(
+                        "[dim]Note: scheduled_freshness_check and scheduled_timeliness_check are excluded as they are just triggers that queue other tasks[/dim]"
+                    )
+                    overall_avg = sum(overall_durations) / len(overall_durations)
+                    min_avg = min(overall_durations)
+                    max_avg = max(overall_durations)
 
                     # Create summary table
                     summary_table = Table()
@@ -335,9 +388,9 @@ async def check_celery_health():
                     )
 
                     summary_table.add_row(
-                        "Task types with data", str(len(task_durations))
+                        "Task types with data", str(len(overall_durations))
                     )
-                    summary_table.add_row("Total executions", str(total_executions))
+                    summary_table.add_row("Total executions", str(overall_executions))
                     summary_table.add_row(
                         "Average across all types", f"{overall_avg * 1000:.1f}ms"
                     )

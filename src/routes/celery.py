@@ -19,31 +19,41 @@ async def check_celery_queue():
     try:
         redis_client = redis.Redis.from_url(config.REDIS_URL)
 
-        queue_name = "celery"
-
         # Run Redis operations in thread pool to avoid blocking
         loop = asyncio.get_event_loop()
 
-        # Get all messages from the queue to analyze task types
-        messages = await loop.run_in_executor(
-            None, redis_client.lrange, queue_name, 0, -1
+        # Check both regular and scheduled queues
+        regular_queue = "celery"
+        scheduled_queue = "scheduled"
+
+        # Get messages from both queues
+        regular_messages = await loop.run_in_executor(
+            None, redis_client.lrange, regular_queue, 0, -1
         )
-        scheduled = await loop.run_in_executor(
-            None, redis_client.zcard, f"{queue_name}:scheduled"
+        scheduled_messages = await loop.run_in_executor(
+            None, redis_client.lrange, scheduled_queue, 0, -1
         )
 
-        # Count tasks by type
+        # Get scheduled tasks count (from Redis beat scheduler - these are cron jobs waiting to run)
+        beat_scheduled_tasks = await loop.run_in_executor(
+            None, redis_client.zcard, f"{regular_queue}:scheduled"
+        )
+
+        # Count tasks by type for both queues
         task_counts = {
             "detect_anomalies_task": 0,
             "timeliness_check_task": 0,
             "freshness_check_task": 0,
             "address_lineage_closure_rebuild_task": 0,
             "pipeline_execution_closure_maintain_task": 0,
+            "scheduled_freshness_check": 0,
+            "scheduled_timeliness_check": 0,
+            "scheduled_queue_health_check": 0,
             "unknown": 0,
         }
 
-        # Analyze queued messages to count by task type
-        for message in messages:
+        # Analyze regular queue messages
+        for message in regular_messages:
             try:
                 import json
 
@@ -71,7 +81,33 @@ async def check_celery_queue():
                 logger.warning(f"Failed to parse task message: {e}")
                 task_counts["unknown"] += 1
 
-        total_pending = len(messages) + scheduled
+        # Analyze scheduled queue messages
+        for message in scheduled_messages:
+            try:
+                import json
+
+                task_data = json.loads(message)
+
+                # Task name is in headers.task, not at the root level
+                headers = task_data.get("headers", {})
+                task_name = headers.get("task", "unknown")
+
+                # Map scheduled task names
+                if "scheduled_freshness_check" in task_name:
+                    task_counts["scheduled_freshness_check"] += 1
+                elif "scheduled_timeliness_check" in task_name:
+                    task_counts["scheduled_timeliness_check"] += 1
+                elif "scheduled_queue_health_check" in task_name:
+                    task_counts["scheduled_queue_health_check"] += 1
+                else:
+                    task_counts["unknown"] += 1
+            except (json.JSONDecodeError, KeyError) as e:
+                logger.warning(f"Failed to parse scheduled queue message: {e}")
+                task_counts["unknown"] += 1
+
+        total_pending = (
+            len(regular_messages) + len(scheduled_messages) + beat_scheduled_tasks
+        )
 
         if total_pending >= 100:
             alert_level = AlertLevel.CRITICAL
@@ -92,7 +128,9 @@ async def check_celery_queue():
             return {
                 "status": "success",
                 "total_pending": total_pending,
-                "scheduled_tasks": scheduled,
+                "regular_queue_pending": len(regular_messages),
+                "scheduled_queue_pending": len(scheduled_messages),
+                "beat_scheduled_tasks": beat_scheduled_tasks,
                 "task_breakdown": task_breakdown_formatted,
                 "task_breakdown_raw": task_counts,  # Keep raw data for programmatic use
             }
@@ -108,7 +146,9 @@ async def check_celery_queue():
 
             details = {
                 "Total pending": total_pending,
-                "Scheduled tasks": scheduled,
+                "Regular queue": len(regular_messages),
+                "Scheduled queue": len(scheduled_messages),
+                "Beat scheduled tasks": beat_scheduled_tasks,
                 "Task breakdown": task_breakdown_formatted,
             }
 
@@ -142,7 +182,7 @@ async def check_celery_queue():
     return {
         "status": "success",
         "total_pending": total_pending,
-        "scheduled_tasks": scheduled,
+        "scheduled_tasks": scheduled_tasks,
         "task_breakdown": task_breakdown_formatted,
         "task_breakdown_raw": task_counts,  # Keep raw data for programmatic use
     }

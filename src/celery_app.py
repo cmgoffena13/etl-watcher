@@ -5,6 +5,7 @@ from collections import namedtuple
 import logfire
 import redis
 from celery import Celery
+from celery.schedules import crontab
 from celery.signals import task_postrun, task_prerun, worker_init
 
 from src.logging_conf import configure_logging
@@ -14,6 +15,26 @@ logger = logging.getLogger(__name__)
 
 # In-memory tracking
 tasks = {}
+
+
+def parse_cron_expression(cron_str: str) -> crontab:
+    """Parse a cron expression string into a crontab object"""
+    parts = cron_str.strip().split()
+    if len(parts) != 5:
+        raise ValueError(
+            f"Invalid cron expression: {cron_str}. Expected 5 parts (minute hour day month dayofweek)"
+        )
+
+    minute, hour, day_of_month, month_of_year, day_of_week = parts
+    return crontab(
+        minute=minute,
+        hour=hour,
+        day_of_month=day_of_month,
+        month_of_year=month_of_year,
+        day_of_week=day_of_week,
+    )
+
+
 task_avg_time = {}
 Average = namedtuple("Average", "avg_duration count")
 
@@ -84,3 +105,20 @@ celery.conf.update(
     worker_max_tasks_per_child=1000,  # Restart worker after N tasks
     worker_disable_rate_limits=False,  # Disable rate limits
 )
+
+celery.conf.beat_schedule = {
+    "scheduled-freshness-check": {
+        "task": "src.celery_tasks.scheduled_freshness_check",
+        "schedule": parse_cron_expression(config.WATCHER_FRESHNESS_CHECK_SCHEDULE),
+    },
+    "scheduled-timeliness-check": {
+        "task": "src.celery_tasks.scheduled_timeliness_check",
+        "schedule": parse_cron_expression(config.WATCHER_TIMELINESS_CHECK_SCHEDULE),
+    },
+    "scheduled-celery-queue-health-check": {
+        "task": "src.celery_tasks.scheduled_celery_queue_health_check",
+        "schedule": parse_cron_expression(
+            config.WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE
+        ),
+    },
+}

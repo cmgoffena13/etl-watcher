@@ -17,7 +17,7 @@ from src.database.pipeline_execution_utils import (
 )
 from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
 from src.notifier import AlertLevel, send_slack_message
-from src.settings import get_database_config
+from src.settings import config, get_database_config
 
 logger = logging.getLogger(__name__)
 
@@ -321,3 +321,31 @@ async def _run_async_pipeline_execution_closure_maintenance(
         return {"status": "success", "message": "Execution closure table maintained"}
     finally:
         await engine.dispose()
+
+
+# ============================================================================
+# SCHEDULED TASKS
+# ============================================================================
+
+
+@celery.task(bind=True, max_retries=3, default_retry_delay=60, queue="scheduled")
+def scheduled_freshness_check(self):
+    """Scheduled task to check freshness for all active pipelines"""
+    return freshness_check_task.delay()
+
+
+@celery.task(bind=True, max_retries=3, default_retry_delay=60, queue="scheduled")
+def scheduled_timeliness_check(self):
+    """Scheduled task to check timeliness for all active pipelines"""
+    return timeliness_check_task.delay(
+        lookback_minutes=config.WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES
+    )
+
+
+@celery.task(bind=True, max_retries=3, default_retry_delay=60, queue="scheduled")
+def scheduled_celery_queue_health_check(self):
+    """Scheduled task to monitor queue health and send alerts"""
+    # Import here to avoid circular import
+    from src.routes.celery import check_celery_queue
+
+    return async_to_sync(check_celery_queue)()

@@ -356,6 +356,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -367,7 +368,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#scheduled-monitoring">Scheduled Monitoring</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#automated-monitoring">Automated Monitoring</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#monitoring-frequency">Monitoring Frequency</a></li>
 </ul>
 </li>
@@ -781,7 +782,7 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 </section>
 <section id="celery-queue-monitoring">
 <h2>Celery Queue Monitoring<a class="headerlink" href="#celery-queue-monitoring" title="Link to this heading"></a></h2>
-<p>Monitor Celery queue health and performance:</p>
+<p>Monitor Celery queue health and performance with detailed task breakdown:</p>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-2-2-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-2-2-0" name="2-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-2-2-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-1" name="2-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-2-2-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-2" name="2-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-2-2-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-2-2-3" name="2-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-2-2-0" class="sphinx-tabs-panel" id="panel-2-2-0" name="2-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
@@ -835,8 +836,10 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;total_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2855</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;scheduled_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;task_breakdown&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">  </span><span class="nt">&quot;regular_queue_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2855</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scheduled_queue_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;beat_scheduled_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;task_breakdown_formatted&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="s2">&quot;Detect Anomalies Task: 1375&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Pipeline Execution Closure Maintain: 1477&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="s2">&quot;Timeliness Check Task: 3&quot;</span>
@@ -861,6 +864,49 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <li><p><strong>CRITICAL</strong> (100+ messages): Queue severely backed up</p></li>
 </ul>
 </section>
+</section>
+<section id="scheduled-monitoring-tasks">
+<h2>Scheduled Monitoring Tasks<a class="headerlink" href="#scheduled-monitoring-tasks" title="Link to this heading"></a></h2>
+<p>Watcher includes built-in scheduled monitoring tasks that run automatically:</p>
+<p><strong>Celery Beat Scheduler</strong></p>
+<ul class="simple">
+<li><p><strong>Freshness Check</strong>: Runs every hour (configurable)</p></li>
+<li><p><strong>Timeliness Check</strong>: Runs every 15 minutes (configurable)</p></li>
+<li><p><strong>Queue Health Check</strong>: Runs every 5 minutes (configurable)</p></li>
+</ul>
+<p><strong>Configuration</strong></p>
+<p>Set cron schedules and monitoring parameters via environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Freshness check schedule (default: every hour)</span>
+<span class="nv">WATCHER_FRESHNESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;0 * * * *&quot;</span>
+
+<span class="c1"># Timeliness check schedule (default: every 15 minutes)</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/15 * * * *&quot;</span>
+
+<span class="c1"># Queue health check schedule (default: every 5 minutes)</span>
+<span class="nv">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/5 * * * *&quot;</span>
+
+<span class="c1"># Timeliness check lookback period (default: 60 minutes)</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</span><span class="o">=</span><span class="m">60</span>
+</pre></div>
+</div>
+<p><strong>Queue Separation</strong></p>
+<ul class="simple">
+<li><p><strong>Regular Queue</strong> (<cite>celery</cite>): Pipeline execution and processing tasks</p></li>
+<li><p><strong>Scheduled Queue</strong> (<cite>scheduled</cite>): Monitoring and health check tasks</p></li>
+</ul>
+<p>This separation prevents monitoring tasks from being delayed by heavy pipeline workloads.</p>
+<p><strong>Important Configuration Notes</strong></p>
+<ul>
+<li><p><strong>Timeliness Lookback Period</strong>: The default 60-minute lookback period works for most pipelines. If your pipelines typically run longer than 1 hour, increase <cite>WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</cite> to ensure timeliness checks can properly evaluate long-running executions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># For pipelines that run up to 3 hours</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</span><span class="o">=</span><span class="m">180</span>
+
+<span class="c1"># For pipelines that run up to 6 hours</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES</span><span class="o">=</span><span class="m">360</span>
+</pre></div>
+</div>
+</li>
+</ul>
 </section>
 <section id="system-health-monitoring">
 <h2>System Health Monitoring<a class="headerlink" href="#system-health-monitoring" title="Link to this heading"></a></h2>
@@ -968,7 +1014,9 @@ Message: Queue has 2939 pending tasks
 
 Details:
 • Total pending: 2939
-• Scheduled tasks: 0
+• Regular queue: 2939
+• Scheduled queue: 0
+• Beat scheduled tasks: 0
 • Task breakdown: [&#39;Detect Anomalies Task: 1420&#39;, &#39;Timeliness Check Task: 3&#39;, &#39;Freshness Check Task: 3&#39;, &#39;Pipeline Execution Closure Maintain Task: 1513&#39;]
 </pre></div>
 </div>
@@ -1025,33 +1073,48 @@ Details:
 </section>
 <section id="monitoring-strategy">
 <h2>Monitoring Strategy<a class="headerlink" href="#monitoring-strategy" title="Link to this heading"></a></h2>
-<section id="scheduled-monitoring">
-<h3>Scheduled Monitoring<a class="headerlink" href="#scheduled-monitoring" title="Link to this heading"></a></h3>
-<p>Set up regular monitoring checks using cron jobs or an orchestrator/scheduler:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Add to crontab</span>
-<span class="c1"># Check freshness every 5 minutes</span>
-*/5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
+<section id="automated-monitoring">
+<h3>Automated Monitoring<a class="headerlink" href="#automated-monitoring" title="Link to this heading"></a></h3>
+<p>Watcher includes built-in scheduled monitoring that runs automatically via Celery Beat:</p>
+<p><strong>Automatic Monitoring Tasks</strong></p>
+<ul class="simple">
+<li><p><strong>Freshness Checks</strong>: Every hour (configurable)</p></li>
+<li><p><strong>Timeliness Checks</strong>: Every 15 minutes (configurable)</p></li>
+<li><p><strong>Celery Queue Health Checks</strong>: Every 5 minutes (configurable)</p></li>
+</ul>
+<p><strong>Note</strong>: Log cleanup is not included in automatic monitoring and should be scheduled separately based on your data retention needs. See the <a class="reference external" href="log_cleanup.html">Log Cleanup &amp; Maintenance</a> guide for detailed configuration options.</p>
+<p><strong>Manual Monitoring</strong> (Optional)</p>
+<p>For additional monitoring or custom schedules, you can still trigger checks manually:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Manual freshness check</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/freshness&quot;</span>
 
-<span class="c1"># Check timeliness every 5 minutes</span>
-*/5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
+<span class="c1"># Manual timeliness check</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/timeliness&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;lookback_minutes&quot;: 60}&#39;</span>
 
-<span class="c1"># Monitor Celery queue every 5 minutes</span>
-*/5<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/celery/monitor-queue&quot;</span>
+<span class="c1"># Manual queue monitoring</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/celery/monitor-queue&quot;</span>
 
-<span class="c1"># Clean up logs daily (365 days retention)</span>
-<span class="m">0</span><span class="w"> </span><span class="m">2</span><span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>*<span class="w"> </span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/log_cleanup&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 365}&#39;</span>
+<span class="c1"># Log cleanup (run as needed)</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/log_cleanup&quot;</span><span class="w"> </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span>-d<span class="w"> </span><span class="s1">&#39;{&quot;retention_days&quot;: 365}&#39;</span>
 </pre></div>
 </div>
 </section>
 <section id="monitoring-frequency">
 <h3>Monitoring Frequency<a class="headerlink" href="#monitoring-frequency" title="Link to this heading"></a></h3>
-<p>Recommended monitoring frequencies:</p>
+<p><strong>Default Automated Frequencies:</strong></p>
 <ul class="simple">
-<li><p><strong>Freshness</strong> Every 5 minutes</p></li>
-<li><p><strong>Timeliness</strong> Every 5 minutes</p></li>
+<li><p><strong>Freshness</strong> Every hour</p></li>
+<li><p><strong>Timeliness</strong> Every 15 minutes</p></li>
 <li><p><strong>Queue Monitoring</strong> Every 5 minutes</p></li>
-<li><p><strong>Log Cleanup</strong> Daily, Weekly, or Monthly</p></li>
 </ul>
+<p><strong>Customization:</strong></p>
+<p>Configure different schedules via environment variables:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># More frequent monitoring</span>
+<span class="nv">WATCHER_FRESHNESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/30 * * * *&quot;</span><span class="w">    </span><span class="c1"># Every 30 minutes</span>
+<span class="nv">WATCHER_TIMELINESS_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/5 * * * *&quot;</span><span class="w">    </span><span class="c1"># Every 5 minutes</span>
+<span class="nv">WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE</span><span class="o">=</span><span class="s2">&quot;*/2 * * * *&quot;</span><span class="w">  </span><span class="c1"># Every 2 minutes</span>
+</pre></div>
+</div>
 </section>
 </section>
 <section id="load-testing">
@@ -1068,32 +1131,28 @@ make<span class="w"> </span>load-test
 </section>
 <section id="load-test-scenarios">
 <h3>Load Test Scenarios<a class="headerlink" href="#load-test-scenarios" title="Link to this heading"></a></h3>
-<p><strong>Pipeline Execution Users</strong> (998 users):</p>
+<p><strong>Pipeline Execution Users</strong> (999 users):</p>
 <ul class="simple">
 <li><p>Create and execute pipelines</p></li>
 <li><p>5-minute execution times</p></li>
 <li><p>1% anomaly generation rate</p></li>
-</ul>
-<p><strong>Monitoring Users</strong> (1 user):</p>
-<ul class="simple">
-<li><p>Run freshness and timeliness checks</p></li>
-<li><p>5-minute monitoring intervals</p></li>
 </ul>
 <p><strong>Heartbeat Users</strong> (1 user):</p>
 <ul class="simple">
 <li><p>Health check endpoint (<a class="reference external" href="http://localhost:8000">http://localhost:8000</a>)</p></li>
 <li><p>1-minute intervals</p></li>
 </ul>
+<p><strong>Note</strong>: Monitoring tasks (freshness, timeliness, queue health) now run automatically via scheduled Celery Beat tasks, so they’re no longer included in load testing.</p>
 </section>
 <section id="performance-targets">
 <h3>Performance Targets<a class="headerlink" href="#performance-targets" title="Link to this heading"></a></h3>
 <p>Based on the load test configuration, the system should handle:</p>
 <ul class="simple">
-<li><p><strong>998 concurrent pipelines</strong> executing every 5 minutes</p></li>
-<li><p><strong>~10-20 RPS</strong> sustained load (998 users ÷ 300 seconds)</p></li>
+<li><p><strong>999 concurrent pipelines</strong> executing every 5 minutes</p></li>
+<li><p><strong>~10-20 RPS</strong> sustained load (999 users ÷ 300 seconds)</p></li>
 <li><p><strong>Sub-second response times</strong> for all endpoints</p></li>
 <li><p><strong>&lt;1% failure rate</strong> under normal conditions</p></li>
-<li><p><strong>Continuous monitoring</strong> with dedicated monitoring and heartbeat users</p></li>
+<li><p><strong>Automated monitoring</strong> via Celery Beat scheduler (separate from load testing)</p></li>
 </ul>
 </section>
 </section>

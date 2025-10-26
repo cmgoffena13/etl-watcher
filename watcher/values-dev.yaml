@@ -40,11 +40,20 @@ celery:
   replicaCount: 1
   resources:
     limits:
-      cpu: 250m
-      memory: 512Mi
+      cpu: 500m
+      memory: 1Gi
     requests:
-      cpu: 100m
-      memory: 256Mi
+      cpu: 200m
+      memory: 512Mi
+  # Celery Beat configuration for development
+  beat:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 256Mi
+      requests:
+        cpu: 50m
+        memory: 128Mi
 
 # Service configuration for development (direct access)
 service:

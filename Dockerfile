@@ -18,8 +18,8 @@ WORKDIR /watcher
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --compile-bytecode
 
-# Create celery user and group
-RUN groupadd -r celery && useradd -r -g celery -m -d /home/celery celery
+# Create celery user and group with specific UID/GID
+RUN groupadd -r -g 999 celery && useradd -r -u 999 -g celery -m -d /home/celery celery
 RUN chown -R celery:celery /watcher
 RUN chown -R celery:celery /home/celery
 

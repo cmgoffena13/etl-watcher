@@ -262,7 +262,7 @@ Trigger timeliness checks with lookback period:
 Celery Queue Monitoring
 -----------------------
 
-Monitor Celery queue health and performance:
+Monitor Celery queue health and performance with detailed task breakdown:
 
 .. tabs::
 
@@ -332,8 +332,10 @@ Monitor Celery queue health and performance:
    {
      "status": "success",
      "total_pending": 2855,
-     "scheduled_tasks": 0,
-     "task_breakdown": [
+     "regular_queue_pending": 2855,
+     "scheduled_queue_pending": 0,
+     "beat_scheduled_tasks": 0,
+     "task_breakdown_formatted": [
        "Detect Anomalies Task: 1375",
        "Pipeline Execution Closure Maintain: 1477",
        "Timeliness Check Task: 3"
@@ -356,6 +358,54 @@ Default alert thresholds for Celery queue monitoring:
 - **INFO** (20+ messages): Queue building up
 - **WARNING** (50+ messages): Queue getting backed up
 - **CRITICAL** (100+ messages): Queue severely backed up
+
+Scheduled Monitoring Tasks
+---------------------------
+
+Watcher includes built-in scheduled monitoring tasks that run automatically:
+
+**Celery Beat Scheduler**
+
+- **Freshness Check**: Runs every hour (configurable)
+- **Timeliness Check**: Runs every 15 minutes (configurable)  
+- **Queue Health Check**: Runs every 5 minutes (configurable)
+
+**Configuration**
+
+Set cron schedules and monitoring parameters via environment variables:
+
+.. code-block:: bash
+
+   # Freshness check schedule (default: every hour)
+   WATCHER_FRESHNESS_CHECK_SCHEDULE="0 * * * *"
+   
+   # Timeliness check schedule (default: every 15 minutes)
+   WATCHER_TIMELINESS_CHECK_SCHEDULE="*/15 * * * *"
+   
+   # Queue health check schedule (default: every 5 minutes)
+   WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE="*/5 * * * *"
+   
+   # Timeliness check lookback period (default: 60 minutes)
+   WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES=60
+
+**Queue Separation**
+
+- **Regular Queue** (`celery`): Pipeline execution and processing tasks
+- **Scheduled Queue** (`scheduled`): Monitoring and health check tasks
+
+This separation prevents monitoring tasks from being delayed by heavy pipeline workloads.
+
+**Important Configuration Notes**
+
+- **Timeliness Lookback Period**: The default 60-minute lookback period works for most pipelines. If your pipelines typically run longer than 1 hour, increase `WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES` to ensure timeliness checks can properly evaluate long-running executions.
+
+  .. code-block:: bash
+
+     # For pipelines that run up to 3 hours
+     WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES=180
+     
+     # For pipelines that run up to 6 hours  
+     WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES=360
 
 System Health Monitoring
 ------------------------
@@ -465,7 +515,9 @@ Alert Types
    
    Details:
    • Total pending: 2939
-   • Scheduled tasks: 0
+   • Regular queue: 2939
+   • Scheduled queue: 0
+   • Beat scheduled tasks: 0
    • Task breakdown: ['Detect Anomalies Task: 1420', 'Timeliness Check Task: 3', 'Freshness Check Task: 3', 'Pipeline Execution Closure Maintain Task: 1513']
 
 **Anomaly Detection Alerts**
@@ -525,35 +577,56 @@ Alert Types
 Monitoring Strategy
 -------------------
 
-Scheduled Monitoring
+Automated Monitoring
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Set up regular monitoring checks using cron jobs or an orchestrator/scheduler:
+Watcher includes built-in scheduled monitoring that runs automatically via Celery Beat:
+
+**Automatic Monitoring Tasks**
+
+- **Freshness Checks**: Every hour (configurable)
+- **Timeliness Checks**: Every 15 minutes (configurable)
+- **Celery Queue Health Checks**: Every 5 minutes (configurable)
+
+**Note**: Log cleanup is not included in automatic monitoring and should be scheduled separately based on your data retention needs. See the `Log Cleanup & Maintenance <log_cleanup.html>`_ guide for detailed configuration options.
+
+**Manual Monitoring** (Optional)
+
+For additional monitoring or custom schedules, you can still trigger checks manually:
 
 .. code-block:: bash
 
-   # Add to crontab
-   # Check freshness every 5 minutes
-   */5 * * * * curl -X POST "http://localhost:8000/freshness"
+   # Manual freshness check
+   curl -X POST "http://localhost:8000/freshness"
    
-   # Check timeliness every 5 minutes
-   */5 * * * * curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
+   # Manual timeliness check
+   curl -X POST "http://localhost:8000/timeliness" -H "Content-Type: application/json" -d '{"lookback_minutes": 60}'
    
-   # Monitor Celery queue every 5 minutes
-   */5 * * * * curl -X POST "http://localhost:8000/celery/monitor-queue"
+   # Manual queue monitoring
+   curl -X POST "http://localhost:8000/celery/monitor-queue"
    
-   # Clean up logs daily (365 days retention)
-   0 2 * * * curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
+   # Log cleanup (run as needed)
+   curl -X POST "http://localhost:8000/log_cleanup" -H "Content-Type: application/json" -d '{"retention_days": 365}'
 
 Monitoring Frequency
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Recommended monitoring frequencies:
+**Default Automated Frequencies:**
 
-- **Freshness** Every 5 minutes
-- **Timeliness** Every 5 minutes
+- **Freshness** Every hour
+- **Timeliness** Every 15 minutes  
 - **Queue Monitoring** Every 5 minutes
-- **Log Cleanup** Daily, Weekly, or Monthly
+
+**Customization:**
+
+Configure different schedules via environment variables:
+
+.. code-block:: bash
+
+   # More frequent monitoring
+   WATCHER_FRESHNESS_CHECK_SCHEDULE="*/30 * * * *"    # Every 30 minutes
+   WATCHER_TIMELINESS_CHECK_SCHEDULE="*/5 * * * *"    # Every 5 minutes
+   WATCHER_CELERY_QUEUE_HEALTH_CHECK_SCHEDULE="*/2 * * * *"  # Every 2 minutes
 
 Load Testing
 ------------
@@ -573,29 +646,26 @@ Use Locust for load testing:
 Load Test Scenarios
 ~~~~~~~~~~~~~~~~~~~
 
-**Pipeline Execution Users** (998 users):
+**Pipeline Execution Users** (999 users):
 
 - Create and execute pipelines
 - 5-minute execution times
 - 1% anomaly generation rate
-
-**Monitoring Users** (1 user):
-
-- Run freshness and timeliness checks
-- 5-minute monitoring intervals
 
 **Heartbeat Users** (1 user):
 
 - Health check endpoint (http://localhost:8000)
 - 1-minute intervals
 
+**Note**: Monitoring tasks (freshness, timeliness, queue health) now run automatically via scheduled Celery Beat tasks, so they're no longer included in load testing.
+
 Performance Targets
 ~~~~~~~~~~~~~~~~~~~
 
 Based on the load test configuration, the system should handle:
 
-- **998 concurrent pipelines** executing every 5 minutes
-- **~10-20 RPS** sustained load (998 users ÷ 300 seconds)
+- **999 concurrent pipelines** executing every 5 minutes
+- **~10-20 RPS** sustained load (999 users ÷ 300 seconds)
 - **Sub-second response times** for all endpoints
 - **<1% failure rate** under normal conditions
-- **Continuous monitoring** with dedicated monitoring and heartbeat users
+- **Automated monitoring** via Celery Beat scheduler (separate from load testing)

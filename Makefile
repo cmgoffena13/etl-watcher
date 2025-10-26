@@ -13,7 +13,8 @@ dev-kube:
 	helm upgrade --install watcher ./watcher -f watcher/values-dev.yaml
 
 dev-kube-stop:
-	helm uninstall watcher || true
+	helm uninstall watcher --no-hooks || true
+	kubectl delete all,configmaps,secrets,jobs -l app.kubernetes.io/name=watcher || true
 	docker-compose down
 
 format: lint

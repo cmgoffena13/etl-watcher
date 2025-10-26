@@ -12,7 +12,7 @@ class PipelineExecutionUser(HttpUser):
     """
 
     _user_count = 0
-    weight = 998  # 998 out of 1000 users
+    weight = 999  # 999 out of 1000 users
 
     wait_time = between(300, 300)  # Wait 1 hour between executions (3600 seconds)
 
@@ -125,52 +125,6 @@ class PipelineExecutionUser(HttpUser):
         print(
             f"Pipeline {pipeline_id} completed execution {execution_id} in {processing_time}s"
         )
-
-
-class MonitoringUser(HttpUser):
-    """
-    Dedicated user for system monitoring (timeliness, freshness, celery checks)
-    Runs every 5 minutes without being blocked by pipeline execution sleep
-    """
-
-    weight = 1  # 1 out of 1000 users
-    wait_time = between(300, 300)  # Every 5 minutes
-
-    def on_start(self):
-        print("Monitoring user started - will run system checks every 5 minutes")
-
-    @task(1)
-    def run_system_checks(self):
-        """Run system-wide checks every 5 minutes"""
-        # Freshness check
-        with self.client.post(
-            "/freshness", catch_response=True, timeout=10
-        ) as response:
-            if response.status_code != 200:
-                response.failure(
-                    f"Freshness check failed: {response.status_code} - {response.text}"
-                )
-
-        # Timeliness check
-        with self.client.post(
-            "/timeliness",
-            json={"lookback_minutes": 60},
-            catch_response=True,
-            timeout=10,
-        ) as response:
-            if response.status_code != 200:
-                response.failure(
-                    f"Timeliness check failed: {response.status_code} - {response.text}"
-                )
-
-        # Celery queue monitoring
-        with self.client.post(
-            "/celery/monitor-queue", catch_response=True, timeout=10
-        ) as response:
-            if response.status_code != 200:
-                response.failure(
-                    f"Celery queue monitoring failed: {response.status_code} - {response.text}"
-                )
 
 
 class HeartbeatUser(HttpUser):

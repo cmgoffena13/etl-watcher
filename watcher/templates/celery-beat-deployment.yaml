@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "watcher.fullname" . }}-celery
+  name: {{ include "watcher.fullname" . }}-celery-beat
   labels:
     {{- include "watcher.labels" . | nindent 4 }}
-    app.kubernetes.io/component: celery-worker
+    app.kubernetes.io/component: celery-beat
 spec:
-  replicas: {{ .Values.celery.replicaCount | default 2 }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "watcher.selectorLabels" . | nindent 6 }}
-      app.kubernetes.io/component: celery-worker
+      app.kubernetes.io/component: celery-beat
   template:
     metadata:
       labels:
         {{- include "watcher.labels" . | nindent 8 }}
-        app.kubernetes.io/component: celery-worker
+        app.kubernetes.io/component: celery-beat
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
@@ -26,21 +26,21 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       containers:
-        - name: celery-worker
+        - name: celery-beat
           securityContext:
             runAsUser: 999
             runAsGroup: 999
             runAsNonRoot: true
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "worker", "--loglevel=info", "--queues=celery,scheduled"]
+          command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "beat", "--loglevel=info"]
           env:
             - name: UV_CACHE_DIR
               value: "/tmp/uv-cache"
           envFrom:
             - configMapRef:
                 name: {{ include "watcher.fullname" . }}-config
-          {{- with .Values.celery.resources }}
+          {{- with .Values.celery.beat.resources }}
           resources:
             {{- toYaml . | nindent 12 }}
           {{- end }}

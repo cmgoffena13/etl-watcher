@@ -38,6 +38,19 @@ services:
       - ./dev_start.sh:/watcher/start.sh
     command: ["/bin/bash", "/watcher/start.sh"]
 
+  beat:
+    build: .
+    container_name: watcher-beat
+    user: celery
+    env_file:
+      - .env
+    environment:
+      - ENV_STATE=dev
+      - DEV_DATABASE_URL=postgresql+asyncpg://watcher:watcher@postgres:5432/watcher
+    depends_on:
+      - redis
+    command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "beat", "--loglevel=info"]
+
   worker:
     build: .
     container_name: watcher-worker
@@ -50,7 +63,7 @@ services:
     depends_on:
       - redis
       - postgres
-    command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "worker", "--loglevel=info"]
+    command: ["uv", "run", "--", "celery", "-A", "src.celery_app", "worker", "--loglevel=info", "--queues=celery,scheduled"]
 
 volumes:
   watcher_redis_data:
