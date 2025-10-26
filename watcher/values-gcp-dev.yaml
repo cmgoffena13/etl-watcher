@@ -162,7 +162,8 @@ service:
   port: 80
   targetPort: 8000
   annotations:
-    cloud.google.com/load-balancer-type: "External"
+    cloud.google.com/load-balancer-type: "Internal"
+    networking.gke.io/load-balancer-type: "Internal"
     cloud.google.com/neg: '{"ingress": true}'
 
 # Resource limits for GCP development

@@ -169,7 +169,8 @@ service:
   port: 80
   targetPort: 8000
   annotations:
-    cloud.google.com/load-balancer-type: "External"
+    cloud.google.com/load-balancer-type: "Internal"
+    networking.gke.io/load-balancer-type: "Internal"
     # Optional: Add backend-config if you need custom load balancer settings
     # cloud.google.com/backend-config: '{"default": "watcher-backend-config"}'
 
