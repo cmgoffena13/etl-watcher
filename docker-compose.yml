@@ -18,7 +18,7 @@ services:
     ports:
       - "5432:5432"
     volumes:
-      - watcher_postgres_data:/var/lib/postgresql/data
+      - watcher_postgres_data:/var/lib/postgresql
 
   api:
     build: .

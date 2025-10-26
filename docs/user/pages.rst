@@ -32,7 +32,7 @@ Web-based diagnostics interface providing system health monitoring and performan
    **Example:**
 
    .. image:: /_static/images/diagnostics.png
-      :alt: Lineage Graph Interface
+      :alt: Diagnostics Interface
       :width: 100%
       :align: center
 
@@ -110,6 +110,13 @@ Web-based reporting dashboard providing daily pipeline performance metrics and a
    **Data Source:**
 
    Built on the ``daily_pipeline_report`` materialized view for fast query performance.
+
+   **Example:**
+
+   .. image:: /_static/images/reporting.png
+      :alt: Reporting Dashboard Interface
+      :width: 100%
+      :align: center
 
 
 Interactive API Documentation

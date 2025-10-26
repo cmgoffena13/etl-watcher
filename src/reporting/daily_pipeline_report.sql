@@ -23,7 +23,7 @@ select
     SUM(COALESCE(pe.total_rows, 0)) as daily_total_rows,
     ROUND(AVG(COALESCE(pe.duration_seconds, 0)), 2) as avg_duration_seconds,
 	ROUND(
-	    SUM(pe.total_rows) / NULLIF(SUM(pe.duration_seconds), 0), 
+	    SUM(pe.total_rows::DECIMAL) / NULLIF(SUM(pe.duration_seconds::DECIMAL), 0), 
 	    4
 	) as daily_throughput
 from pipeline_execution pe 
