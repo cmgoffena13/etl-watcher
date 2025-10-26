@@ -331,9 +331,21 @@ Monitor Celery queue health and performance:
 
    {
      "status": "success",
-     "message": "Queue monitoring completed",
-     "queues_checked": 1,
-     "total_messages": 0
+     "total_pending": 2855,
+     "scheduled_tasks": 0,
+     "task_breakdown": [
+       "Detect Anomalies Task: 1375",
+       "Pipeline Execution Closure Maintain: 1477",
+       "Timeliness Check Task: 3"
+     ],
+     "task_breakdown_raw": {
+       "detect_anomalies_task": 1375,
+       "timeliness_check_task": 3,
+       "freshness_check_task": 0,
+       "address_lineage_closure_rebuild_task": 0,
+       "pipeline_execution_closure_maintain_task": 1477,
+       "unknown": 0
+     }
    }
 
 Alert Thresholds
@@ -380,6 +392,13 @@ Access comprehensive system diagnostics through the interactive web interface:
 - Currently locked tables (public schema only)
 - Top active queries with duration and wait events
 - Long running queries (>30s) identification
+
+**Queue Analysis**
+
+- Detailed breakdown of queued tasks by type
+- Task counts and percentage distribution
+- Identification of task types dominating the queue
+- Real-time queue composition analysis
 
 Pipeline Reporting Dashboard
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -441,13 +460,13 @@ Alert Types
 
    🚨 CRITICAL
    Celery Queue Alert
-   Timestamp: 2025-09-28 06:04:26 UTC
-   Message: Queue has 2367 pending tasks
+   Timestamp: 2025-10-25 23:42:22 UTC
+   Message: Queue has 2939 pending tasks
    
    Details:
-   • Messages in queue: 2367
+   • Total pending: 2939
    • Scheduled tasks: 0
-   • Total pending: 2367
+   • Task breakdown: ['Detect Anomalies Task: 1420', 'Timeliness Check Task: 3', 'Freshness Check Task: 3', 'Pipeline Execution Closure Maintain Task: 1513']
 
 **Anomaly Detection Alerts**
 

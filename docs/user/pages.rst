@@ -26,6 +26,7 @@ Web-based diagnostics interface providing system health monitoring and performan
    - **DB Schema Health** - Table sizes, row counts, index usage statistics, missing indexes identification, unused indexes detection, and table statistics
    - **DB Performance & Locks** - Deadlock statistics and trends, currently locked tables, top active queries with duration and wait events, and long-running queries (>30s) identification
    - **Celery Workers** - Worker status, task performance, queue monitoring, and background task diagnostics
+   - **Queue Analysis** - Detailed breakdown of queued tasks by type with counts and percentages
    - **Redis Connection** - Redis server health, memory usage, connection performance, and server information
 
    **Example:**

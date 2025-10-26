@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -834,9 +834,21 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <p><strong>Response:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;success&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;message&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Queue monitoring completed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;queues_checked&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;total_messages&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="nt">&quot;total_pending&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">2855</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;scheduled_tasks&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;task_breakdown&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+<span class="w">    </span><span class="s2">&quot;Detect Anomalies Task: 1375&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Pipeline Execution Closure Maintain: 1477&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="s2">&quot;Timeliness Check Task: 3&quot;</span>
+<span class="w">  </span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;task_breakdown_raw&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;detect_anomalies_task&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1375</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;timeliness_check_task&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;freshness_check_task&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;address_lineage_closure_rebuild_task&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;pipeline_execution_closure_maintain_task&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1477</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;unknown&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">0</span>
+<span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -883,6 +895,13 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 <li><p>Currently locked tables (public schema only)</p></li>
 <li><p>Top active queries with duration and wait events</p></li>
 <li><p>Long running queries (&gt;30s) identification</p></li>
+</ul>
+<p><strong>Queue Analysis</strong></p>
+<ul class="simple">
+<li><p>Detailed breakdown of queued tasks by type</p></li>
+<li><p>Task counts and percentage distribution</p></li>
+<li><p>Identification of task types dominating the queue</p></li>
+<li><p>Real-time queue composition analysis</p></li>
 </ul>
 </section>
 <section id="pipeline-reporting-dashboard">
@@ -944,13 +963,13 @@ Watcher provides multiple monitoring capabilities to ensure your data pipelines 
 </ul>
 <div class="highlight-text notranslate"><div class="highlight"><pre><span></span>🚨 CRITICAL
 Celery Queue Alert
-Timestamp: 2025-09-28 06:04:26 UTC
-Message: Queue has 2367 pending tasks
+Timestamp: 2025-10-25 23:42:22 UTC
+Message: Queue has 2939 pending tasks
 
 Details:
-• Messages in queue: 2367
+• Total pending: 2939
 • Scheduled tasks: 0
-• Total pending: 2367
+• Task breakdown: [&#39;Detect Anomalies Task: 1420&#39;, &#39;Timeliness Check Task: 3&#39;, &#39;Freshness Check Task: 3&#39;, &#39;Pipeline Execution Closure Maintain Task: 1513&#39;]
 </pre></div>
 </div>
 <p><strong>Anomaly Detection Alerts</strong></p>
