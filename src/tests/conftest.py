@@ -17,7 +17,7 @@ from src.app import app
 from src.database.db import setup_reporting
 from src.database.models import *  # To add to SQLModel metadata
 from src.database.session import create_async_engine, get_session
-from src.settings import config, get_database_config
+from src.settings import get_database_config
 
 db_config = get_database_config()
 test_engine = create_async_engine(

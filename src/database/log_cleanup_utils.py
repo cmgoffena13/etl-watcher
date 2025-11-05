@@ -44,7 +44,7 @@ async def db_log_cleanup(session: Session, config: LogCleanupPostInput):
 
         if result.rowcount == 0:
             break
-            total_freshness_pipeline_logs_deleted += result.rowcount
+        total_freshness_pipeline_logs_deleted += result.rowcount
 
     # Pattern for exeuction dependent logs
     max_pipeline_execution_id = (
