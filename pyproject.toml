@@ -41,6 +41,16 @@ dependencies = [
 [tool.pytest.ini_options]
 testpaths = [ "src/tests" ]
 pythonpath = [ "." ]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning",
+    "ignore::UserWarning",
+    "ignore::FutureWarning",
+    "ignore::RuntimeWarning",
+    "ignore::ResourceWarning",
+    "ignore::sqlalchemy.exc.SAWarning",
+    "ignore::pytest.PytestUnraisableExceptionWarning",
+]
 
 [tool.ruff]
 lint.select = ["I"]

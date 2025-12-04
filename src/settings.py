@@ -57,6 +57,11 @@ def get_config(env_state: str):
         raise ValueError("ENV_STATE is not set. Possible values are: DEV, TEST, PROD")
     env_state = env_state.lower()
     configs = {"dev": DevConfig, "prod": ProdConfig, "test": TestConfig}
+    if env_state not in configs:
+        valid_values = ", ".join(sorted(configs.keys()))
+        raise ValueError(
+            f"Invalid ENV_STATE value: '{env_state}'. Possible values are: {valid_values.upper()}"
+        )
     return configs[env_state]()
 
 

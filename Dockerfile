@@ -1,7 +1,7 @@
 FROM python:3.12-slim-bookworm AS build
 
 # Performance Optimizations
-ENV PYTHONBUFFERED=1 UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1
+ENV PYTHONUNBUFFERED=1 UV_LINK_MODE=copy UV_COMPILE_BYTECODE=1
 
 # Get Packages to be able to install uv
 RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates && apt-get upgrade -y openssl
