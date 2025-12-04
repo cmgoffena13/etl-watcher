@@ -1,3 +1,10 @@
+# Git
+.git
+.gitignore
+.gitkeep
+.gitattributes
+
+# Old
 __pycache__
 .pytest_cache
 .ruff_cache
@@ -9,6 +16,34 @@ __pycache__
 .venv
 .gitignore
 .git
+
+# Virtual environments
+.venv/
+venv/
+env/
+ENV/
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+src/tests/
+
+# IDE
+.ruff_cache/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.cursorignore
+
+# Documentation
+LICENSE
+!SECURITY.md
+*.md
 
 # Kubernetes and Helm files (not needed in Docker image)
 watcher/
@@ -22,6 +57,24 @@ docs/
 
 # Development files
 Makefile
+.pre-commit-config.yaml
 pytest.ini
 ruff.toml
 examples/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# CI/CD (not needed in image)
+.github/
+.gitlab-ci.yml
+.circleci/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

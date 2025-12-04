@@ -37,3 +37,29 @@ dependencies = [
     "sqlmodel>=0.0.24",
     "uvicorn[standard]>=0.35.0",
 ]
+
+[tool.pytest.ini_options]
+testpaths = [ "src/tests" ]
+pythonpath = [ "." ]
+
+[tool.ruff]
+lint.select = ["I"]
+exclude = [
+    "migrations/",
+]
+
+[dependency-groups]
+dev = [
+    "locust>=2.42.0",
+    "myst-parser>=4.0.1",
+    "pre-commit>=4.3.0",
+    "pyinstrument>=5.1.1",
+    "pytest>=8.4.2",
+    "ruff>=0.14.2",
+    "sphinx>=8.2.3",
+    "sphinx-autobuild>=2025.8.25",
+    "sphinx-autodoc-typehints>=3.5.2",
+    "sphinx-rtd-theme>=3.0.2",
+    "sphinx-tabs>=3.4.7",
+    "sphinxcontrib-httpdomain>=1.8.1",
+]
