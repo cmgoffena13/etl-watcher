@@ -27,7 +27,7 @@ test:
 	uv run -- pytest -vv --tb=short
 
 install:
-	uv sync --frozen --compile-bytecode
+	uv sync --frozen --compile-bytecode --group dev
 
 add-migration:
 	# Example: make add-migration msg="I am a message" 

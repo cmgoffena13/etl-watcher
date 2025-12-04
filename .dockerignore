@@ -42,8 +42,8 @@ src/tests/
 
 # Documentation
 LICENSE
-!SECURITY.md
 *.md
+!SECURITY.md
 
 # Kubernetes and Helm files (not needed in Docker image)
 watcher/
