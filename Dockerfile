@@ -27,9 +27,10 @@ RUN --mount=type=cache,target=/root/.cache/uv uv sync --frozen --no-dev
 # Multi-stage build for runtime
 FROM python:3.12-slim-bookworm AS runtime
 WORKDIR /watcher
-COPY --from=build /root/.local/bin/uv /usr/local/bin/uv
+COPY --from=build /root/.local/bin/uv /usr/.local/bin/uv
 COPY --from=build /watcher /watcher
 ENV PATH="/root/.local/bin:$PATH"
+ENV PATH="/usr/.local/bin:$PATH"
 
 # Create celery user and group with specific UID/GID (needed for Celery workers)
 RUN groupadd -r -g 999 celery && useradd -r -u 999 -g celery -m -d /home/celery celery
