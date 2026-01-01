@@ -1,6 +1,7 @@
 import logging
 from typing import Optional
 
+import pendulum
 from asyncpg.exceptions import CheckViolationError
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
@@ -21,6 +22,9 @@ async def db_start_pipeline_execution(
     pipeline_execution: PipelineExecutionStartInput,
     session: Session,
 ) -> PipelineExecutionStartOutput:
+    if pipeline_execution.start_date is None:
+        pipeline_execution.start_date = pendulum.now()
+
     execution_start_stmt = (
         PipelineExecution.__table__.insert()
         .returning(PipelineExecution.id)

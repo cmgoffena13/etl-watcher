@@ -356,6 +356,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -367,8 +368,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#automated-monitoring">Automated Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#load-testing">Load Testing</a><ul>
@@ -449,15 +449,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
 </ul>
@@ -642,21 +649,40 @@
 <h2>Step 2: Start a Pipeline Execution<a class="headerlink" href="#step-2-start-a-pipeline-execution" title="Link to this heading"></a></h2>
 <ol class="arabic" start="2">
 <li><p><strong>Start an execution</strong></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">start_date</span></code> field is optional. If omitted, it defaults to the current time using <code class="docutils literal notranslate"><span class="pre">pendulum.now()</span></code>.</p>
+</div>
 <div class="sphinx-tabs docutils container">
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-1-1-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-1-1-0" name="1-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-1-1-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-1" name="1-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-1-1-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-2" name="1-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-1-1-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-1-1-3" name="1-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-1-1-0" class="sphinx-tabs-panel" id="panel-1-1-0" name="1-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
+<span class="c1"># With explicit start_date</span>
 <span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
     <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span>
     <span class="s2">&quot;start_date&quot;</span><span class="p">:</span> <span class="s2">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="p">})</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
+
+<span class="c1"># Without start_date (defaults to current time)</span>
+<span class="n">response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="p">{</span>
+    <span class="s2">&quot;pipeline_id&quot;</span><span class="p">:</span> <span class="mi">1</span>
+<span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">())</span>
 </pre></div>
 </div>
-</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+</div><div aria-labelledby="tab-1-1-1" class="sphinx-tabs-panel" hidden="true" id="panel-1-1-1" name="1-1" role="tabpanel" tabindex="0"><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># With explicit start_date</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
 <span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
 <span class="s1">       &quot;pipeline_id&quot;: 1,</span>
 <span class="s1">       &quot;start_date&quot;: &quot;2024-01-01T10:00:00Z&quot;</span>
+<span class="s1">     }&#39;</span>
+
+<span class="c1"># Without start_date (defaults to current time)</span>
+curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </span><span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-H<span class="w"> </span><span class="s2">&quot;Content-Type: application/json&quot;</span><span class="w"> </span><span class="se">\</span>
+<span class="w">     </span>-d<span class="w"> </span><span class="s1">&#39;{</span>
+<span class="s1">       &quot;pipeline_id&quot;: 1</span>
 <span class="s1">     }&#39;</span>
 </pre></div>
 </div>
@@ -670,14 +696,16 @@
 <span class="p">)</span>
 
 <span class="kd">type</span><span class="w"> </span><span class="nx">StartExecutionRequest</span><span class="w"> </span><span class="kd">struct</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nx">PipelineID</span><span class="w"> </span><span class="kt">int</span><span class="w">    </span><span class="s">`json:&quot;pipeline_id&quot;`</span>
-<span class="w">    </span><span class="nx">StartDate</span><span class="w">  </span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;start_date&quot;`</span>
+<span class="w">    </span><span class="nx">PipelineID</span><span class="w"> </span><span class="kt">int</span><span class="w">     </span><span class="s">`json:&quot;pipeline_id&quot;`</span>
+<span class="w">    </span><span class="nx">StartDate</span><span class="w">  </span><span class="o">*</span><span class="kt">string</span><span class="w"> </span><span class="s">`json:&quot;start_date,omitempty&quot;`</span>
 <span class="p">}</span>
 
 <span class="kd">func</span><span class="w"> </span><span class="nx">main</span><span class="p">()</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="c1">// With explicit start_date</span>
+<span class="w">    </span><span class="nx">startDate</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span>
 <span class="w">    </span><span class="nx">data</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">StartExecutionRequest</span><span class="p">{</span>
 <span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">StartDate</span><span class="p">:</span><span class="w">  </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">StartDate</span><span class="p">:</span><span class="w">  </span><span class="o">&amp;</span><span class="nx">startDate</span><span class="p">,</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="nx">jsonData</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">data</span><span class="p">)</span>
@@ -688,6 +716,20 @@
 <span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
 <span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result</span><span class="p">)</span>
 <span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result</span><span class="p">)</span>
+
+<span class="w">    </span><span class="c1">// Without start_date (defaults to current time)</span>
+<span class="w">    </span><span class="nx">data2</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">StartExecutionRequest</span><span class="p">{</span>
+<span class="w">        </span><span class="nx">PipelineID</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="nx">jsonData2</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">json</span><span class="p">.</span><span class="nx">Marshal</span><span class="p">(</span><span class="nx">data2</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">resp2</span><span class="p">,</span><span class="w"> </span><span class="nx">_</span><span class="w"> </span><span class="o">:=</span><span class="w"> </span><span class="nx">http</span><span class="p">.</span><span class="nx">Post</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;application/json&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">bytes</span><span class="p">.</span><span class="nx">NewBuffer</span><span class="p">(</span><span class="nx">jsonData2</span><span class="p">))</span>
+<span class="w">    </span><span class="k">defer</span><span class="w"> </span><span class="nx">resp2</span><span class="p">.</span><span class="nx">Body</span><span class="p">.</span><span class="nx">Close</span><span class="p">()</span>
+
+<span class="w">    </span><span class="kd">var</span><span class="w"> </span><span class="nx">result2</span><span class="w"> </span><span class="kd">map</span><span class="p">[</span><span class="kt">string</span><span class="p">]</span><span class="kd">interface</span><span class="p">{}</span>
+<span class="w">    </span><span class="nx">json</span><span class="p">.</span><span class="nx">NewDecoder</span><span class="p">(</span><span class="nx">resp2</span><span class="p">.</span><span class="nx">Body</span><span class="p">).</span><span class="nx">Decode</span><span class="p">(</span><span class="o">&amp;</span><span class="nx">result2</span><span class="p">)</span>
+<span class="w">    </span><span class="nx">fmt</span><span class="p">.</span><span class="nx">Println</span><span class="p">(</span><span class="nx">result2</span><span class="p">)</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -699,6 +741,7 @@
 <span class="w">    </span><span class="k">def</span><span class="w"> </span><span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="p">:</span><span class="w"> </span><span class="nc">Array</span><span class="p">[</span><span class="nc">String</span><span class="p">]):</span><span class="w"> </span><span class="nc">Unit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">client</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpClient</span><span class="p">.</span><span class="n">newHttpClient</span><span class="p">()</span>
 
+<span class="w">        </span><span class="c1">// With explicit start_date</span>
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">json</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;start_date&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="s">&quot;2024-01-01T10:00:00Z&quot;</span>
@@ -713,6 +756,21 @@
 <span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request</span><span class="p">,</span>
 <span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
 <span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
+
+<span class="w">        </span><span class="c1">// Without start_date (defaults to current time)</span>
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">json2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">Json</span><span class="p">.</span><span class="n">obj</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;pipeline_id&quot;</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="mi">1</span>
+<span class="w">        </span><span class="p">).</span><span class="n">toString</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">request2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nc">HttpRequest</span><span class="p">.</span><span class="n">newBuilder</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">uri</span><span class="p">(</span><span class="nc">URI</span><span class="p">.</span><span class="n">create</span><span class="p">(</span><span class="s">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">header</span><span class="p">(</span><span class="s">&quot;Content-Type&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;application/json&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="nc">POST</span><span class="p">(</span><span class="nc">HttpRequest</span><span class="p">.</span><span class="nc">BodyPublishers</span><span class="p">.</span><span class="n">ofString</span><span class="p">(</span><span class="n">json2</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">build</span><span class="p">()</span>
+
+<span class="w">        </span><span class="kd">val</span><span class="w"> </span><span class="n">response2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">client</span><span class="p">.</span><span class="n">send</span><span class="p">(</span><span class="n">request2</span><span class="p">,</span>
+<span class="w">            </span><span class="nc">HttpResponse</span><span class="p">.</span><span class="nc">BodyHandlers</span><span class="p">.</span><span class="n">ofString</span><span class="p">())</span>
+<span class="w">        </span><span class="n">println</span><span class="p">(</span><span class="n">response2</span><span class="p">.</span><span class="n">body</span><span class="p">())</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </pre></div>

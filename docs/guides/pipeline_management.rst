@@ -633,6 +633,7 @@ Watcher supports hierarchical pipeline execution tracking through the `parent_id
          import httpx
 
          # Start main pipeline execution
+         # Note: start_date is optional; if omitted, defaults to current time
          main_response = httpx.post(
              "http://localhost:8000/start_pipeline_execution",
              json={

@@ -10,7 +10,7 @@
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
       <link rel="stylesheet" type="text/css" href="../_static/tabs.css?v=a5c4661c" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -356,6 +356,7 @@
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="monitoring.html#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -367,8 +368,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="monitoring.html#automated-monitoring">Automated Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="monitoring.html#load-testing">Load Testing</a><ul>
@@ -449,15 +449,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
 </ul>
@@ -1118,6 +1125,7 @@ curl<span class="w"> </span>-X<span class="w"> </span>POST<span class="w"> </spa
 <div aria-label="Tabbed content" class="closeable" role="tablist"><button aria-controls="panel-3-3-0" aria-selected="true" class="sphinx-tabs-tab" id="tab-3-3-0" name="3-0" role="tab" tabindex="0">Python</button><button aria-controls="panel-3-3-1" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-1" name="3-1" role="tab" tabindex="-1">curl</button><button aria-controls="panel-3-3-2" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-2" name="3-2" role="tab" tabindex="-1">Go</button><button aria-controls="panel-3-3-3" aria-selected="false" class="sphinx-tabs-tab" id="tab-3-3-3" name="3-3" role="tab" tabindex="-1">Scala</button></div><div aria-labelledby="tab-3-3-0" class="sphinx-tabs-panel" id="panel-3-3-0" name="3-0" role="tabpanel" tabindex="0"><div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">httpx</span>
 
 <span class="c1"># Start main pipeline execution</span>
+<span class="c1"># Note: start_date is optional; if omitted, defaults to current time</span>
 <span class="n">main_response</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
     <span class="s2">&quot;http://localhost:8000/start_pipeline_execution&quot;</span><span class="p">,</span>
     <span class="n">json</span><span class="o">=</span><span class="p">{</span>

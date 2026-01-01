@@ -9,7 +9,7 @@
   <title>API Endpoints &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -354,6 +354,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -365,8 +366,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#automated-monitoring">Automated Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#load-testing">Load Testing</a><ul>
@@ -447,15 +447,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../reference/celery_tasks.html">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../reference/celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../reference/celery_tasks.html#error-handling">Error Handling</a></li>
 </ul>
@@ -868,7 +875,8 @@
 <dl class="http post">
 <dt class="sig sig-object http" id="post--start_pipeline_execution">
 <span class="sig-name descname"><span class="pre">POST</span> </span><span class="sig-name descname"><span class="pre">/start_pipeline_execution</span></span><a class="headerlink" href="#post--start_pipeline_execution" title="Link to this definition"></a></dt>
-<dd><p>Start a new pipeline execution. Automatically calculates hour_recorded and date_recorded.</p>
+<dd><p>Start a new pipeline execution. Automatically calculates hour_recorded and date_recorded.
+If <code class="docutils literal notranslate"><span class="pre">start_date</span></code> is not provided, it defaults to the current time using <code class="docutils literal notranslate"><span class="pre">pendulum.now()</span></code>.</p>
 <p><strong>Request Body:</strong></p>
 <div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span>
@@ -876,6 +884,12 @@
 <span class="w">  </span><span class="nt">&quot;watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T00:00:00Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;next_watermark&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2024-01-01T23:59:59Z&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;parent_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p><strong>Minimal Request Body</strong> (<code class="docutils literal notranslate"><span class="pre">start_date</span></code> omitted, defaults to current time):</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;pipeline_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span>
 <span class="p">}</span>
 </pre></div>
 </div>
@@ -888,7 +902,7 @@
 <p><strong>Request Body Fields:</strong></p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">pipeline_id</span></code> (int): Pipeline ID (required)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (string): Start timestamp (ISO 8601, required)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">start_date</span></code> (string): Start timestamp (ISO 8601, optional). If not provided, defaults to the current time using <code class="docutils literal notranslate"><span class="pre">pendulum.now()</span></code>.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">watermark</span></code> (string|int|datetime|date): Watermark value (optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">next_watermark</span></code> (string|int|datetime|date): Next watermark value (optional)</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">parent_id</span></code> (int): Parent execution ID for hierarchical executions (optional)</p></li>

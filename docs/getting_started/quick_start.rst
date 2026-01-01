@@ -99,6 +99,9 @@ Step 2: Start a Pipeline Execution
 
 2. **Start an execution**
 
+   .. note::
+      The ``start_date`` field is optional. If omitted, it defaults to the current time using ``pendulum.now()``.
+
    .. tabs::
 
       .. tab:: Python
@@ -107,9 +110,16 @@ Step 2: Start a Pipeline Execution
 
             import httpx
             
+            # With explicit start_date
             response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
                 "pipeline_id": 1,
                 "start_date": "2024-01-01T10:00:00Z"
+            })
+            print(response.json())
+            
+            # Without start_date (defaults to current time)
+            response = httpx.post("http://localhost:8000/start_pipeline_execution", json={
+                "pipeline_id": 1
             })
             print(response.json())
 
@@ -117,11 +127,19 @@ Step 2: Start a Pipeline Execution
 
          .. code-block:: bash
 
+            # With explicit start_date
             curl -X POST "http://localhost:8000/start_pipeline_execution" \
                  -H "Content-Type: application/json" \
                  -d '{
                    "pipeline_id": 1,
                    "start_date": "2024-01-01T10:00:00Z"
+                 }'
+            
+            # Without start_date (defaults to current time)
+            curl -X POST "http://localhost:8000/start_pipeline_execution" \
+                 -H "Content-Type: application/json" \
+                 -d '{
+                   "pipeline_id": 1
                  }'
 
       .. tab:: Go
@@ -138,14 +156,16 @@ Step 2: Start a Pipeline Execution
             )
 
             type StartExecutionRequest struct {
-                PipelineID int    `json:"pipeline_id"`
-                StartDate  string `json:"start_date"`
+                PipelineID int     `json:"pipeline_id"`
+                StartDate  *string `json:"start_date,omitempty"`
             }
 
             func main() {
+                // With explicit start_date
+                startDate := "2024-01-01T10:00:00Z"
                 data := StartExecutionRequest{
                     PipelineID: 1,
-                    StartDate:  "2024-01-01T10:00:00Z",
+                    StartDate:  &startDate,
                 }
                 
                 jsonData, _ := json.Marshal(data)
@@ -156,6 +176,20 @@ Step 2: Start a Pipeline Execution
                 var result map[string]interface{}
                 json.NewDecoder(resp.Body).Decode(&result)
                 fmt.Println(result)
+                
+                // Without start_date (defaults to current time)
+                data2 := StartExecutionRequest{
+                    PipelineID: 1,
+                }
+                
+                jsonData2, _ := json.Marshal(data2)
+                resp2, _ := http.Post("http://localhost:8000/start_pipeline_execution", 
+                    "application/json", bytes.NewBuffer(jsonData2))
+                defer resp2.Body.Close()
+                
+                var result2 map[string]interface{}
+                json.NewDecoder(resp2.Body).Decode(&result2)
+                fmt.Println(result2)
             }
 
       .. tab:: Scala
@@ -170,6 +204,7 @@ Step 2: Start a Pipeline Execution
                 def main(args: Array[String]): Unit = {
                     val client = HttpClient.newHttpClient()
                     
+                    // With explicit start_date
                     val json = Json.obj(
                         "pipeline_id" -> 1,
                         "start_date" -> "2024-01-01T10:00:00Z"
@@ -184,6 +219,21 @@ Step 2: Start a Pipeline Execution
                     val response = client.send(request, 
                         HttpResponse.BodyHandlers.ofString())
                     println(response.body())
+                    
+                    // Without start_date (defaults to current time)
+                    val json2 = Json.obj(
+                        "pipeline_id" -> 1
+                    ).toString()
+                    
+                    val request2 = HttpRequest.newBuilder()
+                        .uri(URI.create("http://localhost:8000/start_pipeline_execution"))
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString(json2))
+                        .build()
+                    
+                    val response2 = client.send(request2, 
+                        HttpResponse.BodyHandlers.ofString())
+                    println(response2.body())
                 }
             }
 

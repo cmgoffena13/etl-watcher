@@ -323,6 +323,7 @@ Start Pipeline Execution
 .. http:post:: /start_pipeline_execution
 
    Start a new pipeline execution. Automatically calculates hour_recorded and date_recorded.
+   If ``start_date`` is not provided, it defaults to the current time using ``pendulum.now()``.
 
    **Request Body:**
 
@@ -336,6 +337,14 @@ Start Pipeline Execution
         "parent_id": null
       }
 
+   **Minimal Request Body** (``start_date`` omitted, defaults to current time):
+
+   .. code-block:: json
+
+      {
+        "pipeline_id": 1
+      }
+
    **Response:**
 
    .. code-block:: json
@@ -347,7 +356,7 @@ Start Pipeline Execution
    **Request Body Fields:**
 
    - ``pipeline_id`` (int): Pipeline ID (required)
-   - ``start_date`` (string): Start timestamp (ISO 8601, required)
+   - ``start_date`` (string): Start timestamp (ISO 8601, optional). If not provided, defaults to the current time using ``pendulum.now()``.
    - ``watermark`` (string|int|datetime|date): Watermark value (optional)
    - ``next_watermark`` (string|int|datetime|date): Next watermark value (optional)
    - ``parent_id`` (int): Parent execution ID for hierarchical executions (optional)
