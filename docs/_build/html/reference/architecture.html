@@ -9,7 +9,7 @@
   <title>Architecture &amp; Design &mdash; Watcher 1.0.0 documentation</title>
       <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
       <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
-      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=bde152d3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/custom.css?v=ceb11a20" />
 
   
       <script src="../_static/jquery.js?v=5d32c60e"></script>
@@ -354,6 +354,7 @@
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#alert-thresholds">Alert Thresholds</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring-tasks">Scheduled Monitoring Tasks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#system-health-monitoring">System Health Monitoring</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#diagnostics-dashboard">Diagnostics Dashboard</a></li>
 <li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#pipeline-reporting-dashboard">Pipeline Reporting Dashboard</a></li>
@@ -365,8 +366,7 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#monitoring-strategy">Monitoring Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#scheduled-monitoring">Scheduled Monitoring</a></li>
-<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#monitoring-frequency">Monitoring Frequency</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../guides/monitoring.html#automated-monitoring">Automated Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="../guides/monitoring.html#load-testing">Load Testing</a><ul>
@@ -447,15 +447,22 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="celery_tasks.html">Celery Tasks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-types">Task Types</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#regular-tasks">Regular Tasks</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#detect-anomalies-task">detect_anomalies_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#freshness-check-task">freshness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#timeliness-check-task">timeliness_check_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#address-lineage-closure-rebuild-task">address_lineage_closure_rebuild_task</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#pipeline-execution-closure-maintain-task">pipeline_execution_closure_maintain_task</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#scheduled-tasks">Scheduled Tasks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#scheduled-freshness-check">scheduled_freshness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#scheduled-timeliness-check">scheduled_timeliness_check</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#scheduled-celery-queue-health-check">scheduled_celery_queue_health_check</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="celery_tasks.html#task-configuration">Task Configuration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#queue-management">Queue Management</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#rate-limiting">Rate Limiting</a></li>
+<li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#celery-beat-configuration">Celery Beat Configuration</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#retry-policies">Retry Policies</a></li>
 <li class="toctree-l3"><a class="reference internal" href="celery_tasks.html#error-handling">Error Handling</a></li>
 </ul>
