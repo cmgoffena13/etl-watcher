@@ -24,6 +24,7 @@ dependencies = [
     "slack-sdk>=3.36.0",
     "sqlalchemy[asyncio]>=2.0.43",
     "sqlmodel>=0.0.24",
+    "structlog>=25.5.0",
 ]
 
 [tool.pytest.ini_options]

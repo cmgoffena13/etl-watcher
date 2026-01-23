@@ -14,8 +14,6 @@ class BaseConfig(BaseSettings):
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
     LOGFIRE_TOKEN: Optional[str] = None
-    LOGFIRE_CONSOLE: Optional[str] = None
-    LOGFIRE_IGNORE_NO_CONFIG: Optional[bool] = False
     SLACK_WEBHOOK_URL: Optional[str] = None
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
     WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: Optional[int] = 60
@@ -32,7 +30,6 @@ class GlobalConfig(BaseConfig):
 
 class DevConfig(GlobalConfig):
     PROFILING_ENABLED: Optional[bool] = True
-    LOGFIRE_CONSOLE: Optional[bool] = False
     REDIS_URL: Optional[str] = "redis://redis:6379/1"
 
     model_config = SettingsConfigDict(env_prefix="DEV_")
@@ -43,7 +40,6 @@ class TestConfig(GlobalConfig):
     SLACK_WEBHOOK_URL: Optional[str] = (
         "https://hooks.slack.com/services/test/dummy/webhook"
     )
-    LOGFIRE_IGNORE_NO_CONFIG: Optional[bool] = True
     model_config = SettingsConfigDict(env_prefix="TEST_")
 
 
