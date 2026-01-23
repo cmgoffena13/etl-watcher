@@ -78,3 +78,7 @@ Thumbs.db
 
 # Logs
 *.log
+
+# JSON
+*.json
+

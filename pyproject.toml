@@ -11,20 +11,19 @@ dependencies = [
     "celery[redis]>=5.5.3",
     "etl-watcher-sdk>=0.1.1",
     "fastapi>=0.116.1",
-    "gunicorn>=23.0.0",
+    "granian[reload,uvloop]>=2.6.1",
     "httpx>=0.28.1",
     "logfire[celery,fastapi,sqlalchemy]>=4.4.0",
     "orjson>=3.11.3",
     "pendulum>=3.1.0",
     "pydantic-extra-types[pendulum]>=2.10.5",
     "pydantic-settings>=2.10.1",
-    "pyinstrument>=5.1.1",
+    "pyinstrument>=5.1.2",
     "rich>=14.1.0",
     "scalar-fastapi>=1.3.0",
     "slack-sdk>=3.36.0",
     "sqlalchemy[asyncio]>=2.0.43",
     "sqlmodel>=0.0.24",
-    "uvicorn[standard]>=0.35.0",
 ]
 
 [tool.pytest.ini_options]
