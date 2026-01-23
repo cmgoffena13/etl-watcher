@@ -1,12 +1,12 @@
-import logging
 from pathlib import Path
 
 import pendulum
+import structlog
 from sqlalchemy import text
 
 from src.database.session import engine
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def create_test_db():

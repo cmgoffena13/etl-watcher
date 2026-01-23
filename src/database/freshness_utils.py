@@ -1,14 +1,14 @@
-import logging
 import uuid
 
 import pendulum
+import structlog
 from sqlalchemy import text
 from sqlmodel import Session
 
 from src.database.db import _calculate_timely_time, _get_display_datepart
 from src.notifier import AlertLevel, send_slack_message
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_check_pipeline_freshness(session: Session):

@@ -1,8 +1,8 @@
-import logging
 import statistics
 from typing import Optional
 
 import pendulum
+import structlog
 from fastapi import HTTPException, Response, status
 from sqlalchemy import delete, func, select, update
 from sqlalchemy.exc import NoResultFound
@@ -23,7 +23,7 @@ from src.models.anomaly_detection import (
 from src.notifier import AlertLevel, send_slack_message
 from src.types import AnomalyMetricFieldEnum
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_get_or_create_anomaly_detection_rule(

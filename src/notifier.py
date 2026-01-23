@@ -1,14 +1,14 @@
 import asyncio
-import logging
 from enum import Enum
 from typing import Any, Dict, Optional
 
 import httpx
 import pendulum
+import structlog
 
 from src.settings import config
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 class AlertLevel(Enum):

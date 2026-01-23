@@ -1,13 +1,13 @@
-import logging
 from typing import Callable
 
+import structlog
 from fastapi import Request, Response
 from fastapi.responses import HTMLResponse
 from pyinstrument import Profiler
 from pyinstrument.renderers.html import HTMLRenderer
 from starlette.middleware.base import BaseHTTPMiddleware
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 class ProfilingMiddleware(BaseHTTPMiddleware):

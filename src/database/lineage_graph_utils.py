@@ -1,5 +1,4 @@
-import logging
-
+import structlog
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -9,7 +8,7 @@ from src.models.lineage_graph import (
     LineageGraphResponse,
 )
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_get_lineage_graph(

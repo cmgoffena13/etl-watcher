@@ -1,13 +1,12 @@
-import logging
 import time
 from typing import List, Set, Tuple
 
+import structlog
 from fastapi import Response
-from sqlalchemy import alias, desc, select, union_all
+from sqlalchemy import select
 from sqlmodel import Session
 
 from src.database.address_utils import db_get_or_create_address
-from src.database.models.address import Address
 from src.database.models.address_lineage import AddressLineage, AddressLineageClosure
 from src.database.models.pipeline import Pipeline
 from src.models.address import AddressPostInput, AddressPostOutput
@@ -16,7 +15,7 @@ from src.models.address_lineage import (
     AddressLineagePostOutput,
 )
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def _process_address_lists(

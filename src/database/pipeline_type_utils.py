@@ -1,6 +1,5 @@
-import logging
-
 import pendulum
+import structlog
 from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select
@@ -14,7 +13,7 @@ from src.models.pipeline_type import (
     PipelineTypePostOutput,
 )
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_get_or_create_pipeline_type(

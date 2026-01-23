@@ -1,6 +1,5 @@
 # src/celery_tasks.py
-import logging
-
+import structlog
 from asgiref.sync import async_to_sync  # So annoying
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -19,7 +18,7 @@ from src.database.timeliness_utils import db_check_pipeline_execution_timeliness
 from src.notifier import AlertLevel, send_slack_message
 from src.settings import config, get_database_config
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 @celery.task(bind=True, rate_limit="15/s", max_retries=3, default_retry_delay=60)

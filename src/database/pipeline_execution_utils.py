@@ -1,7 +1,5 @@
-import logging
-from typing import Optional
-
 import pendulum
+import structlog
 from asyncpg.exceptions import CheckViolationError
 from fastapi import HTTPException
 from sqlalchemy.exc import IntegrityError, NoResultFound
@@ -15,7 +13,7 @@ from src.models.pipeline_execution import (
     PipelineExecutionStartOutput,
 )
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_start_pipeline_execution(

@@ -1,17 +1,17 @@
-import logging
 import time
 from collections import namedtuple
 
-import logfire
 import redis
+import structlog
 from celery import Celery
 from celery.schedules import crontab
 from celery.signals import task_postrun, task_prerun, worker_init
+from opentelemetry.instrumentation.celery import CeleryInstrumentor
 
 from src.logging_conf import configure_logging
 from src.settings import config
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 # In-memory tracking
 tasks = {}
@@ -42,7 +42,7 @@ Average = namedtuple("Average", "avg_duration count")
 @worker_init.connect()
 def init_worker(*args, **kwargs):
     configure_logging()
-    logfire.instrument_celery()
+    CeleryInstrumentor().instrument()
 
 
 @task_prerun.connect

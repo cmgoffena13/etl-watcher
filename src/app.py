@@ -1,8 +1,9 @@
-import logging
 from contextlib import asynccontextmanager
 
-import logfire
+import structlog
 from fastapi import FastAPI
+from opentelemetry.instrumentation.fastapi import FastAPIInstrumentor
+from opentelemetry.instrumentation.sqlalchemy import SQLAlchemyInstrumentor
 from rich import panel, print
 from scalar_fastapi import get_scalar_api_reference
 
@@ -29,7 +30,7 @@ from src.routes import (
 from src.settings import config
 from src.types import ORJSONResponse
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 @asynccontextmanager
@@ -44,11 +45,12 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan, default_response_class=ORJSONResponse)
-logfire.instrument_fastapi(app=app, capture_headers=True)
-logfire.instrument_sqlalchemy(angine=engine, enable_commenter=True)
+FastAPIInstrumentor.instrument_app(
+    app=app, excluded_urls="/health,/scalar", client_request_hook=None
+)
+SQLAlchemyInstrumentor().instrument(angine=engine, enable_commenter=True)
 
 
-# Register profiling middleware if enabled
 register_profiling_middleware(app, enabled=config.PROFILING_ENABLED)
 app.include_router(pipeline_router)
 app.include_router(pipeline_type_router)

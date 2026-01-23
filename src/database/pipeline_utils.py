@@ -1,7 +1,7 @@
 import json
-import logging
 
 import pendulum
+import structlog
 from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select, update
@@ -20,7 +20,7 @@ from src.models.pipeline_type import PipelineTypePostInput, PipelineTypePostOutp
 from src.settings import config
 from src.types import AnomalyMetricFieldEnum
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 def generate_input_hash(pipeline_input: PipelinePostInput) -> str:

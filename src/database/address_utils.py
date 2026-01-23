@@ -1,7 +1,7 @@
 import json
-import logging
 
 import pendulum
+import structlog
 from asyncpg.exceptions import UniqueViolationError
 from fastapi import HTTPException, Response, status
 from sqlalchemy import select, update
@@ -13,7 +13,7 @@ from src.database.models.address import Address
 from src.models.address import AddressPatchInput, AddressPostInput, AddressPostOutput
 from src.models.address_type import AddressTypePostInput, AddressTypePostOutput
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 def generate_address_hash(address_input: AddressPostInput) -> str:

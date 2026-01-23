@@ -1,8 +1,10 @@
 import uuid
 from functools import lru_cache
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+LogLevel = Literal["DEBUG", "INFO", "WARNING", "ERROR", "CRITICAL"]
 
 
 class BaseConfig(BaseSettings):
@@ -13,8 +15,12 @@ class BaseConfig(BaseSettings):
 
 class GlobalConfig(BaseConfig):
     DATABASE_URL: Optional[str] = None
-    LOGFIRE_TOKEN: Optional[str] = None
     SLACK_WEBHOOK_URL: Optional[str] = None
+    OPEN_TELEMETRY_FLAG: Optional[bool] = False
+    OPEN_TELEMETRY_TRACE_ENDPOINT: Optional[str] = None
+    OPEN_TELEMETRY_LOG_ENDPOINT: Optional[str] = None
+    OPEN_TELEMETRY_AUTHORIZATION_TOKEN: Optional[str] = None
+    LOG_LEVEL: LogLevel = "INFO"
     WATCHER_AUTO_CREATE_ANOMALY_DETECTION_RULES: Optional[bool] = False
     WATCHER_TIMELINESS_CHECK_LOOKBACK_MINUTES: Optional[int] = 60
     WATCHER_TIMELINESS_CHECK_SCHEDULE: Optional[str] = (
@@ -31,6 +37,7 @@ class GlobalConfig(BaseConfig):
 class DevConfig(GlobalConfig):
     PROFILING_ENABLED: Optional[bool] = True
     REDIS_URL: Optional[str] = "redis://redis:6379/1"
+    LOG_LEVEL: LogLevel = "DEBUG"
 
     model_config = SettingsConfigDict(env_prefix="DEV_")
 

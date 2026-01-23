@@ -1,14 +1,14 @@
 import asyncio
-import logging
 
 import pendulum
+import structlog
 from sqlalchemy import func, select, text
 from sqlmodel import Session
 
 from src.database.models.pipeline_execution import PipelineExecution
 from src.models.log_cleanup import LogCleanupPostInput
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 async def db_log_cleanup(session: Session, config: LogCleanupPostInput):

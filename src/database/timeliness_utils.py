@@ -1,7 +1,7 @@
-import logging
 import uuid
 
 import pendulum
+import structlog
 from fastapi import Response
 from sqlalchemy import text
 from sqlmodel import Session
@@ -10,7 +10,7 @@ from src.database.db import _calculate_timely_time, _get_display_datepart
 from src.notifier import AlertLevel, send_slack_message
 from src.types import DatePartEnum
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 
 def _format_duration_for_datepart(duration_seconds: int, datepart: DatePartEnum) -> str:

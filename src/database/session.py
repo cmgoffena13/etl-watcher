@@ -1,6 +1,6 @@
-import logging
 from typing import Annotated
 
+import structlog
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
@@ -9,7 +9,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 
 from src.settings import get_database_config
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 db_config = get_database_config()
 

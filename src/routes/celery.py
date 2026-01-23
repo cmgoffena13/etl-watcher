@@ -1,14 +1,14 @@
 import asyncio
-import logging
 
 import redis
+import structlog
 from fastapi import APIRouter
 from fastapi.exceptions import HTTPException
 
 from src.notifier import AlertLevel, send_slack_message
 from src.settings import config
 
-logger = logging.getLogger(__name__)
+logger = structlog.get_logger(__name__)
 
 router = APIRouter()
 
