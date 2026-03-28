@@ -59,6 +59,7 @@ dev = [
     "locust>=2.42.0",
     "myst-parser>=4.0.1",
     "pre-commit>=4.3.0",
+    "prek>=0.3.8",
     "pytest>=8.4.2",
     "ruff>=0.14.2",
     "sphinx>=8.2.3",

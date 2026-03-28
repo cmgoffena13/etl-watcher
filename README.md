@@ -11,6 +11,8 @@ In simple terms: Keep track of what your pipelines are doing!
 
 ## Table of Contents
 
+![Tutorial Article Series](https://cortlandgoffena.medium.com/watcher-framework-tutorial-pt1-basic-setup-ae9bf15d777b)  
+
 Currently developing out an [SDK](https://github.com/cmgoffena13/etl-watcher-sdk)
 
 1. [QuickStart](#quickstart)

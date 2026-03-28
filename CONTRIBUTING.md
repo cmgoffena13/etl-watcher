@@ -42,7 +42,7 @@ Thank you for your interest in contributing to Watcher! I welcome contributions 
    ```
 7. **Add pre-commit hooks** (you might need to run `source .venv/bin/activate` if your uv environment is not being recognized)
    ```bash
-   pre-commit install --install-hooks
+   uv run -- prek install
    ```
 8. **Set up environment variables**: Copy `.env.example` and configure the environment variables
 9. **Run tests**: `make test`
